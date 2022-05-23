@@ -63,9 +63,8 @@ Wait a couple of minutes for DNS check to complete.
 % git status
 % git config --list
 % git add .
-% git commit -m "your commit messsage"
+% git commit -a
 % git push
-Username for 'https://github.com':
 ```
 
 ---
