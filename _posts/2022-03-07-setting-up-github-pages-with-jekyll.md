@@ -62,7 +62,10 @@ Wait a couple of minutes for DNS check to complete.
 % cd ~/duskopijetlovic.github.io/
 % git status
 % git config --list
-
+% git add .
+% git commit -m "your commit messsage"
+% git push
+Username for 'https://github.com':
 ```
 
 ---
