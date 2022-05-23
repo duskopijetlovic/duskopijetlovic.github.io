@@ -1,0 +1,2919 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>How To Install PlantUML and PlantUML Server Locally on FreeBSD - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="How To Install PlantUML and PlantUML Server Locally on FreeBSD" />
+    <meta name="keywords" content="How To Install PlantUML and PlantUML Server Locally on FreeBSD, Dusko Pijetlovic, freebsd, graphviz, graph, visualization, diagram" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="How To Install PlantUML and PlantUML Server Locally on FreeBSD" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/freebsd/graphviz/graph/visualization/diagram/2022/02/08/freebsd-install-plantuml-server-locally.html" property="og:url">
+    
+
+    
+      <meta content="2022-02-08T20:17:48-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="freebsd" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="How To Install PlantUML and PlantUML Server Locally on FreeBSD">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/freebsd/graphviz/graph/visualization/diagram/2022/02/08/freebsd-install-plantuml-server-locally.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">How To Install PlantUML and PlantUML Server Locally on FreeBSD</h1>
+</header>
+
+<span class="time">08 Feb 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/freebsd">freebsd</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/graph">graph</a>, <a href="/category/visualization">visualization</a>, <a href="/category/diagram">diagram</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>Operating system:  FreeBSD 13.0</p>
+
+<p><strong>Note:</strong>
+In code excerpts and examples, the long lines are folded and then
+indented to make sure they fit the page.</p>
+
+<p>https://plantuml.com/</p>
+
+<p>https://github.com/plantuml/</p>
+
+<h3 id="run-plantuml-locally">Run PlantUML Locally</h3>
+
+<p><a href="https://github.com/plantuml/plantuml"><em>plantuml</em></a>  <br />
+Generate diagrams from textual description</p>
+
+<p>Requirements for running PlantUML locally:</p>
+<ul>
+  <li>Java</li>
+  <li>Graphviz</li>
+</ul>
+
+<p>As of Feb 8, 2022, the latest version of PlantUML is 1.2022.1.</p>
+
+<p>PlantUML compiled Jar (Version 1.2022.1)</p>
+
+<p>From <a href="https://github.com/plantuml/plantuml/releases/tag/v1.2022.1">GitHub releases</a>, you can download <a href="https://github.com/plantuml/plantuml/releases/download/v1.2022.1/plantuml-1.2022.1.jar">plantuml.1.2022.1.jar</a>. It includes GraphViz.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch \
+ https://github.com/plantuml/plantuml/releases/download/v1.2022.1/plantuml-1.2022.1.jar
+</code></pre></div></div>
+
+<p>Create a text file with PlantUML commands.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat sequenceDiagram.txt
+@startuml
+Alice -&gt; Bob: test
+@enduml
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% java -jar plantuml-1.2022.1.jar sequenceDiagram.txt
+</code></pre></div></div>
+
+<p>This outputs the sequence diagram to a file called sequenceDiagram.png.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file sequenceDiagram.png
+sequenceDiagram.png: PNG image data, 123 x 131, 8-bit/color RGB, non-interlaced
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv sequenceDiagram.png
+</code></pre></div></div>
+
+<p>References:  <br />
+https://plantuml.com/starting
+Local Installation notes <a href="https://plantuml.com/en/faq-install">https://plantuml.com/en/faq-install</a></p>
+
+<h3 id="plantuml-picoweb-server">PlantUML PicoWeb Server</h3>
+
+<p>You can install PlantUML server and run it locally but you first need 
+to install your own JEE web application server.</p>
+
+<p>If you don’t want to install a full JEE application server, you may also 
+choose to run PlantUML PicoWeb Server locally, as PlantUML developers 
+have decided to integrate a tiny webserver inside <code class="language-plaintext highlighter-rouge">plantuml.jar</code>.</p>
+
+<p>You just have to launch it with <code class="language-plaintext highlighter-rouge">-picoweb</code> option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% java -jar plantuml-1.2022.1.jar -picoweb
+webPort=8080
+</code></pre></div></div>
+
+<p>The server is now listening to http://localhost:8080.</p>
+
+<p>Then; for example, for SVG service, in a Web browser, enter:</p>
+
+<p>http://localhost:8080/plantuml/svg/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000</p>
+
+<p>or for TXT service, in a Web browser enter:</p>
+
+<p>http://localhost:8080/plantuml/txt/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000</p>
+
+<p>Reference: <br />
+https://plantuml.com/en/picoweb</p>
+
+<h3 id="install-and-run-plantuml-server-locally">Install and Run PlantUML Server Locally</h3>
+
+<p>Requirements for PlantUML Server:</p>
+<ul>
+  <li>Maven (Apache Maven)</li>
+  <li>Jetty (Jetty web server)</li>
+</ul>
+
+<p>Install Maven.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install maven
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---- snip ----
+
+New packages to be INSTALLED:
+        java-zoneinfo: 2021.e
+        maven: 3.8.4
+        maven-wrapper: 1_2
+        openjdk8: 8.312.07.1
+
+Number of packages to be installed: 4
+
+---- snip ---- 
+
+=====
+Message from openjdk8-8.312.07.1:
+
+--
+This OpenJDK implementation requires fdescfs(5) mounted on /dev/fd and
+procfs(5) mounted on /proc.
+
+If you have not done it yet, please do the following:
+
+        mount -t fdescfs fdesc /dev/fd
+        mount -t procfs proc /proc
+
+To make it permanent, you need the following lines in /etc/fstab:
+
+        fdesc   /dev/fd         fdescfs         rw      0       0
+        proc    /proc           procfs          rw      0       0
+---- snip ----
+</code></pre></div></div>
+
+<p>[TODO] cat /etc/fstab for java</p>
+
+<p>Install jetty.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install jetty9
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---- snip ----
+New packages to be INSTALLED:
+        bash: 5.1.12
+        jetty9: 9.4.29
+---- snip ----
+
+=====
+Message from jetty9-9.4.29:
+
+--
+Jetty is now installed in /usr/local/jetty
+
+From Jetty 9, the way to configure it has changed. You are **strongly**
+advised to read the documentation found here:
+
+http://www.eclipse.org/jetty/documentation/current/
+
+Please pay particular attention to HOME and BASE documentation, i.e.,:
+
+http://www.eclipse.org/jetty/documentation/current/startup-base-and-home.html
+
+You may want to activate it in /etc/rc.conf:
+
+    # echo jetty_enable="YES" &gt;&gt; /etc/rc.conf
+
+A sample configuration file can be found here:
+
+    /usr/local/etc/jetty/jetty.sample
+
+Please modify it to suit your needs, paying particular attention
+to the value of JETTY_HOME and JETTY_BASE.
+
+Once you are happy with the configuration file, you can start Jetty:
+
+    # service jetty start
+
+Once Jetty is started, point your web browser to the default home page at
+http://localhost:8080/.
+
+A demo web app is installed for your convenience.
+
+== ADVANCED USAGE ==
+
+If you need to pass special options to Java/Jetty, please set the appropriate
+variables in the configuration file, e.g.,
+
+  # Increase memory limit of the Java virtual machine
+
+  JAVA_OPTIONS="-Xms32m -Xmx256m"
+
+  # Run Java with remote debugging turned on on port 8186
+
+  JAVA_OPTIONS="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8186"
+
+More configuration options are presented in the sample file.
+</code></pre></div></div>
+
+<p>TODO2 — possibly here</p>
+
+<p><strong>NOTE:</strong> <br />
+For PlantUML Server, dont’ start <code class="language-plaintext highlighter-rouge">jetty</code> service yet.<br />
+It will be started with <code class="language-plaintext highlighter-rouge">mvn jetty:run</code> (see below steps).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mkdir ~/scratch
+% cd ~/scratch
+</code></pre></div></div>
+
+<p>Download the latest version of PlantUML Server.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fetch \
+ https://codeload.github.com/plantuml/plantuml-server/zip/refs/heads/master
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh master
+-rw-r--r--  1 dusko  dusko   139K Feb  8 23:49 master
+
+% file master
+master: Zip archive data, at least v1.0 to extract
+
+% mv master plantuml-server.zip
+
+% unzip plantuml-server.zip
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld plantuml-server*
+drwxr-xr-x  7 dusko  dusko      18 Feb  8 23:50 plantuml-server-master
+-rw-r--r--  1 dusko  dusko  142662 Feb  8 23:49 plantuml-server.zip
+
+% mv plantuml-server-master plantuml-server
+
+% ls -ld plantuml-server*
+drwxr-xr-x  7 dusko  dusko      18 Feb  8 23:50 plantuml-server
+-rw-r--r--  1 dusko  dusko  142662 Feb  8 23:49 plantuml-server.zip
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd ~/scratch/plantuml-server
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pwd
+/usr/home/dusko/scratch/plantuml-server
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mvn jetty:run
+</code></pre></div></div>
+
+<p>Then, in a Web browser, open: <br />
+http://localhost:8080/plantuml</p>
+
+<p>To run it again:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd ~/scratch/plantuml-server
+% mvn jetty:run
+</code></pre></div></div>
+
+<p>References:</p>
+
+<p>PlantUML References:  <br />
+<a href="https://plantuml.com/en/server">PlantUML Server</a> <br />
+<a href="https://github.com/plantuml/plantuml-server">PlantUML Server source code</a>  <br />
+<a href="https://github.com/mattjhayes/PlantUML-Examples/blob/master/docs/Diagram-Types/diagram-types.md">PlantUML Examples</a> <br />
+<a href="https://plantuml.com/starting">PlantUML for the impatient</a><br />
+<a href="https://plantuml.com/activity-diagram-legacy">Activity Diagram (legacy)</a> <br />
+<a href="https://plantuml.com/activity-diagram-beta">Activity Diagram (new syntax)</a> <br />
+<a href="https://plantuml.com/command-line">PlantUML - Command line</a><br />
+<a href="https://plantuml.com/commons">PlantUML - Common commands: comment, zoom, title, footer and header, legend</a></p>
+
+<p><a href="https://www.linux-magazine.com/Issues/2020/235/PlantUML-Diagrams">Drawing diagrams with PlantUML</a> <br />
+(Linux Magazine Issue #235 - Jun 2020)<br />
+(Retrieved on Feb 8, 2022)</p>
+
+<p><a href="https://useiconic.com/open">Open Iconic, a free and open icon set</a><br />
+(An open source icon set with 223 marks in SVG, webfont and raster formats) <br />
+(Retrieved on Feb 8, 2022)</p>
+
+<p><a href="https://mattjhayes.com/2021/11/28/other-uses-for-plantuml/">Other Uses for PlantUML</a> <br />
+(Retrieved on Feb 8, 2022)</p>
+
+<p><a href="http://plantuml.com/link">Hyperlinks and tooltips</a>  <br />
+<a href="http://plantuml.com/creole">Creole</a>: rich text, emoticons, unicode, icons<br />
+<a href="http://plantuml.com/openiconic">OpenIconic icons</a><br />
+<a href="http://plantuml.com/sprite">Sprite icons</a><br />
+<a href="http://plantuml.com/ascii-math">AsciiMath mathematical expressions</a></p>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/freebsd/graphviz/graph/visualization/diagram/2022/02/08/freebsd-install-plantuml-server-locally.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html">Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html">How To Create a Bootable FreeBSD ZFS Clone</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/04/graphviz-and-koki-server-wiring-diagram.html">How To Create Server Wiring Diagrams with Graphviz and Kroki</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/03/03/graphviz-servers-networking-diagram.html">How To Create Networking Diagrams with Graphviz and Kroki</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/plantuml/visualization/2022/03/02/plantsuml-kroki-textual-description-diagrams.html">Additional Examples of Diagrams Created from Textual Descriptions with PlantUML</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/plantuml">plantuml</a>, <a href="/category/visualization">visualization</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/freebsd/bhyve/virtualization/graphviz/graph/visualization/2022/02/07/freebsd-bhyve-graph-editors.html">&laquo; How To Install Graphviz Visual Editor on FreeBSD in a Linux Guest in Bhyve</a>
+  
+  
+    <a class="next" href="/freebsd/bhyve/docker/virtualization/2022/02/13/freebsd-docker-vm-bhyve.html">How to Run Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux VM &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_How To Install PlantUML and PlantUML Server Locally on FreeBSD";
+    var disqus_title = "How To Install PlantUML and PlantUML Server Locally on FreeBSD";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

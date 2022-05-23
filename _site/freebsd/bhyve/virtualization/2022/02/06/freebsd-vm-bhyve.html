@@ -1,0 +1,3054 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13 - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13" />
+    <meta name="keywords" content="Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13, Dusko Pijetlovic, freebsd, bhyve, virtualization" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/freebsd/bhyve/virtualization/2022/02/06/freebsd-vm-bhyve.html" property="og:url">
+    
+
+    
+      <meta content="2022-02-06T06:02:01-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="freebsd" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/freebsd/bhyve/virtualization/2022/02/06/freebsd-vm-bhyve.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13</h1>
+</header>
+
+<span class="time">06 Feb 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/freebsd">freebsd</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>Operating system:  FreeBSD 13.0</p>
+
+<p><strong>Note:</strong> <br />
+In code excerpts and examples, the long lines are folded and then 
+indented to make sure they fit the page.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs list
+NAME                 USED  AVAIL     REFER  MOUNTPOINT
+zroot               27.9G   674G       96K  none
+zroot/ROOT          5.20G   674G       96K  none
+zroot/ROOT/default  5.20G   674G     5.20G  /
+zroot/tmp            833M   674G      833M  /tmp
+zroot/usr           21.8G   674G       96K  /usr
+zroot/usr/home      21.8G   674G     21.8G  /usr/home
+zroot/usr/ports       96K   674G       96K  /usr/ports
+zroot/usr/src         96K   674G       96K  /usr/src
+zroot/var           1.18M   674G       96K  /var
+zroot/var/audit       96K   674G       96K  /var/audit
+zroot/var/crash       96K   674G       96K  /var/crash
+zroot/var/log        548K   674G      548K  /var/log
+zroot/var/mail       216K   674G      216K  /var/mail
+zroot/var/tmp        152K   674G      152K  /var/tmp
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zpool list
+NAME   SIZE  ALLOC  FREE  CKPOINT  EXPANDSZ  FRAG  CAP  DEDUP  HEALTH  ALTROOT
+zroot  724G  27.9G  696G        -         -    2%   3%  1.00x  ONLINE  -
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v bhyve
+/usr/sbin/bhyve
+
+% command -v bhyvectl
+/usr/sbin/bhyvectl
+
+% command -v bhyveload
+/usr/sbin/bhyveload
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file /usr/sbin/bhyve
+/usr/sbin/bhyve: ELF 64-bit LSB executable, x86-64, version 1 (FreeBSD), 
+  dynamically linked, interpreter /libexec/ld-elf.so.1, 
+  for FreeBSD 13.0 (1300139), FreeBSD-style, stripped
+
+% file /usr/sbin/bhyvectl
+/usr/sbin/bhyvectl: ELF 64-bit LSB executable, x86-64, version 1 (FreeBSD), 
+  dynamically linked, interpreter /libexec/ld-elf.so.1, 
+  for FreeBSD 13.0 (1300139), FreeBSD-style, stripped
+
+% file /usr/sbin/bhyveload
+/usr/sbin/bhyveload: ELF 64-bit LSB executable, x86-64, version 1 (FreeBSD), 
+  dynamically linked, interpreter /libexec/ld-elf.so.1, 
+  for FreeBSD 13.0 (1300139), FreeBSD-style, stripped
+</code></pre></div></div>
+
+<p>bhyve, bhyvectl and bhyveload binaries are part of FreeBSD 13 base system.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pkg which /usr/sbin/bhyve
+/usr/sbin/bhyve was not found in the database
+
+% pkg which /usr/sbin/bhyvectl
+/usr/sbin/bhyvectl was not found in the database
+
+% pkg which /usr/sbin/bhyveload
+/usr/sbin/bhyveload was not found in the database
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/share/examples/bhyve/
+total 9
+-r--r--r--  1 root  wheel   9.6K Apr  8  2021 vmrun.sh
+
+% file /usr/share/examples/bhyve/vmrun.sh
+/usr/share/examples/bhyve/vmrun.sh: POSIX shell script, ASCII text executable
+
+% wc -l /usr/share/examples/bhyve/vmrun.sh
+     395 /usr/share/examples/bhyve/vmrun.sh
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pkg search bhyve
+bhyve+-0.1.0                   BHyVe with unofficial extensions
+bhyve-firmware-1.0_1           Collection of Firmware for bhyve
+bhyve-rc-3                     FreeBSD RC script for starting bhyve guests in tmux
+grub2-bhyve-0.40_8             Grub-emu loader for bhyve
+rubygem-vagrant-bhyve-0.1.0    Vagrant provider plugin to support bhyve
+uefi-edk2-bhyve-g20210226,2    UEFI EDK2 firmware for bhyve
+uefi-edk2-bhyve-csm-0.2_3,1    UEFI EDK2 firmware for bhyve with CSM (16-bit BIOS)
+vm-bhyve-1.4.2                 Management system for bhyve virtual machines
+</code></pre></div></div>
+
+<p>Based on 
+<a href="https://github.com/churchers/vm-bhyve">churchers/vm-bhyve.</a>(Retrieved on Feb 6, 2022).</p>
+
+<p>Install vm-bhyve.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install vm-bhyve
+---- snip ----
+
+=====
+Message from vm-bhyve-1.4.2:
+
+--
+To enable vm-bhyve, please add the following lines to rc.conf,
+depending on whether you are using ZFS storage or not. Please note
+that the directory or dataset specified should already exist.
+
+    vm_enable="YES"
+    vm_dir="zfs:pool/dataset"
+
+OR
+
+    vm_enable="YES"
+    vm_dir="/directory/path"
+
+Then run 'vm init'.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/share/examples/vm-bhyve/
+total 85
+-rw-r--r--  1 root  wheel   437B Jan 14  2020 alpine.conf
+-rw-r--r--  1 root  wheel   280B Jan 14  2020 arch.conf
+-rw-r--r--  1 root  wheel   354B Jan 14  2020 centos6.conf
+-rw-r--r--  1 root  wheel   163B Jan 14  2020 centos7.conf
+-rw-r--r--  1 root  wheel    16K Jan 14  2020 config.sample
+-rw-r--r--  1 root  wheel   331B Jan 14  2020 coreos.conf
+-rw-r--r--  1 root  wheel   177B Jan 14  2020 debian.conf
+-rw-r--r--  1 root  wheel   136B Jan 14  2020 default.conf
+-rw-r--r--  1 root  wheel   441B Jan 14  2020 dragonfly.conf
+-rw-r--r--  1 root  wheel   156B Jan 14  2020 freebsd-zvol.conf
+-rw-r--r--  1 root  wheel   755B Jan 14  2020 freepbx.conf
+-rw-r--r--  1 root  wheel   151B Jan 14  2020 linux-zvol.conf
+-rw-r--r--  1 root  wheel   213B Jan 14  2020 netbsd.conf
+-rw-r--r--  1 root  wheel   243B Jan 14  2020 openbsd.conf
+-rw-r--r--  1 root  wheel   222B Jan 14  2020 resflash.conf
+-rw-r--r--  1 root  wheel   131B Jan 14  2020 ubuntu.conf
+-rw-r--r--  1 root  wheel   566B Jan 14  2020 windows.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo zfs create zroot/vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs list | tail -1
+zroot/vm              96K   674G       96K  none
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /vm
+ls: /vm: No such file or directory
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs get all zroot/vm | wc -l
+      73
+
+% zfs get all zroot/vm | grep compression
+zroot/vm  compression      lz4             inherited from zroot
+
+% zfs get all zroot/vm | grep -w atime
+zroot/vm  atime            off             inherited from zroot
+
+% zfs get all zroot/vm | grep mountpoint
+zroot/vm  mountpoint       none            inherited from zroot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo zfs set mountpoint=/vm zroot/vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs get all zroot/vm | grep mountpoint
+zroot/vm  mountpoint       /vm             local
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /vm
+drwxr-xr-x  2 root  wheel  2 Jan 29 19:30 /vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% date
+Sat 29 Jan 2022 19:38:49 PST
+
+% file /vm
+/vm: directory
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs get all zroot/vm
+NAME      PROPERTY       VALUE                  SOURCE
+zroot/vm  type           filesystem             -
+zroot/vm  creation       Sat Jan 29 19:30 2022  -
+zroot/vm  used           96K                    -
+zroot/vm  available      674G                   -
+
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zfs mount
+zroot/ROOT/default              /
+zroot/tmp                       /tmp
+zroot/usr/ports                 /usr/ports
+zroot/usr/home                  /usr/home
+zroot/var/crash                 /var/crash
+zroot/var/mail                  /var/mail
+zroot/var/tmp                   /var/tmp
+zroot/var/audit                 /var/audit
+zroot/usr/src                   /usr/src
+zroot/var/log                   /var/log
+zroot/vm                        /vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /etc/rc.conf /etc/rc.conf.original.bak
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n 'vm_enable="YES"' | sudo tee -a /etc/rc.conf
+% printf %s\\n 'vm_dir="zfs:zroot/vm"' | sudo tee -a /etc/rc.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /etc/rc.conf.original.bak \
+ /etc/rc.conf
+--- /etc/rc.conf.original.bak   2022-01-29 19:17:50.236339000 -0800
++++ /etc/rc.conf        2022-01-29 20:24:22.277037000 -0800
+@@ -7,0 +8,2 @@
++vm_enable="YES"
++vm_dir="zfs:zroot/vm"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% type vm
+vm is /usr/local/sbin/vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file /usr/local/sbin/vm
+/usr/local/sbin/vm: POSIX shell script, ASCII text executable
+
+% wc -l /usr/local/sbin/vm
+      51 /usr/local/sbin/vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/lib/vm-bhyve
+total 133
+-rw-r--r--  1 root  wheel   2.4K Jan 14  2020 vm-base
+-rw-r--r--  1 root  wheel   7.7K Jan 14  2020 vm-cmd
+-rw-r--r--  1 root  wheel   5.9K Jan 14  2020 vm-config
+-rw-r--r--  1 root  wheel    32K Jan 14  2020 vm-core
+-rw-r--r--  1 root  wheel    14K Jan 14  2020 vm-datastore
+-rw-r--r--  1 root  wheel   7.3K Jan 14  2020 vm-guest
+-rw-r--r--  1 root  wheel    14K Jan 14  2020 vm-info
+-rw-r--r--  1 root  wheel    10K Jan 14  2020 vm-migration
+-rw-r--r--  1 root  wheel   3.4K Jan 14  2020 vm-rctl
+-rw-r--r--  1 root  wheel    33K Jan 14  2020 vm-run
+-rw-r--r--  1 root  wheel    13K Jan 14  2020 vm-switch
+-rw-r--r--  1 root  wheel   4.6K Jan 14  2020 vm-switch-manual
+-rw-r--r--  1 root  wheel    11K Jan 14  2020 vm-switch-standard
+-rw-r--r--  1 root  wheel   3.4K Jan 14  2020 vm-switch-vale
+-rw-r--r--  1 root  wheel   6.3K Jan 14  2020 vm-switch-vxlan
+-rw-r--r--  1 root  wheel    11K Jan 14  2020 vm-util
+-rw-r--r--  1 root  wheel    18K Jan 14  2020 vm-zfs
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm
+total 9
+drwxr-xr-x   2 root  wheel     2B Jan 29 19:30 .
+drwxr-xr-x  19 root  wheel    25B Jan 29 19:38 ..
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% kldstat | grep vmm
+% kldstat | grep nmdm
+</code></pre></div></div>
+
+<p>Virtual machines can only be managed by root.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm init
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm
+total 11
+drwxr-xr-x   6 root  wheel     6B Jan 29 20:27 .
+drwxr-xr-x  19 root  wheel    25B Jan 29 19:38 ..
+drwxr-xr-x   2 root  wheel     4B Jan 29 20:27 .config
+drwxr-xr-x   2 root  wheel     2B Jan 29 20:27 .img
+drwxr-xr-x   2 root  wheel     2B Jan 29 20:27 .iso
+drwxr-xr-x   2 root  wheel     3B Jan 29 20:27 .templates
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% kldstat | grep vm
+25    1 0xffffffff83000000   53a420 vmm.ko
+
+% kldstat | grep nmdm
+26    1 0xffffffff82e49000     21cc nmdm.ko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% kldstat | tail -4
+25    1 0xffffffff83000000   53a420 vmm.ko
+26    1 0xffffffff82e49000     21cc nmdm.ko
+27    1 0xffffffff82e4c000     7638 if_bridge.ko
+28    1 0xffffffff82e54000     50d8 bridgestp.ko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% service vm status
+vm is not running.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm list
+Password:
+NAME  DATASTORE  LOADER  CPU  MEMORY  VNC  AUTOSTART  STATE
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm info
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm datastore list
+NAME            TYPE        PATH                      ZFS DATASET
+default         zfs         /vm                       zroot/vm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm switch info
+</code></pre></div></div>
+
+<p>For Linux guests, install grub2-bhyve.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install grub2-bhyve
+</code></pre></div></div>
+
+<p>For UEFI support, install bhyve-firmware.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install bhyve-firmware
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/
+total 11
+drwxr-xr-x   6 root  wheel     6B Jan 29 20:27 .
+drwxr-xr-x  19 root  wheel    25B Jan 29 21:58 ..
+drwxr-xr-x   2 root  wheel     4B Jan 29 20:27 .config
+drwxr-xr-x   2 root  wheel     2B Jan 29 20:27 .img
+drwxr-xr-x   2 root  wheel     2B Jan 29 20:27 .iso
+drwxr-xr-x   2 root  wheel     3B Jan 29 20:27 .templates
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.templates/
+total 6
+drwxr-xr-x  2 root  wheel     3B Jan 29 20:27 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+-rw-r--r--  1 root  wheel   136B Jan 29 20:27 default.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/share/examples/vm-bhyve/default.conf
+loader="bhyveload"
+cpu=1
+memory=256M
+network0_type="virtio-net"
+network0_switch="public"
+disk0_type="virtio-blk"
+disk0_name="disk0.img"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /vm/.templates/default.conf
+loader="bhyveload"
+cpu=1
+memory=256M
+network0_type="virtio-net"
+network0_switch="public"
+disk0_type="virtio-blk"
+disk0_name="disk0.img"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /usr/local/share/examples/vm-bhyve/* /vm/.templates/
+overwrite /vm/.templates/default.conf? (y/n [n]) y
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.templates/
+total 94
+drwxr-xr-x  2 root  wheel    19B Jan 29 22:31 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+-rw-r--r--  1 root  wheel   437B Jan 29 22:31 alpine.conf
+-rw-r--r--  1 root  wheel   280B Jan 29 22:31 arch.conf
+-rw-r--r--  1 root  wheel   354B Jan 29 22:31 centos6.conf
+-rw-r--r--  1 root  wheel   163B Jan 29 22:31 centos7.conf
+-rw-r--r--  1 root  wheel    16K Jan 29 22:31 config.sample
+-rw-r--r--  1 root  wheel   331B Jan 29 22:31 coreos.conf
+-rw-r--r--  1 root  wheel   177B Jan 29 22:31 debian.conf
+-rw-r--r--  1 root  wheel   136B Jan 29 22:31 default.conf
+-rw-r--r--  1 root  wheel   441B Jan 29 22:31 dragonfly.conf
+-rw-r--r--  1 root  wheel   156B Jan 29 22:31 freebsd-zvol.conf
+-rw-r--r--  1 root  wheel   755B Jan 29 22:31 freepbx.conf
+-rw-r--r--  1 root  wheel   151B Jan 29 22:31 linux-zvol.conf
+-rw-r--r--  1 root  wheel   213B Jan 29 22:31 netbsd.conf
+-rw-r--r--  1 root  wheel   243B Jan 29 22:31 openbsd.conf
+-rw-r--r--  1 root  wheel   222B Jan 29 22:31 resflash.conf
+-rw-r--r--  1 root  wheel   131B Jan 29 22:31 ubuntu.conf
+-rw-r--r--  1 root  wheel   566B Jan 29 22:31 windows.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig
+em0: flags=8822&lt;BROADCAST,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=481249b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,
+          LRO,WOL_MAGIC,VLAN_HWFILTER,NOMAP&gt;
+---- snip ----
+        media: Ethernet autoselect
+        status: no carrier
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; metric 0 mtu 16384
+        options=680003&lt;RXCSUM,TXCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x2
+        inet 127.0.0.1 netmask 0xff000000
+        groups: lo
+        nd6 options=21&lt;PERFORMNUD,AUTO_LINKLOCAL&gt;
+ue0: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=68009b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,
+          LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+---- snip ----
+        inet 192.168.1.65 netmask 0xffffff00 broadcast 192.168.1.255
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm switch list
+NAME  TYPE  IFACE  ADDRESS  PRIVATE  MTU  VLAN  PORTS
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm switch create -a 192.168.8.1/24 public
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm switch list
+Password:
+NAME    TYPE      IFACE      ADDRESS         PRIVATE  MTU  VLAN  PORTS
+public  standard  vm-public  192.168.8.1/24  no       -    -     -
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm switch info
+------------------------
+Virtual Switch: public
+------------------------
+  type: standard
+  ident: vm-public
+  vlan: -
+  physical-ports: -
+  bytes-in: 37302 (36.427K)
+  bytes-out: 5550 (5.419K)
+</code></pre></div></div>
+
+<p>NOTE:  Some instructions include running
+<code class="language-plaintext highlighter-rouge">sudo vm switch add public ue0</code> at this point but when I did it, 
+the guest VM wasn’t able to obtain an IP address from dnsmasq
+(although it obtained an IP address from the same DHCP server that the 
+FreeBSD host obtaines it from).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig
+em0: flags=8822&lt;BROADCAST,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=481249b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,
+          VLAN_HWCSUM,LRO,WOL_MAGIC,VLAN_HWFILTER,NOMAP&gt;
+---- snip ----  
+        media: Ethernet autoselect
+        status: no carrier
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; metric 0 mtu 16384
+        options=680003&lt;RXCSUM,TXCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x2
+        inet 127.0.0.1 netmask 0xff000000
+        groups: lo
+        nd6 options=21&lt;PERFORMNUD,AUTO_LINKLOCAL&gt;
+ue0: flags=8943&lt;UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=68009b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,
+          VLAN_HWCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+---- snip ---- 
+        inet 192.168.1.65 netmask 0xffffff00 broadcast 192.168.1.255
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+vm-public: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        ether 1e:77:56:53:11:0f
+        inet 192.168.8.1 netmask 0xffffff00 broadcast 192.168.8.255
+        id 00:00:00:00:00:00 priority 32768 hellotime 2 fwddelay 15
+        maxage 20 holdcnt 6 proto rstp maxaddr 2000 timeout 1200
+        root id 00:00:00:00:00:00 priority 32768 ifcost 0 port 0
+        groups: bridge vm-switch viid-4c918@
+        nd6 options=9&lt;PERFORMNUD,IFDISABLED&gt;
+</code></pre></div></div>
+
+<h3 id="internal-nat-configuration">Internal NAT Configuration</h3>
+
+<p>If you want or need to internal NAT, you need to configure it manually.</p>
+
+<p>From <a href="https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration">NAT Configuration - vm-bhyve Wiki</a>  <br />
+(Retrieved on Feb 6, 2022)</p>
+
+<blockquote>
+  <p>Unfortunately, internal NAT configuration has been removed as of v1.2. 
+As a shell script, we relied on configuring external systems such as 
+pf and dnsmasq to provide NAT functions. Some users want to use other 
+tools/firewalls, and many users found NAT broken due to existing 
+pf or dnsmasq configuration they had in place. It has come to the point 
+where it’s arguably easier and less error-prone to manually configure 
+NAT than to try and enable it via vm-bhyve, then manually install/tweak 
+the generated configuration.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% vm version
+vm-bhyve: Bhyve virtual machine management v1.4.2 (rev. 104002)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /etc/rc.conf
+zfs_enable="YES"
+dumpdev="AUTO"
+powerd_enable="YES"
+ifconfig_ue0="DHCP"
+defaultrouter="192.168.1.254"
+kld_list="i915kms"
+hostname="fbsd1.home.arpa"
+vm_enable="YES"
+vm_dir="zfs:zroot/vm"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig
+em0: flags=8822&lt;BROADCAST,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=481249b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,
+          VLAN_HWCSUM,LRO,WOL_MAGIC,VLAN_HWFILTER,NOMAP&gt;
+---- snip ---- 
+        status: no carrier
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; metric 0 mtu 16384
+        options=680003&lt;RXCSUM,TXCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x2
+        inet 127.0.0.1 netmask 0xff000000
+        groups: lo
+        nd6 options=21&lt;PERFORMNUD,AUTO_LINKLOCAL&gt;
+ue0: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=68009b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,
+          VLAN_HWCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&gt;
+---- snip ----
+        inet 192.168.1.65 netmask 0xffffff00 broadcast 192.168.1.255
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+</code></pre></div></div>
+
+<p>List all available interfaces on the system.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig -l
+em0 lo0 ue0
+</code></pre></div></div>
+
+<p>List only interfaces that are down.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig -l -d
+em0
+</code></pre></div></div>
+
+<p>List only interfaces that are up.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ifconfig -l -u
+lo0 ue0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /etc/pf.conf
+ls: /etc/pf.conf: No such file or directory
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n \
+ 'nat on ue0 from {192.168.8.0/24} to any -&gt; (ue0)' \
+ | sudo tee -a /etc/pf.conf
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong><br />
+I use a shell script with <code class="language-plaintext highlighter-rouge">openconnect(8)</code> (“multi-protocol VPN client 
+for Cisco AnyConnect VPNs and others”) for connecting to a VPN.
+This creates a network interface named <strong>tun0</strong> so I need to add another 
+line for it to <code class="language-plaintext highlighter-rouge">pf.conf</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n \
+ 'nat on tun0 from {192.168.8.0/24} to any -&gt; (tun0)' \
+ | sudo tee -a /etc/pf.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /etc/pf.conf
+nat on ue0 from {192.168.8.0/24} to any -&gt; (ue0)
+nat on tun0 from {192.168.8.0/24} to any -&gt; (tun0)
+</code></pre></div></div>
+
+<p>Bhyve networking section - based on 
+<a href="https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration">vm-bhyve wiki - NAT How-To</a>
+(Retrieved on Feb 6, 2022).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install dnsmasq
+
+---- snip ----
+
+=====
+Message from dnsmasq-2.86_2,1:
+
+--
+To enable dnsmasq, edit /usr/local/etc/dnsmasq.conf and
+set dnsmasq_enable="YES" in /etc/rc.conf[.local]
+
+Further options and actions are documented inside
+/usr/local/etc/rc.d/dnsmasq
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/etc/rc.d/dnsmasq
+-rwxr-xr-x  1 root  wheel   2.7K Jan 13 04:03 /usr/local/etc/rc.d/dnsmasq
+
+% file /usr/local/etc/rc.d/dnsmasq
+/usr/local/etc/rc.d/dnsmasq: POSIX shell script, ASCII text executable
+
+% wc -l /usr/local/etc/rc.d/dnsmasq
+      97 /usr/local/etc/rc.d/dnsmasq
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n 'pf_enable="YES"' | sudo tee -a /etc/rc.conf
+% printf %s\\n 'gateway_enable="YES"' | sudo tee -a /etc/rc.conf
+% printf %s\\n 'dnsmasq_enable="YES"' | sudo tee -a /etc/rc.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /etc/rc.conf.original.bak \
+ /etc/rc.conf
+--- /etc/rc.conf.original.bak   2022-01-29 19:17:50.236339000 -0800
++++ /etc/rc.conf        2022-01-29 21:42:58.697928000 -0800
+@@ -7,0 +8,5 @@
++vm_enable="YES"
++vm_dir="zfs:zroot/vm"
++pf_enable="YES"
++gateway_enable="YES"
++dnsmasq_enable="YES"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/etc/dnsmasq*
+-rw-r--r--  1 root  wheel    27K Jan 13 04:03 /usr/local/etc/dnsmasq.conf
+-rw-r--r--  1 root  wheel    27K Jan 13 04:03 /usr/local/etc/dnsmasq.conf.sample
+
+% diff \
+ /usr/local/etc/dnsmasq.conf.sample \ 
+ /usr/local/etc/dnsmasq.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/dnsmasq.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/dnsmasq.conf
+port=0
+domain-needed
+no-resolv
+except-interface=lo0
+bind-interfaces
+local-service
+dhcp-authoritative
+ 
+interface=vm-public
+dhcp-range=192.168.8.10,192.168.8.254
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /boot/loader.conf /boot/loader.conf.original.bak
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n 'if_bridge_load="YES"' | sudo tee -a /boot/loader.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /boot/loader.conf.original.bak \
+ /boot/loader.conf
+--- /boot/loader.conf.original.bak      2022-01-29 21:46:19.799847000 -0800
++++ /boot/loader.conf   2022-01-29 21:47:08.625437000 -0800
+@@ -5,0 +6 @@
++if_bridge_load="YES"
+</code></pre></div></div>
+
+<p>Based on 
+<a href="https://github.com/churchers/vm-bhyve/wiki/Guest-example:-Alpine-Linux">vm-bhyve wiki - How-To Running Linux</a>(Retrieved on Feb 6, 2022):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /etc/sysctl.conf /etc/sysctl.conf.original.bak
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n 'net.link.tap.up_on_open=1' | sudo tee -a /etc/sysctl.conf
+% printf %s\\n 'net.link.bridge.pfil_bridge=0' | sudo tee -a /etc/sysctl.conf
+% printf %s\\n 'net.link.bridge.pfil_member=0' | sudo tee -a /etc/sysctl.conf
+% printf %s\\n 'net.inet.ip.forwarding=1' | sudo tee -a /etc/sysctl.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /etc/sysctl.conf.original.bak \
+ /etc/sysctl.conf
+--- /etc/sysctl.conf.original.bak       2022-01-29 21:51:56.741050000 -0800
++++ /etc/sysctl.conf    2022-01-29 21:53:29.508938000 -0800
+@@ -9,0 +10,4 @@
++net.link.tap.up_on_open=1
++net.link.bridge.pfil_bridge=0
++net.link.bridge.pfil_member=0
++net.inet.ip.forwarding=1
+</code></pre></div></div>
+
+<p>Reboot the system.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo shutdown -r now
+</code></pre></div></div>
+
+<p>After restart:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.config/
+total 2
+drwxr-xr-x  2 root  wheel     4B Jan 29 20:27 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+-rw-r--r--  1 root  wheel     0B Jan 29 20:27 null.iso
+-rw-r--r--  1 root  wheel    63B Jan 29 22:34 system.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.config/null.iso
+-rw-r--r--  1 root  wheel     0B Jan 29 20:27 /vm/.config/null.iso
+
+% cat /vm/.config/system.conf 
+switch_list="public"
+type_public="standard"
+addr_public="192.168.8.1/24"
+ports_public=""
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.img/
+total 1
+drwxr-xr-x  2 root  wheel     2B Jan 29 20:27 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+ 
+% ls -alh /vm/.iso/
+total 1
+drwxr-xr-x  2 root  wheel     2B Jan 29 20:27 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /vm/.templates/debian.conf
+loader="grub"
+cpu=1
+memory=512M
+network0_type="virtio-net"
+network0_switch="public"
+disk0_type="ahci-hd"
+disk0_name="disk0.img"
+grub_run_partition="1"
+grub_run_dir="/boot/grub"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo \ 
+ vm \
+ iso \
+ https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.2.0-amd64-netinst.iso
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/.iso/
+total 380110
+drwxr-xr-x  2 root  wheel     3B Jan 29 22:52 .
+drwxr-xr-x  6 root  wheel     6B Jan 29 20:27 ..
+-rw-r--r--  1 root  wheel   378M Dec 18 05:24 debian-11.2.0-amd64-netinst.iso
+</code></pre></div></div>
+
+<p>Create a VM named ‘debianvm1’ by using a template ‘debian’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm create -t debian debianvm1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/
+total 36
+drwxr-xr-x   7 root  wheel     7B Jan 29 22:58 .
+drwxr-xr-x  19 root  wheel    25B Jan 29 21:58 ..
+drwxr-xr-x   2 root  wheel     4B Jan 29 20:27 .config
+drwxr-xr-x   2 root  wheel     2B Jan 29 20:27 .img
+drwxr-xr-x   2 root  wheel     3B Jan 29 22:52 .iso
+drwxr-xr-x   2 root  wheel    19B Jan 29 22:31 .templates
+drwxr-xr-x   2 root  wheel     7B Jan 29 23:03 debianvm1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /vm/debianvm1/
+total 28
+drwxr-xr-x  2 root  wheel     7B Jan 29 23:03 .
+drwxr-xr-x  7 root  wheel     7B Jan 29 22:58 ..
+-rw-r--r--  1 root  wheel   254B Jan 29 22:58 debianvm1.conf
+-rw-r--r--  1 root  wheel    77B Jan 29 23:03 device.map
+-rw-------  1 root  wheel    20G Jan 29 22:58 disk0.img
+-rw-r--r--  1 root  wheel    16B Jan 29 23:03 run.lock
+-rw-r--r--  1 root  wheel   1.4K Jan 29 23:12 vm-bhyve.log
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm list
+NAME       DATASTORE  LOADER  CPU  MEMORY  VNC  AUTOSTART  STATE
+debianvm1  default    grub    1    512M    -    No         Stopped
+</code></pre></div></div>
+
+<p>Install GNU Linux Debian.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm install -f debianvm1 debian-11.2.0-amd64-netinst.iso
+</code></pre></div></div>
+
+<h3 id="fixing-gnu-grub">Fixing GNU GRUB</h3>
+
+<p>NOTE: Strictly speaking, it’s GRUB 2 (as opposed to GRUB, a.k.a. GRUB Legacy).</p>
+
+<p>After reboot, Debian booted into GRUB prompt, which means it can’t find root partition.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                     GNU GRUB  version 2.00
+
+Minimal BASH-like line editing is supported. For the first word, TAB
+lists possible command completions. Anywhere else TAB lists possible
+device or file completions.
+
+grub&gt;
+</code></pre></div></div>
+
+<p>In grub prompt, press TAB:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Possible commands are:
+      
+. [ authenticate background_color background_image blocklist boot break 
+cat clear cmp configfile continue crc cryptomount date dump echo exit 
+export extract_entries_configfile extract_entries_source
+extract_legacy_entries_configfile extract_legacy_entries_source false
+functional_test gettext gptsync halt hashsum hello help hexdump initrd 
+initrd16 insmod keymap keystatus kfreebsd kfreebsd_loadenv 
+kfreebsd_module kfreebsd_module_elf knetbsd knetbsd_module 
+knetbsd_module_elf kopenbsd kopenbsd_ramdisk legacy_check_password 
+legacy_configfile legacy_initrd legacy_initrd_nounzip legacy_kernel 
+legacy_password legacy_source linux linux16 list_env load_env 
+loadfont loopback ls lsfonts lsmmap lsmod md5sum menuentry module 
+multiboot net_add_addr net_add_dns net_add_route net_bootp net_del_addr
+net_del_dns net_del_route net_get_dhcp_option net_ipv6_autoconf 
+net_ls_addr net_ls_cards net_ls_dns net_ls_routes net_nslookup normal 
+normal_exit parttool password password_pbkdf2 probe read read_byte 
+read_dword read_word reboot regexp
+return rmmod save_env search search.file search.fs_label search.fs_uuid 
+serial set setparams sha1sum sha256sum sha512sum shift sleep source 
+submenu terminal_input terminal_output terminfo test test_blockarg 
+testload time true unset videoinfo videotest write_byte write_dword 
+write_word xnu_uuid zfs-bootfs zfsinfo zfskey
+
+grub&gt;
+grub&gt; ls
+(hd0) (hd0,msdos5) (hd0,msdos1) (host) (lvm/debianvm1--vg-swap_1) 
+  (lvm/debianvm1--vg-root)
+
+grub&gt; ls (hd0,msdos5)
+        Partition hd0,msdos5: No known filesystem detected 
+        Partition start at 1001472 - Total size 40939520 sectors
+
+grub&gt; ls (hd0,msdos5)/
+error: unknown filesystem.
+
+grub&gt; ls (hd0,msdos1)
+        Partition hd0,msdos1: Filesystem type ext* 
+        Last modification time 2022-01-30 07:47:05 Sunday, 
+        UUID 650acfe0-f659-4c0d-a877-27d1fae2d455
+        Partition start at 2048 - Total size 997376 sectors
+
+grub&gt; ls (hd0,msdos1)/
+lost+found/ config-5.10.0-10-amd64 vmlinuz-5.10.0-10-amd64 
+  config-5.10.0-11-amd64 grub/ System.map-5.10.0-10-amd64 
+  initrd.img-5.10.0-10-amd64 vmlinuz-5.10.0-11-amd64 
+  System.map-5.10.0-11-amd64 initrd.img-5.10.0-11-amd64
+
+grub&gt; ls (host)
+Device host: Filesystem type hostfs - Total size 0 sectors
+
+grub&gt; ls (host)/
+entropy var/ boot/ dev/ libexec/ media/ root/ proc/ sys COPYRIGHT tmp/ 
+  mnt/ lib/ home/ vm/ sbin/ etc/ net/ bin/ usr/ rescue/
+
+grub&gt; ls (lvm/debianvm1--vg-swap_1)
+Device lvm/debianvm1--vg-swap_1: No known filesystem detected
+Total size 1048576 sectors
+
+grub&gt; ls (lvm/debianvm1--vg-swap_1)/
+error: unknown filesystem.
+
+grub&gt; ls (lvm/debianvm1--vg-root)
+Device lvm/debianvm1--vg-root: Filesystem type ext*
+Last modification time 2022-01-30 07:47:05 Sunday, 
+UUID b4113067-fbfd-4471-b7dc-671e3dec3483
+Total size 39886848 sectors
+
+grub&gt; ls (lvm/debianvm1--vg-root)/
+lost+found/ boot/ etc/ media/ vmlinuz.old var/ bin usr/ sbin lib lib32 
+  lib64 libx32 dev/ home/ proc/ root/ run/ sys/ tmp/ mnt/ srv/ opt/ 
+  initrd.img.old vmlinuz initrd.img
+
+grub&gt; ls (hd0,msdos1)/grub/
+unicode.pf2 i386-pc/ locale/ fonts/ grubenv grub.cfg
+
+grub&gt; ls (host)/boot/
+dtb/ loader.conf.original.bak efi/ firmware/ check-password.4th 
+  brand-fbsd.4th loader_4th isoboot delay.4th menu-commands.4th 
+  boot1 loader_4th.efi logo-orb.4th looader_4th isoboot delay.4th 
+  menu-commands.4th boot1 loader_4th.efi logo-orb.4th loader.conf 
+  userboot_lua.so brand.4th userboot_4th.so screen.4th support.4th 
+  color.4th beastie.4th pxeboot gptboot.efi mbr frames.4th boot2 
+  fonts/ uboot/ logo-beastiebw.4th entropy zfs/ lua/ loader.4th 
+  loader_lua.efi loader userboot.so loader.rc version.4th boot0 
+  menusets.4th cdboot kernel.old/ gptzfsboot modules/ kernel/ 
+  logo-orbbw.4th boot0sio images/ loader_lua zfsloader loader_simp 
+  menu.4th defaults/ zfsboot boot1.efi boot pmbr loader.efi 
+  logo-fbsdbw.4th gptboot device.hints efi.4th shortcuts.4th menu.rc 
+  loader.conf.d/ loader_simp.efi logo-beastie.4th
+
+grub&gt; ls (lvm/debianvm1--vg-root)/boot/
+
+grub&gt; 
+grub&gt; set prefix=(hd0,msdos1)/grub
+grub&gt; set root=(hd0,msdos1)
+grub&gt; insmod linux
+grub&gt; insmod normal
+grub&gt; normal
+</code></pre></div></div>
+
+<p>After pressing  ENTER  (after the last line with ‘normal’), Debian started normally:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Loading Linux 5.10.0-11-amd64 ...
+Loading initial ramdisk ...
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                   GNU GRUB  version 2.00
+
+ +--------------------------------------------------------------+
+ |Debian GNU/Linux                                              |
+ |Advanced options for Debian GNU/Linux                         |
+ |                                                              |
+ |                                                              |
+ |                                                              |
+ |                                                              |
+ +--------------------------------------------------------------+
+
+  Use the ^ and v keys to select which entry is highlighted.
+
+  Press enter to boot the selected OS, `e' to edit the commands
+  before booting or `c' for a command-line.
+
+---- snip ----
+</code></pre></div></div>
+
+<p>Log in to Debian VM.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Debian GNU/Linux 11 debianvm1 ttyS0
+
+debianvm1 login:
+----------------
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dusko@debianvm1:~$
+dusko@debianvm1:~$ uptime
+ 00:02:34 up 1 min,  1 user,  load average: 0.08, 0.05, 0.01
+</code></pre></div></div>
+
+<p>Then issue command to fix grub.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ groups
+dusko cdrom floppy audio dip video plugdev netdev bluetooth scanner
+
+$ groups | grep sudo
+
+$ su
+Password:
+         
+# usermod -aG sudo dusko
+bash: usermod: command not found
+
+# command -v usermod
+
+# command -V usermod
+bash: command: usermod: not found
+
+# type -a usermod
+bash: type: usermod: not found
+
+# type usermod
+bash: type: usermod: not found
+
+# which usermod
+
+# whereis usermod
+usermod: /usr/sbin/usermod /usr/share/man/man8/usermod.8.gz
+
+# /usr/sbin/usermod -aG sudo dusko
+
+# groups dusko
+dusko : dusko cdrom floppy sudo audio dip video plugdev netdev bluetooth scanner
+
+# groups dusko | grep sudo
+dusko : dusko cdrom floppy sudo audio dip video plugdev netdev bluetooth lpadmin scanner
+
+# exit
+exit
+
+$ groups
+dusko cdrom floppy audio dip video plugdev netdev bluetooth lpadmin scanner
+
+$ groups | grep sudo
+</code></pre></div></div>
+
+<p>Refresh shell environment without logging out:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ exec su - dusko
+Password:
+</code></pre></div></div>
+
+<p>Log in back to Debian VM.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ groups | grep sudo
+dusko cdrom floppy sudo audio dip video plugdev netdev bluetooth lpadmin scanner
+</code></pre></div></div>
+
+<p>You can now run update-grub as root with sudo(8).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo update-grub
+Generating grub configuration file ...
+Found linux image: /boot/vmlinuz-5.10.0-11-amd64
+Found initrd image: /boot/initrd.img-5.10.0-11-amd64
+Found linux image: /boot/vmlinuz-5.10.0-10-amd64
+Found initrd image: /boot/initrd.img-5.10.0-10-amd64
+done
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo reboot
+</code></pre></div></div>
+
+<p>However, after reboot, the system booted into grub prompt again.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                         GNU GRUB  version 2.00
+
+Minimal BASH-like line editing is supported. For the first word, 
+TAB lists possible command completions. Anywhere else TAB lists 
+possible device or file completions.
+
+
+grub&gt;
+</code></pre></div></div>
+
+<p>Exit the GRUB prompt:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>grub&gt; exit
+</code></pre></div></div>
+
+<p>[FIX] Debian installs boot to 2nd partition but with default 
+bhyve configuration, GRUB looks for boot in 1st partition.</p>
+
+<p>On the FreeBSD host:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /vm/debianvm1/debianvm1.conf /vm/debianvm1/debianvm1.conf.original.bak
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /vm/debianvm1/debianvm1.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /vm/debianvm1/debianvm1.conf.original.bak \
+ /vm/debianvm1/debianvm1.conf
+--- /vm/debianvm1/debianvm1.conf.original.bak   2022-01-30 00:17:47.121434000 -0
+800
++++ /vm/debianvm1/debianvm1.conf        2022-01-30 00:19:25.190592000 -0800
+@@ -8,2 +8,2 @@
+-grub_run_partition="1"
+-grub_run_dir="/boot/grub"
++grub_run_partition="msdos1"
++grub_run_dir="/grub"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /vm/debianvm1/debianvm1.conf
+loader="grub"
+cpu=1
+memory=512M
+network0_type="virtio-net"
+network0_switch="public"
+disk0_type="ahci-hd"
+disk0_name="disk0.img"
+grub_run_partition="msdos1"
+grub_run_dir="/grub"
+uuid="fc62f0ca-8199-11ec-aa36-e86a64ba6be0"
+network0_mac="58:9c:fc:0a:ab:4f"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm list
+NAME       DATASTORE  LOADER  CPU  MEMORY  VNC  AUTOSTART  STATE
+debianvm1  default    grub    1    512M    -    No         Stopped
+</code></pre></div></div>
+
+<p>It worked.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm start -f debianvm1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Loading Linux 5.10.0-11-amd64 ...
+Loading initial ramdisk ...
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                      GNU GRUB  version 2.00
+
+ +-------------------------------------------------------------+
+ |Debian GNU/Linux                                             |
+ |Advanced options for Debian GNU/Linux                        |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ |                                                             |
+ +-------------------------------------------------------------+
+
+ Use the ^ and v keys to select which entry is highlighted.
+ Press enter to boot the selected OS, `e' to edit the commands before
+ booting or `c' for a command-line.
+
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Debian GNU/Linux 11 debianvm1 ttyS0
+
+debianvm1 login:
+----------------
+</code></pre></div></div>
+
+<p>Log in to the VM.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo reboot
+[sudo] password for dusko:
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Debian GNU/Linux 11 debianvm1 ttyS0
+
+debianvm1 login: 
+----------------
+</code></pre></div></div>
+
+<h4 id="starting-the-vm">Starting the VM</h4>
+
+<p>If you specifty the -f option, the guest will start in the foreground on stdio, 
+and you will not be able to access it through the console 
+(<code class="language-plaintext highlighter-rouge">sudo vm console debianvm1</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm start -f debianvm1
+</code></pre></div></div>
+
+<p>If you want to access it via the console (<code class="language-plaintext highlighter-rouge">sudo vm console debianvm1</code>), 
+start the VM without the -f option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm start debianvm1
+</code></pre></div></div>
+
+<p>and then, you can access the vm through the console:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vm console debianvm1
+</code></pre></div></div>
+
+<p>Output shows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Connected
+</code></pre></div></div>
+
+<p>Press <code class="language-plaintext highlighter-rouge">Enter</code> here, and after that the VM presents the login screen:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Debian GNU/Linux 11 debianvm1 ttyS0
+
+debianvm1 login: 
+</code></pre></div></div>
+
+<p>To disconnect, that is, to exit the console and return to the host,
+press <code class="language-plaintext highlighter-rouge">~+Ctrl-D</code>  (<code class="language-plaintext highlighter-rouge">tilde</code>, then <code class="language-plaintext highlighter-rouge">Ctrl+d</code>). 
+It’s also written as
+<code class="language-plaintext highlighter-rouge">tilde</code>, then <code class="language-plaintext highlighter-rouge">^D</code>; or: <code class="language-plaintext highlighter-rouge">tilde</code>, then <code class="language-plaintext highlighter-rouge">Control-d</code>).</p>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ~
+[EOT]
+</code></pre></div></div>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/freebsd/bhyve/virtualization/2022/02/06/freebsd-vm-bhyve.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/freebsd/rhel/linux/howto/oneliner/sed/cli/terminal/shell/script/2022/02/27/sed-stream-editor.html">sed - Stream Editor</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/rhel">rhel</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/oneliner">oneliner</a>, <a href="/category/sed">sed</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html">Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/2022/02/25/freebsd-java-kroki-diagrams.html">How to Run Kroki on FreeBSD 13 with Java</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/freebsd/dotfiles/x11/2022/02/05/xorg-x11-screenshots-xwd-png-netpbm.html">&laquo; How To Take Screenshots with xwd(1), Pixmap Size (Depth) of 24 and 32 and Convert It To png</a>
+  
+  
+    <a class="next" href="/freebsd/bhyve/virtualization/graphviz/graph/visualization/2022/02/07/freebsd-bhyve-graph-editors.html">How To Install Graphviz Visual Editor on FreeBSD in a Linux Guest in Bhyve &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13";
+    var disqus_title = "Setup vm-bhyve and Install a GNU/Linux Debian VM on FreeBSD 13";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

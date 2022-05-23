@@ -1,0 +1,11 @@
+"cc -o conftest -I/usr/local/include/ruby-2.7//amd64-freebsd13 -I/usr/local/include/ruby-2.7//ruby/backward -I/usr/local/include/ruby-2.7/ -I. -I/usr/local/include -isystem /usr/local/include   -O2 -pipe  -fstack-protector-strong -isystem /usr/local/include -fno-strict-aliasing  -fPIC conftest.c  -L. -L/usr/local/lib -L.   -fstack-protector-strong  -rdynamic     -lruby27  -lm -lpthread -L/usr/local/lib -L/usr/local/lib  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+

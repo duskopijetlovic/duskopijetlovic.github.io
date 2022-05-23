@@ -1,0 +1,6249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU" />
+    <meta name="keywords" content="Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU, Dusko Pijetlovic, howto, virtualization, rs232serial, cli, terminal, shell, console, sysadmin, server, hardware" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html" property="og:url">
+    
+
+    
+      <meta content="2022-03-12T08:01:47-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="howto" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</h1>
+</header>
+
+<span class="time">12 Mar 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>OSs: RHEL 7, CentOS 7  <br />
+Shells:  csh, bash</p>
+
+<hr />
+
+<p>Specifically:  Customize CentOS/RHEL DVD ISO Image for Installation in Text 
+Mode via Serial Console <strong>on IBM BladeCenter HS21 Servers</strong> and Test It with QEMU</p>
+
+<hr />
+
+<p><em>Task:</em>    <br />
+Install CentOS Linux 7 in Text Mode on IBM BladeCenter HS21 blade servers 
+(a.k.a blades) via serial console.</p>
+
+<p><em>Motivation:</em> <br />
+Could not use IBM MM (Management Module) web interface’s console 
+for performing CentOS Linux installation because MM required a very old 
+Java version, which proved complicated to setup.</p>
+
+<hr />
+
+<h3 id="prepare-the-server-to-use-serial-console">Prepare the Server to Use Serial Console</h3>
+
+<p>Server:  IBM BladeCenter HS21 (This blade is <strong>BIOS-based</strong> and does <strong>not</strong> 
+support <em>EFI/UEFI</em>)</p>
+
+<p>For SOL (Serial Over LAN) to work on this server, the following settings
+of its BIOS need to be changed (the lines in bold had to be changed):</p>
+
+<ul>
+  <li>Devices and I/O Ports:
+    <ul>
+      <li><strong>Serial Port A:</strong> Auto-configure</li>
+      <li><strong>Serial Port B:</strong> Auto-configure</li>
+    </ul>
+  </li>
+  <li>Remote Console Redirection:
+    <ul>
+      <li><strong>Remote Console Active:</strong> Enabled</li>
+      <li><strong>Remote Console COM Port:</strong> COM 2</li>
+      <li>Remote Console Baud Rate: 19200</li>
+      <li>Remote Console Data Bits: 8</li>
+      <li>Remote Console Parity: None</li>
+      <li>Remote Console Stop Bits: 1</li>
+      <li>Remote Console Text Emulation: ANSI</li>
+      <li><strong>Remote Console After Boot:</strong> Enabled</li>
+      <li><strong>Remote Console Flow Control:</strong> Hardware</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><em>(Optional)</em> <br />
+Before the upgrade, the OS on the blades was CentOS Linux 5.2. 
+If you wanted to enable CentOS 5.2 for redirecting output to the second 
+serial device ttyS1 (COM2), you would need to change the following 
+configuration files on that OS:</p>
+<ul>
+  <li>/etc/inittab</li>
+  <li>/etc/securetty</li>
+  <li>/boot/grub/grub.conf</li>
+</ul>
+
+<p>Add the following line to the end of the
+<code class="language-plaintext highlighter-rouge"># Run gettys in standard runlevels</code> section of the <strong>/etc/inittab</strong> file. 
+This enables hardware flow control and enables users to log in through 
+the SOL console.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>7:2345:respawn:/sbin/agetty -h ttyS1 19200 vt102
+</code></pre></div></div>
+
+<p>Add the following line at the bottom of the <strong>/etc/securetty</strong> file to 
+enable a user to log in as the root user through the SOL console:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ttyS1
+</code></pre></div></div>
+
+<p>Complete the following steps to modify the <strong>/boot/grub/grub.conf</strong> file:</p>
+
+<ol>
+  <li>Comment out the <code class="language-plaintext highlighter-rouge">splashimage=...</code> line by adding a <code class="language-plaintext highlighter-rouge">#</code> at the 
+beginning of this line.</li>
+  <li>Add the following line before the first <code class="language-plaintext highlighter-rouge">title=...</code> line:
+<code class="language-plaintext highlighter-rouge"># This will allow you to only Monitor the OS boot via SOL</code></li>
+  <li>Append the following text to the first <code class="language-plaintext highlighter-rouge">title=...</code> line:
+<code class="language-plaintext highlighter-rouge">SOL Monitor</code></li>
+  <li>Append the following text to the <code class="language-plaintext highlighter-rouge">kernel/...</code> line of the 
+first <code class="language-plaintext highlighter-rouge">title=...</code> section:<br />
+<code class="language-plaintext highlighter-rouge">console=ttyS1,19200 console=tty1</code></li>
+  <li>Add the following lines between the two <code class="language-plaintext highlighter-rouge">title=...</code> sections:</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># This will allow you to Interact with the OS boot via SOL 
+title Red Hat Linux (2.4.9-e.12smp) SOL Interactive
+    root (hd0,0)
+    kernel /vmlinuz-2.4.9-e.12smp ro root=/dev/hda6 console=tty1 
+console=ttyS1,19200
+    initrd /initrd-2.4.9-e.12smp.img
+</code></pre></div></div>
+
+<p><strong>Note:</strong> The entry beginning with kernel <code class="language-plaintext highlighter-rouge">/vmlinuz...</code> is shown 
+with a line break after <code class="language-plaintext highlighter-rouge">console=tty1</code>. In your file, the entire 
+entry must all be on one line.</p>
+
+<p>Details:
+<a href="https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf">IBM BladeCenter - Serial Over LAN (SOL) Setup Guide</a>  <br />
+Chapter 3. Operating system configuration &gt; Linux configuration &gt; 
+Red Hat Enterprise Linux ES 2.1 configuration (including GRUB configuration)  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<hr />
+
+<p>Steps:</p>
+
+<ul>
+  <li>Download and test ISO</li>
+  <li>Mount ISO and prep for edit</li>
+  <li>Edit isolinux.cfg</li>
+  <li>Create the new ISO</li>
+  <li>Create a test QEMU image with console redirection to serial device on COM2 (ttyS1)</li>
+  <li>Test the QEMU image</li>
+</ul>
+
+<p><strong>NOTE:</strong>  <br />
+You need to construct a command line for calling QEMU because the 
+raw QEMU doesn’t have any VM management so your VM configuration is not
+permanent. For the task explained on this page that’s nice since you’ll 
+experiment with different VM configurations; for example, one serial 
+device in the guest VM, two serial devices in the VM, no serial devices…</p>
+
+<p>While your VM configuration is not remembered, changes you 
+make in the guest VM do get saved in the VM image. In other words, after
+you boot the guest in an image, log into the OS installed on it, and 
+make changes in the guest OS’ configuration files, they are saved. 
+After restarting the guest on the same VM image, next time you log into 
+the guest OS on it, your changes will be there.</p>
+
+<hr />
+
+<p>IBM BladeCenter HS21 does not support <code class="language-plaintext highlighter-rouge">ipmitool</code>. <br />
+<strong>[TODO]:</strong>  Check to see if it’s possible to add IPMI support in/via BIOS.</p>
+
+<hr />
+
+<p><strong>NOTE:</strong>  <br />
+When there are long lines in scripts, code and CLI output examples, 
+they are folded and then indented to make sure they fit the page.
+If there are exceptions, they are noted.</p>
+
+<hr />
+
+<h3 id="optional-create-a-test-qemu-image-with-a-text-console-on-the-first-serial-device-ttys0-com1">(Optional) Create a Test QEMU Image with a Text Console on the First Serial Device ttyS0 (COM1)</h3>
+
+<p>Note that this step is optional. It’s here to show the setup of packages 
+needed on the host OS, the use of QEMU as a test tool for performing the 
+required task, and to demonstrate how to create a test virtual machine 
+that redirects text output to serial console device.</p>
+
+<p>The host server used as a jump box already had the following 
+packages installed.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ipxe-roms-qemu, libvirt-daemon-driver-qemu, qemu-guest-agent, qemu-img, 
+qemu-kvm, qemu-kvm-block-curl, qemu-kvm-block-gluster, qemu-kvm-block-iscsi, 
+qemu-kvm-block-rbd, qemu-kvm-block-ssh, qemu-kvm-common, qemu-kvm-core
+</code></pre></div></div>
+
+<p>Install additional packages.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install libvirt
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install virt-install virt-manager
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install libguestfs-tools libguestfs-gfs2 libguestfs-rescue \
+ libguestfs-rsync libguestfs-xfs
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install virt-dib virt-v2v virt-p2v-maker virt-viewer virt-who \
+ virt-top virtio-win
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install minicom 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install isomd5sum
+</code></pre></div></div>
+
+<p>CentOS Mirror (<a href="http://mirror.centos.org/">http://mirror.centos.org/</a>)
+contains a directory tree with current CentOS Linux and Stream releases 
+(as of Mar 12, 2022: CentOS 7 and CentOS 8-stream).  The last CentOS 
+release before switching to CentOS Stream was CentOS 7.9: 
+<a href="http://mirror.centos.org/centos-7/7.9.2009/">http://mirror.centos.org/centos-7/7.9.2009/</a>.  In order to conserve the limited bandwidth 
+available, ISO images on CentOS.org are not downloadable from 
+mirror.centos.org.  The following page lists mirrors in your region that 
+have the ISO images available: <a href="http://isoredirect.centos.org/centos/7.9.2009/isos/x86_64/">http://isoredirect.centos.org/centos/7.9.2009/isos/x86_64/</a>.</p>
+
+<p>Download and verify the CentOS DVD ISO installation image. I decided to use minimal install, CentOS-7-x86_64-Minimal-2009.iso.  (Other options were: CentOS-7-x86_64-DVD-2009.iso, CentOS-7-x86_64-Everything-2009.iso, CentOS-7-x86_64-NetInstall-2009.iso.)  For my region, download location was on mirror.esecuredata.com.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wget https://mirror.esecuredata.com/centos/7.9.2009/isos/x86_64/CentOS-7-x86_64-Minimal-2009.iso
+$ wget https://mirror.esecuredata.com/centos/7.9.2009/isos/x86_64/sha256sum.txt
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sha256sum CentOS-7-x86_64-Minimal-2009.iso
+07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a  CentOS-7-x86_6
+4-Minimal-2009.iso
+
+$ grep 'CentOS-7-x86_64-Minimal-2009.iso' sha256sum.txt
+07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a  CentOS-7-x86_6
+4-Minimal-2009.iso
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkdir -p /mnt/{dvd,customdvd}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /mnt/
+total 0
+drwxr-xr-x 2 root root 6 Apr 16 19:57 customdvd
+drwxr-xr-x 2 root root 6 Apr 16 19:57 dvd
+</code></pre></div></div>
+
+<p>Mount the DVD ISO image.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ mount \ 
+ -t iso9660 \
+ /home/dusko/CentOS-7-x86_64-Minimal-2009.iso \ 
+ /mnt/dvd/
+</code></pre></div></div>
+
+<p>Copy the content of the DVD to a separate directory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rsync -a /mnt/dvd/ /mnt/customdvd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -alh /mnt/customdvd/
+total 84K
+drwxr-xr-x  8 root root  254 Nov  3  2020 .
+drwxr-xr-x. 4 root root   34 Apr 17 18:39 ..
+-rw-r--r--  1 root root   14 Oct 29  2020 CentOS_BuildTag
+-rw-r--r--  1 root root   29 Oct 26  2020 .discinfo
+drwxr-xr-x  3 root root   35 Oct 26  2020 EFI
+-rw-rw-r--  1 root root  227 Aug 30  2017 EULA
+-rw-rw-r--  1 root root  18K Dec  9  2015 GPL
+drwxr-xr-x  3 root root   57 Oct 26  2020 images
+drwxr-xr-x  2 root root  182 Apr 17 18:47 isolinux
+drwxr-xr-x  2 root root   43 Oct 26  2020 LiveOS
+drwxr-xr-x  2 root root  28K Nov  3  2020 Packages
+drwxr-xr-x  2 root root 4.0K Nov  3  2020 repodata
+-rw-rw-r--  1 root root 1.7K Dec  9  2015 RPM-GPG-KEY-CentOS-7
+-rw-rw-r--  1 root root 1.7K Dec  9  2015 RPM-GPG-KEY-CentOS-Testing-7
+-r--r--r--  1 root root 2.9K Nov  3  2020 TRANS.TBL
+-rw-r--r--  1 root root  354 Oct 26  2020 .treeinfo
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /mnt/customdvd/.discinfo 
+1603728831.612616
+7.9
+x86_64
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /mnt/customdvd/.treeinfo 
+[general]
+name = CentOS-7
+family = CentOS
+timestamp = 1603729576.26
+variant = 
+version = 7
+packagedir = 
+arch = x86_64
+
+[stage2]
+mainimage = LiveOS/squashfs.img
+
+[images-x86_64]
+kernel = images/pxeboot/vmlinuz
+initrd = images/pxeboot/initrd.img
+boot.iso = images/boot.iso
+
+[images-xen]
+kernel = images/pxeboot/vmlinuz
+initrd = images/pxeboot/initrd.img
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /mnt/customdvd/isolinux/
+total 60M
+-r--r--r-- 1 root root 2.0K Nov  3  2020 boot.cat
+-rw-r--r-- 2 root root   84 Oct 26  2020 boot.msg
+-rw-r--r-- 2 root root  281 Oct 26  2020 grub.conf
+-rw-r--r-- 4 root root  53M Oct 26  2020 initrd.img
+-rw-r--r-- 2 root root  24K Nov  3  2020 isolinux.bin
+-rw-r--r-- 2 root root 3.0K Oct 26  2020 isolinux.cfg
+-rw-r--r-- 3 root root 187K Nov  5  2016 memtest
+-rw-r--r-- 5 root root  186 Sep 30  2015 splash.png
+-r--r--r-- 1 root root 2.2K Nov  3  2020 TRANS.TBL
+-rw-r--r-- 3 root root 150K Oct 30  2018 vesamenu.c32
+-rwxr-xr-x 4 root root 6.5M Oct 19  2020 vmlinuz
+</code></pre></div></div>
+
+<p>Customize the DVD ISO so that the installer redirects its text 
+output to the serial console.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /mnt/customdvd/isolinux/
+</code></pre></div></div>
+
+<p>Remove ‘boot.cat’. It will be regenerated in a later step.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rm -i boot.cat
+rm: remove regular file 'boot.cat'? y
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wc -l boot.msg
+5 boot.msg
+</code></pre></div></div>
+
+<p>Delete the line with ‘splash.lss’ from the ‘boot.msg’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat boot.msg
+
+ 
+splash.lss
+
+ -  Press the 01&lt;ENTER&gt;07 key to begin the installation process.
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grep -n 'splash\.lss' boot.msg
+2:splash.lss
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo sed -i.bkp '/splash\.lss/d' boot.msg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff boot.msg.bkp boot.msg
+2d1
+&lt; splash.lss
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff \
+ --unified=0 \
+ /mnt/dvd/isolinux/boot.msg \
+ /mnt/customdvd/isolinux/boot.msg
+--- /mnt/dvd/isolinux/boot.msg  2020-10-26 09:25:28.000000000 -0700
++++ /mnt/customdvd/isolinux/boot.msg    2022-03-12 21:11:33.140839189 -0700
+@@ -2 +1,0 @@
+-splash.lss
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rm -i boot.msg.bkp
+rm: remove regular file 'boot.msg.bkp'? y
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo vi isolinux.cfg
+</code></pre></div></div>
+
+<p>Tell ISOLINUX to use a serial port as the console. 
+“port” is a number (0 = /dev/ttyS0 = COM1, etc.) or an I/O port address (e.g. 0x3F8) (<a href="https://www.syslinux.org/old/faq.php">https://www.syslinux.org/old/faq.php</a>, <a href="https://wiki.syslinux.org/wiki/index.php?title=SYSLINUX">https://wiki.syslinux.org/wiki/index.php?title=SYSLINUX</a>).</p>
+
+<p>Here I want to use the port 0 so the <code class="language-plaintext highlighter-rouge">console</code> statement uses 
+tty0 and ttyS0.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff \
+ --unified=0 \
+ /mnt/dvd/isolinux/isolinux.cfg \
+ /mnt/customdvd/isolinux/isolinux.cfg
+--- /mnt/dvd/isolinux/isolinux.cfg      2020-10-26 09:25:28.000000000 -0700
++++ /mnt/customdvd/isolinux/isolinux.cfg        2022-03-12 22:39:15.690733667 -0700
+@@ -64 +64 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 quiet console=tty0 console=ttyS0
+@@ -70 +70 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rd.live.check quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rd.live.check quiet console=tty0 console=ttyS0
+@@ -86 +86 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 xdriver=vesa nomodeset quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 xdriver=vesa nomodeset quiet console=tty0 console=ttyS0
+@@ -96 +96 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rescue quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rescue quiet console=tty0 console=ttyS0
+</code></pre></div></div>
+
+<p>No need to make EFI changes because in this case the guest system you are 
+planning to simulate is is BIOS-based, not EFI/UEFI.</p>
+
+<p>Just as a reference, here’s the content of the EFI directory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /mnt/customdvd/EFI/BOOT/
+total 6.0M
+-rwxr--r-- 1 root root 978K Jul 31  2020 BOOTIA32.EFI
+-rwxr--r-- 1 root root 1.2M Jul 31  2020 BOOTX64.EFI
+drwxr-xr-x 2 root root   42 Oct 26  2020 fonts
+-rw-r--r-- 1 root root 1.3K Oct 26  2020 grub.cfg
+-rwxr--r-- 1 root root 745K Jul 28  2020 grubia32.efi
+-rwxr--r-- 1 root root 1.1M Jul 28  2020 grubx64.efi
+-rwxr--r-- 1 root root 898K Jul 31  2020 mmia32.efi
+-rwxr--r-- 1 root root 1.2M Jul 31  2020 mmx64.efi
+-r--r--r-- 1 root root 1.8K Nov  3  2020 TRANS.TBL
+</code></pre></div></div>
+
+<h4 id="create-a-new-bootable-installation-dvd-iso-image">Create a New Bootable Installation DVD ISO Image</h4>
+
+<p>For the CentOS 7 Installation DVD, the label must stay the same.</p>
+
+<p>Use the <code class="language-plaintext highlighter-rouge">isoinfo</code> command to find out the label of the CentOS DVD 
+(an extension named “Volume id”). You can use the same command to find 
+out other extensions too; for example, information about Rock Ridge, 
+Joliet extensions and Eltorito boot information if present.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ isoinfo -d -i \
+ ~/CentOS-7-x86_64-Minimal-2009.iso | wc -l
+29
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ isoinfo -d -i \
+ ~/CentOS-7-x86_64-Minimal-2009.iso | grep "Volume id" 
+Volume id: CentOS 7 x86_64
+
+$ isoinfo -d -i \
+ ~/CentOS-7-x86_64-Minimal-2009.iso | grep Joliet
+Joliet with UCS level 3 found
+
+$ isoinfo -d -i \
+ ~/CentOS-7-x86_64-Minimal-2009.iso | grep prepare
+Data preparer id:
+
+$ isoinfo -d -i \
+~/CentOS-7-x86_64-Minimal-2009.iso | grep Torito
+El Torito VD version 1 found, boot catalog is in sector 606
+</code></pre></div></div>
+
+<p>Alternatively, <code class="language-plaintext highlighter-rouge">blkid(8)</code> also shows the label:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ blkid ~/CentOS-7-x86_64-Minimal-2009.iso
+/home/dusko/CentOS-7-x86_64-Minimal-2009.iso: BLOCK_SIZE="2048" 
+  UUID="2020-11-03-14-55-29-00" LABEL="CentOS 7 x86_64" TYPE="iso9660" 
+  PTUUID="6acc9bba" PTTYPE="dos"
+</code></pre></div></div>
+
+<p>Recreate the DVD ISO image with the customized settings.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ mkisofs \
+ -o /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso \
+ -b isolinux/isolinux.bin \
+ -J \
+ -R \
+ -l \
+ -c isolinux/boot.cat \
+ -no-emul-boot \
+ -boot-load-size 4 \
+ -boot-info-table \
+ -eltorito-alt-boot \
+ -e images/efiboot.img \
+ -no-emul-boot \
+ -graft-points \
+ -input-charset utf-8 \
+ -output-charset utf-8 \
+ -V "CentOS 7 x86_64" \
+ /mnt/customdvd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo chown dusko:dusko /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso
+</code></pre></div></div>
+
+<p>Implant an MD5 checksum in the ISO image.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ implantisomd5 /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso
+</code></pre></div></div>
+
+<p>For systems that suport EFI/UEFI, the next step would be to run 
+the <code class="language-plaintext highlighter-rouge">isohybrid</code> command to make the installation ISO image 
+EFI/UEFI-bootable. (In this case, do <strong>not</strong> run the isohybrid command 
+below because this server supports only BIOS.)</p>
+
+<p>Similarly, if you wanted to create a bootable USB drive (USB flash drive), 
+you would also need to run the <code class="language-plaintext highlighter-rouge">isohybrid</code> command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ isohybrid --uefi \
+ /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso
+</code></pre></div></div>
+
+<p>Check an MD5 checksum implanted by <code class="language-plaintext highlighter-rouge">implantisomd5</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ checkisomd5 \
+ --verbose \
+ /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso
+---- snip ----
+Checking: 100.0%
+
+The media check is complete, the result is: PASS.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd
+
+$ pwd
+/home/dusko
+</code></pre></div></div>
+
+<p>Create an image file for the guest virtual machine.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ truncate --size=291999055872 abnodevm.img
+</code></pre></div></div>
+
+<p>The created image’s format is raw.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qemu-img info abnodevm.img
+image: abnodevm.img
+file format: raw
+virtual size: 272 GiB (291999055872 bytes)
+disk size: 512 B
+</code></pre></div></div>
+
+<p>Optionally, you can convert the raw image to qcow2 format. 
+(Shown here as a reference. <strong>Don’t</strong> do it now.)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qemu-img \ 
+ convert \ 
+ -f raw \
+ -O qcow2 \
+ abnodevm.img \
+ abnodevm.qcow2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qemu-img info abnodevm.qcow2
+image: abnodevm.qcow2
+file format: qcow2
+virtual size: 272 GiB (291999055872 bytes)
+disk size: 16.5 KiB
+cluster_size: 65536
+Format specific information:
+    compat: 1.1
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+</code></pre></div></div>
+
+<p>Some useful options for QEMU’s virtual console:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm -h
+
+---- snip ----
+
+During emulation, the following keys are useful:
+ctrl-alt-f      toggle full screen
+ctrl-alt-n      switch to virtual console 'n'
+ctrl-alt        toggle mouse and keyboard grab
+
+When using -nographic, press 'ctrl-a h' to get some help.
+
+See &lt;https://qemu.org/contribute/report-a-bug&gt; for how to report bugs.
+More information on the QEMU project at &lt;https://qemu.org&gt;.
+
+WARNING: 
+Direct use of qemu-kvm from the command line is not supported by Red Hat.
+
+WARNING: Use libvirt as the stable management interface.
+</code></pre></div></div>
+
+<p>Install CentOS 7.9 on the virtual machine image by using the customized 
+CentOS installation DVD image (in text mode, with output via serial 
+console - in this example it’s the first serial device, ttyS0).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -cdrom /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso \
+ -hda abnodevm.qcow2 \
+ -m 2G \
+ -boot d \
+ -enable-kvm \
+ -nographic
+</code></pre></div></div>
+
+<p>Start the OS install and finish installing CentOS Linux 7.9.</p>
+
+<hr />
+
+<p>After installation:</p>
+
+<p>When you want to just boot from the image file without the installation 
+ISO file (after you have finished installing and now you always want to 
+boot the installed system), you can just remove the <code class="language-plaintext highlighter-rouge">-cdrom</code> option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -hda abnodevm.qcow2 \
+ -m 2G \
+ -enable-kvm \
+ -nographic
+</code></pre></div></div>
+
+<p>Alternatively, you can enable ssh port forwarding (with ‘-net user’, 
+‘-net nic’) when starting the guest VM so this works too:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -cdrom /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso \
+ -hda abnodevm.qcow2 \
+ -m 2G \
+ -boot d \
+ -enable-kvm \
+ -net user,hostfwd=tcp::10022-:22 \
+ -net nic \
+ -nographic
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="create-a-qemu-image-with-serial-text-console-on-ttys1-com2">Create a QEMU Image with Serial Text Console on ttyS1 (COM2)</h3>
+
+<p><strong>Why redirection to ttyS1 (COM2)?:</strong>  The serial console on 
+<strong>COM2</strong> (<strong>ttyS1</strong> in Unix) is required by IBM <strong>MM</strong> (Management Module) 
+<strong>CLI</strong> on IBM BladeCenter HS21 Blade Servers.</p>
+
+<p><em>Details:</em>  <br />
+Out-of-band (OOB) management interface (1) (2) on IBM BladeCenter server 
+architecture is called <strong>MM</strong> (Management Module). 
+On this particular generation of BladeCenter servers, in order 
+for the MM to be able to support SOL (Serial Over LAN) you have to 
+redirect the serial console to <strong>COM2</strong> (<strong>ttyS1</strong> in Unix).</p>
+
+<p>(1): Sometimes called lights-out management (LOM). <br />
+(2): IBM MM (Management Module) interacts with a hardware module 
+(a remote management card) often called BMC (Baseboard Management 
+Controller) installed inside the IBM BladeCenter server chassis
+(that houses multiple blades). The BMC is configured with the 
+network interface controller (NIC) to use the Remote Management 
+Control Protocol (RMCP), a.k.a. IPMI (Intelligent Platform Management 
+Interface).</p>
+
+<p>Download the CentOS 7 DVD ISO image.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wget https://mirror.esecuredata.com/centos/7.9.2009/isos/x86_64/CentOS-7-x86_64-DVD-2009.iso
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ file CentOS-7-x86_64-DVD-2009.iso
+CentOS-7-x86_64-DVD-2009.iso: ISO 9660 CD-ROM filesystem data 
+  (DOS/MBR boot sector) 'CentOS 7 x86_64' (bootable)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wget https://mirror.esecuredata.com/centos/7.9.2009/isos/x86_64/sha256sum.txt
+</code></pre></div></div>
+
+<p>Usually I fold and then indent long lines when showing them in scripts, 
+code and CLI outputs.  In this case (for <code class="language-plaintext highlighter-rouge">sha256sum --check</code>), 
+I’m making an exception.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wc -l sha256sum.txt
+4 sha256sum.txt
+
+$ grep 'CentOS-7-x86_64-DVD-2009.iso' sha256sum.txt
+e33d7b1ea7a9e2f38c8f693215dd85254c3a4fe446f93f563279715b68d07987  CentOS-7-x86_64-DVD-2009.iso
+
+$ grep 'CentOS-7-x86_64-DVD-2009.iso' sha256sum.txt &gt; /tmp/sha256sum.txt
+
+$ mv /tmp/sha256sum.txt ~/sha256sum.txt
+
+$ cat sha256sum.txt
+e33d7b1ea7a9e2f38c8f693215dd85254c3a4fe446f93f563279715b68d07987  CentOS-7-x86_64-DVD-2009.iso
+
+$ sha256sum --check sha256sum.txt
+CentOS-7-x86_64-DVD-2009.iso: OK
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkdir -p /mnt/{dvd,customdvd}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ mount \
+ -t iso9660 \
+ ~/CentOS-7-x86_64-DVD-2009.iso \
+ /mnt/dvd/
+mount: /mnt/dvd: WARNING: device write-protected, mounted read-only.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rsync -a /mnt/dvd/ /mnt/customdvd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ du -chs /mnt/dvd/ /mnt/customdvd/
+4.5G    /mnt/dvd/
+4.5G    /mnt/customdvd
+8.9G    total
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -alh /mnt/customdvd/isolinux/
+total 60M
+drwxr-xr-x 2 root root  198 Nov  2  2020 .
+drwxr-xr-x 8 root root  254 Nov  3  2020 ..
+-r--r--r-- 1 root root 2.0K Nov  3  2020 boot.cat
+-rw-r--r-- 1 root root   84 Oct 26  2020 boot.msg
+-rw-r--r-- 1 root root  281 Oct 26  2020 grub.conf
+-rw-r--r-- 1 root root  53M Oct 26  2020 initrd.img
+-rw-r--r-- 1 root root  24K Nov  3  2020 isolinux.bin
+-rw-r--r-- 1 root root 3.0K Oct 26  2020 isolinux.cfg
+-rw-r--r-- 1 root root 187K Nov  5  2016 memtest
+-rw-r--r-- 1 root root  186 Sep 30  2015 splash.png
+-r--r--r-- 1 root root 2.2K Nov  3  2020 TRANS.TBL
+-rw-r--r-- 1 root root 150K Oct 30  2018 vesamenu.c32
+-rwxr-xr-x 1 root root 6.5M Oct 19  2020 vmlinuz
+</code></pre></div></div>
+
+<p>Delete the line with ‘splash.lss’ from the ‘boot.msg’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wc -l /mnt/customdvd/isolinux/boot.msg 
+5 /mnt/customdvd/isolinux/boot.msg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /mnt/customdvd/isolinux/boot.msg
+
+ 
+splash.lss
+
+ -  Press the 01&lt;ENTER&gt;07 key to begin the installation process.
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo sed -i.bkp '/splash.lss/d' /mnt/customdvd/isolinux/boot.msg 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff \
+ --unified=0 \
+ /mnt/dvd/isolinux/boot.msg \
+ /mnt/customdvd/isolinux/boot.msg
+--- /mnt/dvd/isolinux/boot.msg  2020-10-26 09:25:28.000000000 -0700
++++ /mnt/customdvd/isolinux/boot.msg    2022-03-12 22:45:03.473419287 -0700
+@@ -2 +1,0 @@
+-splash.lss
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wc -l /mnt/customdvd/isolinux/boot.msg
+4 /mnt/customdvd/isolinux/boot.msg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /mnt/customdvd/isolinux/boot.msg
+
+ 
+
+ -  Press the 01&lt;ENTER&gt;07 key to begin the installation process.
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rm -i /mnt/customdvd/isolinux/boot.msg.bkp
+rm: remove regular file '/mnt/customdvd/isolinux/boot.msg.bkp'? y
+</code></pre></div></div>
+
+<p>Remove <em>boot.cat</em>. You’ll regenerate it in later steps.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rm -i /mnt/customdvd/isolinux/boot.cat
+rm: remove regular file '/mnt/customdvd/isolinux/boot.cat'? y
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo vi /mnt/customdvd/isolinux/isolinux.cfg 
+</code></pre></div></div>
+
+<p>Usually I fold and then indent long lines when showing them in scripts, 
+code and CLI outputs. In this case, I’m making an exception.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff \
+ --unified=0 \
+ /mnt/dvd/isolinux/isolinux.cfg \
+ /mnt/customdvd/isolinux/isolinux.cfg
+--- /mnt/dvd/isolinux/isolinux.cfg      2020-10-26 09:25:28.000000000 -0700
++++ /mnt/customdvd/isolinux/isolinux.cfg     2022-03-12 22:46:18.607074016 -0700
+@@ -64 +64 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 quiet console=tty1 console=ttyS1,19200
+@@ -70 +70 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rd.live.check quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rd.live.check quiet console=tty1 console=ttyS1,19200
+@@ -86 +86 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 xdriver=vesa nomodeset quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 xdriver=vesa nomodeset quiet console=tty1 console=ttyS1,19200
+@@ -96 +96 @@
+-  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rescue quiet
++  append initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 rescue quiet console=tty1 console=ttyS1,19200
+</code></pre></div></div>
+
+<p>As noted in the <a href="#create-a-new-bootable-installation-dvd-iso-image">previous step</a>, for the CentOS 7 Installation DVD the label must stay the same.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | wc -l
+29
+
+$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | grep "Volume id"
+Volume id: CentOS 7 x86_64
+
+$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | grep Joliet
+Joliet with UCS level 3 found
+
+$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | grep Rock
+Rock Ridge signatures version 1 found
+
+$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | grep preparer
+Data preparer id:
+
+$ isoinfo -d -i ~/CentOS-7-x86_64-DVD-2009.iso | grep Torito
+El Torito VD version 1 found, boot catalog is in sector 606
+</code></pre></div></div>
+
+<p>Alternatively, <code class="language-plaintext highlighter-rouge">blkid(8)</code> also shows the label:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ blkid ~/CentOS-7-x86_64-DVD-2009.iso
+/home/dusko/CentOS-7-x86_64-DVD-2009.iso: BLOCK_SIZE="2048" 
+  UUID="2020-11-04-11-36-43-00" LABEL="CentOS 7 x86_64" TYPE="iso9660" 
+  PTUUID="6b8b4567" PTTYPE="dos"
+</code></pre></div></div>
+
+<p>Generate an ISO image of the customized DVD.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ mkisofs \
+ -o /tmp/CentOS-7-x86_64-DVD-2009-CUSTOM.iso \
+ -b isolinux/isolinux.bin \
+ -J \
+ -R \
+ -l \
+ -c isolinux/boot.cat \
+ -no-emul-boot \
+ -boot-load-size 4 \
+ -boot-info-table \
+ -eltorito-alt-boot \
+ -e images/efiboot.img \
+ -no-emul-boot \
+ -graft-points \
+ -input-charset utf-8 \
+ -output-charset utf-8 \
+ -V "CentOS 7 x86_64" \
+ /mnt/customdvd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo chown dusko:dusko /tmp/CentOS-7-x86_64-DVD-2009-CUSTOM.iso
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ implantisomd5 /tmp/CentOS-7-x86_64-DVD-2009-CUSTOM.iso
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ checkisomd5 --verbose /tmp/CentOS-7-x86_64-DVD-2009-CUSTOM.iso
+---- snip ----
+The media check is complete, the result is: PASS.
+It is OK to use this media.
+</code></pre></div></div>
+
+<p>Create a raw image of 20 GB in size. Using <strong>seek</strong> option creates 
+a sparse file, which saves space.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dd if=/dev/null of=ttyS1disk4k.img bs=1M seek=20480
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh ttyS1disk4k.img
+-rw-rw-r-- 1 dusko dusko 20G Mar 12 22:47 ttyS1disk4k.img
+</code></pre></div></div>
+
+<p>The image doesn’t have a filesystem yet:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ blkid ttyS1disk4k.img
+</code></pre></div></div>
+
+<p>NOTE  <br />
+For serial on QEMU:</p>
+<blockquote>
+  <p>You should use pseudo-terminals (-serial pty) instead of connecting to 
+“real” char-devices (-chardev tty,…).</p>
+
+  <p>qemu displays the pty /dev/pts/xx which it actually uses.  You can now 
+use this pty as a normal serial port from your host.</p>
+
+  <p>You can repeat this option to get more ptys connected to /dev/ttyS[0-*] 
+on the guest (if you use ‘-serial stdio’, it is /dev/ttyS0 on the guest, 
+the first pty is then /dev/ttyS1). &lt;— Using ‘-serial stdio’ and then
+another ‘-serial pty’ did <strong>not</strong> work in my tests. 
+When I used <code class="language-plaintext highlighter-rouge">-serial stdio -serial pty</code>, 
+qemu complained with this error:</p>
+
+  <p>qemu-kvm: -serial stdio: cannot use stdio by multiple character devices<br />
+qemu-kvm: -serial stdio: could not connect serial device to character 
+                         backend ‘stdio’</p>
+</blockquote>
+
+<p>Reference: <br />
+<a href="https://alpha.frasesdemoda.com/categories-topics-unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea">ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm</a>     <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p>Next step:  install the OS.</p>
+
+<p>Explanation for options in the next command:</p>
+
+<p>The ‘-drive format=raw,file=&lt;image_filename&gt;’ is for a raw image.<br />
+(With -hda &lt;image_filename&gt;, qemu reports the warning below.)</p>
+<blockquote>
+  <p>Image format was not specified for ‘image_filename’ and probing
+guessed raw.  Automatically detecting the format is dangerous for
+raw images, write operations on block 0 will be restricted.
+Specify the ‘raw’ format explicitly to remove the restrictions.</p>
+</blockquote>
+
+<p>The ‘-global ide-hd.physical_block_size=4096’ is to set disk 
+block size to 4K, which is the block size on compute nodes (on the 
+machine for which you are preparing and doing this test).</p>
+
+<p>Specifying the ‘-serial pty ‘option <strong>twice</strong> is needed because the 
+first one is for ttyS0 (COM1) and the second one is for ttyS1 (COM2). 
+Similar to the block size, the second serial device (ttyS1) is required 
+by the server for which this test is performed.</p>
+
+<p>From the man page for <code class="language-plaintext highlighter-rouge">qemu-kvm</code>:</p>
+<blockquote>
+
+  <p>-nographic <br />
+Normally, if QEMU is compiled with graphical window support, it
+displays output such as guest graphics, guest console, and the
+QEMU monitor in a window. With this option, you can totally
+disable graphical output so that QEMU is a simple command line
+application. The emulated serial port is redirected on the console
+and muxed with the monitor (unless redirected elsewhere
+explicitly). Therefore, you can still use QEMU to debug a Linux
+kernel with a serial console.</p>
+
+  <p>Use C-a h for help on switching between the console and monitor.</p>
+</blockquote>
+
+<p>‘-cdrom’: Use file as CD-ROM image. <br />
+‘-m 2G’:  Set guest startup RAM size to 2 gigabytes.<br />
+‘-b d’:   Boot from CD-ROM.</p>
+
+<p>Note that default block size that the <code class="language-plaintext highlighter-rouge">mkfs.xfs</code> uses is 4096 bytes (4k).</p>
+
+<p><strong>[TODO]</strong> <br />
+Would there be any (major) differences if instead of leaving it to the OS 
+installer to create it, you created the filesystem first, with, 
+for example: <code class="language-plaintext highlighter-rouge">mkfs.xfs /&lt;image_name/&gt;</code>, in this case:
+<code class="language-plaintext highlighter-rouge">mkfs.xfs ttyS1disk4k.img</code>?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -cdrom /tmp/CentOS-7-x86_64-DVD-2009-CUSTOM.iso \ 
+ -drive format=raw,file=ttyS1disk4k.img \
+ -global ide-hd.physical_block_size=4096 \
+ -m 2G \
+ -boot d \
+ -enable-kvm \ 
+ -serial pty \
+ -serial pty \
+ -nographic
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QEMU 4.2.0 monitor - type 'help' for more information
+(qemu) char device redirected to /dev/pts/2 (label serial0)
+char device redirected to /dev/pts/3 (label serial1)
+
+(qemu)  
+</code></pre></div></div>
+
+<p>From the QEMU Monitor’s output above, note where qemu
+redirected two char devices. In this case:
+<code class="language-plaintext highlighter-rouge">/dev/pts/2</code> and  <code class="language-plaintext highlighter-rouge">/dev/pts/3</code>.</p>
+
+<p>NOTE: <br />
+To get help in the QEMU prompt (QEMU monitor), press  Ctrl-a h:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C-a h    print this help
+C-a x    exit emulator
+C-a s    save disk data back to file (if -snapshot)
+C-a t    toggle console timestamps
+C-a b    send break (magic sysrq)
+C-a c    switch between console and monitor
+C-a C-a  sends C-a
+</code></pre></div></div>
+
+<p>Open two new shell instances, and start minicom in both of them.</p>
+
+<p><strong>Why two shell and minicom instances?</strong> <br />
+A:  To be sure you will not miss them:</p>
+<ul>
+  <li>Virtual Terminal (VT) login prompts, i.e. those on your VGA screen 
+as exposed in <code class="language-plaintext highlighter-rouge">/dev/tty1</code> (and similar devices).</li>
+  <li>Serial port terminal (including <code class="language-plaintext highlighter-rouge">/dev/ttyS0</code>, <code class="language-plaintext highlighter-rouge">/dev/ttyS1</code>)</li>
+</ul>
+
+<blockquote>
+  <p><strong>tty1</strong> gets special treatment: if you boot into graphical mode, the 
+display manager takes possession of this VT.  If you boot into multi-user 
+(text) mode, a getty is started on it.</p>
+
+  <p>By default systemd will instantiate one serial-getty@.service on the 
+main kernel console, if it is not a virtual terminal.  The kernel console 
+is where the kernel outputs its own log messages and is usually configured 
+on the kernel command line in the boot loader via an argument such as
+<code class="language-plaintext highlighter-rouge">console=ttyS0</code>.  This logic ensures that when the user asks the kernel 
+to redirect its output onto a certain serial terminal, he will automatically 
+also get a login prompt on it as the boot completes.</p>
+</blockquote>
+
+<p>Reference: <br />
+<a href="http://0pointer.de/blog/projects/serial-console.html">systemd for Administrators, Part XVI</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p>In the first new shell, start the first minicom.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ minicom --baudrate=19200 --ptty=/dev/pts/2
+</code></pre></div></div>
+
+<p>The first serial connection (<code class="language-plaintext highlighter-rouge">/dev/pts/2</code>) is the kernel console.
+As per quote above:</p>
+<blockquote>
+  <p>By default systemd will instantiate one serial-getty@.service on the 
+main kernel console, if it is not a virtual terminal.  The kernel console 
+is where the kernel outputs its own log messages and is usually configured 
+on the kernel command line in the boot loader via an argument such as
+<code class="language-plaintext highlighter-rouge">console=ttyS0</code>.  This logic ensures that when the user asks the kernel 
+to redirect its output onto a certain serial terminal, he will automatically 
+also get a login prompt on it as the boot completes.</p>
+</blockquote>
+
+<p>For now (before making changes in the grub configuration), if you are
+fast enough, you might briefly see CentOS Installer boot menu in the first 
+serial console (/dev/pts/2):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   CentOS Linux (3.10.0-1160.el7.x86_64) 7 (Core)
+   CentOS Linux (0-rescue-5003bb903e814f84ad84b479956f01d0) 7 (Core)
+
+
+
+
+   Use the ^ and v keys to change the selection.
+Press 'e' to edit the selected item, or 'c' for a command prompt.
+</code></pre></div></div>
+
+<p>However, in this example you are more interested in the second serial 
+console connections (<code class="language-plaintext highlighter-rouge">/dev/pts/3</code>) because the CentOS 7 Linux 
+Installer output will be displayed in there – In the second new shell, 
+start the second minicom.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ minicom --baudrate=19200 --ptty=/dev/pts/3
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Welcome to minicom 2.7.1
+
+OPTIONS: I18n
+Compiled on Aug 13 2018, 16:41:28.
+Port /dev/ttyS1
+
+Press CTRL-A Z for help on special keys
+</code></pre></div></div>
+
+<p>At the bottom of minicom’s screen:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CTRL-A Z for help | 19200 8N1 | NOR | Minicom 2.7.1 | VT102 | Offline | ttyS1
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> <br />
+You might need to press  Enter  to  refresh the screen in minicom.</p>
+
+<p>Start the OS install and finish installing CentOS.</p>
+
+<p>At the end of installation, the CentOS installer, Anaconda, 
+displays the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[...]
+      Installation complete.  Press return to quit
+
+[anaconda] 1:main* 2:shell  3:log  4:storage-lo&gt; Switch tab: Alt+Tab | Help: F1
+</code></pre></div></div>
+
+<p>Anaconda uses the <strong>tmux</strong> terminal multiplexer to display and control 
+several windows you can use in addition to the main interface.</p>
+
+<p>When you choose text mode installation, you start in virtual console 1 (tmux). 
+The console running tmux has 5 available windows.</p>
+
+<p><strong>NOTE:</strong> The keyboard shortcuts are two-part: first press Ctrl+b, then 
+release both keys, and press the number key for the window you want to use.</p>
+
+<p>Press Ctrl+b 2 to switch to interactive shell prompt with root 
+privileges:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[anaconda root@localhost ~]# 
+</code></pre></div></div>
+
+<p>Power off the system.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[anaconda root@localhost ~]# poweroff
+</code></pre></div></div>
+
+<p>Start the virtual machine.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -drive format=raw,file=ttyS1disk4k.img \
+ -global ide-hd.physical_block_size=4096 \
+ -m 2G \
+ -enable-kvm \
+ -serial pty \
+ -serial pty \
+ -nographic
+</code></pre></div></div>
+
+<p>Log in to the guest virtual machine.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+guestvm login: root
+Password:
+</code></pre></div></div>
+
+<p>You now have the anaconda kickstart configuration file, which you can use 
+as a sample or a reference.</p>
+
+<p>Usually I fold and then indent long lines when showing them in scripts, 
+code and CLI outputs. In this case, I’m making an exception (for lines 
+starting with ‘network  –bootproto’ and with ‘user –groups=wheel’).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /root/anaconda-ks.cfg                                   
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+# Use CDROM installation media
+cdrom
+# Use text mode install
+text
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use=sda
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts=''
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --bootproto=static --device=ens3 --gateway=192.168.80.56 --ip=192.168.80.3 --nameserver=192.168.80.200,192.168.80.210 --netmask=255.255.255.0 --noipv6 --activate
+network  --hostname=guestvm
+
+# Root password
+rootpw --iscrypted $6$SYPpA&lt;string_of_random_characters&gt;
+# System services
+services --enabled="chronyd"
+# Do not configure the X Window System
+skipx
+# System timezone
+timezone America/Vancouver --isUtc
+user --groups=wheel --name=dusko --password=$6$FgrE&lt;string_of_random_characters&gt; --iscrypted --gecos="dusko"
+# System bootloader configuration
+bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=sda
+autopart --type=lvm
+# Partition clearing information
+clearpart --all --initlabel --drives=sda
+
+%packages
+@base
+@core
+@scientific
+chrony
+kexec-tools
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+</code></pre></div></div>
+
+<p>Some other configurations in the guest virtual machine:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/fstab 
+
+#
+# /etc/fstab
+# Created by anaconda on Sun Mar 12 05:48:28 2022
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/centos-root /                       xfs   defaults    0 0
+UUID=d6acae6c-9e23-4721-9180-722091f019d7 /boot xfs   defaults    0 0
+/dev/mapper/centos-swap swap                    swap  defaults    0 0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># df -hT
+Filesystem              Type      Size  Used Avail Use% Mounted on
+devtmpfs                devtmpfs  908M     0  908M   0% /dev
+tmpfs                   tmpfs     919M     0  919M   0% /dev/shm
+tmpfs                   tmpfs     919M  8.5M  911M   1% /run
+tmpfs                   tmpfs     919M     0  919M   0% /sys/fs/cgroup
+/dev/mapper/centos-root xfs        17G  1.5G   16G   9% /
+/dev/sda1               xfs      1014M  153M  862M  16% /boot
+tmpfs                   tmpfs     184M     0  184M   0% /run/user/0
+</code></pre></div></div>
+
+<p>Confirm that both serial devices, COM1 (in *nix: ttyS0) 
+and COM2 (in *nix: ttyS1), are created in the guest VM:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># dmesg | grep tty 
+[  0.000000] Command line: BOOT_IMAGE=/vmlinuz-3.10.0-1160.el7.x86_64 root=/d8
+[  0.000000] Kernel command line: BOOT_IMAGE=/vmlinuz-3.10.0-1160.el7.x86_64 8
+[  0.000000] console [ttyS1] enabled
+[  0.808863] 00:04: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+[  0.832473] 00:05: ttyS1 at I/O 0x2f8 (irq = 3) is a 16550A
+</code></pre></div></div>
+
+<p>Next step is to set up serial terminal in the guest OS.</p>
+
+<h4 id="set-up-a-serial-terminal-and-console-in-centos-7rhel-7">Set Up a Serial Terminal and Console (in CentOS 7/RHEL 7)</h4>
+
+<p>As per Red Hat (https://access.redhat.com/articles/7212):</p>
+<blockquote>
+  <p>It is sometimes helpful to have a serial console for debugging purposes 
+and a serial terminal for headless operation.  A serial console will 
+send all console output to the serial port.  A serial terminal, if 
+properly configured, also lets you log on to the system via the serial 
+port as a remote terminal.  You can set up both or just one.</p>
+
+  <h5 id="about-serial-console-kernel-option-configuration">About Serial Console Kernel Option Configuration</h5>
+
+  <p>First, to get the kernel to output all console messages to the serial 
+port you need to pass the <strong>console=ttyS0</strong> parameter to the kernel at 
+boot time.  This is usually done via the bootloader; we’ll be using 
+GRUB in our examples.</p>
+
+  <p><strong>Note:</strong>  The <strong>primary</strong> console for system output will be the 
+<strong>last</strong> console listed in the kernel parameters. For example:
+<code class="language-plaintext highlighter-rouge">console=tty0 console=ttyS0,115200</code> 
+In this example, the serial console is the primary and the VGA console 
+tty0 is the secondary display.  This means messages from init scripts, 
+boot messages and critical warnings will go to the serial console since 
+it is the primary console,  If init script messages don’t need to be 
+seen on the serial console, it should be made the secondary by swapping 
+the order of the console parameters:
+<code class="language-plaintext highlighter-rouge">console=ttyS0,115200 console=tty0</code></p>
+</blockquote>
+
+<p>Continuing with the setup of the guest virtual machine: you need to 
+configure the system to send the console output to the serial port 
+<strong>ttyS1</strong> at a baud rate of 19200, as well as to send the output to the 
+regular console or “screen” <strong>tty1</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cp -i /etc/default/grub /tmp/grub.original.bkp 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /etc/default/grub
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff \
+ --unified=0 \
+ /tmp/grub.original.bkp \
+ /etc/default/grub
+--- /tmp/grub.original.bkp      2022-03-12 22:46:58.157447335 -0700
++++ /etc/default/grub   2022-03-12 22:48:01.959447335 -0700
+@@ -5,3 +5,4 @@ 
+-GRUB_TERMINAL="serial console"
+-GRUB_SERIAL_COMMAND="serial --unit=1 --speed=19200"
+-GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap console=ttyS1,19200"
++GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS1,19200"                  
++GRUB_TERMINAL="console serial"    
++GRUB_SERIAL_COMMAND="serial --speed=19200 --unit=1 --word=8 --parity=no --stop=1"
++GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap console=tty1 console=ttyS1,19200"
+</code></pre></div></div>
+
+<p>The system that this test guest VM image is for is a BIOS-based server 
+so the <code class="language-plaintext highlighter-rouge">grub2-mkconfig</code> command to update GRUB2 is BIOS-specific:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grub2-mkconfig -o /boot/grub2/grub.cfg
+</code></pre></div></div>
+
+<p>(On UEFI-based machines it would be:
+<code class="language-plaintext highlighter-rouge">grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg</code>)</p>
+
+<p><strong>NOTE:</strong> <br />
+The <strong>main kernel console</strong> is the one listed <strong>first</strong> in
+<code class="language-plaintext highlighter-rouge">/sys/class/tty/console/active</code>, which is the <em>last</em> one 
+listed on the <em>kernel command line</em>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /sys/class/tty/console/active
+ttyS1
+</code></pre></div></div>
+
+<p>(After reboot, the GRUB2 changes will take effect and<br />
+<code class="language-plaintext highlighter-rouge">/sys/class/tty/console/active</code> will show: <code class="language-plaintext highlighter-rouge">tty1 ttyS1</code>)</p>
+
+<p>Configure a serial getty with the needed parameters so that it starts on boot.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cp -i \
+ /usr/lib/systemd/system/serial-getty@.service \
+ /etc/systemd/system/serial-getty@ttyS1.service
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /etc/systemd/system/serial-getty@ttyS1.service
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff \
+ --unified=0 \
+ /usr/lib/systemd/system/serial-getty@.service \
+ /etc/systemd/system/serial-getty@ttyS1.service
+--- /usr/lib/systemd/system/serial-getty@.service    2020-10-01 10:08:50.0000
++++ /etc/systemd/system/serial-getty@ttyS1.service   2022-03-12 22:36:36.5400
+@@ -23 +23 @@
+-ExecStart=-/sbin/agetty --keep-baud 115200,38400,9600 %I $TERM
++ExecStart=-/sbin/agetty --keep-baud 115200,38400,19200,9600 %I $TERM
+</code></pre></div></div>
+
+<p>Create a symlink.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ln -s \
+ /etc/systemd/system/serial-getty@ttyS1.service \
+ /etc/systemd/system/getty.target.wants/
+</code></pre></div></div>
+
+<p>Reload the daemon and start the service.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># systemctl daemon-reload
+# systemctl enable serial-getty@ttyS1.service
+# systemctl start serial-getty@ttyS1.service
+</code></pre></div></div>
+
+<p>This creates a unit file that is specific to serial port ttyS1 so that 
+you can make specific changes to this port and this port only.</p>
+
+<p>Restart the guest virtual machine.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># reboot
+</code></pre></div></div>
+
+<p>If you keep shells with <strong>minicom</strong> connections running, the CentOS 
+boot menu now appears in both shells: the one with minicom connected
+to output of QEMU char device redirected to the first serial 
+device /dev/pts/2 (<code class="language-plaintext highlighter-rouge">minicom --baudrate=19200 --ptty=/dev/pts/2</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   CentOS Linux (3.10.0-1160.el7.x86_64) 7 (Core)
+   CentOS Linux (0-rescue-b8fcd7b7f02249dc9e6a3d2a443a3b92) 7 (Core)
+
+
+   Use the ^ and v keys to change the selection.
+   Press 'e' to edit the selected item, or 'c' for a command prompt.
+The selected entry will be started automatically in 4s.
+</code></pre></div></div>
+
+<p>and the other shell with 
+minicom connected to output of QEMU char device redirected to the second 
+serial device /dev/pts/3 (<code class="language-plaintext highlighter-rouge">minicom --baudrate=19200 --ptty=/dev/pts/3</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   CentOS Linux (3.10.0-1160.el7.x86_64) 7 (Core)
+   CentOS Linux (0-rescue-b8fcd7b7f02249dc9e6a3d2a443a3b92) 7 (Core)
+
+
+   Use the ^ and v keys to change the selection.
+   Press 'e' to edit the selected item, or 'c' for a command prompt.
+The selected entry will be started automatically in 4s.
+</code></pre></div></div>
+
+<p>After the selected boot menu entry starts, output is displayed only 
+in the second separate shell (in this example: <code class="language-plaintext highlighter-rouge">minicom --baudrate=19200 --ptty=/dev/pts/3</code>):</p>
+
+<p>Log in to the guest virtual machine.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+guestvm login: root 
+</code></pre></div></div>
+
+<p>Confirm that the serial getty service has been started 
+and that it’s running.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># systemctl is-enabled serial-getty@ttyS1.service
+enabled
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># systemctl is-active serial-getty@ttyS1.service
+active
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /sys/class/tty/console/active                          
+tty1 ttyS1
+</code></pre></div></div>
+
+<p>When you are done with exploring the guest VM, power it off.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># poweroff
+</code></pre></div></div>
+
+<p>After you have finished installing and setting up the OS in the guest, 
+use the following to start the guest VM again:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -drive format=raw,file=ttyS1disk4k.img \
+ -global ide-hd.physical_block_size=4096 \
+ -m 2G \
+ -enable-kvm \
+ -serial pty \
+ -serial pty \
+ -nographic
+</code></pre></div></div>
+
+<p>Output (which shows the QEMU monitor):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>QEMU 4.2.0 monitor - type 'help' for more information
+(qemu) char device redirected to /dev/pts/2 (label serial0)
+char device redirected to /dev/pts/3 (label serial1)
+
+(qemu)
+</code></pre></div></div>
+
+<p>Then, from a separate shell instance, start <code class="language-plaintext highlighter-rouge">minicom</code> and connect 
+to the serial console that was configured for console redirection.
+In this case it’s the second serial device, ttyS1, redirected by qemu 
+and reported by the QEMU monitor as <code class="language-plaintext highlighter-rouge">/dev/pts/3</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ minicom --baudrate=19200 --ptty=/dev/pts/3
+</code></pre></div></div>
+
+<p>The above command for starting the guest VM can be simplified a bit 
+(no need for ‘-global ide-hd.physical_block_size=4096’), 
+as the filesystem has already been configured with block size of 4K). 
+Also, the ‘-serial null’ disables COM1 (ttyS0), redirects console to 
+serial on COM2 (ttyS1):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \ 
+ -drive format=raw,file=ttyS1disk4k.img \
+ -m 2G \
+ -serial null \
+ -serial pty \
+ -nographic
+
+QEMU 4.2.0 monitor - type 'help' for more information
+(qemu) char device redirected to /dev/pts/0 (label serial1)
+</code></pre></div></div>
+
+<p>Then, connect to the serial console reported by qemu as serial1, 
+in this case reported by the QEMU monitor as <code class="language-plaintext highlighter-rouge">/dev/pts/0</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ minicom --baudrate=19200 --ptty=/dev/pts/0
+</code></pre></div></div>
+
+<hr />
+
+<p>Yet another version of a qemu command for starting a QEMU VM image 
+containing an OS configured to redirect output to second serial text 
+console on <strong>ttyS1 (COM2)</strong> -&gt; Use <em>‘-serial null’</em> to disable 
+COM1 (ttyS0) and the QEMU monitor, and combine that with <em>‘mon:stdio’</em> to 
+redirect output on COM2 (ttyS1) to the QEMU monitor (a.k.a. QEMU console):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -drive format=raw,file=ttyS1disk4k.img \
+ -m 2G \
+ -serial null \
+ -serial mon:stdio \
+ -nographic
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  CentOS Linux (3.10.0-1160.el7.x86_64) 7 (Core)
+  CentOS Linux (0-rescue-5003bb903e814f84ad84b479956f01d0) 7 (Core)
+
+
+
+  Use the ^ and v keys to change the selection.
+Press 'e' to edit the selected item, or 'c' for a command prompt.   
+
+---- snip ----
+
+CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+guestvm login: 
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="appendix">APPENDIX</h3>
+
+<h4 id="connect-serial-output-to-a-tcp-port-in-qemu-backend">Connect Serial Output To a TCP Port in QEMU Backend</h4>
+
+<p>From:   <a href="https://stackoverflow.com/questions/66214257/qemu-connecting-to-specific-guest-uart-device">https://stackoverflow.com/questions/66214257/qemu-connecting-to-specific-guest-uart-device</a></p>
+
+<blockquote>
+  <p>If you pass multiple -serial options to QEMU they will be interpreted 
+as defining what you want to do for UARTs 0, 1, 2, etc. 
+So for example “-serial stdio -serial tcp::4444,server” will send 
+UART 0 to your terminal and connect UART 1 to a TCP server on port 
+4444, which you can then connect to with netcat or similar utility.</p>
+</blockquote>
+
+<p>Here’s an example of starting QEMU with an image of an OS whose serial 
+console is redirected to TCP port 4321:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -drive format=raw,file=ttyS1disk4k.img \
+ -m 2G \
+ -serial pty \
+ -serial tcp::4321,server \
+ -nographic
+
+QEMU 4.2.0 monitor - type 'help' for more information
+(qemu) char device redirected to /dev/pts/0 (label serial0)
+qemu-kvm: -serial tcp::4321,server: info: QEMU waiting for connection on: 
+  disconnected:tcp:0.0.0.0:4321,server
+</code></pre></div></div>
+
+<p>Then, to connect with telnet:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ telnet 127.0.0.1 4321
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+
+guestvm login: root
+Password: WillBeInClearText
+</code></pre></div></div>
+
+<p>Or, to connect with nc (netcat):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ nc 127.0.0.1 4321
+
+CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+
+guestvm login: root
+root
+Password: WillBeInClearText
+</code></pre></div></div>
+
+<h4 id="how-to-get-ssh-access-to-a-qemu-guest">How to Get SSH Access to a QEMU Guest</h4>
+
+<p>Install CentOS 7 Linux VM in QEMU:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -cdrom /tmp/CentOS-7-x86_64-Minimal-2009-CUSTOM.iso \
+ -hda abnodevm.qcow2 \
+ -m 2G \
+ -boot d \
+ -enable-kvm \
+ -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 \
+ -nographic
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> <br />
+This worked when I configured DHCP in the guest VM.</p>
+
+<p>Start the VM.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/libexec/qemu-kvm \
+ -hda abnodevm.qcow2 \
+ -m 2G \
+ -enable-kvm \
+ -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 \
+ -nographic
+</code></pre></div></div>
+
+<p>From another shell instance in the host, connect to the guest VM.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh localhost -p 5555
+</code></pre></div></div>
+
+<hr />
+
+<h4 id="word-soup">Word Soup</h4>
+
+<blockquote>
+  <p>CentOS 7/RHEL 7 installation through serial console, CentOS Installation 
+without VGA Console, How to remote install CentOS/RHEL 7 using a rescue 
+image like GRML, Remote Installation of the FreeBSD Operating System 
+Without a Remote Console, SOL (Serial Over LAN), 
+ipmitool - (IP Management Interface) tool, BMC - a.k.a an IPMI controller</p>
+
+  <p>IBM MM (Management Module), remote management, 
+KVM (Keyboard - Video - Mouse), Virtualization, QEMU emulator, 
+KVM (Kernel-based Virtual Machine)</p>
+
+  <p>qemu&gt; prompt</p>
+
+  <p>SYSLINUX / ISOLINUX / PXELINUX, boot, GRUB (Legacy GRUB), GRUB 2 
+iPXE
+Kickstart
+dd
+guestfish</p>
+
+  <p>xCAT</p>
+
+  <p>bootloader chainloading
+headless VNC
+Ultimate Deployment Applicance</p>
+
+  <p>dmesg
+tty tty0 ttyS0 tty1 ttyS1</p>
+
+</blockquote>
+
+<hr />
+
+<p><strong>REFERENCES:</strong></p>
+
+<p><a href="https://www.privex.io/articles/using-serial-sol-config/">Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml">How to remote install CentOS/RHEL 7 using a rescue image like GRML?</a><br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Out-of-band_management">Out-of-band management</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/IBM_BladeCenter">IBM BladeCenter</a>   <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter">IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM’s out-of-band management implementation)</a>   <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Baseboard_Management_Controller">Baseboard Management Controller, a microcontroller on computer motherboards</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface">Intelligent Platform Management Interface (IPMI)</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><strong>My comment:</strong> HP iLO would be easier but I’m restricted by my environment 
+with (a legacy) IBM MM (Management Module). For example, the website in 
+the link below shows that with the version of iLO from that website it’s 
+possible to mount CD-ROM to http; iLO shows which serial port is active 
+(COM1, COM2,…), etc. <br />
+<a href="http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html">HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/">CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os">QEMU and serial ports on the guest OS</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host">QEMU doesn’t create a second serial port (Ubuntu x86-64 guest and host)</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea">ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm</a><br />
+(Retrieved on Mar 12, 2022)</p>
+<blockquote>
+  <p>The problem is on the host side:</p>
+
+  <p>You should use Pseudo-terminals (-serial pty) instead of 
+connecting to “real” char-devices (-chardev tty,…).</p>
+
+  <p>qemu displays the pty /dev/pts/xx which it actually uses. You can now use 
+this pty as a normal serial port from your host.</p>
+
+  <p>You can repeat this option to get more ptys connected to /dev/ttyS[0-*] on 
+the guest (if you use -serial stdio, it is /dev/ttyS0 on the guest, the 
+first pty is then /dev/ttyS1).</p>
+</blockquote>
+
+<p><a href="http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console">CentOS Installation without VGA Console</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf">IBM BladeCenter - Serial Over LAN (SOL) Setup Guide</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/">Connecting QEMU/KVM virtual machines via serial port</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall">Headless VNC Install Disk</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966">centos_bstick.sh</a><br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://en.wikipedia.org/wiki/QEMU">QEMU - Wikipedia</a><br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to">How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321">How to pass Ctrl-C to the guest when running qemu with -nographic?</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/">Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation – CentOS Documentation</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86">Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html">Making a QEMU disk image bootable with GRUB</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://centosfaq.org/centos/centos7-serial-console-and-flow-control/">CentOS7 – Serial Console And Flow Control</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html">QEMU serial console</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="http://hintshop.ludvig.co.nz/show/centos-text-cd/">Creating a CentOS text-only CD / DVD</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559">Make a custom CentOS-7 or RHEL-7 CD With kicktart File</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://access.redhat.com/solutions/655603">During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”</a>  <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images">Working with ISO Images Red Hat Enterprise Linux 7 | Red Hat Customer Portal</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest">How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://developer.ibm.com/tutorials/l-qemu-development/">Archived | Using QEMU for cross-platform development</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://libera.irclog.whitequark.org/osdev/2021-07-14">#osdev - Operating System Development - IRC</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://access.redhat.com/articles/7212">How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="http://0pointer.de/blog/projects/serial-console.html">systemd for Administrators, Part XVI</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<p><a href="https://peterpap.net/index.php/Sample_Kickstart_Configuration_file">Sample Kickstart Configuration file</a> <br />
+(Retrieved on Mar 12, 2022)</p>
+
+<hr />
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8</a>
+                  
+                    (Categories: <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/linux">linux</a>, <a href="/category/networking">networking</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/perl">perl</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html">Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">&laquo; How to Connect to Xorg in Linux Guest from Bhyve</a>
+  
+  
+    <a class="next" href="/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU";
+    var disqus_title = "Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

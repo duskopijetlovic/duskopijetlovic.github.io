@@ -1,0 +1,3433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10 - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10" />
+    <meta name="keywords" content="Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10, Dusko Pijetlovic, freebsd, dotfiles, zfs" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/freebsd/dotfiles/zfs/2022/01/01/freebsd-new-machine-setup.html" property="og:url">
+    
+
+    
+      <meta content="2022-01-01T08:03:41-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="freebsd" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/freebsd/dotfiles/zfs/2022/01/01/freebsd-new-machine-setup.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10</h1>
+</header>
+
+<span class="time">01 Jan 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/freebsd">freebsd</a>, <a href="/category/dotfiles">dotfiles</a>, <a href="/category/zfs">zfs</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>Hardware and operating systems:</p>
+
+<p>Laptop: <a href="https://www.lenovo.com/us/en/p/laptops/thinkpad/thinkpadx/thinkpad-x280/22tp2tx2800">Lenovo ThinkPad X280 - Ultraportable 12.5’’ Business Laptop</a>   <br />
+Disk:  1 TB NVMe SSD   <a href="https://www.westerndigital.com/products/internal-drives/pc-sn730-ssd#SDBQNTY-1TOO">WDC PC SN730 SDBQNTY-1T00-1001 - Form Factor: M.2 2280 M-S3</a>  <br />
+FreeBSD 13.0 <br />
+Windows 10 Professional</p>
+
+<p><strong>Note:</strong> <br />
+In code excerpts and examples, the long lines are folded and then 
+indented to make sure they fit the page.</p>
+
+<hr />
+
+<p>Start with a pre-installed Windows 10 that’s already on the 
+machine.  In this case, I wanted to start from a clean slate 
+so I used the Lenovo factory recovery USB key to reformat the 
+hard drive and reinstall Windows 10 Pro.  <a href="#footnotes">¹</a></p>
+
+<hr />
+
+<p>Some of the disk’s 1 TB capacity is used for formatting and 
+other functions and is not available for data storage. 
+Windows reported that the C: volume’s capacity is 953 GB.</p>
+
+<p>Log into Windows, and shrink the C: volume (Windows NTFS partition) to 
+get some free space.</p>
+
+<p>After shrinking the C: volume, the disk is split like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Reported by Windows Disk Management: 
+Disk 0, Type: Basic, Size: 953.85 GB
+WDC PC SN730 SDBQNTY-1T00-1001    
+Device type:  Disk drives    
+Location:     Location 4 (Bus Number 0, Target Id 0, LUN 0)    
+
++----------------------+--------+-----------+---------------+
+| Volume               | File   | Capacity  | Partition     |
+|                      | System |           | Type          |
++----------------------+--------+-----------+---------------+
+| (Disk 0 partition 1) |        | 260 MB    | EFI           |
++----------------------+--------+-----------+---------------+
+| (Disk 0 partition 4) |        | 1000 MB   | ms-recovery   |
++----------------------+--------+-----------+---------------+
+| Windows (C:)         |  NTFS  | 220.20 GB | ms-basic-data |
++----------------------+--------+-----------+---------------+
+| Unallocated          |        | 732.42 GB | - free -      |
++----------------------+--------+-----------+---------------+
+</code></pre></div></div>
+
+<p>Now you have free space so you can boot up with FreeBSD installer 
+and install FreeBSD in that space.</p>
+
+<p>Download FreeBSD CD ISO installer image for the amd64 architecture.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch \
+https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/13.0/FreeBSD-13.0-RELEASE-amd64-disc1.iso
+</code></pre></div></div>
+
+<p>Insert a USB flash drive into an available USB slot on your workstation.</p>
+
+<p>You can use <a href="https://www.nomadbsd.org/">NomadBSD</a> for writing the FreeBSD 
+installer image on the USB flash drive.</p>
+
+<p>NomadBSD is a FreeBSD-derived operating system distribution.</p>
+<blockquote>
+  <p>It’s a persistent live system for USB flash drives.  Together with 
+automatic hardware detection and setup, it is configured to be used 
+as a desktop system that works out of the box, but can also be used 
+for data recovery, for educational purposes, or to test FreeBSD’s 
+hardware compatibility.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% dmesg | tail
+umass1 on uhub2
+umass1: &lt;Lexar USB Flash Drive, class 0/0, rev 2.00/11.00, addr 3&gt; on usbus1
+umass1:  SCSI over Bulk-Only; quirks = 0x8100
+umass1:6:1: Attached to scbus6
+da1 at umass-sim1 bus 1 scbus6 target 0 lun 0
+da1: &lt;Lexar USB Flash Drive 1100&gt; Removable Direct Access SPC-2 SCSI device
+da1: Serial Number AA3ZKR4IVHT7LBGW
+da1: 40.000MB/s transfers
+da1: 15263MB (31258624 512 byte sectors)
+da1: quirks=0x2&lt;NO_6_BYTE&gt;
+</code></pre></div></div>
+
+<p>Create the FreeBSD installer USB stick.<br />
+Write the <strong>.iso</strong> file to the inserted USB thumb drive with <code class="language-plaintext highlighter-rouge">dd(1)</code> command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo dd if=FreeBSD-13.0-RELEASE-amd64-disc1.iso of=/dev/da1 bs=1M conv=sync
+</code></pre></div></div>
+
+<p>Remove the installer USB stick.</p>
+
+<p>You might need to adjust the BIOS configuration on the computer where 
+you are installing FreeBSD to boot from the FreeBSD installer USB stick. 
+Insert the installer USB stick into an available USB slot on the computer 
+where you are installing FreeBSD.</p>
+
+<p>Follow the prompts as per the FreeBSD Handbook’s instructions.  <a href="#footnotes">²</a></p>
+
+<p>The FreeBSD Boot Loader Menu similar to the following is displayed.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   ______               ____   _____ _____
+  |  ____|             |  _ \ / ____|  __ \
+  | |___ _ __ ___  ___ | |_) | (___ | |  | |
+  |  ___| '__/ _ \/ _ \|  _ &lt; \___ \| |  | |
+  | |   | | |  __/  __/| |_) |____) | |__| |
+  | |   | | |    |    ||     |      |      |
+  |_|   |_|  \___|\___||____/|_____/|_____/
+                                                 ```                        `
+ +-----------Welcome to FreeBSD------------+    s` `.....---.......--.```   -/
+ |                                         |    +o   .--`         /y:`      +.
+ |  1. Boot Multi user [Enter]             |     yo`:.            :o      `+-
+ |  2. Boot Single user                    |      y/               -/`   -o/
+ |  3. Escape to loader prompt             |     .-                  ::/sy+:.
+ |  4. Reboot                              |     /                     `--  /
+ |                                         |    `:                          :`
+ |  Options:                               |    `:                          :`
+ |  5. Kernel: default/kernel (1 of 1)     |     /                          /
+ |  6. Boot Options                        |     .-                        -.
+ |                                         |      --                      -.
+ |                                         |       `:`                  `:`
+ |                                         |         .--             `--.
+ +-----------------------------------------+            .---.....----.
+
+   Autoboot in 9 seconds, hit [Enter] to boot or any other key to stop
+</code></pre></div></div>
+
+<p>In the FreeBSD Boot Loader Menu, select 1. Boot Multi User [Enter].</p>
+
+<p><a href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-start">Tip - FreeBSD Handbook</a>:</p>
+<blockquote>
+  <p>To review the boot messages, including the hardware device probe, 
+press the upper- or lower-case <strong>S</strong> and then <strong>Enter</strong> to access a shell. 
+At the shell prompt, type more <code class="language-plaintext highlighter-rouge">/var/run/dmesg.boot</code> and use the space 
+bar to scroll through the messages.  When finished, type <code class="language-plaintext highlighter-rouge">exit</code> to 
+return to the welcome menu.</p>
+</blockquote>
+
+<p>For details, see the FreeBSD Handbook instructions:</p>
+
+<p><a href="https://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/bsdinstall-start.html">2.4.4. FreeBSD Boot Menu - Chapter 2. Installing FreeBSD</a></p>
+
+<p>Once the boot is complete, the ``Welcome Menu’’ is displayed.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Welcome
+Welcome to FreeBSD! Would you
+like to begin an installation
+or use the live CD?
+
+&lt;Install&gt; &lt; Shell &gt; &lt;Live CD&gt;
+</code></pre></div></div>
+
+<p>Choose <code class="language-plaintext highlighter-rouge">Shell</code>.  (When finished, you can type <code class="language-plaintext highlighter-rouge">exit</code> to return 
+to the installer and continue installation, or to restart the system.)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd /tmp
+</code></pre></div></div>
+
+<p>If you would like to have a log of everything printed on your terminal 
+during FreeBSD installation, start the <code class="language-plaintext highlighter-rouge">script(1)</code> utility.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># script
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkdir /tmp/etc /tmp/root
+# mount_unionfs /tmp/etc /etc
+# mount_unionfs /tmp/root /root
+# printf %s\\n 'PermitRootLogin yes' &gt;&gt; /etc/ssh/sshd_config
+# passwd
+# service sshd onestart
+</code></pre></div></div>
+
+<p>Add three FreeBSD slices (called partitions in other operating systems). <br />
+The third partition is a ZFS slice, occupying the rest of the available 
+free disk space.</p>
+
+<p>Label all three partitions with <strong>GPT Labels</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># gpart add -a 4k -l swap0 -s 1G -t freebsd-swap nvd0
+# gpart add -a 4k -l swap1 -s 4G -t freebsd-swap nvd0
+# gpart add -a 4k -l zfs0 -t freebsd-zfs nvd0
+</code></pre></div></div>
+
+<p>Explanation:<br />
+<code class="language-plaintext highlighter-rouge">-a 4k</code>:                align a partition on 4KB boundaries<br />
+<code class="language-plaintext highlighter-rouge">-l &lt;label_name&gt;</code>:      create the label attached to the partition &lt;label_name&gt;<br />
+<code class="language-plaintext highlighter-rouge">-s &lt;partition_size&gt;</code>:  create a partition of size &lt;partition_size&gt;<br />
+<code class="language-plaintext highlighter-rouge">-t &lt;partition_type&gt;</code>:  create the partition type of &lt;partition_type&gt; <br />
+(List of partition types is included in the man page for <code class="language-plaintext highlighter-rouge">gpart(8)</code>)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># gpart show
+=&gt;        34  2000409197  nvd0  GPT  (954G)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   461793280     3  ms-basic-data  (220G)
+   462360576     2097152     5  freebsd-swap  (1.0G)
+   464457728     8388608     6  freebsd-swap  (4.0G)
+   472846336  1525514240     7  freebsd-zfs  (727G)
+  1998360576     2048000     4  ms-recovery  (1.0G)
+  2000408576         655        - free -  (328K)
+</code></pre></div></div>
+
+<p>Load the zfs module, create a ZFS pool, and export it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># kldload zfs
+# sysctl vfs.zfs.min_auto_ashift=12
+# mkdir /tmp/zroot
+# zpool create -f -o altroot=/tmp/zroot -O compress=lz4 -O atime=off -m none zroot /dev/gpt/zfs0
+# zpool export zroot
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  <br />
+To force ZFS to choose 4K disk blocks when creating zpools, set the 
+tunable <code class="language-plaintext highlighter-rouge">sysctl vfs.zfs.min_auto_ashift</code> to 12.</p>
+
+<p>(If you want to make it permanent, add the following line 
+ to <code class="language-plaintext highlighter-rouge">/etc/sysctl.conf</code> so that any future zpools created on 
+ your system are created with 4K disk blocks):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sysctl vfs.zfs.min_auto_ashift=12
+</code></pre></div></div>
+
+<p>Create ZFS datasets compatible with <strong>BE (Boot Environment)</strong> by placing 
+the root dataset under ROOT.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># zpool import -o altroot=/tmp/zroot zroot
+# zfs create -o mountpoint=none zroot/ROOT
+# zfs create -o mountpoint=/ zroot/ROOT/default
+# zfs create -o mountpoint=/tmp -o exec=on -o setuid=off zroot/tmp
+# zfs create -o mountpoint=/usr -o canmount=off zroot/usr
+# zfs create zroot/usr/home
+# zfs create -o setuid=off zroot/usr/ports
+# zfs create -o mountpoint=/var -o canmount=off zroot/var
+# zfs create -o exec=off -o setuid=off zroot/var/audit
+# zfs create -o exec=off -o setuid=off zroot/usr/src
+# zfs create -o exec=off -o setuid=off zroot/var/crash
+# zfs create -o exec=off -o setuid=off zroot/var/log
+# zfs create -o atime=on zroot/var/mail
+# zfs create -o setuid=off zroot/var/tmp
+# zpool set bootfs=zroot/ROOT/default zroot
+# chmod 1777 /tmp/zroot/tmp
+# chmod 1777 /tmp/zroot/var/tmp
+</code></pre></div></div>
+
+<p>Here you are installing FreeBSD manually so you need to extract a minimum 
+FreeBSD installation, which includes three components:
+<code class="language-plaintext highlighter-rouge">base</code> (Base system), <code class="language-plaintext highlighter-rouge">lib32</code> (32-bit compatibility 
+libraries), <code class="language-plaintext highlighter-rouge">kernel</code> (Kernel).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd /tmp/zroot
+# ln -s usr/home home
+# tar xvJpf /usr/freebsd-dist/base.txz
+# tar xvJpf /usr/freebsd-dist/lib32.txz
+# tar xvJpf /usr/freebsd-dist/kernel.txz
+</code></pre></div></div>
+
+<p>Ensure the ZFS module will be loaded by the loader.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n 'zfs_enable="YES"' &gt;&gt; /tmp/zroot/etc/rc.conf
+# printf %s\\n 'zfs_load="YES"' &gt;&gt; /tmp/zroot/boot/loader.conf
+</code></pre></div></div>
+
+<p>To disable Disk ID labels and GPT GUID (GPT ID) labels,
+add the following two lines in <code class="language-plaintext highlighter-rouge">/boot/loader.conf</code> 
+so that disks are always <code class="language-plaintext highlighter-rouge">gpt/&lt;your_gpt_label_here&gt;</code> 
+and never <code class="language-plaintext highlighter-rouge">DISK-&lt;disk_serial_number_here&gt;</code>.  <a href="#footnotes">³</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n 'kern.geom.label.disk_ident.enable="0"' &gt;&gt; /tmp/zroot/boot/loader.conf
+# printf %s\\n 'kern.geom.label.gptid.enable="0"'  &gt;&gt; /tmp/zroot/boot/loader.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n 'dumpdev="AUTO"' &gt;&gt; /tmp/zroot/etc/rc.conf
+# printf %s\\n 'powerd_enable="YES"' &gt;&gt; /tmp/zroot/etc/rc.conf
+</code></pre></div></div>
+
+<p>Make a note of swap partitions.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf "/dev/gpt/swap0\tnone\tswap\tsw\t0\t0\n" &gt;&gt; /tmp/zroot/etc/fstab
+# printf "/dev/gpt/swap1\tnone\tswap\tsw\t0\t0\n" &gt;&gt; /tmp/zroot/etc/fstab
+</code></pre></div></div>
+
+<p>Set UTC to Yes or No, and select your time zone.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tzsetup -C /tmp/zroot 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chroot /tmp/zroot/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># passwd
+</code></pre></div></div>
+
+<p>Installing the FreeBSD boot manager overwrites the Windows boot code, 
+resulting in an unbootable Windows.  To work around that, install 
+<strong>rEFInd</strong>, an EFI boot manager utility, and configure it for a dual boot 
+with FreeBSD and Windows 10.</p>
+
+<p>Note: <br />
+If the steps outlined below don’t work because you still don’t have 
+network connection, download <strong>rEFInd</strong> on a separate machine and copy 
+it to the system you are installing FreeBSD on.  <a href="#footnotes">⁴</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd /tmp
+# fetch https://iweb.dl.sourceforge.net/project/refind/0.13.2/refind-bin-0.13.2.zip
+# unzip refind-bin-0.13.2.zip 
+# rm refind-bin-0.13.2.zip
+</code></pre></div></div>
+
+<pre><code class="language-`"># mkdir /tmp/efi
+# mount_msdosfs /dev/gpt/EFI%20system%20partition /tmp/efi/
+# cd /tmp/efi/EFI/Boot
+# mv bootx64.efi bootx64-windows-10.efi
+# cp /boot/boot1.efi bootx64-freebsd.efi
+# cp -a /tmp/refind-bin-0.13.2/refind/icons .
+# cp -a /tmp/refind-bin-0.13.2/refind/refind_x64.efi bootx64.efi
+# cp /tmp/refind-bin-0.13.2/refind/refind.conf-sample refind.conf
+</code></pre>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &lt;&lt; EOF &gt;&gt; refind.conf
+
+menuentry "FreeBSD/amd64 -RELEASE" {
+    loader \EFI\Boot\bootx64-freebsd.efi
+    icon \EFI\Boot\icons\os_freebsd.png
+}
+
+menuentry "Windows 10 x64" {
+    loader \EFI\Boot\bootx64-windows-10.efi
+    icon \EFI\Boot\icons\os_win.png
+}
+EOF
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cd
+# reboot
+</code></pre></div></div>
+
+<hr />
+
+<p>First login into FreeBSD after fresh install.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ps $$
+ PID TT  STAT    TIME COMMAND
+1543  0  Ss   0:00.01 /bin/csh -i
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># df -hT
+Filesystem          Type     Size    Used   Avail Capacity  Mounted on
+zroot/ROOT/default  zfs      701G    717M    701G     0%    /
+devfs               devfs    1.0K    1.0K      0B   100%    /dev
+zroot/tmp           zfs      701G    9.6M    701G     0%    /tmp
+zroot/var/log       zfs      701G    140K    701G     0%    /var/log
+zroot/usr/ports     zfs      701G     96K    701G     0%    /usr/ports
+zroot/usr/home      zfs      701G     96K    701G     0%    /usr/home
+zroot/var/crash     zfs      701G     96K    701G     0%    /var/crash
+zroot/var/audit     zfs      701G     96K    701G     0%    /var/audit
+zroot/usr/src       zfs      701G     96K    701G     0%    /usr/src
+zroot/var/mail      zfs      701G     96K    701G     0%    /var/mail
+zroot/var/tmp       zfs      701G     96K    701G     0%    /var/tmp
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># zfs list
+NAME                 USED  AVAIL     REFER  MOUNTPOINT
+zroot                729M   701G       96K  none
+zroot/ROOT           717M   701G       96K  none
+zroot/ROOT/default   717M   701G      717M  /
+zroot/tmp           9.59M   701G     9.59M  /tmp
+zroot/usr            288K   701G       96K  /usr
+zroot/usr/home        96K   701G       96K  /usr/home
+zroot/usr/ports       96K   701G       96K  /usr/ports
+zroot/usr/src         96K   701G       96K  /usr/src
+zroot/var            620K   701G       96K  /var
+zroot/var/audit       96K   701G       96K  /var/audit
+zroot/var/crash       96K   701G       96K  /var/crash
+zroot/var/log        140K   701G      140K  /var/log
+zroot/var/mail        96K   701G       96K  /var/mail
+zroot/var/tmp         96K   701G       96K  /var/tmp
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /boot/loader.conf
+zfs_load="YES"
+kern.geom.label.disk_ident_enable="0"
+kern.geom.label.gptid.enable="0"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/rc.conf
+zfs_enable="YES"
+dumpdev="AUTO"
+powerd_enable="YES"
+</code></pre></div></div>
+
+<p>NOTE:  The hostname has not been set.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># hostname
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># uname -a
+FreeBSD  13.0-RELEASE FreeBSD 13.0-RELEASE #0 
+  releng/13.0-n244733-ea31abc261f: Fri Apr  9 04:24:09 UTC 2021
+  root@releng1.nyi.freebsd.org:/usr/obj/usr/src/amd64.amd64/sys/GENERIC  am
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sysctl -a | grep -i realtek
+dev.ure.0.%desc: Realtek USB 10/100 LAN, class 0/0, rev 3.00/30.00, addr 9
+dev.pcm.1.%desc: Realtek ALC257 (Right Analog Mic)
+dev.pcm.0.%desc: Realtek ALC257 (Analog 2.0+HP/2.0)
+dev.hdaa.0.%desc: Realtek ALC257 Audio Function Group
+dev.hdacc.0.%desc: Realtek ALC257 HDA CODEC
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># man -k Ethernet | grep -i adapter | grep -i realtek
+re, if_re(4) - RealTek 8139C+/8169/816xS/811xS/8168/810xE/8111 PCI/PCIe Ethernet adapter drive
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sysctl -a | grep 'dev.ure.0'
+dev.ure.0.chipver: 5c30
+dev.ure.0.%parent: uhub3
+dev.ure.0.%pnpinfo: vendor=0x0bda product=0x8153 devclass=0x00 
+  devsubclass=0x00 devproto=0x00 sernum="000001" release=0x3000 mode=host 
+  intclass=0xff intsubclass=0xff intprotocol=0x00
+dev.ure.0.%location: bus=0 hubaddr=9 port=1 devaddr=10 interface=0 ugen=ugen0.10
+dev.ure.0.%driver: ure
+dev.ure.0.%desc: Realtek USB 10/100 LAN, class 0/0, rev 3.00/30.00, addr 9
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># service netif stop
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n "nameserver 192.168.1.254" &gt; ure0_resolv.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat ure0_resolv.conf
+nameserver 192.168.1.254
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/resolv.conf
+cat: /etc/resolv.conf: No such file or directory
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># resolvconf -I
+# resolvconf -a ure0 &lt; ure0_resolv.conf
+# resolvconf -u
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/resolv.conf
+# Generated by resolvconf
+nameserver 192.168.1.254
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n 'defaultrouter="192.168.1.254"' &gt;&gt; /etc/rc.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/rc.conf
+zfs_enable="YES"
+dumpdev="AUTO"
+powerd_enable="YES"
+ifconfig_ue0="DHCP"
+defaultrouter="192.168.1.254"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># netstat -rn
+Routing tables
+
+Internet6:
+Destination             Gateway     Flags     Netif Expire
+::/96                   ::1         UGRS        lo0
+::ffff:0.0.0.0/96       ::1         UGRS        lo0
+fe80::/10               ::1         UGRS        lo0
+ff02::/16               ::1         UGRS        lo0
+</code></pre></div></div>
+
+<p>NOTE: 
+Not needed: <code class="language-plaintext highlighter-rouge">route add default 192.168.1.254</code> as with the 
+following <code class="language-plaintext highlighter-rouge">netif</code> restart, it will pick up the default router 
+from <code class="language-plaintext highlighter-rouge">/etc/rc.conf</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># service netif restart ue0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ping -c2 freebsd.org
+PING freebsd.org (96.47.72.84): 56 data bytes
+64 bytes from 96.47.72.84: icmp_seq=0 ttl=56 time=74.684 ms
+64 bytes from 96.47.72.84: icmp_seq=1 ttl=56 time=75.789 ms
+
+--- freebsd.org ping statistics ---
+2 packets transmitted, 2 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 74.684/75.237/75.789/0.553 ms
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /etc/resolv.conf
+# Generated by resolvconf
+nameserver 192.168.1.254
+nameserver 75.153.176.9
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># freebsd-version
+13.0-RELEASE
+
+# freebsd-version -k
+13.0-RELEASE
+
+# freebsd-version -u
+13.0-RELEASE
+
+# freebsd-version -r
+13.0-RELEASE
+
+# uname -a
+FreeBSD  13.0-RELEASE FreeBSD 13.0-RELEASE #0 
+  releng/13.0-n244733-ea31abc261f: Fri Apr  9 04:24:09 UTC 2021
+  root@releng1.nyi.freebsd.org:/usr/obj/usr/src/amd64.amd64/sys/GENERIC  amd64
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># freebsd-update fetch
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># freebsd-update install
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg
+The package management tool is not yet installed on your system.
+Do you want to fetch and install it now? [y/N]: y
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg-static upgrade -f pkg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg upgrade -f
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># freebsd-version
+13.0-RELEASE-p5
+
+# freebsd-version -k
+13.0-RELEASE-p4
+
+# freebsd-version -u
+13.0-RELEASE-p5
+
+# freebsd-version -r
+13.0-RELEASE
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># uname -a
+FreeBSD  13.0-RELEASE FreeBSD 13.0-RELEASE #0 
+  releng/13.0-n244733-ea31abc261f: Fri Apr  9 04:24:09 UTC 2021
+  root@releng1.nyi.freebsd.org:/usr/obj/usr/src/amd64.amd64/sys/GENERIC  amd64
+</code></pre></div></div>
+
+<p>Correct system time.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># date
+Sat Dec 25 21:39:51 PST 2021
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># date 1342
+Sat Dec 25 13:42:00 PST 2021
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># date
+Sat Dec 25 13:42:02 PST 2021
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># shutdown -r now
+</code></pre></div></div>
+
+<p>Add a user and add it to group <code class="language-plaintext highlighter-rouge">wheel</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pw useradd dusko -G wheel -m -s csh
+# passwd dusko
+</code></pre></div></div>
+
+<p>Create a hostname:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n 'hostname="fbsd1.home.arpa"' &gt;&gt; /etc/rc.conf
+</code></pre></div></div>
+
+<p>Install <strong>xorg</strong> metapackage. <a href="#footnotes">⁵</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg info | wc -l
+1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg install xorg  
+</code></pre></div></div>
+
+<p>Messages from two packages mentioned two environment variables 
+(which I chose not to create): Package freetype2 mentioned the environment 
+variable “FREETYPE_PROPERTIES”. Package wayland mentioned “XDG_RUNTIME_DIR” 
+environment variable.</p>
+
+<p><strong>Note:</strong>  <br />
+Your X Windows configuration file is typically /etc/X11/XF86Config
+if you are using XFree86, and /etc/X11/xorg.conf if you are using X.Org.</p>
+
+<p>In FreeBSD:  <code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/local/etc/X11/fontpath.d/
+/usr/local/etc/X11/xinit/
+/usr/local/etc/X11/xorg.conf.d/
+</code></pre></div></div>
+
+<p>To make sure that the freetype module is loaded, add the following line 
+to the “Modules” section of the X Window System configuration file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /usr/local/etc/X11/xorg.conf.d/modules.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /usr/local/etc/X11/xorg.conf.d/modules.conf
+Section "Module"
+    Load "freetype"
+EndSection
+</code></pre></div></div>
+
+<p>For the DejaVu fonts (font family), add the following line to the “Files” 
+section of your X Window System configuration file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /usr/local/etc/X11/xorg.conf.d/fonts.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /usr/local/etc/X11/xorg.conf.d/fonts.conf
+Section "Files"
+    FontPath "/usr/local/share/fonts/dejavu/"
+EndSection
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /usr/local/etc/X11/xorg.conf.d/card.conf 
+</code></pre></div></div>
+
+<p><strong>Note:</strong><br />
+Did not need to add <code class="language-plaintext highlighter-rouge">Option "DPMS"</code> explicitly to enable 
+Display Power Management Signaling extension. 
+(DPMS enables the X server to reduce monitor power consumption 
+when not in use.)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /usr/local/etc/X11/xorg.conf.d/card.conf 
+Section "Device"
+    Identifier "Card0"
+    Driver "modesetting"
+EndSection
+</code></pre></div></div>
+
+<p>Multi-keyboard layout.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /usr/local/etc/X11/xorg.conf.d/keyboard.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /usr/local/etc/X11/xorg.conf.d/keyboard.conf
+Section "InputClass"
+    Identifier "All Keyboards"
+    MatchIsKeyboard "yes"
+    Option "XkbLayout" "us, rs(latinunicode), rs"
+    Option "XkbOptions" "ctrl:nocaps,grp:rctrl_toggle"
+EndSection
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>card.conf     (Did not need to add "DPMS" explicitly)
+fonts.conf
+module.conf
+keyboard.conf
+</code></pre></div></div>
+
+<p>Add your regular user to group <code class="language-plaintext highlighter-rouge">video</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pw usermod -L video -n dusko
+</code></pre></div></div>
+
+<p>Install the metaport of DRM modules for the linuxkpi-based KMS components. 
+Installing <code class="language-plaintext highlighter-rouge">drm-kmod</code> installs three packages: drm-fbsd13-kmod, 
+drm-kmod, gpu-firmware-kmod.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg install drm-kmod
+</code></pre></div></div>
+
+<p>Index the man pages (UNIX manuals), to make keywords available for fast 
+retrieval by apropos(1), whatis(1), and man(1)’s -k option.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># makewhatis
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pkg install sudo
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">visudo(8)</code> to edit the sudoers file (/usr/local/etc/sudoers)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cp -i /usr/local/etc/sudoers /tmp/sudoers.original.bak
+</code></pre></div></div>
+
+<p>Allow members of group wheel to execute any command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># visudo
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff --unified=0 /tmp/sudoers.original.bak /usr/local/etc/sudoers
+--- /tmp/sudoers.original.bak   2021-12-26 21:11:43.646443000 -0800
++++ /usr/local/etc/sudoers      2021-12-26 21:12:41.517985000 -0800
+@@ -90 +90 @@
+-# %wheel ALL=(ALL) ALL
++%wheel ALL=(ALL) ALL
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cp -i /etc/login.conf /tmp/login.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi /etc/login.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff --unified=0 /tmp/login.conf /etc/login.conf
+--- /tmp/login.conf     2021-12-26 21:25:11.745352000 -0800
++++ /etc/login.conf     2021-12-26 21:27:30.345516000 -0800
+@@ -332,0 +333,5 @@
++
++video:\
++       :charset=UTF-8:\
++       :lang=en_CA.UTF-8:\
++       :tc=default:
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cap_mkdb /etc/login.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># shutdown -r now
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install xlsfonts xfontsel xfd xloadimage xv
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install vdesk
+% sudo pkg install slock dmenu
+% sudo pkg install vim-gtk3
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install tea
+</code></pre></div></div>
+
+<p>[TODO]  <br />
+Add links to dotfiles.</p>
+
+<p>Create <code class="language-plaintext highlighter-rouge">~/.xinitrc</code> (xrdb, fonts, beep, xsetroot, xrandr, twm, xclock, xload)  <br />
+Create <code class="language-plaintext highlighter-rouge">~/.twmrc</code> <br />
+Create <code class="language-plaintext highlighter-rouge">~/.Xresources</code> -&gt;  <code class="language-plaintext highlighter-rouge">xrdb ~/.Xresources</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install taskwarrior
+% sudo pkg install remind
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install cheat
+</code></pre></div></div>
+
+<p>In ~/.cshrc:</p>
+
+<p>Modify <code class="language-plaintext highlighter-rouge">~/.cshrc</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">alias man man -P less -IMFXRJj4</code>, prompt, 
+vi key binding, taskrc, history, <br />
+locale -&gt; LC_ALL, LC_CTYPE, LC_MESSAGES, LC_TIME, LANG <br />
+Add the line <code class="language-plaintext highlighter-rouge">setenv  TASKRC  /mnt/usbflashdrive/mydotfiles/.taskrc</code> 
+to ~/.cshrc</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n "$CHEAT_CONFIG_PATH"
+CHEAT_CONFIG_PATH: Undefined variable.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep CHEAT_CONFIG_PATH ~/.cshrc
+setenv CHEAT_CONFIG_PATH /mnt/usbflashdrive/mydotfiles/cheat/conf.yml
+</code></pre></div></div>
+
+<p>Add the line <code class="language-plaintext highlighter-rouge">setenv CHEAT_CONFIG_PATH /mnt/usbflashdrive/mydotfiles/cheat/conf.yml</code>
+to ~/.cshrc</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% vi ~/.cshrc
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep CHEAT_CONFIG_PATH ~/.cshrc
+setenv CHEAT_CONFIG_PATH /mnt/usbflashdrive/mydotfiles/cheat/conf.yml
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% source ~/.cshrc
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n "$CHEAT_CONFIG_PATH"
+/mnt/usbflashdrive/mydotfiles/cheat/conf.yml
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l /mnt/usbflashdrive/mydotfiles/cheat/conf.yml
+      69 /mnt/usbflashdrive/mydotfiles/cheat/conf.yml
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed '/^[[:space:]]*$/d' \
+ /mnt/usbflashdrive/mydotfiles/cheat/conf.yml | grep -v \#
+---
+editor: vim
+colorize: true
+style: monokai
+formatter: terminal16m
+pager: less -FRX
+cheatpaths:
+  - name: community
+    path: /mnt/usbflashdrive/mydotfiles/cheat/cheatsheets/community
+    tags: [ community ]
+    readonly: true
+  - name: personal
+    path: /mnt/usbflashdrive/mydotfiles/cheat/cheatsheets/personal
+    tags: [ personal ]
+    readonly: false
+</code></pre></div></div>
+
+<p>Create the <code class="language-plaintext highlighter-rouge">.taskrc</code> file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l /mnt/usbflashdrive/mydotfiles/.taskrc
+      30 /mnt/usbflashdrive/mydotfiles/.taskrc
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed '/^[[:space:]]*$/d' \
+ /mnt/usbflashdrive/mydotfiles/.taskrc | \
+ grep -v \#
+data.location=/mnt/usbflashdrive/mydotfiles/.task
+</code></pre></div></div>
+
+<p>The related directory, <code class="language-plaintext highlighter-rouge">.task</code> will be created automatically by the 
+takswarrior (note: the binary is named <code class="language-plaintext highlighter-rouge">task</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /mnt/usbflashdrive/mydotfiles/.task
+drwxr-xr-x  3 dusko  dusko  512 Aug  7  2020 /mnt/usbflashdrive/mydotfiles/.task
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /mnt/usbflashdrive/mydotfiles/.task
+total 112
+-rw-r--r--  1 dusko  dusko    34K Aug  7  2020 backlog.data
+-rw-r--r--  1 dusko  dusko    10K Aug  7  2020 completed.data
+drwxr-xr-x  2 dusko  dusko   512B Aug  7  2020 hooks
+-rw-r--r--  1 dusko  dusko   4.9K Aug  7  2020 pending.data
+-rw-r--r--  1 dusko  dusko    49K Aug  7  2020 undo.data
+</code></pre></div></div>
+
+<p>Create crontab.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% crontab -e
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% crontab -l
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+
+40 9 * * * env DISPLAY=:0 /mnt/usbflashdrive/scripts/csh/showtasks.sh 2&gt;&amp;1
+40 9 * * * env DISPLAY=:0 /mnt/usbflashdrive/scripts/csh/remindgxmsgtcsh.sh 2&gt;&amp;1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /mnt/usbflashdrive/scripts/csh/remindgxmsgtcsh.sh
+-rwxr--r--  1 dusko  dusko   1.2K Oct 27 21:26 /mnt/usbflashdrive/scripts/csh/remindgxmsgtcsh.sh
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /mnt/usbflashdrive/scripts/csh/remindgxmsgtcsh.sh
+#!/bin/csh 
+
+remind -c /mnt/usbflashdrive/mydotfiles/.reminders | \
+ xmessage -bg black -fg gold -buttons OK:1 -default OK -file -
+
+remind -c+1 /mnt/usbflashdrive/mydotfiles/.reminders | \
+ mail -s "weekly reminder" dusko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /mnt/usbflashdrive/scripts/csh/showtasks.sh
+-rwxr--r--  1 dusko  dusko   1.0K Aug  5 10:04 /mnt/usbflashdrive/scripts/csh/showtasks.sh
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /mnt/usbflashdrive/scripts/csh/showtasks.sh
+#!/bin/csh
+
+setenv DISPLAY :0
+setenv TASKRC /mnt/usbflashdrive/mydotfiles/.taskrc
+
+/usr/local/bin/xterm -fa gallant -fs 14 \
+ -geometry 150x38+0+0 -hold \
+ -e /bin/csh -c /usr/local/bin/task
+</code></pre></div></div>
+
+<p>Modify <code class="language-plaintext highlighter-rouge">~/.shrc</code>  <br />
+Create <code class="language-plaintext highlighter-rouge">~/.vimrc</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat ~/.vimrc
+set noruler
+set nohlsearch
+set noincsearch
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install firefox
+(some of dependent packages installed:
+adwaita-icon-theme, cairo, cups, dbus, ffmpeg, gtk3, harfbuzz,
+hicolor-icon-theme, lame, libxkbcommon, pango, wayland-protocols)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install chromium
+(some of dependent packages installed:
+consolekit2, flac, dconf, noto-basic, pulseaudio, xdg-utils)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install thunderbird   
+(some of dependent packages installed: gtk2)
+</code></pre></div></div>
+
+<p>Add an LDAP address book. <br />
+Click Address Book button (inside Mail Toolbar, which is underneath Menu Bar). <br />
+File &gt; New &gt; LDAP Directory… &gt; ‘General’ tab</p>
+
+<p>Name:  aNameMeaningfulToYou <br />
+Hostname:  ldap.dept.example.com <br />
+Base DN:  ou=People,dc=dept,dc=example,dc=com  <br />
+Port number: 389 <br />
+Bind DN:  <br />
+[ ]  Use secure connection (SSL)</p>
+
+<p>Click OK</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install libreoffice en_GB-libreoffice
+(some of dependency packages installed:
+apr (Apache Portable Runtime project), alsa-lib, boost-libs,  
+curl, cyrus-sasl, db5, iso-codes, javavmwrapper, openjdk11, openjpeg,
+openldap24-client, poppler, qt5-core, qt5-dbus, qt5-gui,
+twemoji-color-font-ttf, vulkan-headers, xcb-util-image,
+xcb-util-keysyms, twemoji-color-font-ttf;
+fonts: linuxlibertine-g, liberation-fonts-ttf, GentiumBasic,
+crosextrafonts-carlito, crosextrafonts-caladea)
+</code></pre></div></div>
+
+<p>Add “FontPath” sections for fonts installed by LibreOffice.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/fonts.conf
+Section "Files"
+    FontPath "/usr/local/share/fonts/dejavu/"
+EndSection
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/fonts.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/fonts.conf
+Section "Files"
+    FontPath "/usr/local/share/fonts/dejavu/"
+    FontPath "/usr/local/share/fonts/LinLibertineG/"
+    FontPath "/usr/local/share/fonts/Liberation/"
+    FontPath "/usr/local/share/fonts/GentiumBasic/"
+    FontPath "/usr/local/share/fonts/Carlito/"
+    FontPath "/usr/local/share/fonts/Caladea/"
+EndSection
+</code></pre></div></div>
+
+<p>The OpenJDK implementation installed by libreoffice package 
+requires <code class="language-plaintext highlighter-rouge">fdescfs(5)</code> mounted on <code class="language-plaintext highlighter-rouge">/dev/fd</code> 
+and <code class="language-plaintext highlighter-rouge">procfs(5)</code> mounted on <code class="language-plaintext highlighter-rouge">/proc</code>.  You need to add the 
+following two lines in <code class="language-plaintext highlighter-rouge">/etc/fstab</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /etc/fstab
+/dev/gpt/swap0/ none    swap    sw      0       0
+/dev/gpt/swap1/ none    swap    sw      0       0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /etc/fstab
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /etc/fstab
+/dev/gpt/swap0/ none    swap    sw      0       0
+/dev/gpt/swap1/ none    swap    sw      0       0
+fdesc           /dev/fd fdescfs rw      0       0
+proc            /proc   procfs  rw      0       0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install zathura zathura-pdf-poppler zathura-ps
+(some of dependency packages installed:
+ghostscript9-agpl-base, girara, libnotify, tex-kpathsea, tex-synctex)
+</code></pre></div></div>
+
+<p>Message from ghostscript9-agpl-base:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This package installs a script named dvipdf that depends on dvips.
+If you want to use this script you need to install print/tex-dvipsk.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install tex-dvipsk
+(some of dependency packages installed:
+libgd, libpotrace, mpfr, openjpeg15, psutils,
+teckit, tex-dvipsk, tex-ptexenc, tex-web2c, texlive-base,
+texlive-texmf, texlive-tlmgr, xpdfopen, zziplib)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install tex-xetex 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install jmk-x11-fonts
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i /usr/local/etc/X11/xorg.conf.d/fonts.conf /tmp/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/fonts.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xlsfonts | grep -i jmk | wc -l
+       0
+
+% xlsfonts | grep -i neep | wc -l
+       0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xset fp+ /usr/local/share/fonts/jmk-x11-fonts/
+% xset fp rehash
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xlsfonts | grep -i jmk | wc -l
+     144
+
+% xlsfonts | grep -i neep | wc -l
+     136
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /tmp/fonts.conf.bak \
+ /usr/local/etc/X11/xorg.conf.d/fonts.conf
+--- /tmp/fonts.conf.bak 2022-01-02 15:33:23.417190000 -0800
++++ /usr/local/etc/X11/xorg.conf.d/fonts.conf   2022-01-02 15:49:01.359673000 -0800
+@@ -7,0 +8 @@
++    FontPath "/usr/local/share/fonts/jmk-x11-fonts/"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/fonts.conf
+Section "Files"
+    FontPath "/usr/local/share/fonts/dejavu/"
+    FontPath "/usr/local/share/fonts/LinLibertineG/"
+    FontPath "/usr/local/share/fonts/Liberation/"
+    FontPath "/usr/local/share/fonts/GentiumBasic/"
+    FontPath "/usr/local/share/fonts/Carlito/"
+    FontPath "/usr/local/share/fonts/Caladea/"
+    FontPath "/usr/local/share/fonts/jmk-x11-fonts/"
+EndSection
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install tex-luatex
+(also installs the following dependency packages: 
+tex-basic-engines, tex-formats, tex-libtexlua, tex-libtexluajit)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install symbola courier-prime libertinus firacode
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mkdir /tmp/toextract
+
+% cd /tmp/toextract
+
+% fetch https://www.fontsquirrel.com/fonts/download/courier-prime-sans
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh
+total 217
+-rw-r--r--  1 dusko  wheel   204K Jan  9 19:51 courier-prime-sans
+
+% file courier-prime-sans
+courier-prime-sans: Zip archive data, at least v2.0 to extract
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mv courier-prime-sans courier-prime-sans.zip
+% unzip courier-prime-sans.zip
+% rm -i courier-prime-sans.zip
+
+% cd ..
+
+% pwd
+/tmp
+
+% mv toextract courierprimesans
+
+% sudo mv /tmp/courierprimesans /usr/local/share/fonts/
+% sudo chown -R root /usr/local/share/fonts/courierprimesans/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-list | grep -i courier | grep -i prime | grep -i sans
+/usr/local/share/fonts/courierprimesans/Courier Prime Sans Italic.ttf: Courier Prime Sans:style=Italic
+/usr/local/share/fonts/courierprimesans/Courier Prime Sans Bold Italic.ttf: Courier Prime Sans:style=Bold Italic
+/usr/local/share/fonts/courierprimesans/Courier Prime Sans Bold.ttf: Courier Prime Sans:style=Bold
+/usr/local/share/fonts/courierprimesans/Courier Prime Sans.ttf: Courier Prime Sans:style=Regular 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd /usr/local/share/fonts/courierprimesans/
+
+% sudo mkfontdir
+% sudo mkfontscale
+
+% cd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xset fp+ /usr/local/share/fonts/symbola/
+% xset fp+ /usr/local/share/fonts/courier-prime/
+% xset fp+ /usr/local/share/fonts/libertinus/
+% xset fp+ /usr/local/share/fonts/firacode/
+% xset fp+ /usr/local/share/fonts/courierprimesans/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xset fp rehash
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i /usr/local/etc/X11/xorg.conf.d/fonts.conf /tmp/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/fonts.conf 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff \
+ --unified=0 \
+ /tmp/fonts.conf \
+ /usr/local/etc/X11/xorg.conf.d/fonts.conf
+--- /tmp/fonts.conf     2022-01-09 20:33:45.476371000 -0800
++++ /usr/local/etc/X11/xorg.conf.d/fonts.conf   2022-01-09 20:32:32.612990000 -0800
+@@ -8,0 +9,5 @@
++    FontPath "/usr/local/share/fonts/symbola/"
++    FontPath "/usr/local/share/fonts/courier-prime/"
++    FontPath "/usr/local/share/fonts/libertinus/"
++    FontPath "/usr/local/share/fonts/firacode/"
++    FontPath "/usr/local/share/fonts/courierprimesans/"
+</code></pre></div></div>
+
+<p>Install Mutt, a text based MUA (Mail User Agent).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install mutt
+(some of dependency packages installed:
+ gnupg, gpgme, mime-support, pinentry, urlview)
+</code></pre></div></div>
+
+<p>Create the <code class="language-plaintext highlighter-rouge">muttrc</code> configuration file.<br />
+As I keep my <code class="language-plaintext highlighter-rouge">muttrc</code> in a non-home directory, I start <code class="language-plaintext highlighter-rouge">mutt</code> 
+with the <code class="language-plaintext highlighter-rouge">-F</code> option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mutt -F /path/to/my/muttrc
+</code></pre></div></div>
+
+<p>Install <code class="language-plaintext highlighter-rouge">aspell-ispell</code>, Ispell compatibility script for aspell.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install aspell-ispell
+</code></pre></div></div>
+
+<p>Install Aspell English dictionaries.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install en-aspell
+</code></pre></div></div>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install beadm
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install keepassxc openconnect rsync
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install graphviz
+</code></pre></div></div>
+
+<p>Install the netpbm suite, a toolkit for conversion of images between different formats.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install netpbm
+</code></pre></div></div>
+
+<p>In the X Window System, the program xwd (X Window dump) captures the 
+content of a screen or of a window (a.k.a. takes a screenshot). 
+The file generated by xwd can then be read by various other X utilities 
+such as xwud or xv.</p>
+
+<p>To take a screenshot (a.k.a. screen capture) and convert it to png format:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xwd | xwdtopnm | pnmtopng &gt; screenshot.png
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  <br />
+If you get this error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xwd | xwdtopnm | pnmtopng &gt; screenshot.png
+xwdtopnm: can't handle X11 pixmap_depth &gt; 24
+pnmtopng: Error reading first byte of what is expected to be a Netpbm 
+magic number.  Most often, this means your input file is empty
+</code></pre></div></div>
+
+<p>a) try a different program (for example, instead of taking a screenshot 
+of firefox browser, try taking a screenshot of chromium browser) <br />
+b) exit X session, and start it with a different colur depth, for example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% exec startx -- -depth 16
+</code></pre></div></div>
+
+<p>Install wireshark.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install wireshark  
+</code></pre></div></div>
+
+<p>In order for wireshark be able to capture packets when used by unprivileged
+user, /dev/bpf should be in network group and have read-write permissions:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo chgrp network /dev/bpf*
+% sudo chmod g+r /dev/bpf*
+% sudo chmod g+w /dev/bpf*
+</code></pre></div></div>
+
+<p>In order for this to persist across reboots, add the following to
+/etc/devfs.conf:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>own  bpf* root:network
+perm bpf* 0660
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo cp -i /etc/devfs.conf /etc/devfs.conf.original.bak
+</code></pre></div></div>
+
+<p>Install dia, diagram creation program.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install dia 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n | sudo tee -a /etc/devfs.conf
+
+% printf %s\\n 'In order for wireshark be able to capture packets when used by' \
+ | sudo tee -a /etc/devfs.conf
+
+% printf %s\\n 'unprivileged user, /dev/bpf should be in network group and have' \
+ | sudo tee -a /etc/devfs.conf
+
+% printf %s\\n 'read-write permissions.' | sudo tee -a /etc/devfs.conf
+
+% printf %s\\n 'own  bpf* root:network' | sudo tee -a /etc/devfs.conf
+
+% printf %s\\n 'perm bpf* 0660' | sudo tee -a /etc/devfs.conf
+</code></pre></div></div>
+
+<p>Create a Trash directory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mkdir ~/trash
+</code></pre></div></div>
+
+<p>Install git.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install git
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% git config --global user.name "duskopijetlovic"
+% git config --global user.email "username@yourdomain.com"
+</code></pre></div></div>
+
+<p>Clone a git repository that you would like to update.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% git \
+ clone \
+ https://github.com/duskopijetlovic/duskopijetlovic.github.io.git \
+ duskopijetlovic.github.io
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install ruby
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install ruby27-gems
+% sudo pkg install rubygem-irb rubygem-rake rubygem-bundler rubygem-jekyll
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd duskopijetlovic.github.io/
+% bundle exec jekyll serve
+</code></pre></div></div>
+
+<p>Configure <code class="language-plaintext highlighter-rouge">cpan(1)</code> module <a href="#footnotes">⁶</a> so that it can be used by 
+non-root users for installing Perl modules.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cpan -l
+</code></pre></div></div>
+
+<p>In “What approach do you want?  (Choose ‘local::lib’, ‘sudo’ or ‘manual’)”, 
+enter <code class="language-plaintext highlighter-rouge">sudo</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Loading internal logger. Log::Log4perl recommended for better logging
+
+CPAN.pm requires configuration, but most of it can be done automatically.
+If you answer 'no' below, you will enter an interactive dialog for each
+configuration option instead.
+
+Would you like to configure as much as possible automatically? [yes] yes
+
+Warning: You do not have write permission for Perl library directories.
+
+To install modules, you need to configure a local Perl library directory or
+escalate your privileges.  CPAN can help you by bootstrapping the local::lib
+module or by configuring itself to use 'sudo' (if available).  You may also
+resolve this problem manually if you need to customize your setup.
+
+What approach do you want?  (Choose 'local::lib', 'sudo' or 'manual')
+ [local::lib] sudo
+
+---- snip ----
+</code></pre></div></div>
+
+<p>Configuration is written to:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/.cpan/CPAN/MyConfig.pm
+</code></pre></div></div>
+
+<hr />
+
+<p>[TODO]  <br />
+Try dual boot without rEFInd; that is, try it with only UEFI’s boot loader: <br />
+<a href="https://forums.freebsd.org/threads/dual-booting-windows-10-alongside-freebsd-11-0-release.59427/#post-341619">Dual-booting Windows 10 alongside FreeBSD 11.0-RELEASE - FreeBSD Forum</a></p>
+
+<blockquote>
+  <p>Adding yet another boot loader to the chain is (probably) unnecessary 
+if you’re using UEFI.  Most motherboard firmwares already provide 
+a menu for selecting between EFI boot entries.  The only thing that 
+may not be obvious is how to add an entry for FreeBSD to this menu so 
+that it lives alongside Windows Boot Manager.  Now, if you don’t have 
+a fancy boot menu you can access with the press of a key at startup 
+then you’re going to have to look into using something like GRUB 
+or rEFInd.  You might consider using such an option even if you do 
+have a working boot menu provided by your firmware.</p>
+</blockquote>
+
+<hr />
+
+<h4 id="footnotes">Footnotes</h4>
+
+<p>[¹] <a href="https://support.lenovo.com/ca/en/solutions/ht035659">How can I create Recovery Media (DVD or USB), or order Recovery Media (DVD or USB) from Lenovo</a></p>
+
+<p>(Retrieved on Dec 12, 2021)</p>
+
+<blockquote>
+  <p>Recovery Media is DVD or USB media containing a backup of the original 
+factory condition of a computer as configured by Lenovo, or a PC 
+system user.  Recovery Media allows you to reformat the hard drive, 
+reinstall the operating system and reset the system to the original 
+Lenovo factory condition.</p>
+
+  <p>Note:  Before you start the recovery process, back up all the data 
+that you want to keep.  During the recovery, all files on your hard 
+disk drive (HDD), and all system settings will be deleted.</p>
+</blockquote>
+
+<hr />
+
+<p>[²] For more details about FreeBSD boot process, see:</p>
+
+<p><a href="https://docs.freebsd.org/en/books/handbook/boot/#boot-introduction">13.2. FreeBSD Boot Process - FreeBSD Handbook</a></p>
+
+<p><a href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-start">2.4. Starting the Installation - FreeBSD Handbook</a></p>
+
+<p>(Retrieved on Dec 12, 2021)</p>
+
+<blockquote>
+  <p>2.4.1. Booting on i386(TM) and amd64</p>
+
+  <p>These architectures provide a BIOS menu for selecting the boot device. 
+Depending upon the installation media being used, select the CD/DVD or 
+USB device as the first boot device.  Most systems also provide a key 
+for selecting the boot device during startup without having to enter 
+the BIOS.  Typically, the key is either F10, F11, F12, or Escape.</p>
+
+  <p>If the computer loads the existing operating system instead of the 
+FreeBSD installer, then either:</p>
+
+  <ul>
+    <li>The installation media was not inserted early enough in the boot 
+process.  Leave the media inserted and try restarting the computer.</li>
+    <li>The BIOS changes were incorrect or not saved.  Double-check that 
+the right boot device is selected as the first boot device.</li>
+    <li>This system is too old to support booting from the chosen media. 
+In this case, 
+the Plop Boot Manager (<a href="http://www.plop.at/en/bootmanagers.html">http://www.plop.at/en/bootmanagers.html</a>) 
+can be used to boot the system from the selected media.</li>
+  </ul>
+</blockquote>
+
+<p>[³]  Disk Labeling   <br />
+(From “Absolute FreeBSD, 3rd Edition: The Complete Guide to FreeBSD” <br />
+By Michael W. Lucas):</p>
+<ul>
+  <li><strong>Disk ID Labels</strong>: a physical machine offers labels not available 
+on virtual machines.
+    <ul>
+      <li>Viewing Labels <br />
+To view labels, use <code class="language-plaintext highlighter-rouge">glabel(8)</code>, a shortcut for <code class="language-plaintext highlighter-rouge">geom label</code>.</li>
+    </ul>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% glabel list
+Geom name: nvd0p1
+Geom name: nvd0p1
+Providers:
+1. Name: . . . 
+---- snip ----
+Consumers:
+1. Name: nvd0p1
+---- snip ----
+---- snip ----
+
+Geom name: nvd0
+Providers:
+   Name: diskid/DISK-20232D8612345
+   Mediasize: 1024209543168 (954G)
+   Sectorsize: 512
+   Mode: r0w0e0
+   secoffset: 0
+   offset: 0
+   seclength: 2000409264
+   length: 1024209543168
+   index: 0
+Consumers:
+1. Name: nvd0
+   Mediasize: 1024209543168 (954G)
+   Sectorsize: 512
+   Mode: r0w0e0
+</code></pre></div>    </div>
+
+    <p>Names of <code class="language-plaintext highlighter-rouge">Disk ID Label</code> geoms are in the format 
+of <code class="language-plaintext highlighter-rouge">diskid/DISK-&lt;hard_drive_serial_number</code>.  For example:</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /dev/diskid/
+total 0
+crw-r-----  1 root  operator   0xa7 Dec 31 12:42 DISK-20232D8612345
+</code></pre></div>    </div>
+
+    <p>In this case, this partition would be labelled 
+as <code class="language-plaintext highlighter-rouge">diskid/DISK-20232D8612345</code>.</p>
+
+    <p>Disk ID labels are hard to read and write.  To eliminate them, 
+set the tunable <code class="language-plaintext highlighter-rouge">kern.geom.label.disk_ident.enable</code> to 0 
+in <code class="language-plaintext highlighter-rouge">/boot/loader.conf</code>.</p>
+  </li>
+  <li>
+    <p><strong>GPT GUID (GPT ID) Labels</strong>: every GPT partition includes a GUID.  <br />
+FreeBSD can treat the GUID as a label.  Using a GPT ID label makes 
+sense when you have many automatically configured disks, such as 
+large storage arrays.  On smaller systems, the 128-bit GUID is not 
+practical because of its length.   To disable these labels, set the 
+tunable <code class="language-plaintext highlighter-rouge">kern.geom.label.gptid.enable</code> to 0 
+in <code class="language-plaintext highlighter-rouge">/boot/loader.conf</code>.</p>
+  </li>
+  <li>
+    <p><strong>GPT Labels</strong>: GPT partitions let you <em>manually</em> assign a label name 
+within the partition table.  These labels are physically stored on the 
+disk partition. – It’s <strong>recommended</strong> to use GPT labels whenever possible.</p>
+  </li>
+  <li><strong>GEOM Labels</strong>: The <code class="language-plaintext highlighter-rouge">glabel(8)</code> command lets you configure 
+ GEOM labels.   A GEOM label is specific to FreeBSD’s GEOM 
+ infrastructure and appears in <code class="language-plaintext highlighter-rouge">/dev/label</code>.</li>
+</ul>
+
+<hr />
+
+<p>[⁴]  Boot from <a href="https://www.nomadbsd.org/">NomadBSD</a>.</p>
+
+<p>Download rEFInd.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fetch https://iweb.dl.sourceforge.net/project/refind/0.13.2/refind-bin-0.13.2.zip 
+</code></pre></div></div>
+
+<p>Copy the <strong>rEFInd</strong> .zip file to an external USB flash drive.</p>
+
+<p>Reboot.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo shutdown -r now
+</code></pre></div></div>
+
+<p>Return to the machine on which you are installing FreeBSD.</p>
+
+<p>Before mounting the USB flash drive with the <strong>rEFInd</strong>, you have to 
+mount the device file system (<code class="language-plaintext highlighter-rouge">devfs</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mount -t devfs devfs /dev
+</code></pre></div></div>
+
+<p>Now you can mount the USB flash disk as usual.</p>
+
+<p>[⁵]  Packages installed as dependencies of the <strong>xorg</strong> metapackage:</p>
+<blockquote>
+  <p><strong>twm</strong> - Tab Window Manager for the X Window System</p>
+
+  <p><em>Programming languages, compilers, header files, APIs</em>: <br />
+llvm12, glib, lua53, perl5, python38, py38-evdev, py38-pyudev, 
+py38-setuptools, py38-six, pcre, fontconfig, evdev-proto</p>
+
+  <p><em>Utilities, tools, applications</em>: <br />
+pciids, xbitmaps, xcmsdb, xkeyboard-config, gettext-runtime, encodings, 
+indexinfo, expat</p>
+
+  <p><em>xorg-apps (X.org apps metapackage)</em>, consists of the following packages:<br />
+appres, bitmap, iceauth, mkfontscale, sessreg, setxkbmap, smproxy, 
+x11perf, xauth, xbacklight, xcalc, xclock, xconsole, xcursor-themes, 
+xcursorgen, xdpyinfo, xdriinfo, xev, xf86dga, xgamma, xgc, xhost, xinit, 
+xinput, xkbcomp, xkbevd, xkbutils, xkill, xlsatoms, xlsclients, 
+xmessage, xmodmap, xpr, xprop, xrandr, xrdb, xrefresh, xset, xsetroot, 
+xterm, xvinfo, xwd, xwininfo, xwud</p>
+
+  <p><em>Drivers</em>:<br />
+mesa-dri, mesa-libs, 
+<em>xorg-drivers (X.org drivers metapackage)</em>, consists of the following packages: <br />
+xf86-input-keyboard, xf86-input-libinput, xf86-input-mouse, 
+xf86-video-scfb, xf86-video-vesa</p>
+
+  <p><em>Fonts</em>: <br />
+font-adobe-100dpi, font-adobe-75dpi, font-adobe-utopia-100dpi, 
+font-adobe-utopia-75dpi, font-adobe-utopia-type1, font-alias, 
+font-arabic-misc, font-bh-100dpi, font-bh-75dpi, 
+font-bh-lucidatypewriter-100dpi, font-bh-lucidatypewriter-75dpi, 
+font-bh-ttf, font-bh-type1, font-bitstream-100dpi, font-bitstream-75dpi, 
+font-bitstream-type1, font-cronyx-cyrillic, font-cursor-misc, 
+font-daewoo-misc, font-dec-misc, font-ibm-type1, font-isas-misc, 
+font-jis-misc, font-micro-misc, font-misc-cyrillic, font-misc-ethiopic, 
+font-misc-meltho, font-misc-misc, font-mutt-misc, font-schumacher-misc, 
+font-screen-cyrillic, font-sony-misc, font-sun-misc, 
+font-winitzki-cyrillic, font-xfree86-type1, xorg-fonts, 
+xorg-fonts-100dpi, xorg-fonts-75dpi, xorg-fonts-cyrillic, 
+xorg-fonts-miscbitmaps, xorg-fonts-truetype, xorg-fonts-type1, dejavu</p>
+
+  <p><em>Libraries</em>:<br />
+libFS, libICE, libSM, libX11, libXScrnSaver, libXau, libXaw, 
+libXcomposite, libXcursor, libXdamage, libXdmcp, libXext, libXfixes, 
+libXfont, libXfont2, libXft, libXi, libXinerama, libXmu, libXpm, 
+libXrandr, libXrender, libXres, libXt, libXtst, libXv, libXvMC, 
+libXxf86dga, libXxf86vm, libdmx, libdrm, libedit, libepoll-shim, 
+libepoxy, libevdev, libffi, libfontenc, libglvnd, libgudev, libiconv, 
+libinput, liblz4, libmtdev, libpciaccess, libpthread-stubs, libudev-devd, 
+libunwind, libwacom, libxcb, libxkbfile, libxml2, libxshmfence, pixman, 
+png, readline, xcb-util, xcb-util-wm, xtrans, xorg-libraries, freetype2, 
+mpdecimal</p>
+
+  <p>xorg-docs, xorg-server, xorgproto, wayland, zstd</p>
+</blockquote>
+
+<p>[⁶]  What is CPAN? <br />
+The CPAN Frequently Asked Questions - www.cpan.org<br />
+(Retrieved on Jan 1, 2022):</p>
+<blockquote>
+  <p>CPAN is the Comprehensive Perl Archive Network, a large collection of 
+Perl software and documentation. You can begin exploring from either 
+http://www.cpan.org/ or any of the mirrors listed at 
+http://www.cpan.org/SITES.html.</p>
+
+  <p>CPAN is also the name of a Perl module, CPAN.pm, which is used to 
+download and install Perl software from the CPAN archive.  This FAQ 
+covers only a little about the CPAN module and you may find the 
+documentation for it by using perldoc CPAN via the command line or on 
+the web at https://metacpan.org/pod/CPAN.</p>
+</blockquote>
+
+<h4 id="references">References</h4>
+
+<p><a href="https://twitter.com/allanjude/status/1058770910176575488">Once something opens one of da or gpt/name, the other goes away</a></p>
+
+<p><a href="https://gist.github.com/dlangille/be9bea06795fe60579a648863a75f659">Adjusting the drive locations</a></p>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/freebsd/dotfiles/zfs/2022/01/01/freebsd-new-machine-setup.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/sendmail/howto/dotfiles/2022/02/28/sendmail-procmail-recipe-vacation-reply-to-certain-domains.html">Procmail Recipe for Vacation Auto-Reply Only to Senders from Certain Domains</a>
+                  
+                    (Categories: <a href="/category/sendmail">sendmail</a>, <a href="/category/howto">howto</a>, <a href="/category/dotfiles">dotfiles</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/freebsd/rhel/linux/howto/oneliner/sed/cli/terminal/shell/script/2022/02/27/sed-stream-editor.html">sed - Stream Editor</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/rhel">rhel</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/oneliner">oneliner</a>, <a href="/category/sed">sed</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html">Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/2022/02/25/freebsd-java-kroki-diagrams.html">How to Run Kroki on FreeBSD 13 with Java</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/docker/vm/virtualization/howto/diagram/2022/02/24/freebsd-docker-linux-kroki-diagrams.html">How to Run Kroki on FreeBSD 13 with vm-bhyve and Debian GNU/Linux VM</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/docker">docker</a>, <a href="/category/vm">vm</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/c/programming/freebsd/howto/2021/12/13/freebsd-compiling-c.html">&laquo; How to Compile C Programs in FreeBSD</a>
+  
+  
+    <a class="next" href="/freebsd/dotfiles/x11/2022/02/05/xorg-x11-screenshots-xwd-png-netpbm.html">How To Take Screenshots with xwd(1), Pixmap Size (Depth) of 24 and 32 and Convert It To png &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10";
+    var disqus_title = "Set Up a New Machine with UEFI FreeBSD RootOnZFS Dual Boot with Windows 10";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

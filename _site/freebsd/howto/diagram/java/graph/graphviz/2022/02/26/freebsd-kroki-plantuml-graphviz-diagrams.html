@@ -1,0 +1,3458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki" />
+    <meta name="keywords" content="Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki, Dusko Pijetlovic, freebsd, howto, diagram, java, graph, graphviz" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html" property="og:url">
+    
+
+    
+      <meta content="2022-02-26T09:02:33-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="freebsd" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki</h1>
+</header>
+
+<span class="time">26 Feb 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><hr />
+
+<p>OS: FreeBSD 13 <br />
+Shell: csh</p>
+
+<p>Install Kroki or PlantUML as <br />
+per <a href="http://www.duskopijetlovic.com/freebsd/howto/diagram/java/2022/02/26/freebsd-java-kroki-diagrams.html">this</a> <br />
+or <a href="http://www.duskopijetlovic.com/freebsd/docker/vm/virtualization/howto/diagram/2022/02/25/freebsd-docker-linux-kroki-diagrams.html">this</a> <br />
+or <a href="http://www.duskopijetlovic.com/freebsd/graphviz/graph/visualization/diagram/2022/02/09/freebsd-install-plantuml-server-locally.html">this</a>.</p>
+
+<p>Start Kroki and/or PlantUML as explained in the above resources:</p>
+
+<ul>
+  <li>Start Kroki on FreeBSD 13 with Java, with the web server running locally on port 8000:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd /path/to/kroki-server-directory
+
+% java -jar kroki-server.jar
+</code></pre></div></div>
+
+<p>OR:</p>
+
+<ul>
+  <li>Start Kroki on FreeBSD 13 with vm-bhyve and Linux VM, with the web server running locally on port 8080:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% docker -H "tcp://dusko@$DOCKER_HOST":2376 \
+ run -d --name kroki -p 8080:8000 yuzutech/kroki
+</code></pre></div></div>
+
+<p>OR:</p>
+
+<ul>
+  <li>Start PlantUML Server Locally on FreeBSD, with the web server running locally on port 8080:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd /path/to/plantuml-server-directory
+
+% mvn jetty:run
+</code></pre></div></div>
+
+<hr />
+
+<p>NOTE: <br />
+This page assumes that you started Kroki on FreeBSD 13 with Java, 
+with the web server running locally on port 8000.</p>
+
+<hr />
+
+<p>Install HTTPie (pronounced aych-tee-tee-pie), a command line HTTP client.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install py38-httpie
+</code></pre></div></div>
+
+<h3 id="send-a-json-request-to-graphviz-library-running-on-kroki">Send a JSON Request to Graphviz Library Running on Kroki</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% http \ 
+ http://localhost:8000/ \
+ diagram_type='graphviz' \
+ output_format='svg' \
+ diagram_source='digraph G {Hello-&gt;World}' &gt; \
+ hello.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file hello.svg
+hello.svg: SVG Scalable Vector Graphics image
+
+% rsvg-convert hello.svg &gt; hello.png
+
+% file hello.png
+hello.png: PNG image data, 114 x 155, 8-bit/color RGBA, non-interlaced
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv hello.png
+</code></pre></div></div>
+
+<p><img src="/assets/img/hello.png" alt="Displaying a Hello World png image created by Grapvhiz from Kroki" title="Displaying a Hello World png image created by Grapvhiz from Kroki" /></p>
+
+<h3 id="send-a-file-to-plantuml-library-running-on-kroki">Send a File to PlantUML Library Running on Kroki</h3>
+
+<p>For instance, send a DOT file (graph description language - mostly used by Graphviz) named hello.dot:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n 'digraph G {' &gt; hello.dot
+% printf %s\\n '    Hello-&gt;World' &gt;&gt; hello.dot
+% printf %s\\n '}' &gt;&gt; hello.dot 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat hello.dot
+digraph G {
+    Hello-&gt;World
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat hello.dot | \
+ http \
+ http://localhost:8000/plantuml/svg Content-Type:text/plain &gt; \
+ hello.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat hello.dot | \ 
+ http \
+ http://localhost:8000/plantuml/svg Content-Type:text/plain &gt; \
+ hello.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file hello.svg
+hello.svg: SVG Scalable Vector Graphics image
+ 
+% rsvg-convert hello.svg &gt; hello.png
+ 
+% file hello.png
+hello.png: PNG image data, 114 x 155, 8-bit/color RGBA, non-interlaced
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv hello.png
+</code></pre></div></div>
+
+<p><img src="/assets/img/hello-content-type-text-plain.png" alt="Displaying a Hello World png image created by Grapvhiz from Kroki" title="Displaying a Hello World png image created by Grapvhiz from Kroki" /></p>
+
+<h3 id="how-to-create-a-network-diagram-with-graphviz---send-a-file-to-plantuml-library-running-on-kroki">How to Create a Network Diagram with Graphviz - Send a File to PlantUML Library Running on Kroki</h3>
+
+<p><a href="https://github.com/mgriffin/graphviz_network">Mike Griffin’s GitHub repository</a> contains the code used in his <a href="https://mikegriffin.ie/blog/20110308-a-graphviz-tutorial">graphviz tutorial blog post</a>.  <br />
+(Retrieved on Feb 26, 2022)</p>
+
+<p>If you don’t have Git on your system, install it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install git
+</code></pre></div></div>
+
+<p>Clone Mike Griffin’s GitHub repository with his code for Graphviz network diagram.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mkdir ~/scratch
+% cd ~/scratch
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% git clone https://github.com/mgriffin/graphviz_network
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd graphviz_network
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -a
+.          .git        graph.png       Makefile
+..         graph.dot   images          README.md
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i graph.dot graph.dot.bak.1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -i'.BAK.1' -e "/images/s/images\///" graph.dot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff --unified=0 graph.dot.BAK.1 graph.dot
+--- graph.dot.BAK.1     2022-02-26 10:50:49.928865000 -0800
++++ graph.dot   2022-02-26 10:50:54.897383000 -0800
+@@ -19,4 +19,4 @@
+-  sw1 [ label="192.168.1.101" shape=none image="images/gigabitSwitch.png" labelloc=b color="#ffffff"];
+-  sw2 [ label="192.168.1.100" shape=none image="images/gigabitSwitch.png" labelloc=b color="#ffffff"];
+-  sw3 [ label="192.168.1.252" shape=none image="images/gigabitSwitch.png" labelloc=b color="#ffffff"];
+-  sw4 [ label="192.168.1.251" shape=none image="images/gigabitSwitch.png" labelloc=b color="#ffffff"];
++  sw1 [ label="192.168.1.101" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
++  sw2 [ label="192.168.1.100" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
++  sw3 [ label="192.168.1.252" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
++  sw4 [ label="192.168.1.251" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
+@@ -27 +27 @@
+-           image="images/router.png" ,
++           image="router.png" ,
+@@ -31 +31 @@
+-  ap1 [ label="192.168.1.61" shape=none image="images/wireless.png" labelloc=b color="#ffffff"];
++  ap1 [ label="192.168.1.61" shape=none image="wireless.png" labelloc=b color="#ffffff"];
+@@ -33 +33 @@
+-  servers [ label="Servers" shape=none image="images/servers.png" labelloc=b color="#ffffff" ];
++  servers [ label="Servers" shape=none image="servers.png" labelloc=b color="#ffffff" ];
+@@ -35 +35 @@
+-  cloud [ label="The Internet" shape=none, image="images/cloud.png" labelloc=b color="#ffffff"]
++  cloud [ label="The Internet" shape=none, image="cloud.png" labelloc=b color="#ffffff"]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -i'.BAK.2' -e '6a\\
+   imagepath="/usr/home/dusko/scratch/graphviz_network/images"' graph.dot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff --unified=0 graph.dot.BAK.2 graph.dot                                                              --- graph.dot.BAK.2     2022-02-26 10:50:54.897383000 -0800
++++ graph.dot   2022-02-26 10:53:42.544648000 -0800
+@@ -6,0 +7 @@
++  imagepath="/usr/home/dusko/scratch/graphviz_network/images"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat graph.dot
+graph switches {
+  // colours for the lines relate to the line speed
+  // #00bbff is for gigabit
+  // #ffbb00 is for 100Mbit
+  // #bbff00 is for 10 Mbit
+
+  imagepath="/usr/home/dusko/scratch/graphviz_network/images"
+  label="Network Diagram";
+  fontname="arial";
+
+  node [
+    shape=box,
+    fontname="arial",
+    fontsize=8,
+    style=filled,
+    color="#d3edea"
+  ];
+  splines="compound"
+
+  sw1 [ label="192.168.1.101" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
+  sw2 [ label="192.168.1.100" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
+  sw3 [ label="192.168.1.252" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
+  sw4 [ label="192.168.1.251" shape=none image="gigabitSwitch.png" labelloc=b color="#ffffff"];
+
+
+  router [ label= "192.168.1.250",
+           shape=none ,
+           image="router.png" ,
+           labelloc=b ,
+           color="#ffffff" ];
+
+  ap1 [ label="192.168.1.61" shape=none image="wireless.png" labelloc=b color="#ffffff"];
+
+  servers [ label="Servers" shape=none image="servers.png" labelloc=b color="#ffffff" ];
+
+  cloud [ label="The Internet" shape=none, image="cloud.png" labelloc=b color="#ffffff"]
+
+  cloud -- router;
+  router -- sw1 [color="#00bbff"];
+  sw1 -- sw2 [color="#ffbb00"];
+  sw1 -- sw3 [color="#ffbb00"];
+  sw1 -- ap1 [color="#bbff00"];
+  sw2 -- sw4 [color="#ffbb00"];
+  sw3 -- servers [color="#ffbb00"];
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat \
+ graph.dot | \
+ http \
+ http://localhost:8000/plantuml/png \
+ Content-Type:text/plain &gt; \
+ graph.png
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv graph.png
+</code></pre></div></div>
+
+<p><img src="/assets/img/graphviz-plantuml-network-diagram.png" alt="Displaying a png image of a computer network created by Grapvhiz from Kroki" title="Displaying a png image of a computer network created by Grapvhiz from Kroki" /></p>
+
+<h3 id="tip-prevent-labels-overlapping-image-nodes-by-padding">TIP: Prevent Labels Overlapping Image Nodes by Padding</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i images/gigabitSwitch.png .
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv gigabitSwitch.png
+</code></pre></div></div>
+
+<p><img src="/assets/img/gigabitSwitchOriginal.png" alt="Displaying a png image of a Gigabit network switch icon" title="Displaying a png image of a Gigabit network switch icon" /></p>
+
+<p>Press the <strong>right</strong> mouse button for <strong>menu</strong> (keyboard equivalent: <strong>?</strong>).</p>
+
+<p>You can determine how large the selection rectangle is (in image 
+coordinates) by bringing up the xv info window. Select <strong>Image Info</strong> from 
+the <strong>Windows</strong> menu xv controls window or by pressing the <strong>i</strong> key inside 
+any open xv window.</p>
+
+<p>Windows &gt; Image Info &gt; Resolution: 77x78</p>
+
+<p>So, this image’s size is 77x78.</p>
+
+<p><strong>NOTE:</strong><br />
+For the rest of the steps, keep the <strong>Image Info</strong> window <strong>opened</strong>.</p>
+
+<p>Click on <strong>Pad</strong> button.</p>
+
+<p><img src="/assets/img/xv-pad-menu.png" alt="Displaying a PNG image of xv's Pad menu" title="Displaying a PNG image of xv's Pad menu" /></p>
+<ul>
+  <li>It brings up the dialog box shown below
+    <ul>
+      <li>Keyboard Equivalent: <strong>P</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/assets/img/xv-pad-dialog-box.png" alt="Displaying a PNG image of xv's Pad dialog box" title="Displaying a PNG image of xv's Pad dialog box" /></p>
+
+<p>The Pad command lets you add a border of a specified size to the edges 
+of the image. It also lets you resize images to some desired size without 
+manually expanding or cropping the image.</p>
+
+<p>The Pad command operates this way: A new image of the desired size is 
+created, it is filled as specified, and the original image is pasted 
+onto this new image, centered. If the new image is smaller than the 
+original image, the original image will be cropped. Otherwise, the area 
+outside the original image will have the new background.</p>
+
+<p>In the Pad Method menus:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Solid Fill
+Defaults &gt; white
+</code></pre></div></div>
+
+<p>In the Image Size dials:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Change Height by moving the dial from 78 to 98
+</code></pre></div></div>
+
+<p>The image size now: 77x98.</p>
+
+<p><img src="/assets/img/gigabitSwitchPadded.png" alt="Displaying a png image of a padded Gigabit network switch icon" title="Displaying a png image of a padded Gigabit network switch icon" /></p>
+
+<p>Select same width and height as the <strong>original</strong> size; that is: 77x78.</p>
+
+<p>NOTE:<br />
+Selecting in xv:<br />
+Clicking and dragging the left button of the mouse inside the image 
+window will allow you to draw a selection rectangle on the image. 
+If you’re unhappy with the one you’ve drawn, simply click the left button 
+and draw another. If you’d like the rectangle to go away altogether, 
+click the left button and release it without moving the mouse.</p>
+
+<p><img src="/assets/img/gigabitSwitchSelectedOriginalSize.png" alt="Displaying a png image of a Gigabit network switch icon with its original size area selected in xv(1)" title="Displaying a png image of a Gigabit network switch icon with its original size area selected in xv(1)" /></p>
+
+<p>To confirm the selection, from the Windows menu choose Image Info:</p>
+
+<p><img src="/assets/img/gigabitSwitchPaddedDimensions.png" alt="Displaying a png image of xv's Image Info dialog box" title="Displaying a png image of xv's Image Info dialog box" /></p>
+
+<p>Click <strong>Cut</strong> button.</p>
+
+<p><img src="/assets/img/xv-cut-button.png" alt="Displaying a png image of xv's Cut button" title="Displaying a png image of xv's Cut button" /></p>
+
+<p>The image is displayed as:</p>
+
+<p><img src="/assets/img/gigabitSwitchCutOriginalSize.png" alt="Displaying a png image of a Gigabit network switch icon with the selected area cut in xv(1)" title="Displaying a png image image of a Gigabit network switch icon with the selected area cut in xv(1)" /></p>
+
+<p>Move the selected area to the very top of the image.</p>
+
+<p><img src="/assets/img/gigabitSwitchCutMoveUp.png" alt="Displaying a png image of a Gigabit network switch icon with the selected area moved up in xv(1)" title="Displaying a png image of a Gigabit network switch icon with the selected area moved up in xv(1)" /></p>
+
+<p>To confirm, from the Windows menu choose Image Info:</p>
+
+<p><img src="/assets/img/gigabitSwitchPaddedDimensions.png" alt="Displaying a png image of xv's Image Info dialog box after the Gigabit switch icon has been moved up" title="Displaying a png image of xv's Image Info dialog box after the Gigabit switch icon has been moved up" /></p>
+
+<p>Click <strong>Paste</strong> button twice.</p>
+
+<p><img src="/assets/img/xv-paste-button.png" alt="Displaying a png image of xv's Paste button" title="Displaying a png image of xv's Paste button" /></p>
+
+<p>The image currently has a different colour at the bottom:</p>
+
+<p><img src="/assets/img/gigabitSwitchCutMoveUpNewPositionSelected.png" alt="Displaying a png image of Gigabit network switch icon pasted in xv(1)" title="Displaying a png image of Gigabit network switch icon pasted in xv(1)" /></p>
+
+<p>To remove the selection rectangle, click the mouse left button 
+(anywhere in non-selected area) and release it without moving 
+the mouse:</p>
+
+<p><img src="/assets/img/gigabitSwitchCutMoveUpNewPosition.png" alt="Displaying a png image of Gigabit network switch icon with the selected area removed" title="Displaying a png image of Gigabit network switch icon with the selected area removed" /></p>
+
+<p>Double-click the left mouse button inside the image to create a selection 
+rectangle the size of the currently displayed area of the image.</p>
+
+<p><img src="/assets/img/xv-double-click-select-whole-image-area.png" alt="Displaying a png image of Gigabit network switch icon with a selected rectangle the size of the currently displayed area of the image in xv(1)" title="Displaying a png image of Gigabit network switch icon with a selected rectangle the size of the currently displayed area of the image in xv(1)" /></p>
+
+<p>Reduce the height of the selection area:  Hold the &lt;Shift&gt; key down 
+while pressing the up arrow key on your keyboard until the Selection 
+(in the Image Info window) is 77x12.</p>
+
+<p><img src="/assets/img/gigabitSwitchReduceSelection.png" alt="Displaying a png image of Gigabit network switch icon with a reduced selected area in xv(1)" title="Displaying a png image of Gigabit network switch icon with a reduced selected area in xv(1)" /></p>
+
+<p><img src="/assets/img/gigabitSwitchReduceSelectionImageInfo.png" alt="Displaying a png image of xv's Image Info dialog box after a reduced area is selected in the Gigabit network switch icon" title="Displaying a png image of xv's Image Info dialog box after a reduced area is selected in the Gigabit network switch icon" /></p>
+
+<p>Move the selection rectangle by holding the down arrow key until the 
+Selection (in the Image Info window) is: 77x12 rectangle starting at 0,78.</p>
+
+<p><img src="/assets/img/gigabitSwitchReduceSelectionPulledDown.png" alt="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) moved down" title="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) moved down" /></p>
+
+<p><img src="/assets/img/gigabitSwitchReduceSelectionMovedImageInfo.png" alt="Displaying a png image of xv's Image Info dialog box after the selected area in the Gigabit network switch icon has been moved down" title="Displaying a png image of xv's Image Info dialog box after the selected area in the Gigabit network switch icon has been moved down" /></p>
+
+<p>Prepare for clearing the selected area: Set the current color by clicking the middle mouse button anywhere below the selection rectangle. After that, click <strong>Clear</strong> button (keyboard equivalent: <strong>&lt;Meta&gt; d</strong> (often <strong>Alt d</strong> or <strong>Ctrl d</strong>)).</p>
+
+<p><img src="/assets/img/xv-clear-button.png" alt="Displaying a png image of xv's Clear button" title="Displaying a png image of xv's Clear button" /></p>
+
+<p><img src="/assets/img/gigabitSwitchClearedSelected.png" alt="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) cleared" title="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) cleared" /></p>
+
+<p>To remove the selection rectangle, click the mouse left button 
+(anywhere in non-selected area) and release it without moving the mouse:</p>
+
+<p><img src="/assets/img/gigabitSwitchCleared.png" alt="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) removed" title="Displaying a png image of Gigabit network switch icon with the selected area in xv(1) removed" /></p>
+
+<p>Double-click the left mouse button inside the image to create a selection 
+rectangle the size of the currently displayed area of the image.</p>
+
+<p><img src="/assets/img/gigabitSwitchPaddedBottom.png" alt="Displaying a png image of Gigabit network switch icon with a selected rectangle the size of the currently displayed area of the image in xv(1)" title="Displaying a png image of Gigabit network switch icon with a selected rectangle the size of the currently displayed area of the image in xv(1)" /></p>
+
+<p>Reduce the height of the selection area: Hold the &lt;Shift&gt; key down 
+while pressing the up arrow key on your keyboard until the Selection 
+(in the Image Info window) is 77x93.</p>
+
+<p><img src="/assets/img/gigabitSwitchNewSizeImageInfo.png" alt="Displaying a png image of xv's Image Info dialog box after the selected area in the Gigabit network switch icon is the size of the currently displayed area of the image in xv(1)" title="Displaying a png image of xv's Image Info dialog box after the selected area in the Gigabit network switch icon is the size of the currently displayed area of the image in xv(1)" /></p>
+
+<p>Click the Save button.<br />
+In the xv Save window, in the ‘Save file:’ enter the file name (in this case, gigabitSwitch.png).<br />
+Click Ok. <br />
+In the “Save PNG file…” window, click Ok. <br />
+In the confirmation window ‘Overwrite existing file /path/to/gigabitSwitch.png’?, click Ok.<br />
+Click Quit.</p>
+
+<hr />
+
+<p>Repeat for all other nodes that have their labels overlapping them.</p>
+
+<hr />
+
+<p>The resulting (beautified) graph:</p>
+
+<p><img src="/assets/img/graphviz-plantuml-network-diagram-fixed-icons.png" alt="Displaying a png image of a beutified computer network created by Grapvhiz from Kroki&quot;)" title="Displaying a beautified png image of a computer network created by Grapvhiz from Kroki" /></p>
+
+<p><strong>References:</strong>  <br />
+https://kroki.io/ <br />
+https://demo.kroki.io/ <br />
+https://kroki.io/examples.html <br />
+https://docs.kroki.io/kroki/ <br />
+https://docs.kroki.io/kroki/setup/install/ <br />
+https://docs.kroki.io/kroki/setup/manual-install/ <br />
+https://docs.kroki.io/kroki/setup/configuration/ <br />
+https://github.com/yuzutech/kroki <br />
+https://github.com/yuzutech/kroki/tree/main/server <br />
+https://docs.kroki.io/kroki/setup/http-clients/ <br />
+https://docs.kroki.io/kroki/setup/kroki-cli/ <br />
+https://github.com/yuzutech/kroki/tree/main/server <br />
+https://github.com/yuzutech/kroki/releases</p>
+
+<p>https://github.com/httpie</p>
+
+<p><a href="https://github.com/mgriffin/graphviz_network">Mike Griffin’s GitHub repository</a> contains the code used in his <a href="https://mikegriffin.ie/blog/20110308-a-graphviz-tutorial">graphviz tutorial blog post</a></p>
+
+<p><a href="http://www.cisco.com/web/about/ac50/ac47/2.html">Cisco icons </a></p>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8</a>
+                  
+                    (Categories: <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/linux">linux</a>, <a href="/category/networking">networking</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html">Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/freebsd/howto/diagram/java/2022/02/25/freebsd-java-kroki-diagrams.html">&laquo; How to Run Kroki on FreeBSD 13 with Java</a>
+  
+  
+    <a class="next" href="/unix/freebsd/rhel/linux/howto/oneliner/sed/cli/terminal/shell/script/2022/02/27/sed-stream-editor.html">sed - Stream Editor &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki";
+    var disqus_title = "Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

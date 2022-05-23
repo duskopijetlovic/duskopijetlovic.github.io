@@ -1,0 +1,5934 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape" />
+    <meta name="keywords" content="Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape, Dusko Pijetlovic, howto, diagram, graph, graphviz, plaintext, text, tex, latex, visualization, documentation" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html" property="og:url">
+    
+
+    
+      <meta content="2022-03-05T09:12:41-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="howto" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape</h1>
+</header>
+
+<span class="time">05 Mar 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>OS: FreeBSD 13 <br />
+Shell:  csh<br />
+Ghostscript version:  GPL Ghostscript 9.52 (2020-03-19)  <br />
+Inkscape version: 1.1 <br />
+xv version: 3.10a<br />
+zathura version: 0.4.5 (girara 0.3.6, runtime: 0.3.6)<br />
+zathura plugin versions: cb (0.1.8), ps (0.2.6), djvu (0.2.9), pdf-poppler (0.3.0), pdf-mupdf (0.3.5)</p>
+
+<hr />
+
+<p><strong>Assumption</strong>: previously installed Ghostscript, Inkscape, ImageMagick, xv, zathura.</p>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install inkscape
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% inkscape --version
+Inkscape 1.1 (c68e22c387, 2021-05-23)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh datacentrelayout.svg
+-rw-r--r--  1 dusko  dusko   356K Apr  1  2021 datacentrelayout.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file datacentrelayout.svg
+datacentrelayout.svg: SVG Scalable Vector Graphics image
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l datacentrelayout.svg
+    7970 datacentrelayout.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% head datacentrelayout.svg
+&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+&lt;svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% inkscape datacentrelayout.svg
+</code></pre></div></div>
+
+<p>In <strong>Inkscape</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Edit 
+
+Save As &gt; Inkscape SVG (*.svg)  
+Save As &gt; Plain SVG (*.svg)  
+Save As &gt; Encapsulated PostScript (*.eps)
+</code></pre></div></div>
+
+<h2 id="generate-an-svg-or-a-png-with-graphviz-from-kroki-cli">Generate an SVG or a PNG with Graphviz from Kroki-CLI</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat hello.dot
+digraph G {
+  Hello-&gt;World
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ./kroki convert hello.dot --type dot 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file hello.svg
+hello.svg: SVG Scalable Vector Graphics image
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% inkscape hello.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ./kroki convert hello.dot --type dot --format png
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv hello.png
+</code></pre></div></div>
+
+<h2 id="convert-an-svg-image-svg-file-to-ps-or-eps">Convert an SVG Image (SVG File) to PS or EPS</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% rsvg-convert --format ps hello.svg &gt; hello.ps
+% zathura --fork hello.ps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% rsvg-convert --format eps hello.svg &gt; hello.eps
+% zathura --fork hello.eps
+</code></pre></div></div>
+
+<h3 id="convert-png-to-svg">Convert PNG to SVG</h3>
+
+<h4 id="convert-png-to-pnm-first">Convert PNG to PNM First</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% anytopnm server_blades.png &gt; server_blades.pnm
+</code></pre></div></div>
+
+<h4 id="convert-pnm-to-svg">Convert PNM to SVG</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pamtosvg server_blades.pnm &gt; server_blades.svg
+</code></pre></div></div>
+
+<h2 id="getting-information-about-images">Getting Information About Images</h2>
+
+<p><strong>NOTE:</strong><br />
+PDF (and PostScript) <strong>units</strong> are 1/72 inch so 72 = 1 inch, 144 = 2 inches. 
+You need to shift the origin of the page down and left, which is why the 
+values for PageOffset are negative.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DOWN  = -
+LEFT  = -
+UP    = +
+RIGHT = +
+</code></pre></div></div>
+
+<p><strong>References:</strong> <br />
+<a href="https://stackoverflow.com/questions/59101374/ghostscript-crop-certain-area">Ghostscript : Crop Certain Area?</a></p>
+
+<h4 id="using--dsafer--dbatch--dnopause-trio-in-ghostscript">Using -dSAFER -dBATCH -dNOPAUSE Trio in Ghostscript</h4>
+
+<p>It is conventional to call Ghostscript with the ‘-dSAFER -dBATCH -dNOPAUSE’ 
+trio of options when rasterizing to a file.  These suppress interactive 
+prompts and enable some security checks on the file to be run. 
+Please see the <a href="https://ghostscript.com/doc/current/Use.htm">Use documentation</a> 
+for a complete description.</p>
+
+<p>Explanation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The -c parameter allows you to add PostScript code snippets which 
+will be executed when Ghostscript processes the input file.  
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox firewall.eps
+%%BoundingBox: 368 291 383 325
+%%HiResBoundingBox: 368.564333 291.923991 382.598426 324.089990
+</code></pre></div></div>
+
+<p>You can use the <a href="https://ghostscript.com/doc/current/Use.htm#Quiet"><strong>-q</strong></a>
+switch to prevent Ghostscript from writing messages 
+to standard output which become mixed with the intended output stream.</p>
+
+<p>Also, the <strong>-o</strong> option determines output path+filename (and saves usage 
+of -dBATCH -dNOPAUSE).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox firewall.eps
+%%BoundingBox: 368 291 383 325
+%%HiResBoundingBox: 368.564333 291.923991 382.598426 324.089990
+</code></pre></div></div>
+
+<h4 id="getting-image-information-with-imagemagicks-identify">Getting Image Information with ImageMagick’s identify</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% identify firewall.eps
+firewall.eps[0] EPT 15x33 15x33+0+0 16-bit ColorSeparation CMYK 2079B 0.000u 0:00.001
+firewall.eps[1] TIFF 15x34 15x34+0+0 8-bit sRGB 256c 2200B 0.000u 0:00.001
+identify: Invalid TIFF directory; tags are not sorted in ascending order. 
+  `TIFFReadDirectoryCheckOrder' @ warning/tiff.c/TIFFWarnings/959.
+</code></pre></div></div>
+
+<p>NOTE that identify(1) reports the relative dimensions - as opposed to 
+Ghostscript, which reports the image size with dimensions within the page.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Width  = 383 - 368 = 15  
+Height = 325 - 291 = 34
+</code></pre></div></div>
+
+<p>NOTE BoundingBox:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% head firewall.eps
+����,&gt;J&gt;��%!PS-Adobe-3.0 EPSF-3.0
+%%Creator: Adobe Illustrator(R) 8.0
+%%AI8_CreatorVersion: 8.0.1
+%%For: (Gary V Stewart) (Cisco Systems Inc)
+%%Title: (Firewall.eps)
+%%CreationDate: (7/11/2000) (10:17 AM)
+%%BoundingBox: 367 291 384 325
+%%HiResBoundingBox: 367.998 291.4106 383.1011 324.5298
+%%DocumentProcessColors: Black
+%%DocumentSuppliedResources: procset Adobe_level2_AI5 1.2 0
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep Box firewall.eps
+Binary file firewall.eps matches
+ 
+% wc -l firewall.eps
+    3788 firewall.eps
+ 
+% strings firewall.eps | wc -l
+    3229
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% strings firewall.eps | grep Box
+%%BoundingBox: 367 291 384 325
+%%HiResBoundingBox: 367.998 291.4106 383.1011 324.5298
+%AI3_TemplateBox: 306 396 306 396
+%AI3_TileBox: 0 0 592 744
+</code></pre></div></div>
+
+<p>You can extract (crop) the image from the page:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o cropped.eps \
+ -dEPSCrop \
+ -sDEVICE=eps2write \
+ -f firewall.eps
+</code></pre></div></div>
+
+<p>and then Ghostscript reports the relative image size:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox cropped.eps
+%%BoundingBox: 0 0 15 33
+%%HiResBoundingBox: 0.558000 0.522000 14.600390 32.669999
+</code></pre></div></div>
+
+<p>If you want an EPS (PDF) viewer to display the cropped image in actual size:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o scaled.eps \
+ -dEPSCrop \
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/Install {1 1 scale}&gt;&gt; setpagedevice" \
+ -f firewall.eps 
+</code></pre></div></div>
+
+<h4 id="getting-boundingbox-information-with-ghostscript">Getting BoundingBox Information with Ghostscript</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox scaled.eps 
+%%BoundingBox: 0 0 15 33
+%%HiResBoundingBox: 0.558000 0.522000 14.600390 32.669999
+</code></pre></div></div>
+
+<p>NOTE that you often can get the BoundingBox information with ImageMagick’s identify:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% identify scaled.eps
+scaled.eps EPS 15x33 15x33+0+0 16-bit sRGB 3288B 0.000u 0:00.000
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep Box scaled.eps 
+%%BoundingBox: 0 0 15 33
+%%HiResBoundingBox: 0.00 0.00 15.00 33.00
+/MediaBox get aload pop
+/FontBBox 1 index/FontBBox get def
+dup/BBox get aload pop exch 3 index sub exch 2 index sub rectclip
+&lt;&lt;/Type/Page/MediaBox [0 0 15.1 33.12]
+</code></pre></div></div>
+
+<p><strong>References:</strong></p>
+
+<ul>
+  <li><a href="https://stackoverflow.com/questions/39652178/how-to-resize-an-eps-file-using-ghostscript">How to resize an .eps file using ghostscript</a></li>
+</ul>
+
+<h2 id="resizing-images-with-ghostscript-gs">Resizing Images with Ghostscript (gs)</h2>
+
+<p><strong>NOTE:</strong> <br />
+From Rescaling postscript figures<br />
+<a href="http://www.verycomputer.com/18_696ed9f0514c5233_1.htm#p7">http://www.verycomputer.com/18_696ed9f0514c5233_1.htm#p7</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>Sorry to be so negative but I waste a lot of time having
+to deal with seriously broken PS figures. Most of these
+are the direct result of people thinking it is a good
+idea to rotate or rescale their figures using ImageMagick,
+xv, gimp, or some other program that works internally with
+raster images. Please don’t do it!</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh ~/Downloads/images/Cisco-Icons/forunzip/firewall.eps 
+-rw-r--r--  1 dusko  dusko    82K Jul 11  2000 /home/dusko/Downloads/images/Cisco-Icons/forunzip/firewall.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i ~/Downloads/images/Cisco-Icons/forunzip/firewall.eps /tmp/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd /tmp
+</code></pre></div></div>
+
+<p>With <strong>Ghostscript</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox firewall.eps
+%%BoundingBox: 368 291 383 325
+%%HiResBoundingBox: 368.564333 291.923991 382.598426 324.089990
+</code></pre></div></div>
+
+<p>With <strong>ImageMagick</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% identify firewall.eps
+firewall.eps[0] EPT 15x33 15x33+0+0 16-bit ColorSeparation CMYK 2079B 0.000u 0:00.001
+firewall.eps[1] TIFF 15x34 15x34+0+0 8-bit sRGB 256c 2200B 0.000u 0:00.001
+identify: Invalid TIFF directory; tags are not sorted in ascending order. 
+  `TIFFReadDirectoryCheckOrder' @ warning/tiff.c/TIFFWarnings/959.
+</code></pre></div></div>
+
+<h2 id="crop--clip--aka-resize-page-to-size-of-the-image">Crop / Clip / a.k.a. Resize Page to Size of the Image</h2>
+
+<p>Very often this will work.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o scaled.eps \
+ -dEPSCrop \ 
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/Install {1 1 scale}&gt;&gt; setpagedevice" \
+ -f firewall.eps
+</code></pre></div></div>
+
+<p>Confirm:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox scaled.eps 
+%%BoundingBox: 0 0 15 33
+%%HiResBoundingBox: 0.558000 0.522000 14.600390 32.669999
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% identify scaled.eps
+scaled.eps EPS 15x33 15x33+0+0 16-bit sRGB 3288B 0.000u 0:00.000
+</code></pre></div></div>
+
+<p>To resize (e.g.: 70%) as opposed to the actual size ({1 1 scale}):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o scaled.eps -dEPSCrop -sDEVICE=eps2write -c "&lt;&lt;/Install {0.70 0.70 scale}&gt;&gt; setpagedevice" -f firewall.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox scaled.eps 
+%%BoundingBox: 0 0 11 23
+%%HiResBoundingBox: 0.393820 0.360000 10.224000 22.877999
+</code></pre></div></div>
+
+<h2 id="padding-images-with-ghostscript-and-inkscape">Padding Images with Ghostscript and Inkscape</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o padded.eps \
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/PageOffset [0 -1]&gt;&gt; setpagedevice" \
+ -f gigabit_switch_router.eps
+</code></pre></div></div>
+
+<p><strong>Reference:</strong><br />
+<a href="https://stackoverflow.com/questions/35050233/ghostscript-and-page-margin">Ghostscript and page margin</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<p><strong>OR - if needed:</strong></p>
+
+<p>For example, to add a label at the bottom of an image:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox firewall.eps
+%%BoundingBox: 368 291 383 325
+%%HiResBoundingBox: 368.564333 291.923991 382.598426 324.089990
+
+% identify firewall.eps
+firewall.eps[0] EPT 15x33 15x33+0+0 16-bit ColorSeparation CMYK 2079B 0.000u 0:00.001
+firewall.eps[1] TIFF 15x34 15x34+0+0 8-bit sRGB 256c 2200B 0.000u 0:00.001
+identify: Invalid TIFF directory; tags are not sorted in ascending order. 
+  `TIFFReadDirectoryCheckOrder' @ warning/tiff.c/TIFFWarnings/959.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n Box firewall.eps
+Binary file firewall.eps matches
+
+% strings firewall.eps | wc -l
+    3229
+
+% strings firewall.eps | grep -n Box
+7:%%BoundingBox: 367 291 384 325
+8:%%HiResBoundingBox: 367.998 291.4106 383.1011 324.5298
+24:%AI3_TemplateBox: 306 396 306 396
+25:%AI3_TileBox: 0 0 592 744
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o scaled.eps \
+ -dEPSCrop \
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/Install {1 1 scale}&gt;&gt; setpagedevice" \
+ -f firewall.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n Box scaled.eps
+3:%%BoundingBox: 0 0 15 33
+4:%%HiResBoundingBox: 0.00 0.00 15.00 33.00
+717:/MediaBox get aload pop
+1456:/FontBBox 1 index/FontBBox get def
+3883:dup/BBox get aload pop exch 3 index sub exch 2 index sub rectclip
+8320:&lt;&lt;/Type/Page/MediaBox [0 0 15.1 33.12]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cp -i padded.eps padded.eps.bak
+</code></pre></div></div>
+
+<p>Add 10 points in height:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% vi padded.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff --unified=0 padded.eps.bak padded.eps
+--- padded.eps.bak      2022-03-27 15:50:42.472025000 -0700
++++ padded.eps  2022-03-27 15:56:13.098029000 -0700
+@@ -3,2 +3 @@
+-%%BoundingBox: 20 0 35 33
+-%%HiResBoundingBox: 20.00 0.00 35.00 33.00
++%%BoundingBox: 20 0 35 43
+</code></pre></div></div>
+
+<p>Clean with <strong>Inkscape</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% inkscape padded.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>In the 'Page settings' dialog:  accept defaults and click  OK
+
+Select the object and move it to the top
+
+Edit  &gt;  Create Guides Around the Page
+File  &gt;  Document Properties
+File  &gt;  Clean Up Document
+
+File  &gt;  Save As  &gt;  Encapsulated PostScript (*.eps)
+In the 'Save As' dialog:  accept defaults and click  OK
+ 
+File  &gt;  Quit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mv padded.eps padded.eps.old
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o padded.eps \
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/PageOffset [0.2 0]&gt;&gt; setpagedevice" \
+ -f padded.eps.old
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n Box padded.eps
+3:%%BoundingBox: 0 0 16 43
+4:%%HiResBoundingBox: 0.20 0.00 15.20 42.10
+717:/MediaBox get aload pop
+1456:/FontBBox 1 index/FontBBox get def
+3883:dup/BBox get aload pop exch 3 index sub exch 2 index sub rectclip
+8309:&lt;&lt;/Type/Page/MediaBox [0 0 612 792]
+</code></pre></div></div>
+
+<p>Check with <strong>zathura</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zathura --fork padded.eps
+</code></pre></div></div>
+
+<h2 id="reducing-file-size-aka-compressing">Reducing File Size (a.k.a. Compressing)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o padded.eps \
+ -dDownsampleColorImages=true \
+ -dColorImageResolution=300 \
+ -sDEVICE=eps2write \
+ -c "&lt;&lt;/PageOffset [14 -2]&gt;&gt; setpagedevice" \
+ -f scaled.eps
+</code></pre></div></div>
+
+<p><strong>Reference:</strong> <br />
+<a href="https://stackoverflow.com/questions/43079007/improving-my-ghostscript-eps-compressive-script">Improving my ghostscript eps compressive script</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<hr />
+
+<h2 id="generating-pdf-from-ps-and-eps-files-with-ghostscript">Generating PDF from PS and EPS Files with Ghostscript</h2>
+<h2 id="aka-converting-a-ps-or-an-eps-file-to-pdf">(a.k.a. Converting a PS or an EPS File to PDF)</h2>
+
+<p>Here is a sample command line to invoke Ghostscript for 
+generating a PDF/A document:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -dPDFA=1 \
+ -dBATCH \
+ -dNOPAUSE \
+ -sColorConversionStrategy=RGB \
+ -sDEVICE=pdfwrite \
+ -sOutputFile=output.pdf \
+ input.eps
+</code></pre></div></div>
+
+<p>Even simpler:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -sDEVICE=pdfwrite -o converted.pdf -f input.eps
+</code></pre></div></div>
+
+<p><strong>Reference:</strong>    <br />
+<a href="https://ghostscript.com/doc/current/VectorDevices.htm">High Level Output Devices (Vector Devices)</a>  <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<h2 id="generating-monochrome-pdf-from-ps-and-eps-files-with-ghostscript">Generating Monochrome PDF from PS and EPS Files with Ghostscript</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o output.pdf \
+ -sColorConversionStrategy=Gray \
+ -sDEVICE=pdfwrite \
+ -f input.eps
+</code></pre></div></div>
+
+<h2 id="cropping-pdf-and-removing-extraneous-whitespace">Cropping PDF (and Removing Extraneous Whitespace)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat network_diagram.dot 
+graph network_diagram {
+
+  imagepath="/mnt/usbflashdrive/myknowledgebase/images"
+
+  label="\nNetwork Diagram";
+
+  node [
+    shape=box,
+    //fontname="arial",
+    fontsize=8,
+    style=filled,
+    color="#d3edea"
+  ];
+  splines="compound"
+
+  fw [ label="Edge firewall" shape=none image="firewall.eps" labelloc=b color="#ffffff"];
+  panel [ label="Patch panel" shape=none image="24-port-patch-panel.eps" labelloc=b color="#ffffff" ];
+  sw1 [ label="Cisco switch" shape=none image="gigabit_switch_router.eps" labelloc=b color="#ffffff"];
+  sw2 [ label="Inside switch" shape=none image="gigabit_switch_router.eps" labelloc=b color="#ffffff"];
+  srv1 [ label="Cluster server" shape=none image="rackmount-1U-server.eps" labelloc=b color="#ffffff"];
+  srv2 [ label="Cluster nodes 101-114" shape=none image="server_blades.eps" labelloc=b color="#ffffff"];
+  srv3 [ label="Cluster nodes 201-214" shape=none image="server_blades.eps" labelloc=b color="#ffffff"];
+  srv4 [ label="Management node" shape=none image="rackmount-1U-server.eps" labelloc=b color="#ffffff"];
+
+  cloud [ label="Internet" shape=none, image="cloud.eps" labelloc=b color="#ffffff"];
+
+  cloud -- fw;
+  fw -- panel;
+  panel -- sw1;
+  sw1 -- srv1 [color="#ffbb00"];
+  srv1 -- sw2 [color="#ffbb00"];
+  srv1 -- sw2 [color="#ffbb00"];
+  srv2 -- sw2 [color="#ffbb00"];
+  srv2 -- sw2 [color="#ffbb00"];
+  srv3 -- sw2 [color="#ffbb00"];
+  srv3 -- sw2 [color="#ffbb00"];
+  panel -- srv4 [color="#ffbb00"];
+  srv4 -- sw2 [color="#ffbb00"];
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% dot -Teps network_diagram.dot -o network_diagram.eps
+</code></pre></div></div>
+
+<p>Convert the EPS file to PDF (option ‘-q’ -&gt; quiet Ghostscript processing).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -sDEVICE=pdfwrite \
+ -o network_diagram.pdf \
+ -f network_diagram.eps
+</code></pre></div></div>
+
+<p>The resulting PDF has a lot of whitespace around the image as shown below.</p>
+
+<p><img src="/assets/img/network_diagram.png" alt="Displaying a png image of a network diagram" title="Displaying a png image of a network diagram" /></p>
+
+<p>Find out the dimensions (and <strong>BoundingBox</strong>) of PDF:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox -f network_diagram.pdf
+%%BoundingBox: 48 43 485 505
+%%HiResBoundingBox: 48.221999 43.847999 484.613985 504.971985
+</code></pre></div></div>
+
+<p>Use those dimensions to <strong>crop</strong> the PDF with Ghostscript:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -sDEVICE=pdfwrite \
+ -o trimmed.pdf \
+ -c "[/CropBox [48 44 485 505] /PAGES pdfmark" \
+ -f network_diagram.pdf 
+</code></pre></div></div>
+
+<p>The above command produces the cropped image:</p>
+
+<p><img src="/assets/img/trimmed.png" alt="Displaying an image of an appropriately cropped png image of a network diagram" title="Displaying an image of an appropriately cropped png image of a network diagram" /></p>
+
+<p>REFERENCE:<br />
+<a href="https://sachinashanbhag.blogspot.com/2012/09/how-to-crop-pdf-images.html">How to: Crop PDF Images</a></p>
+
+<h3 id="convert-pdf-to-png-image---with-ghostscript-gs">Convert PDF to PNG Image - with Ghostscript (gs)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -sDEVICE=png16m -r150 -o output.png -f input.pdf
+</code></pre></div></div>
+
+<h3 id="convert-pdf-to-png-image-and-remove-extranous-whitespace---with-ghostscript-gs">Convert PDF to PNG Image and Remove Extranous Whitespace - with Ghostscript (gs)</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">-dUseCropBox</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -sDEVICE=png16m -r150 -o trimmed.png -dUseCropBox -f input.pdf
+</code></pre></div></div>
+
+<p><strong>References:</strong><br />
+<a href="https://stackoverflow.com/questions/38171343/ghostscript-converting-pdf-to-png-with-wrong-output-size">Ghostscript Converting PDF to PNG With Wrong Output Size</a></p>
+
+<p><a href="https://stackoverflow.com/questions/2657458/obey-the-mediabox-cropbox-in-pdf-when-using-ghostscript-to-render-a-pdf-to-a-png">Obey the MediaBox/CropBox in PDF when using Ghostscript to render a PDF to a PNG</a></p>
+
+<h3 id="convert-eps-to-png-image">Convert EPS to PNG Image</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh firewall.eps
+-rw-r--r--  1 dusko  wheel   163K Mar  5 13:40 firewall.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file firewall.eps
+firewall.eps: PostScript document text conforming DSC level 3.0, type EPS, Level 2
+</code></pre></div></div>
+
+<p>List PNG supported devices by Ghostscript.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -h | grep -i png
+   faxg3 faxg32d faxg4 fmlbp fmpr fpng fs600 gdi hl1240 hl1250 hl7x0
+   planc plang plank planm plib plibc plibg plibk plibm png16 png16m png256
+   png48 pngalpha pnggray pngmono pngmonod pnm pnmraw ppm ppmraw pr1000
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox firewall.eps
+%%BoundingBox: 0 9 15 42
+%%HiResBoundingBox: 0.756000 9.522000 14.798812 41.669999
+
+% identify firewall.eps
+firewall.eps EPS 15x42 15x42+0+0 16-bit sRGB 3305B 0.000u 0:00.000
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l firewall.eps
+    8467 firewall.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep Box firewall.eps
+%%BoundingBox: 0 0 16 43
+%%HiResBoundingBox: 0.20 0.00 15.20 42.10
+/MediaBox get aload pop
+/FontBBox 1 index/FontBBox get def
+dup/BBox get aload pop exch 3 index sub exch 2 index sub rectclip
+&lt;&lt;/Type/Page/MediaBox [0 0 612 792]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -o firewall.png \
+ -sDEVICE=png16m \
+ -r150 \
+ -dEPSCrop \
+ -dUseCropBox \
+ -f firewall.eps 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv firewall.png
+</code></pre></div></div>
+
+<h3 id="adding-a-border-around-an-image-with-imagemagick">Adding a Border Around an Image with ImageMagick</h3>
+
+<p>Add a red border of size 4 pixels to an image.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% convert -bordercolor red -border 4 network_diagram.png network_diagramBORDER.png
+</code></pre></div></div>
+
+<p><strong>Reference:</strong><br />
+<a href="https://askubuntu.com/questions/819482/how-to-add-a-border-using-imagemagick">How to add a border using Imagemagick</a></p>
+
+<hr />
+<hr />
+<hr />
+
+<h2 id="querying-ghostscript-for-the-default-optionssettings-of-an-output-device-such-as-pdfwrite-or-tiffg4">Querying Ghostscript for the default options/settings of an output device (such as ‘pdfwrite’ or ‘tiffg4’)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -c "currentpagedevice {exch ==only ( ) print == } forall"
+GPL Ghostscript 9.52 (2020-03-19)
+Copyright (C) 2020 Artifex Software, Inc.  All rights reserved.
+This software is supplied under the GNU AGPLv3 and comes with NO WARRANTY:
+see the file COPYING for details.
+/MaxSeparations 3
+/BandWidth 0
+/DeviceGrayToK true
+/DeviceLinkProfile ()
+/KPreserve 8
+/BandHeight 0
+/PageOffset [0 0]
+/GrayValues 256
+/HWResolution [91.2449 91.2449]
+/Separations false
+/BeginPage {--.callbeginpage--}
+/BlendColorProfile ()
+/TextBlackPt 8
+/BandBufferSpace 0
+/Margins [0.0 0.0]
+/BlueValues 256
+/PostRenderProfile ()
+/ImageBlackPt 8
+/MaxBitmap 50000000
+/MaxTempImage 5000
+/OutputAttributes -dict-
+/GreenValues 256
+/LeadingEdge null
+/ProofProfile ()
+/GraphicBlackPt 8
+/MaxPatternBitmap 0
+/MaxTempPixmap 20000
+/ProcessColorModel /DeviceRGB
+/PageDeviceName null
+/InputAttributes -dict-
+/PageList /
+/RedValues 256
+/TextICCProfile ()
+/InterpolateControl 1
+/BlackPtComp 8
+/.HWMargins [0.0 0.0 0.0 0.0]
+/AntidropoutDownscaler false
+/.IsPageDevice true
+/LastPage 0
+/ImagingBBox null
+/ImageICCProfile ()
+/TextIntent 8
+/%MediaSource 0
+/GraphicsAlphaBits 4
+/WindowID 0
+/OutputICCProfile (default_rgb.icc)
+/FirstPage 0
+/OutputDevice /x11alpha
+/GraphicICCProfile ()
+/ImageIntent 8
+/%MediaDestination 0
+/TextAlphaBits 4
+/FILTERVECTOR false
+/Name (x11alpha)
+/HWSize [775 1003]
+/PreBandThreshold false
+/GraphicIntent 8
+/UseCIEColor false
+/.IgnoreNumCopies false
+/PageUsesTransparency false
+/FILTERTEXT false
+/BitsPerPixel 24
+/Install {--.callinstall--}
+/SimulateOverprint true
+/.LockSafetyParams false
+/ColorAccuracy 2
+/NumCopies null
+/TextKPreserve 8
+/FILTERIMAGE false
+/ColorValues 16777216
+/DisablePageHandler false
+/.MediaSize [611.540955 791.452393]
+/UseFastColor false
+/PageSize [611.540955 791.452393]
+/RenderIntent 8
+/ImageKPreserve 8
+/SeparationColorNames []
+/BufferSpace 4000000
+/PageCount 0
+/Policies -dict-
+/Colors 3
+/GrayDetection false
+/EndPage {--.callendpage--}
+/ICCOutputColors ()
+/GraphicKPreserve 8
+
+GS&gt;quit
+</code></pre></div></div>
+
+<p>The result is a list of <code class="language-plaintext highlighter-rouge">/SomeName somevalue</code> pairs which describe 
+the settings used for rendering pages to the current screen.</p>
+
+<p>This is so because usually the display is the default device for Ghostscript 
+to send its output to.  Now you may notice that you’ll see an empty 
+Ghostscript window pop up, which you’ll have to close.</p>
+
+<p>You can add some options to avoid the popup window:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -o /dev/null \
+ -dNODISPLAY \
+ -c "currentpagedevice {exch ==only ( ) print ==} forall"
+</code></pre></div></div>
+
+<p>But this will change the query return values, because you (unintentionally) 
+changed the output device settings:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -c "currentpagedevice {exch ==only ( ) print ==} forall" | grep Resolution
+</code></pre></div></div>
+
+<p>Result:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/HWResolution [91.2449 91.2449]
+</code></pre></div></div>
+
+<p>Compare this to:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -o /dev/null \
+ -dNODISPLAY \
+ -c "currentpagedevice {exch ==only ( ) print == } forall" \
+ | grep Resolution
+</code></pre></div></div>
+
+<p>Result:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/HWResolution [72.0 72.0]
+</code></pre></div></div>
+
+<p>Avoid this trap.  Now assuming you want to query for the default settings 
+of the PDF writing device, run this one:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -o /dev/null \
+ -sDEVICE=pdfwrite \
+ -c "currentpagedevice {exch ==only ( ) print ==} forall" \
+ | tee ghostscript-pdfwrite-default-pagedevice-settings.txt
+</code></pre></div></div>
+
+<p>You now have all settings for the pdfwrite device in a *.txt file, 
+and you may repeat that with some other interesting Ghostscript devices 
+and then compare them for all their detailled differences:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cd /tmp
+</code></pre></div></div>
+
+<p>Switch to Bash.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% bash
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ for _dev in \
+  pswrite ps2write pdfwrite \
+  tiffg3 tiffg4 tiff12nc tiff24nc tiff32nc tiff48nc tiffsep \
+  jpeg jpeggray jpegcmyk \
+  png16 png16m png256 png48 pngalpha pnggray pngmono; \
+do \
+  gs \
+    -o /dev/null \
+    -sDEVICE=${_dev} \
+    -c "currentpagedevice {exch ==only ( ) print ==} forall" \
+   | sort \
+   | tee ghostscript-${_dev}-default-pagedevice-settings.txt; \
+done
+</code></pre></div></div>
+
+<p>It’s interesting to compare the settings for, say, the <em>pswrite</em> and 
+<em>ps2write</em> devices like this (and also discover parameters which are 
+available for the one, but not the other device):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sdiff -sbB ghostscript-ps*write-default-pagedevice-settings.txt
+</code></pre></div></div>
+
+<p>or:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff -sbB ghostscript-ps*write-default-pagedevice-settings.txt
+</code></pre></div></div>
+
+<p>To avoid the return of just <em>-dict-</em> for certain key values, 
+use the <em>===</em> instead of <em>==</em> macro. <br />
+<em>===</em> acts like <em>==</em> but also prints the <strong>content</strong> of dictionaries.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ for _dev in \
+ pswrite ps2write pdfwrite \
+ tiffg3 tiffg4 tiff12nc tiff24nc tiff32nc tiff48nc tiffsep \
+ jpeg jpeggray jpegcmyk \
+ png16 png16m png256 png48 pngalpha pnggray pngmono; \
+ do \
+   gs -o /dev/null \
+   -sDEVICE=${_dev} -c "currentpagedevice {exch ===only ( ) print ===} forall" \
+   | sort | \
+   tee ghostscript-${_dev}-default-pagedevice-settings.txt; \
+ done
+</code></pre></div></div>
+
+<p>Exit from Bash.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ exit
+</code></pre></div></div>
+
+<p><strong>References:</strong></p>
+
+<p>https://stackoverflow.com/questions/11001107/querying-ghostscript-for-the-default-options-settings-of-an-output-device-such</p>
+
+<hr />
+
+<h2 id="printing-aka-scaling-pdf-for-printing">Printing (a.k.a. Scaling PDF for Printing)</h2>
+
+<h3 id="print-to-a-legal-sized-paper-in-portrait-mode">Print to a Legal Sized Paper in Portrait Mode</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gs \
+ -q \
+ -sPAPERSIZE=legal \
+ -dFIXEDMEDIA \
+ -dBATCH \
+ -dNOPAUSE \
+ -sDEVICE=pdfwrite \
+ -o printable.pdf 
+ -f input.pdf
+</code></pre></div></div>
+
+<p>Open with zathura.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zathura printable.pdf 
+</code></pre></div></div>
+
+<p>Print from zathura with its <strong>print</strong> command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:print
+</code></pre></div></div>
+
+<h3 id="print-a-pdf-with-a-big-image-to-a-legal-sized-paper-in-landscape-mode">Print a PDF with a Big Image to a Legal Sized Paper in Landscape Mode</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat wiring_diagram.dot
+graph wiring_diagram {
+ 
+  splines=ortho;
+  ranksep="0.8 equally";
+
+  label="\n\n\nWiring Diagram\n";
+
+  legend [shape=none, margin=0, label=
+  &lt;
+    &lt;table border="0" cellborder="1" cellspacing="0" cellpadding="4"&gt;
+        &lt;tr&gt;&lt;td colspan="2"&gt;Legend&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td bgcolor="red"&gt;red&lt;/td&gt;&lt;td bgcolor="red"&gt;public&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td bgcolor="blue"&gt;blue&lt;/td&gt;&lt;td bgcolor="blue"&gt;inside&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td bgcolor="green"&gt;green&lt;/td&gt;&lt;td bgcolor="green"&gt;MGMT&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;
+  &gt;];
+
+  subgraph cluster_pp {
+    label="Patch panel";
+    graph [fillcolor="burlywood", style="filled, rounded"];
+    node [shape="record", fillcolor="white", style="filled", width=0.4, height=0.4];
+    edge [weight=1000, style="invis"];
+    
+    node [label="1"] p1; 
+    node [label="2"] p2;
+    node [label="3"] p3;
+    node [label="4"] p4;
+    node [label="5"] p5;
+    node [label="6"] p6;
+    node [label="7"] p7;
+    node [label="8"] p8;
+    node [label="9"] p9;
+    node [label="10"] p10;
+    node [label="11"] p11;
+    node [label="12"] p12;
+    node [label="13"] p13;
+    node [label="14"] p14;
+    node [label="15"] p15;
+    node [label="16"] p16;
+    node [label="17"] p17;
+    node [label="18"] p18;
+    node [label="19"] p19;
+    node [label="20"] p20;
+    node [label="21"] p21;
+    node [label="22"] p22;
+    node [label="23"] p23;
+    node [label="24"] p24;
+
+    rank=same {p1 -- p2 -- p3 -- p4 -- p5 -- p6 -- p7 -- p8 -- p9 -- p10 -- p11 -- p12}
+    rank=same {p13 -- p14 -- p15 -- p16 -- p17 -- p18 -- p19 -- p20 -- p21 -- p22 -- p23 -- p24}
+
+    p1 -- p13
+    p2 -- p14
+    p3 -- p15
+    p4 -- p16
+    p5 -- p17
+    p6 -- p18
+    p7 -- p19
+    p8 -- p20
+    p9 -- p21
+    p10 -- p22
+    p11 -- p23
+    p12 -- p24
+  }
+
+  subgraph cluster_webmo {
+    label="WebMO and cluster storage [R2]";
+    edge [style="invis"];
+    node [shape="record"];
+
+    node [label="ETH1"] webmo1;
+    node [label="ETH2"] webmo2;
+    node [label="ETHM"] webmom;
+    
+    {rank="same"; webmo1; webmo2; webmom;} 
+    webmo1 -- webmo2 -- webmom;
+  }
+
+  subgraph cluster_achassis1 {
+    label="Chassis 1 - Compute nodes 101-114 [R2]";
+    edge [style="invis"];
+    node [shape="record"];
+
+    node [label="MM1"] ac1mm ;
+    node [label="4"] ac1p4;
+    node [label="3"] ac1p3;
+    node [label="2"] ac1p2;
+    node [label="1"] ac1p1;
+    
+    {rank="same"; ac1p1; ac1p2; ac1p3; ac1p4; ac1mm;}
+    ac1p1 -- ac1p2 -- ac1p3 -- ac1p4 -- ac1mm;
+  }
+
+  subgraph cluster_achassis2 {
+    label="Chassis 2 - Compute nodes 201-214 [R4]";
+    edge[style="invis"];
+    node [shape="record"];
+
+    node [label="MM1"] ac2mm;
+    node [label="1"] ac2p1;
+    node [label="2"] ac2p2;
+    node [label="3"] ac2p3;
+    node [label="4"] ac2p4;
+    
+    {rank="same"; ac2p1; ac2p2; ac2p3; ac2p4; ac2mm}
+    ac2p1 -- ac2p2 -- ac2p3 -- ac2p4 -- ac2mm;
+  }
+
+  subgraph cluster_compute_mgmt_node {
+    label="Compute management node [R1]";
+    edge [style="invis"];
+    node [shape="record"];
+
+    node [label="2"] x2 ;
+    node [label="1"] x1 ;
+    
+    {rank="same"; x1; x2;}
+    x1 -- x2;
+  }
+
+  subgraph cluster_as {
+    label="Compute cluster switch";
+    graph [fillcolor="burlywood1", style="filled"];
+    node [shape="record", fillcolor="white", style="filled"];
+    edge [style="invis"];
+
+    node [label="1"] asw1;
+    node [label="2"] asw2;
+    node [label="3"] asw3;
+    node [label="4"] asw4;
+    node [label="5"] asw5;
+    node [label="6"] asw6;
+    node [label="7"] asw7;
+    node [label="8"] asw8;
+
+    {rank="same"; asw1; asw2; asw3; asw4; asw5; asw6; asw7; asw8;} 
+    asw1 -- asw2 -- asw3 -- asw4 -- asw5 -- asw6 -- asw7 -- asw8;
+  }
+
+  subgraph cluster_cs {
+    label="Cisco switch [R1]";
+    graph [fillcolor="burlywood1", style="filled"];
+    node [shape="record", fillcolor="white", style="filled"];
+    edge [style="invis"];
+
+    node [label="1"] cs1;
+    node [label="2"] cs2;
+    node [label="3"] cs3;
+    node [label="4"] cs4;
+    node [label="19"] cs19;
+
+    {rank="same"; cs1; cs2; cs3; cs4; cs19;}
+    cs1 -- cs2 -- cs3 -- cs4 -- cs19;
+  }
+
+  align_chassis [style="invis"];
+  align_chassis -- ac1mm [style="invis"];
+  align_chassis -- ac2mm [style="invis"];
+
+  x1 -- asw1 [color="blue"];
+  p2 -- x2 [color="red", constraint="false"]; 
+  p1 -- cs1 [color="red", constraint="false"];
+  asw3 -- ac1mm [color="green", penwidth=2, constraint="false"];
+  asw5 -- webmom [color="green", penwidth=2];
+  asw7 -- ac2mm [color="green", penwidth=2, constraint="false"];
+  webmo1:sw -- cs19:ne [color="white:red:white"];
+  webmo2-- asw6 [color="blue"];
+  ac1p1 -- asw2 [color="blue"];
+  asw4 -- ac2p4 [color="blue", constraint="false"];
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% dot -Teps wiring_diagram.dot -o wiring_diagram.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -sDEVICE=eps2write \
+ -dEPSCrop \
+ -o wiring_diagram.pdf \
+ -f wiring_diagram.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -sDEVICE=eps2write \
+ -o scaled.eps \
+ -dEPSCrop \
+ -c "&lt;&lt;/PageSizePolicy 3&gt;&gt; setpagedevice" \
+ -dFIXMEDIA \
+ -f wiring_diagram.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -sDEVICE=pdfwrite \
+ -o printable.pdf \
+ -dEPSFitPage \
+ -c "&lt;&lt;/PageSizePolicy 3&gt;&gt; setpagedevice" \
+ -dFIXMEDIA \
+ -dNORANGEPAGESIZE \
+ -f scaled.eps
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs -q -o -dSAFER -sDEVICE=bbox printable.pdf
+%%BoundingBox: 0 1 792 150
+%%HiResBoundingBox: 0.000211 1.710000 791.999976 149.412581
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -sDEVICE=pdfwrite \
+ -o trimmed.pdf \
+ -c "[/CropBox [0 1 792 150] /PAGES pdfmark" \
+ -f printable.pdf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zathura trimmed.pdf
+</code></pre></div></div>
+
+<p>If you want to get the prompt (use  -sOutputFile):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -sDEVICE=pdfwrite \
+ -sOutputFile=new.pdf \
+ -dDEVICEHEIGHTPOINTS=612 \
+ -dDEVICEWIDTHPOINTS=1008 \
+ -dFitPage \
+ -dFIXMEDIA \
+ -dAutoRotatePages=/None \
+ -f printable.pdf 
+</code></pre></div></div>
+
+<p>If you want to get the prompt (use  -sOutputFile) and to exit it without typing ‘quit’:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs \
+ -q \
+ -sDEVICE=pdfwrite \
+ -sOutputFile=new.pdf \
+ -dDEVICEHEIGHTPOINTS=612 \
+ -dDEVICEWIDTHPOINTS=1008 \
+ -dFitPage \
+ -dFIXMEDIA \
+ -dAutoRotatePages=/None \
+ -f printable.pdf \
+ -c quit
+</code></pre></div></div>
+
+<p>If you do not want to see output details (use -o):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gs 
+ -q \ 
+ -sDEVICE=pdfwrite \
+ -o new.pdf \
+ -dDEVICEHEIGHTPOINTS=612 \
+ -dDEVICEWIDTHPOINTS=1008 \
+ -dFitPage \
+ -dFIXMEDIA \
+ -dAutoRotatePages=/None \
+ -f printable.pdf
+</code></pre></div></div>
+
+<p>Load Legal sized paper in the Tray 1 (upper tray) of the HP LaserJet 2420dn printer.</p>
+
+<p>After running the the above command and loading the paper, open the 
+resulting PDF with zathura.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% zathura new.pdf
+</code></pre></div></div>
+
+<p>From zathura:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:print
+</code></pre></div></div>
+
+<p>In the Print dialog box:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Select the printer (in this example: HP_LaserJet_2420dn) 
+
+In the Page Setup tab change the following two values - under Paper heading:
+  Paper size:   Change it from 'US Letter' to 'US Legal'
+  Orientation:  Change it from 'Portrait' to 'Landscape'
+
+Click 'Print'
+</code></pre></div></div>
+
+<p>NOTE:<br />
+The <strong>-dDEVICEHEIGHTPOINTS=612</strong> and <strong>-dDEVICEWIDTHPOINTS=1008</strong> are paper 
+dimensions for <strong>Legal paper size</strong> and you can obtain them from here:<br />
+<a href="https://ghostscript.com/doc/current/Use.htm#Known_paper_sizes">The paper sizes known to Ghostscript - Ghostsript Documentation</a><br />
+(Retrieved on Mar 5, 2022)</p>
+
+<p><strong>References:</strong> <br />
+<a href="https://comp.lang.postscript.narkive.com/xSbH7XrD/ghostscript-any-way-to-fit-to-printable-area">Ghostscript - any way to fit to printable area?</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<p><a href="https://stackoverflow.com/questions/42371152/ghostscript-changed-orientation-from-landscape-to-portrait">Ghostscript changed Orientation from landscape to portrait</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<p><a href="https://web.mit.edu/ghostscript/www/Use.htm">How to use Ghostscript</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<hr />
+
+<h2 id="tips---useful-to-know">TIPS - USEFUL TO KNOW:</h2>
+
+<p>From:
+<a href="https://stackoverflow.com/questions/70583490/dimensions-change-when-ghostscript-converts-ps-to-png">Dimensions change when Ghostscript converts PS to PNG</a><br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>The BoundingBox in your PostScript program is a comment and therefore 
+has no effect.  If you want to set the media size then you need to take 
+action to do so.  You can do this in PostScript by using the 
+setpagedevice operator.  Or you can do so from the command line using 
+<strong>-sPAPERSIZE</strong>, <strong>-dDEVICEHEIGHTPOINTS</strong> and <strong>-dDEVICEWIDTHPOINTS</strong>, 
+<strong>-g</strong> and possibly the <strong>-dFIXEDMEDIA</strong> switch.</p>
+
+  <p>In the absence of any of these Ghostscript uses its <strong>default</strong> media 
+size which will be either <strong>A4</strong> or <strong>US Letter</strong>.</p>
+
+  <p>Or make your program DSC-compliant and use DSC processing, or make it 
+an EPS and use -dEPSCrop.</p>
+</blockquote>
+
+<p>From:<br />
+<a href="https://stackoverflow.com/questions/46183868/using-ghostscript-to-export-pngs-at-fixed-size">Using GhostScript to export PNGs at fixed size</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>Your problem with EPS files is that they do <strong>not</strong> request 
+a <strong>media size</strong>.  That’s because EPS files are intended to be included 
+in other PostScript programs, so they need to be resized by the 
+application generating the PostScript.</p>
+
+  <p>To that end, EPS files include <strong>comments</strong> (which are <strong>ignored</strong> by 
+<strong>PostScript interpreters</strong>) which define the <strong>BoundingBox</strong> of the 
+<strong>EPS</strong>.  An application which places EPS can quickly scan the EPS to 
+find this information, then it sets the CTM appropriately in the final 
+PostScript program it is creating and inserts the content of the EPS.</p>
+
+  <p>The <strong>FitPage</strong> switch in <strong>Ghostscript</strong> relies on having 
+<em>a known media size</em> (and you should set <strong>-dFIXEDMEDIA</strong> when using this) 
+and a requested media size, figuring out what scale factor to apply to 
+the request in order to make it fit the actual size, and setting up the 
+CTM to apply that scaling.</p>
+
+  <p>If you don’t ever get a media size request (which you <strong>won’t</strong> with 
+an <strong>EPS</strong>) then <strong>no scaling</strong> will take place.</p>
+
+  <p>Now <strong>Ghostscript</strong> <em>does have</em> a different switch, <strong>EPSCrop</strong> which 
+picks up the comments from the EPS and uses that to set the media size 
+(Ghostscript has mechanisms to permit processing of comments for this 
+reason, amongst others).  You could implement a similar mechanism to 
+pick up the BoundingBox comments, and scale the EPS so that it fits 
+a desired target media size.</p>
+</blockquote>
+
+<p>From: <br />
+<a href="https://stackoverflow.com/questions/40223691/scaling-pdf-file-using-ghostscript">Scaling PDF file using Ghostscript</a><br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>Well, Ghostscript uses PostScript as its scripting language, 
+so anything you can do in PostScript you can do to a PDF file.</p>
+
+  <p>I <em>really</em> wouldn’t use -g with pdfwrite, because -g specifies 
+<strong>pixels</strong>, and since pdfwrite is a vector device that doesn’t really 
+work well. Use -dDEVICEHEIGHTPOINTS and -dDEVICEWIDTHPOINTS instead.</p>
+
+  <p>Don’t set -sPAPERSIZE either, you can’t set the media to be letter in 
+one place and something different (the -g switch) elsewhere.</p>
+</blockquote>
+
+<p>From:<br />
+<a href="https://stackoverflow.com/questions/36871015/manual-layout-of-graphs-described-in-graphviz-dot-format">manual layout of graphs described in graphviz (DOT)</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>You can run <strong>dot</strong> requesting output as another dot file with the command
+<code class="language-plaintext highlighter-rouge">dot -Tdot</code>.  <strong>dot</strong> will then calculate the layout but instead of 
+outputting a pictorial representation, it will output another dot file 
+with exactly the same information as the input, with the addition of 
+layout information as additional attributes.<br />
+You can then edit the layout information by hand and run it through dot 
+a second time to obtain the pictorial representation.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dot -Tdot input.gv
+</code></pre></div></div>
+
+<p>From: <br />
+<a href="https://marc.info/?l=graphviz-devel&amp;m=129418103126092">Re: [graphviz-devel] File extension .dot or .gv?</a> <br />
+(Retrieved on Mar 5, 2022)</p>
+
+<p>and</p>
+
+<p><a href="https://forum.graphviz.org/t/what-is-the-file-extension-for-dot-file/35/4">What is the file extension for dot file? - Graphviz Forum</a><br />
+(Retrieved on Mar 5, 2022)</p>
+
+<blockquote>
+  <p>.gv is preferred. The .dot suffix was stolen by Word.</p>
+</blockquote>
+
+<hr />
+
+<p><strong>PROGRAMS:</strong></p>
+
+<p>VIEWING:</p>
+<ul>
+  <li>ps, eps, pdf: zathura</li>
+  <li>png, jpeg: xv</li>
+  <li>svg: Inkscape, web browsers</li>
+</ul>
+
+<p>EDITING:</p>
+<ul>
+  <li>dot (Graphviz)</li>
+  <li>dotty (comes with Graphviz) - a WYSIWYG tool to aid in the hand-layout process</li>
+  <li>Graphviz Visual Editor</li>
+  <li>PlantUML</li>
+  <li>Kroki</li>
+  <li>kroki-cli</li>
+  <li>Diagrams.net (Drawio) (https://github.com/jgraph/drawio)
+    <ul>
+      <li>https://github.com/jgraph</li>
+      <li>https://github.com/jgraph/drawio</li>
+      <li>https://github.com/jgraph/drawio-desktop/releases/tag/v17.2.1</li>
+      <li>https://github.com/jgraph/docker-drawio</li>
+    </ul>
+  </li>
+  <li>DrawThe.net (https://github.com/cidrblock/drawthe.net)</li>
+  <li>
+    <p>Blockdiag  (seqdiag, rackdiag, netdiag, etc.)   (http://blockdiag.com/en/)</p>
+  </li>
+  <li>rsvg-convert</li>
+  <li>anytopnm</li>
+  <li>pamfile</li>
+  <li>ppmhist</li>
+  <li>pnm(5), ppm(5), pgm(5), pbm(5), pam(5)</li>
+  <li>pamtosvg</li>
+  <li>pbmclean</li>
+  <li>mscgen_js - turns text into sequence charts  (https://mscgen.js.org/)
+    <ul>
+      <li>Includes, for example: SMTP Sequence Chart</li>
+      <li>Also, you can:
+        <ul>
+          <li>animate the chart</li>
+          <li>create a bookmarkable URI (URL)/link</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>epsffit</p>
+  </li>
+  <li>PKG (PACKAGES):
+    <ul>
+      <li>ghostscript</li>
+      <li>sam2p</li>
+    </ul>
+  </li>
+</ul>
+
+<p>NOT YET EXPLORED:</p>
+<ul>
+  <li><a href="https://news.ycombinator.com/item?id=23154846">Diagram as Code (mingrammer.com) - HackerNews</a>
+    <ul>
+      <li>Mermaid
+        <ul>
+          <li>https://mermaid-js.github.io/mermaid-live-editor/</li>
+          <li>https://mermaid-js.github.io/mermaid/#/</li>
+          <li>https://github.com/mermaid-js/mermaid</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>https://isoflow.io/</li>
+  <li>https://diagrams.mingrammer.com/
+    <ul>
+      <li>https://github.com/mingrammer/diagrams</li>
+    </ul>
+  </li>
+  <li>
+    <p>diagram.codes (playground available but Save is available only for paying customers)</p>
+  </li>
+  <li>ubigraph (https://github.com/0x4lan/ubigraph_server)</li>
+  <li>Tulip (Data Visualization Software)  https://tulip.labri.fr/site/</li>
+</ul>
+
+<hr />
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8</a>
+                  
+                    (Categories: <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/linux">linux</a>, <a href="/category/networking">networking</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html">How To Create a Bootable FreeBSD ZFS Clone</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html">&laquo; How To Create a Bootable FreeBSD ZFS Clone</a>
+  
+  
+    <a class="next" href="/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape";
+    var disqus_title = "Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

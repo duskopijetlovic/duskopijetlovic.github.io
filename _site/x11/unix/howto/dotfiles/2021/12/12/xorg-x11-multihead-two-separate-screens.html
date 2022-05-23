@@ -1,0 +1,3361 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method" />
+    <meta name="keywords" content="How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method, Dusko Pijetlovic, x11, unix, howto, dotfiles" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/x11/unix/howto/dotfiles/2021/12/12/xorg-x11-multihead-two-separate-screens.html" property="og:url">
+    
+
+    
+      <meta content="2021-12-12T20:53:55-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="x11" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/x11/unix/howto/dotfiles/2021/12/12/xorg-x11-multihead-two-separate-screens.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method</h1>
+</header>
+
+<span class="time">12 Dec 2021</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/x11">x11</a>, <a href="/category/unix">unix</a>, <a href="/category/howto">howto</a>, <a href="/category/dotfiles">dotfiles</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p><strong>tl;dr:</strong></p>
+
+<p>Goal:<br />
+Dual-output/single-GPU/two independent screens - a configuration called <strong>Zaphod</strong>.</p>
+
+<p>Use two outputs from a system with a single graphics card or a single 
+on-board video (integrated graphics), with a dual screen configuration 
+so that there are two completely separate (independent) <code class="language-plaintext highlighter-rouge">:0.0</code> 
+and <code class="language-plaintext highlighter-rouge">:0.1</code> screens that have nothing to do with each other; that is,
+the origin of each screen is (0,0).</p>
+
+<p>This is known as a <strong>multi-head</strong> setup (sometimes called <strong>multiseat</strong>,
+or <strong>multi-seat</strong>, or <strong>dual head</strong>, or a <strong>Zaphod</strong> configuration).</p>
+
+<p>One of the reasons why: <br />
+I don’t want a single screen so that; for example, dialogs that are 
+intended to be positioned in the centre of a display always display 
+in the middle of span across monitors in a dual-monitor configuration.</p>
+
+<p>To accomplish this, you need to:</p>
+<ol>
+  <li>Use two <code class="language-plaintext highlighter-rouge">Screen</code> sections (in the <strong>xorg.conf</strong> file) referring 
+to the device Identifiers.  For example, you can call 
+them: <code class="language-plaintext highlighter-rouge">Identifier "Screen0</code> 
+and <code class="language-plaintext highlighter-rouge">Identifier "Screen1"</code></li>
+  <li>Two <code class="language-plaintext highlighter-rouge">Device</code> sections (in the <strong>xorg.conf</strong> file) with: <br />
+Option “ZaphodHeads” “yourdevice” <br />
+(yourdevice is given by xrandr(1) tool) <br />
+Option “AccelMethod” “sna” <br />
+(In my tests, AccelMethod wasn’t needed when used 
+ with <code class="language-plaintext highlighter-rouge">modesetting</code>, while it was required when used 
+ with <code class="language-plaintext highlighter-rouge">intel</code> driver.)</li>
+  <li>(Only needed when used with graphics card drivers so you don’t need 
+this step if you will use <code class="language-plaintext highlighter-rouge">modesetting</code> driver): Install the card’s 
+driver (package names: xf86-video-*).  Most xf86-video-* drivers 
+support Zaphod mode, which allows for a single device to produce 
+multiple X screens.  For example, for a graphics card with 
+an Intel chipset, you need to install the intel graphics 
+driver: <code class="language-plaintext highlighter-rouge">pkg installxf86-video-intel</code>.</li>
+</ol>
+
+<p>On recent FreeBSD versions, including FreeBSD 13, you would typically install
+<a href="https://www.freshports.org/graphics/drm-kmod/">drm-kmod metaport</a>, 
+which enables the integrated graphics chip on Intel CPUs (Intel Integrated 
+Graphics, aka HD Graphics).  With <strong>drm-kmod</strong>, X.Org autodetects the driver, 
+and utilizes the <a href="https://www.x.org/wiki/ModeSetting/"><strong>modesetting</strong> X.Org driver</a> 
+and/or <a href="https://www.freedesktop.org/wiki/Software/Glamor/">glamor driver</a>.</p>
+
+<p>It’s recommened to use the <strong>modesetting</strong> driver but the use of specific 
+chipset graphics drivers is not discouraged if it’s needed.</p>
+
+<hr />
+
+<p>Operating system and hardware used:</p>
+
+<p>FreeBSD 13.0<br />
+<strong>csh</strong> shell<br />
+<a href="https://www.x.org/releases/X11R7.6/doc/man/man1/twm.1.xhtml"><strong>twm</strong> - Tab Window Manager for the X Window System</a>  <a href="#footnotes">¹</a>  <br />
+Laptop: <a href="https://www.lenovo.com/us/en/p/laptops/thinkpad/thinkpadx/thinkpad-x280/22tp2tx2800">Lenovo ThinkPad X280 | Ultraportable 12.5” Business Laptop</a>  <br />
+External monitor: <a href="https://www.lg.com/us/monitors/lg-29WL500-B-led-monitor">LG 29’’ Class 21:9 UltraWide FHD IPS Monitor with HDR10 (29’’ Diagonal)</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% freebsd-version
+13.0-RELEASE-p5
+
+% ps $$
+  PID TT  STAT    TIME COMMAND
+19567  3  Ss   0:00.09 -tcsh (tcsh)
+
+% uname -a
+FreeBSD machine1.home.arpa 13.0-RELEASE-p4 FreeBSD 13.0-RELEASE-p4 
+  #0: Tue Aug 24 07:33:27 UTC 2021     
+  root@amd64-builder.daemonology.net:/usr/obj/usr/src/amd64.amd64/sys/GENERIC
+  amd64
+</code></pre></div></div>
+
+<p><strong>Note:</strong> <br />
+In code excerpts and examples, the long lines are folded and then 
+indented to make sure they fit the page.</p>
+
+<h2 id="two-methods-of-setting-up">Two Methods of Setting Up</h2>
+
+<p><strong>NOTE:</strong> <br />
+These methods have been tested on a laptop (notebook) with a dual-head 
+<strong>Intel</strong> graphics card with two physical monitor connections.   <br />
+There might be other methods available for different configurations; 
+for example, with a dual-head Nvidia graphics cards or AMD Radeon 
+chipsets (package name in FreeBSD: xf86-video-amdgpu).</p>
+
+<p>Other possibilites include Xinerama or Xypher. <a href="#footnotes">²</a></p>
+
+<p>The two methods explained here are a static setup in <code class="language-plaintext highlighter-rouge">xorg.conf</code> with:</p>
+<ol>
+  <li><strong>Intel</strong> video driver - Xorg driver for Intel integrated graphics chipsets</li>
+  <li><strong>modesetting</strong> - video driver for framebuffer device</li>
+</ol>
+
+<p>Each of the two drivers has its own man page:
+<code class="language-plaintext highlighter-rouge">man modesetting</code>, <code class="language-plaintext highlighter-rouge">man intel</code>.</p>
+
+<p><strong>Note:</strong> <br />
+You can also set up dual head dynamically by using <code class="language-plaintext highlighter-rouge">xrandr(1)</code> tool; 
+however, this tool doesn’t provide support for <strong>Zaphod</strong> mode.  In other
+words, with <code class="language-plaintext highlighter-rouge">xrandr(1)</code> you can quickly configure two monitors but 
+the display is one screen, not two independent screens.</p>
+
+<p>xrandr(1) tool is a command line interface to RandR (Rotate and Resize) 
+extension <a href="#footnotes">³</a>, and can be used to set outputs for a screen dynamically, 
+without adding any specific settings in xorg.conf.</p>
+
+<p>Starting with RandR 1.2, you can set up dual head and add/remove 
+a monitor without restarting X.</p>
+
+<hr />
+
+<h3 id="configuration-with-xorg-driver-for-intel-integrated-graphics-chipsets---method-1-of-2">Configuration with Xorg driver for Intel Integrated Graphics Chipsets - Method 1 of 2</h3>
+
+<p>On FreeBSD 13, the <strong>xorg.conf</strong> is located in the<br />
+directory <code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d/</code>. <a href="#footnotes">⁴</a></p>
+
+<h4 id="x11-window-system-configuration">X11 Window System Configuration</h4>
+
+<p>From <br />
+<a href="https://vermaden.wordpress.com/tag/xdm/">FreeBSD Desktop – Part 3 – X11 Window System</a>  <br />
+(Posted on May 22, 2018) <br />
+(Retrieved on Dec 12, 2021)</p>
+
+<blockquote>
+  <p>Historically you would create entire <code class="language-plaintext highlighter-rouge">/etc/X11/xorg.conf</code> file 
+which would include complete X11 Window System configuration.</p>
+
+  <p>Recently to comply with FreeBSD <code class="language-plaintext highlighter-rouge">hier(7)</code> directory structure and 
+logic this can be also configured as <code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf</code> 
+file and even more recently you can just configure these parts of X11 
+server that you need without touching other parts.</p>
+
+  <p>This ‘individual’ configuration is done in 
+the <code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d</code> directory with 
+individual files for each setting, like <code class="language-plaintext highlighter-rouge">card.conf</code> for 
+graphics card configuration.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pciconf -lv | grep -A4 vga
+vgapci0@pci0:0:2:0:     class=0x030000 rev=0x07 hdr=0x00 vendor=0x8086 device=0x
+5917 subvendor=0x17aa subdevice=0x2256
+    vendor     = 'Intel Corporation'
+    device     = 'UHD Graphics 620'
+    class      = display
+    subclass   = VGA
+</code></pre></div></div>
+
+<p>On the Lenovo x280 laptop with an external monitor plugged in:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr --listproviders
+Providers: number : 1
+Provider 0: id: 0x47 cap: 0xa, Sink Output, 
+  Sink Offload crtcs: 3 outputs: 5 associated providers: 0 name:modesetting
+</code></pre></div></div>
+
+<p>Install the X.Org legacy driver for Intel integrated graphics 
+chipsets (package name: xf86-video-intel).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install xf86-video-intel
+</code></pre></div></div>
+
+<p>The content of the <code class="language-plaintext highlighter-rouge">card.conf</code> configuration file for graphics card 
+configuration (in this example, I had created this file previously, 
+customizing it for <strong>modesetting</strong> video driver).  Here’s how it looked 
+before changing it to include the X.Org legacy driver for Intel 
+integrated graphics chipsets:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/card.conf
+Section "Device"
+    Identifier "Card0"
+    Driver "modesetting"
+EndSection
+</code></pre></div></div>
+
+<p><strong>Note:</strong><br />
+You can designate the graphics card to work with the Intel driver by 
+using the following <code class="language-plaintext highlighter-rouge">Device</code> section (but it would still be 
+a <strong>single</strong> extended display over two monitors):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/card.conf
+Section "Device"
+    Identifier "Card0"
+    Driver     "intel"
+    BusID      "PCI:0:2:0"
+EndSection
+</code></pre></div></div>
+
+<p>The value for BusID line is obtained from the first line of the output<br />
+of the command <code class="language-plaintext highlighter-rouge">pciconf -lv | grep -A4 vga</code> ran above.</p>
+
+<p>Modify the <strong>card.conf</strong> to include the X.Org Intel legacy driver and 
+to configure <strong>two</strong> <code class="language-plaintext highlighter-rouge">Identifer</code> sections (with <code class="language-plaintext highlighter-rouge">Option</code> set 
+to <code class="language-plaintext highlighter-rouge">ZaphodHeads</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/card.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Section "Device"
+  Identifier "Intel0"
+  Driver     "intel"
+  Option     "ZaphodHeads" "HDMI-2"
+  Option     "AccelMethod" "sna"
+  Option     "DPMS"
+  Screen     0
+  #BusID      "PCI:0:2:0"
+EndSection
+ 
+Section "Device"
+  Identifier "Intel1"
+  Driver     "intel"
+  Option     "ZaphodHeads" "eDP-1"
+  Option     "AccelMethod" "sna"
+  Option     "DPMS"
+  Screen     1
+  #BusID      "PCI:0:2:0"
+EndSection
+</code></pre></div></div>
+
+<p>The BusID line is optional.</p>
+
+<p>To obtain individual screen resolutions, use the randr(1) command.</p>
+
+<p>On the Lenovo x280 laptop with the external monitor, 
+LG 29’’ 21:9 UltraWide FHD IPS Monitor plugged in:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr
+Screen 0: minimum 320 x 200, current 4480 x 1080, maximum 16384 x 16384
+eDP-1 connected primary 1920x1080+0+0 
+  (normal left inverted right x axis y axis) 276mm x 155mm
+   1920x1080     60.05*+  60.01    59.97    59.96    59.93  
+---- snip ----
+DP-1 disconnected (normal left inverted right x axis y axis)
+HDMI-1 disconnected (normal left inverted right x axis y axis)
+DP-2 disconnected (normal left inverted right x axis y axis)
+HDMI-2 connected 2560x1080+1920+0 
+  (normal left inverted right x axis y axis) 798mm x 334mm
+   2560x1080     59.98*+  74.99    50.00  
+---- snip ----
+</code></pre></div></div>
+
+<p>The dimesions (geometry), a.k.a. <code class="language-plaintext highlighter-rouge">x resolution</code> (horizontal resolution) 
+and <code class="language-plaintext highlighter-rouge">y resolution</code> (vertical resolution) values:</p>
+
+<p>for the built-in screen (on the output <strong>eDP-1</strong>): 1920x1080  <br />
+for the external monitor (on the output <strong>HDMI-2</strong>): 2560x1080</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        |--&gt; X
+
+        0               1920                     4480
+- 0     +----------------+------------------------+
+|       |                |                        |
+|       |     eDP-1      |        HDMI-2          |
+v       |   1920x1080    |       2560x1080        |
+        |                |                        |
+1080    +----------------+------------------------+
+
+        |&lt;- width=1920 -&gt;|&lt;-     width=2560     -&gt;|
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xdpyinfo | grep -A1 '^screen'
+screen #0:
+  dimensions:    4480x1080 pixels (1185x285 millimeters)
+</code></pre></div></div>
+
+<p>Currently, two outputs form <strong>a single display</strong> (a.k.a. extended display) 
+with the geometry (dimensions) of <strong>4480x1080</strong>; that is, 
+<strong>width = 4480</strong> and <strong>height = 1080</strong>.</p>
+
+<p>The goal is to modify this setup and create a dual layout X.Org 
+configuration file with two <strong>independent</strong> outputs.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/layout.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/layout.conf
+Section "ServerLayout"
+    Identifier     "DualHeadConf"
+    Screen      0  "Screen0" 1920 0
+    Screen      1  "Screen1"    0 0
+EndSection
+</code></pre></div></div>
+
+<p>For the Intel driver kernel module to be loaded at startup in the boot process
+you need to add this line in <code class="language-plaintext highlighter-rouge">/etc/rc.conf</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kld_list="i915kms"
+</code></pre></div></div>
+
+<p><strong>Note:</strong> <br />
+In previous FreeBSD releases, you would need to add a line <code class="language-plaintext highlighter-rouge">kern.vty=vt</code>
+to <code class="language-plaintext highlighter-rouge">/boot/loader.conf</code> but that’s not needed anymore as this is the 
+default in new FreeBSD releases.</p>
+
+<p>Resource: <br />
+<a href="https://docs.freebsd.org/en/books/handbook/x11/">FreeBSD Handbook - Chapter 5. The X Window System -  5.4.3. Kernel Mode Setting (KMS)</a>  <br />
+(Retrieved on Dec 12, 2021)</p>
+
+<blockquote>
+  <p>When the computer switches from displaying the console to a higher 
+screen resolution for X, it must set the video output mode. 
+Recent versions of Xorg use a system inside the kernel to do these mode 
+changes more efficiently.  Older versions of FreeBSD use sc(4), which 
+is not aware of the KMS system.  The end result is that after closing X, 
+the system console is blank, even though it is still working. 
+The newer vt(4) console avoids this problem.</p>
+
+  <p>Add this line to /boot/loader.conf to enable vt(4):</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kern.vty=vt
+</code></pre></div>  </div>
+</blockquote>
+
+<hr />
+
+<p>Find out <code class="language-plaintext highlighter-rouge">Modeline</code> values for the output <strong>eDP-1</strong> 
+(the built-in laptop screen).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -i modeline /var/log/Xorg.0.log | wc -l
+      68
+</code></pre></div></div>
+
+<p><strong>Note:</strong> <br />
+Instead of obtaining <code class="language-plaintext highlighter-rouge">Modeline</code> values from Xorg log file, you can 
+use <code class="language-plaintext highlighter-rouge">cvt(1)</code> (a utility for calculating VESA Coordinated Video 
+Timing modes) or <code class="language-plaintext highlighter-rouge">gtf(1)</code> (a utility for calculating VESA GTF modes). <br />
+See examples below; immediately after the section showing how to 
+obtain <code class="language-plaintext highlighter-rouge">Modeline</code> values from the Xorg log file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n 'Printing probed modes for output eDP-1' /var/log/Xorg.0.log
+179:[   106.950] (II) intel(0): Printing probed modes for output eDP-1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 179,211p Xorg.0.log | wc -l
+      33
+</code></pre></div></div>
+
+<p>Filtering out for the highest refresh rate, which for this output is 60 Hz:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 179,211p Xorg.0.log | grep x60 | wc -l
+      10
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 179,211p Xorg.0.log | grep x60 | grep '1920x1080' | wc -l
+       2
+</code></pre></div></div>
+
+<p><strong>Note:</strong> <br />
+The long lines are folded and then indented to make sure they fit the page.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 179,211p Xorg.0.log | grep x60 | grep '1920x1080'
+[   106.950] (II) intel(0): Modeline "1920x1080"x60.0  
+  141.00  1920 1936 1952 2104  1080 1083 1097 1116 -hsync -vsync (67.0 kHz eP)
+[   106.950] (II) intel(0): Modeline "1920x1080"x60.0  
+  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync (67.2 kHz d)
+</code></pre></div></div>
+
+<p>Similarly, find out <code class="language-plaintext highlighter-rouge">Modeline</code> values for the output <strong>HDMI-2</strong> <br />
+(the external 29’’ LG monitor).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n 'Printing probed modes for output HDMI-2' /var/log/Xorg.0.log
+285:[   107.364] (II) intel(0): Printing probed modes for output HDMI-2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 285,319p /var/log/Xorg.0.log | wc -l
+      35
+</code></pre></div></div>
+
+<p>Filtering out for the highest refresh rate, which for this output is 75 Hz:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 285,319p /var/log/Xorg.0.log | grep x75 | wc -l
+       7
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 285,319p /var/log/Xorg.0.log | grep x75 | grep '2560x1080' | wc -l
+       1
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 285,319p /var/log/Xorg.0.log | grep x75 | grep '2560x1080'
+[   107.364] (II) intel(0): Modeline "2560x1080"x75.0  
+  228.25  2560 2608 2640 2720  1080 1083 1093 1119 +hsync -vsync (83.9 kHz e)
+</code></pre></div></div>
+
+<p>If you wanted to calculate <code class="language-plaintext highlighter-rouge">Modeline</code> values with <code class="language-plaintext highlighter-rouge">cvt(1)</code> 
+(usage: <code class="language-plaintext highlighter-rouge">cvt [-v|--verbose] [-r|--reduced] h-resolution v-resolution [refresh]</code>), 
+where <code class="language-plaintext highlighter-rouge">--verbose</code> is “Warn verbosely when a given mode does not 
+completely correspond with CVT standards”, or with <code class="language-plaintext highlighter-rouge">gtf(1)</code>
+(usage: <code class="language-plaintext highlighter-rouge">gtf x y refresh [-v|--verbose] [-f|--fbmode] [-x|--xorgmode]</code>), 
+where <code class="language-plaintext highlighter-rouge">--verbose</code> is: “Enable verbose printouts  This shows a trace 
+for each step of the computation”.  <br />
+For both <code class="language-plaintext highlighter-rouge">cvt(1)</code> and <code class="language-plaintext highlighter-rouge">gtf(1)</code>:
+<code class="language-plaintext highlighter-rouge">x</code> : the desired horizontal resolution;
+<code class="language-plaintext highlighter-rouge">y</code> : the desired vertical resolution;
+<code class="language-plaintext highlighter-rouge">refresh</code> : the desired refresh rate.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cvt --verbose 1920 1080 60
+# 1920x1080 59.96 Hz (CVT 2.07M9) hsync: 67.16 kHz; pclk: 173.00 MHz
+Modeline "1920x1080_60.00"  
+  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cvt --verbose 2560 1080 75
+Warning: Aspect Ratio is not CVT standard.
+# 2560x1080 74.94 Hz (CVT) hsync: 84.68 kHz; pclk: 294.00 MHz
+Modeline "2560x1080_75.00"  
+  294.00  2560 2744 3016 3472  1080 1083 1093 1130 -hsync +vsync
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gtf 1920 1080 60 --verbose
+ 1: [H PIXELS RND]             :     1920.000000
+ 2: [V LINES RND]              :     1080.000000
+ 3: [V FIELD RATE RQD]         :       60.000000
+ 4: [TOP MARGIN (LINES)]       :        0.000000
+ 5: [BOT MARGIN (LINES)]       :        0.000000
+ 6: [INTERLACE]                :        0.000000
+ 7: [H PERIOD EST]             :       14.909035
+ 8: [V SYNC+BP]                :       37.000000
+ 9: [V BACK PORCH]             :       34.000000
+10: [TOTAL V LINES]            :     1118.000000
+11: [V FIELD RATE EST]         :       59.994118
+12: [H PERIOD]                 :       14.907574
+13: [V FIELD RATE]             :       59.999996
+14: [V FRAME RATE]             :       59.999996
+15: [LEFT MARGIN (PIXELS)]     :        0.000000
+16: [RIGHT MARGIN (PIXELS)]    :        0.000000
+17: [TOTAL ACTIVE PIXELS]      :     1920.000000
+18: [IDEAL DUTY CYCLE]         :       25.527727
+19: [H BLANK (PIXELS)]         :      656.000000
+20: [TOTAL PIXELS]             :     2576.000000
+21: [PIXEL FREQ]               :      172.798065
+22: [H FREQ]                   :       67.079994
+17: [H SYNC (PIXELS)]          :      208.000000
+18: [H FRONT PORCH (PIXELS)]   :      120.000000
+36: [V ODD FRONT PORCH(LINES)] :        1.000000
+
+  # 1920x1080 @ 60.00 Hz (GTF) hsync: 67.08 kHz; pclk: 172.80 MHz
+  Modeline "1920x1080_60.00"  
+    172.80  1920 2040 2248 2576  1080 1081 1084 1118  -HSync +Vsync
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% gtf 2560 1080 75 --verbose
+ 1: [H PIXELS RND]             :     2560.000000
+ 2: [V LINES RND]              :     1080.000000
+ 3: [V FIELD RATE RQD]         :       75.000000
+ 4: [TOP MARGIN (LINES)]       :        0.000000
+ 5: [BOT MARGIN (LINES)]       :        0.000000
+ 6: [INTERLACE]                :        0.000000
+ 7: [H PERIOD EST]             :       11.825470
+ 8: [V SYNC+BP]                :       47.000000
+ 9: [V BACK PORCH]             :       44.000000
+10: [TOTAL V LINES]            :     1128.000000
+11: [V FIELD RATE EST]         :       74.967407
+12: [H PERIOD]                 :       11.820331
+13: [V FIELD RATE]             :       75.000000
+14: [V FRAME RATE]             :       75.000000
+15: [LEFT MARGIN (PIXELS)]     :        0.000000
+16: [RIGHT MARGIN (PIXELS)]    :        0.000000
+17: [TOTAL ACTIVE PIXELS]      :     2560.000000
+18: [IDEAL DUTY CYCLE]         :       26.453901
+19: [H BLANK (PIXELS)]         :      928.000000
+20: [TOTAL PIXELS]             :     3488.000000
+21: [PIXEL FREQ]               :      295.084808
+22: [H FREQ]                   :       84.600006
+17: [H SYNC (PIXELS)]          :      280.000000
+18: [H FRONT PORCH (PIXELS)]   :      184.000000
+36: [V ODD FRONT PORCH(LINES)] :        1.000000
+
+  # 2560x1080 @ 75.00 Hz (GTF) hsync: 84.60 kHz; pclk: 295.08 MHz
+  Modeline "2560x1080_75.00"  
+    295.08  2560 2744 3024 3488  1080 1081 1084 1128  -HSync +Vsync
+</code></pre></div></div>
+
+<p>Create <code class="language-plaintext highlighter-rouge">Monitor</code> sections and a <code class="language-plaintext highlighter-rouge">Screen</code> section.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/monitors.conf 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/monitors.conf 
+Section "Monitor"
+    Identifier "eDP-1"
+    Modeline "1920x1080x60.00"  141.00  1920 1936 1952 2104  1080 1083 1097 1116 -hsync -vsync
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+Section "Monitor"
+    Identifier "HDMI-2"
+    Modeline "2560x1080x75.00"  228.25  2560 2608 2640 2720  1080 1083 1093 1119 +hsync -vsync 
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+# A Screen section ties a device (video card) to a monitor at a specific 
+# colour depth and set of display resolutions. 
+
+Section "Screen"
+    Identifier "Screen0"
+    Monitor "HDMI-2"
+    DefaultDepth 24
+    Device "Intel0"
+    SubSection "Display"
+        Modes "2560x1080x75.00"
+        Viewport   1920 0
+        Depth       24
+    EndSubSection
+EndSection
+
+Section "Screen"
+    Identifier "Screen1"
+    Monitor "eDP-1"
+    DefaultDepth 24
+    Device "Intel1"
+    SubSection "Display"
+        Modes "1920x1080x60.00"
+        Viewport   0 0
+        Depth     24
+    EndSubSection
+EndSection
+</code></pre></div></div>
+
+<p>The whole <strong>xorg.conf</strong> file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/card.conf; printf %s\\n; \
+ cat /usr/local/etc/X11/xorg.conf.d/fonts.conf; printf %s\\n; \
+ cat /usr/local/etc/X11/xorg.conf.d/keyboard.conf; printf %s\\n; \
+ cat /usr/local/etc/X11/xorg.conf.d/layout.conf; printf %s\\n; \
+ cat /usr/local/etc/X11/xorg.conf.d/modules.conf; printf %s\\n; \
+ cat /usr/local/etc/X11/xorg.conf.d/monitors.conf
+Section "Device"
+  Identifier "Intel0"
+  Driver     "intel"
+  Option     "ZaphodHeads" "HDMI-2"
+  Option     "AccelMethod" "sna"
+  Option     "DPMS"
+  Screen     0
+  #BusID      "PCI:0:2:0"
+EndSection
+ 
+Section "Device"
+  Identifier "Intel1"
+  Driver     "intel"
+  Option     "ZaphodHeads" "eDP-1"
+  Option     "AccelMethod" "sna"
+  Option     "DPMS"
+  Screen     1
+  #BusID      "PCI:0:2:0"
+EndSection
+
+Section "Files"
+    FontPath "/usr/local/share/fonts/dejavu/"
+EndSection
+
+Section "InputClass"
+    Identifier "All Keyboards"
+    MatchIsKeyboard "yes"
+    Option "XkbLayout" "us, rs(latinunicode), rs"
+    Option "XkbOptions" "ctrl:nocaps,grp:rctrl_toggle"
+EndSection
+
+Section "ServerLayout"
+    Identifier     "DualHeadConf"
+    Screen      0  "Screen0" 1920 0
+    Screen      1  "Screen1"    0 0
+EndSection
+
+Section "Module"
+    Load "freetype"
+EndSection
+
+Section "Monitor"
+    Identifier "eDP-1"
+    Modeline "1920x1080x60.00"  141.00  1920 1936 1952 2104  1080 1083 1097 1116 -hsync -vsync
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+Section "Monitor"
+    Identifier "HDMI-2"
+    Modeline "2560x1080x75.00"  228.25  2560 2608 2640 2720  1080 1083 1093 1119 +hsync -vsync
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+# A Screen section ties a device (video card) to a monitor at a specific
+# colour depth and set of display resolutions.
+
+Section "Screen"
+    Identifier "Screen0"
+    Monitor "HDMI-2"
+    DefaultDepth 24
+    Device "Intel0"
+    SubSection "Display"
+        Modes "2560x1080x75.00"
+        Viewport    1920 0
+        Depth       24
+    EndSubSection
+EndSection
+
+Section "Screen"
+    Identifier "Screen1"
+    Monitor "eDP-1"
+    DefaultDepth 24
+    Device "Intel1"
+    SubSection "Display"
+        Modes "1920x1080x60.00"
+        Viewport   0 0
+        Depth     24
+    EndSubSection
+EndSection
+</code></pre></div></div>
+
+<p>Restart Xorg.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pkill Xorg
+</code></pre></div></div>
+
+<hr />
+
+<p>After restarting Xorg:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xdpyinfo | grep -A1 '^screen'
+screen #0:
+  dimensions:    2560x1080 pixels (677x285 millimeters)
+--
+screen #1:
+  dimensions:    1920x1080 pixels (508x285 millimeters)
+</code></pre></div></div>
+
+<p>On the external monitor (output: HDMI-2):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr --listproviders
+Providers: number : 1
+Provider 0: id: 0x43 cap: 0xb, Source Output, Sink Output, 
+  Sink Offload crtcs: 2 outputs: 2 associated providers: 0 name:Intel
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr
+Screen 0: minimum 8 x 8, current 2560 x 1080, maximum 32767 x 32767
+HDMI-2 connected primary 2560x1080+0+0 
+ (normal left inverted right x axis y axis) 800mm x 340mm
+   2560x1080x75.00  74.99*+
+   2560x1080     59.98 +  74.99    50.00  
+   3840x2160     30.00    25.00    24.00    29.97    23.98  
+   2560x1440     59.95  
+   1920x1080     74.99    60.00    50.00    59.94  
+   1680x1050     59.88  
+   1600x900      60.00  
+   1280x1024     75.02    60.02  
+   1280x800      59.91  
+   1152x864      75.00    59.97  
+   1280x720      60.00    50.00    59.94  
+   1024x768      75.03    60.00  
+   1024x576      59.97  
+   832x624       74.55  
+   800x600       75.00    60.32  
+   720x576       50.00  
+   720x480       60.00    59.94  
+   640x480       75.00    60.00    59.94  
+VIRTUAL1 disconnected (normal left inverted right x axis y axis)
+</code></pre></div></div>
+
+<p>On the laptop built-in screen (output: eDP-1):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr --listproviders
+Providers: number : 1
+Provider 0: id: 0xcc cap: 0xb, Source Output, Sink Output, 
+  Sink Offload crtcs: 2 outputs: 2 associated providers: 0 name:Intel
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xrandr
+Screen 1: minimum 8 x 8, current 1920 x 1080, maximum 32767 x 32767
+eDP-1 connected primary 1920x1080+0+0
+ (normal left inverted right x axis y axis) 280mm x 160mm
+   1920x1080x60.00  60.05*+
+   1920x1080     60.05 +  59.93  
+   1680x1050     59.88  
+   1400x1050     59.98  
+   1600x900      60.00    59.95    59.82  
+   1280x1024     60.02  
+   1400x900      59.96    59.88  
+   1280x960      60.00  
+   1368x768      60.00    59.88    59.85  
+   1280x800      59.81    59.91  
+   1280x720      59.86    60.00    59.74  
+   1024x768      60.00  
+   1024x576      60.00    59.97    59.90    59.82  
+   960x540       60.00    59.63    59.82  
+   800x600       60.32    56.25  
+   864x486       60.00    59.92    59.57  
+   640x480       59.94  
+   720x405       59.51    60.00    58.99  
+   640x360       59.84    59.32    60.00  
+VIRTUAL1 disconnected (normal left inverted right x axis y axis)
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="configuration-with-the-modesetting-driver---method-2-of-2">Configuration with the modesetting Driver - Method 2 of 2</h3>
+
+<p>Use the same setup as with the configuration for the Intel video 
+driver for X.Org, except for <code class="language-plaintext highlighter-rouge">Device</code> sections (in my setup, 
+in <strong>card.conf</strong> file) and <code class="language-plaintext highlighter-rouge">Monitor</code> and <code class="language-plaintext highlighter-rouge">Screen</code> 
+sections (in my setup, in <strong>monitors.conf</strong> file).</p>
+
+<p>Modify <strong>card.conf</strong> xorg configuration file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/card.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/card.conf
+Section "Device"
+  Identifier "Card0"
+  Driver     "modesetting"
+  Option     "DPMS"
+  Screen     0
+  #BusID      "PCI:0:2:0"
+EndSection
+
+Section "Device"
+  Identifier "Card1"
+  Driver     "modesetting"
+  Option     "DPMS"
+  Screen     1
+  #BusID      "PCI:0:2:0"
+EndSection
+</code></pre></div></div>
+
+<p>Modify the <strong>monitors.conf</strong> xorg configuration file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo vi /usr/local/etc/X11/xorg.conf.d/monitors.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/monitors.conf
+Section "Monitor"
+    Identifier "eDP-1"
+    Modeline "1920x1080x60.00"  141.00  1920 1936 1952 2104  1080 1083 1097 1116 -hsync -vsync
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+Section "Monitor"
+    Identifier "HDMI-2"
+    Modeline "2560x1080x75.00"  228.25  2560 2608 2640 2720  1080 1083 1093 1119 +hsync -vsync
+    Option "DPMS" "true"   # DPMS (Display Power Management Signaling)
+EndSection
+
+# A Screen section ties a device (video card) to a monitor at a specific
+# colour depth and set of display resolutions.
+
+Section "Screen"
+    Identifier "Screen0"
+    Monitor "HDMI-2"
+    DefaultDepth 24
+    Device "Card0"
+    Option      "ZaphodHeads" "HDMI-2"
+    SubSection "Display"
+        Depth       24
+    EndSubSection
+EndSection
+
+Section "Screen"
+    Identifier "Screen1"
+    Monitor "eDP-1"
+    DefaultDepth 24
+    Device "Card1"
+    Option      "ZaphodHeads" "eDP-1"
+    SubSection "Display"
+        Depth     24
+    EndSubSection
+EndSection
+</code></pre></div></div>
+
+<p>Restart Xorg (a.k.a. X, or X11, or X.Org).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% pkill Xorg
+</code></pre></div></div>
+
+<hr />
+
+<h4 id="footnotes">Footnotes</h4>
+
+<p>[¹] The default window manager supplied with X11 since the X11R4 release in 1989.</p>
+
+<p>[²] Xephyr <br />
+(<a href="https://www.freedesktop.org/wiki/Software/Xephyr/">https://www.freedesktop.org/wiki/Software/Xephyr/</a>)</p>
+<blockquote>
+
+  <p>Xephyr is a kdrive based X Server which targets a window on a host 
+X Server as its framebuffer.  Unlike Xnest it supports modern 
+X extensions ( even if host server doesn’t ) such as Composite, Damage, 
+randr etc (no GLX support now).  It uses SHM Images and shadow 
+framebuffer updates to provide good performance. It also has a visual 
+debugging mode for observing screen updates.</p>
+
+  <p>Possible uses include:</p>
+
+  <p>Xnest replacement - Window manager, Composite ‘gadget’, etc. development tool. <br />
+Toolkit debugging - rendundant toolkit paints can be observered easily 
+via the debugging mode. <br />
+X Server internals development - develop without the need for an extra 
+machine / display. <br />
+Multiterminal with Xephyr - configuration is a single computer which 
+supports multiple users at the same time.</p>
+
+  <p>More information <br />
+See the README<br />
+<a href="https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README">https://cgit.freedesktop.org/xorg/xserver/tree/hw/kdrive/ephyr/README</a></p>
+</blockquote>
+
+<p>[³] X Server Extensions<br />
+The X11 can be enhanced by adding extensions to the X server.</p>
+
+<p>Examples of some of the extensions:  <br />
+DPMS: Displays Power Management Signalling. Enables the X server 
+to reduce monitor power consumption when not in use.</p>
+
+<p>RANDR: Rotate and Resize.  Notifies clients when the display is resized 
+to a new resolution or rotated (especially useful on laptops, tablets 
+and LCDs on pivot mounts) and enables the hot-plugging of monitors.</p>
+
+<p>[⁴] Traditionally, the most important file for Xorg has been the 
+<strong>xorg.conf</strong> configuration file.</p>
+
+<p>Modern versions of Xorg do not create an <strong>xorg.conf</strong> file by default. 
+In other words, using the <code class="language-plaintext highlighter-rouge">X -configure</code> is not recommended. 
+Instead, on FreeBSD, various files ending in <strong>*.conf</strong> reside in the
+<code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d</code> directory and are automatically 
+loaded by X at boot, prior to reading any <strong>xorg.conf</strong>.</p>
+
+<p>Configuration files will also be searched for in a directory
+reserved for system use.  This is to separate configuration files from
+the vendor or 3rd party packages from those of local administration.
+In FreeBSD, these files are found in the 
+directory <code class="language-plaintext highlighter-rouge">/usr/local/share/X11/xorg.conf.d</code>.</p>
+
+<p>On my system used for this document:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/share/X11/xorg.conf.d
+total 14
+-rw-r--r--  1 root  wheel   1.3K Jul  4 00:26 10-quirks.conf
+-rw-r--r--  1 root  wheel   152B Jul  4 00:26 20-evdev-kbd.conf
+-rw-r--r--  1 root  wheel   1.4K Jul  4 00:59 40-libinput.conf
+</code></pre></div></div>
+
+<p>You should not change what is included for system use 
+in <code class="language-plaintext highlighter-rouge">/usr/local/share/X11/xorg.conf.d</code> directory.</p>
+
+<p>It’s recommended to include your customizations or to override system 
+settings by creating *.conf files in
+<code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d</code> directory.</p>
+
+<p><strong>Note:</strong>  <br />
+Names of these files are arbitrary and each file can contain one 
+or more sections in the same format used by <strong>xorg.conf</strong>.  Extension of 
+the files has to be ‘<strong>.conf</strong>’.</p>
+
+<p>Immediately after installing FreeBSD, I usually include the following 
+two X configuration customizations:</p>
+
+<p>Create a <code class="language-plaintext highlighter-rouge">Module</code> X configuration file to make sure that the freetype 
+module is loaded.  This file has a line <code class="language-plaintext highlighter-rouge">Load "freetype"</code> inside 
+the <code class="language-plaintext highlighter-rouge">"Modules"</code> section:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /usr/local/etc/X11/xorg.conf.d/modules.conf 
+Section "Module"
+    Load "freetype"
+EndSection
+</code></pre></div></div>
+
+<p>Create a keyboard layout customization file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/X11/xorg.conf.d/keyboard.conf
+Section "InputClass"
+    Identifier "All Keyboards"
+    MatchIsKeyboard "yes"
+    Option "XkbLayout" "us, rs(latinunicode), rs"
+    Option "XkbOptions" "ctrl:nocaps,grp:rctrl_toggle"
+EndSection
+</code></pre></div></div>
+
+<p>With this configuration 
+file (<code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d/keyboard.conf</code>),
+pressing the right Ctrl keyboard key cycles betweeen Serbian (latin), 
+Serbian (cyrillic) and English (US) keyboard layouts, 
+and <code class="language-plaintext highlighter-rouge">ctrl:nocaps</code> to ignore the Caps Lock key.</p>
+
+<p><strong>Note:</strong> <br />
+Alternatively, you can set your keymap in your <code class="language-plaintext highlighter-rouge">$HOME/.xinitrc</code>.
+For example, you can add 
+a line <code class="language-plaintext highlighter-rouge">setxkbmap rs -model pc105</code> 
+to your <code class="language-plaintext highlighter-rouge">.xinitrc</code> file.</p>
+
+<p><strong>Note:</strong><br />
+You can still create the xorg.conf file and continue making custom 
+configurations in <code class="language-plaintext highlighter-rouge">/etc/X11/xorg.conf</code> as has been 
+traditionally done but the file is not created by default.</p>
+
+<p>From <br />
+<a href="https://docs.freebsd.org/en/books/handbook/x11/#x-config">5.4. Xorg Configuration - 5.4.1. Quick Start – FreeBSD Handbook</a><br />
+(Retrieved on Dec 20, 2021)</p>
+
+<blockquote>
+  <p>5.4.4.1. Directory</p>
+
+  <p>Xorg looks in several directories for configuration files.
+<code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/</code> is the recommended directory for these files 
+on FreeBSD.  Using this directory helps keep application files separate 
+from operating system files.</p>
+
+  <p>Storing configuration files in the legacy <strong>/etc/X11/</strong> still works. 
+However, this mixes application files with the base FreeBSD files and 
+is not recommended.</p>
+
+  <p>5.4.4.2. Single or Multiple Files</p>
+
+  <p>It is easier to use multiple files that each configure a specific 
+setting than the traditional single <strong>xorg.conf</strong>.  These files are 
+stored in the <strong>xorg.conf.d/</strong> subdirectory of the main configuration 
+file directory.  The full path is typically
+<code class="language-plaintext highlighter-rouge">/usr/local/etc/X11/xorg.conf.d/</code>.</p>
+
+  <p>The traditional single <strong>xorg.conf</strong> still works, but is neither 
+as clear nor as flexible as multiple files in the <strong>xorg.conf.d/</strong> 
+subdirectory.</p>
+</blockquote>
+
+<hr />
+
+<h4 id="references">References:</h4>
+
+<p><a href="https://nouveau.freedesktop.org/MultiMonitorDesktop.html">Introduction to Multiple Monitors in X - freedesktop.org</a></p>
+
+<blockquote>
+  <p>. . .</p>
+  <h3 id="dual-head-graphics-cards">Dual-head Graphics Cards</h3>
+
+  <p>Then came dual-head graphics cards with two physical monitor connections 
+and things got complicated. It did not fit the one SCREEN, one card, 
+one monitor scheme, so drivers had to invent ways to circumvent 
+the X server architecture limitations.</p>
+
+  <p>One solution for a driver (DDX) is to create one SCREEN per head, 
+which is called <strong>Zaphod mode</strong> (after Zaphod Beeblebrox, from the 
+Hitchhiker’s Guide to the Galaxy).  This has the drawbacks of multiple 
+SCREENs, but you get the DPI right.</p>
+
+  <p>Another solution is to pretend that there is only one monitor, and use 
+just one SCREEN, which is what the Nvidia TwinView mode does. 
+TwinView avoids the drawbacks of the <em>Xinerama</em> feature, but has 
+a completely non-standard way of configuring it. Plus, it is proprietary.</p>
+
+  <p>The third and the only proper way to deal with it is the RandR extension, 
+which is a relatively new invention. RandR exposes the dual-head card 
+as a single SCREEN, yet having a standard way of managing the multiple 
+monitors.  It avoids the Xinerama feature drawbacks, but uses 
+the Xinerama extension to provide applications information about the 
+physical monitor layout.  RandR configuration can be controlled on the 
+fly with the command xrandr, and it can be written to 
+the X configuration file.  The default configuration is cloned views, 
+i.e. all heads show the same image.</p>
+</blockquote>
+
+<p><a href="https://www.phoronix.com/forums/forum/linux-graphics-x-org-drivers/open-source-amd-linux/14280-separate-screens-with-xrandr/page4">Separate screens with xrandr</a>:</p>
+<blockquote>
+  <p>With RandR:</p>
+
+  <p>This mode gives you two viewports over a single surface and the ability 
+to size and position independently. Benefit is configurability, 
+disadvantage is application support.  If you are using a RANDR 1.3 
+capable distribution, you can also set “–primary” to provide a hint to 
+gnome-panel et al. about which monitor is your “center of the universe”.</p>
+
+  <p>Disadvantage here is that applications are mostly naive when it comes 
+to multi-monitor modes.  They may listen to the xinerama extension and 
+place things intelligently, they may not.  This goes right up and down 
+the stack.</p>
+</blockquote>
+
+<p><a href="https://web.archive.org/web/20130429073111/http://en.gentoo-wiki.com/wiki/X.Org/Dual_Monitors#Single_graphics_card.2C_Multiple_X_screens_with_ZaphodHeads">X.Org/Dual Monitors - Single graphics card, Multiple X screens with ZaphodHeads</a>:</p>
+<blockquote>
+  <p>. . .</p>
+  <h3 id="single-graphics-card-multiple-x-screens-with-zaphodheads">Single graphics card, Multiple X screens with ZaphodHeads</h3>
+
+  <p>In the previous example, a single PCI device was used to stretch 
+a screen onto two separate displays. This will demonstrate how to 
+use a single PCI device to provide two separate screens on two 
+separate displays.  This will, for instance, allow you to launch 
+one program on a given display with DISPLAY=:0.0, and on another 
+with DISPLAY=:0.1.</p>
+
+  <h4 id="motivation">Motivation</h4>
+
+  <p>It is often desirable to have multiple X screens produced by 
+a single VGA controller.  Most xf86-video-* drivers support 
+Zaphod mode, which allows for a single device to produce 
+multiple X screens.  With intel graphics integrated onto all 
+Sandy Bridge and higher CPUs, this is especially important.</p>
+
+  <p>For instance, on a machine with an on-chip graphics controller, 
+as well as a separated video card, this would allow for one 
+display for each output.</p>
+
+  <p>This example will focus on intel, though it should work with 
+radeon and nouveau drivers that support it.   . . .</p>
+</blockquote>
+
+<p><a href="https://lists.archive.carbon60.com/gentoo/desktop/282286">Mailing List Archive: questions and sundry gripes about X11 multihead (it’s a rant)</a>: <br />
+(Posted on Dec 29, 2013)</p>
+<blockquote>
+  <p>After years of assuming I’d probably never set my system up with
+multiple monitors, I’ve decided to go ahead and do it. I’ve watched
+with some interest as various new schemes for doing it have
+emerged over the years (Xinerama , and now lately RandR), but
+I’ve always assumed that if nothing else, good old Zaphod mode
+would always be around, since it’s built right into the way X11
+numbers $DISPLAY (0:0, 0:1, 0:2…etc.).
+It’s been around so long, it’s older than Linux itself.<br />
+. . .</p>
+
+  <p>Anyway, Zaphod is what I want. I don’t care that it won’t let me
+drag windows between monitors. That’s precisely the advantage
+of it. Many applications are written with such an assumption of
+a single display that it’s best not to disappoint them.
+I don’t want to worry about what a full screen game will think
+of my multihead setup. I don’t want to see dialog windows
+(or anything else really) popping up, half on one monitor and
+half on another. I don’t want to have to setup the arrangement
+of my desktop so that it’s arranged to not look ridiculous at
+the point where the two monitors divide the screen. It’s all
+just simpler if we have two screens that are completely
+separate, and the only magic object that’s able to move
+between them is the mouse pointer.</p>
+
+  <p>I’m not complaining that we have RandR now. I think it’s great.
+One of X11’s greatest weaknesses has always been that before
+now, you couldn’t really make any big configuration changes
+while the X server is running. Now, thanks to RandR, you can
+do almost anything with your desktop running and active,
+and you don’t even need root access. You can’t configure
+Zaphod type multihead that way, but that’s fine – you
+couldn’t do that before either (nothing gained, nothing lost).
+But RandR lets you make almost any other desktop geometry
+change as a regular user without restarting X, and I think
+that’s great.</p>
+
+  <p>RandR (and its predecessor, Xinerama) both assume though that
+if you’re doing multihead, you want one big screen that spans
+multiple monitors. Nice if that’s what you want, but as
+detailed above, there are good reasons why you might prefer
+otherwise.</p>
+</blockquote>
+
+<p>Posted on Dec 29, 2013 <br />
+Permalink:<br />
+<a href="https://lists.archive.carbon60.com/gentoo/desktop/282080#282080">https://lists.archive.carbon60.com/gentoo/desktop/282080#282080</a></p>
+
+<hr />
+
+<p><a href="https://wiki.freebsd.org/Graphics">Graphics FreeBSD Wiki</a></p>
+
+<p><a href="https://01.org/temp-linuxgraphics/documentation/how-set-dual-head-intel-graphics-randr-1.2">How to Set Up Dual Head for Intel Graphics with RandR 1.2 - 01.org Intel Open Source</a></p>
+
+<p><a href="https://www.linuxquestions.org/questions/showthread.php?p=6167464">How to configure X for multi-head with two separate screens?</a></p>
+
+<p><a href="https://wiki.archlinux.org/title/Multihead#Separate_screens">Separate screens - Multihead - ArchWiki</a></p>
+
+<p><a href="https://unix.stackexchange.com/questions/365796/xorg-independent-mode">Xorg: Independent Mode</a></p>
+
+<p><a href="https://www.freshports.org/x11-drivers/xf86-video-intel">X.Org <strong>legacy driver</strong> for <strong>Intel</strong> integrated graphics chipsets – x11-drivers/xf86-video-intel</a></p>
+
+<p><a href="https://bbs.archlinux.org/viewtopic.php?id=105450">Multiseat gaming with multi-pointer X</a></p>
+
+<p><a href="https://superuser.com/questions/1616104/switch-monitors-in-xorg-conf-in-a-dual-screen-setup">Switch monitors in xorg.conf in a dual screen setup</a></p>
+
+<p><a href="https://dmesgd.nycbug.org/index.cgi">NYC*BUG dmesgd</a></p>
+<blockquote>
+  <p>Launched in 2004, dmesgd aims to provide a <strong>user-submitted</strong> repository of 
+searchable *BSD dmesgs.  The dmesg(8) command displays the system message 
+buffer’s content, and during boot a copy is saved to /var/run/dmesg.boot.</p>
+
+  <p>This buffer contains the operating system release, name and version, 
+a list of devices identified, plus a whole host of other useful information.</p>
+
+  <p>We hope others find this resource useful and further contribute to its growth. 
+Contact us at [ admin at lists dot nycbug dot org ].</p>
+</blockquote>
+
+<p><a href="https://bsd-hardware.info/">Hardware for BSD</a></p>
+<blockquote>
+  <p>This is a project to anonymously collect hardware details of BSD-powered 
+computers over the world and help people to collaboratively debug 
+hardware related issues, check for BSD-compatibility and find drivers.</p>
+
+  <p><a href="https://bsd-hardware.info/?view=howto">Probe your computer</a> in order to 
+participate in the project and discover your hardware in details. 
+Share your probes with BSD developers to debug and fix problems with 
+your computer. Please read more 
+in <a href="https://forum.linux-hardware.org/?cat=2">our blog</a>.</p>
+</blockquote>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/x11/unix/howto/dotfiles/2021/12/12/xorg-x11-multihead-two-separate-screens.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8</a>
+                  
+                    (Categories: <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/linux">linux</a>, <a href="/category/networking">networking</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/perl">perl</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/xterm/font/unicode/utf-8/unix/x11/fontconfig/locale/2021/11/06/xterm-font-unicode-utf8-characters.html">&laquo; How To List All Fonts That Contain a Particular UTF-8/Unicode Character</a>
+  
+  
+    <a class="next" href="/c/programming/freebsd/howto/2021/12/13/freebsd-compiling-c.html">How to Compile C Programs in FreeBSD &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method";
+    var disqus_title = "How to Configure X (X.Org, X11) for Multi-Head with Two Separate Screens aka Zaphod Method";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+
