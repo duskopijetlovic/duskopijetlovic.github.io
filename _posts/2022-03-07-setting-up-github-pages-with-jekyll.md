@@ -9,8 +9,8 @@ OS: FreeBSD 13
 Shell:  csh  
 
 Steps:
-1. INSTALL Ruby and Jekyll (including rubygem-bundler)
-2. CREATE or CLONE your GitHub Jekyll repository 
+1. Install Ruby and Jekyll (including rubygem-bundler)
+2. Create or Clone your GitHub Jekyll repository 
 3. cd into the cloned repository
 - Run your local Jekyll server:  
     ```bundle exec jekyll serve```
@@ -45,70 +45,57 @@ To stop the local Jekyll server:
 
 ---
 
+### Add Custom Domain in GitHub Pages
 
-If you want to start the repository from scratch.
+Add www.duskopijetlovic.com in the repo's Settings:    
+Go to the project 'duskopijetlovic/duskopijetlovic.github.io':   
+Pages > Custom domain:  www.duskopijetlovic.com    
+Click 'Save'
 
-1. Log in to your GitHub profile   
-* Your repositories 
-* Select the repository: Code > Clone > Download ZIP
-* Select the repository: Settings > Danger Zone > Delete this repository
-  * Confirm that you want to delete this repository
+Wait a couple of minutes for DNS check to complete.
 
-2. On your local machine
-* Make the new project directory 
-* Navigate to the project directory 
+---
 
-**[TODO]** Check THIS   
+### Pushing Updates to GitHub Pages
 
-* Create a new Jekyll site in the current directory    
-  `jekyll new`
-* Install your theme, e.g. "Just-the-Docs" theme.
-The default theme for new Jekyll site is "minima".    
-  `gem install just-the-docs`
-* Add it to your Jekyll site's Gemfile    
-  `gem "just-the-docs"`
-* Add Just the Docs theme to your Jekyll site's _config.yml
-  `theme: "just-the-docs"`
-* Run your local Jekyll server then open your local site on 
-  web browser: http://localhost:4000    
-  `bundle exec jekyll serve`  
+```
+% cd ~/duskopijetlovic.github.io/
+% git status
+% git config --list
 
-3. Make changes to your pages    
-   In this step, you can try adding some pages, customization, and test 
-   them locally.  When you're changing the `_config.yml` file, the update 
-   will not be applied unless you restart the server and run this line again:   
-   `bundle exec jekyll serve`
+```
 
-4. After you've completed setting up your pages and your site is running 
-   okay locally, proceed to the next step.
+---
 
-5. Push existing project to Github  
-   Create a new repository on Github.  Type a name for your repository.
-   If you're creating a user site, your repository **must** be named
-   `<yourusername>.github.io`.  Do not add any files because you're going
-   to push the files from local.
+**References:**   
 
-6. On your local machine:    
-   Unless you're already working in the root of your project directory, 
-   navigate to the root of your project directory.  Initialize git 
-   repository in the current directory (must be the root directory).    
-   `git init`   
+All references below retrieved on Mar 7, 2022.   
 
-**[TODO]**   Change this:   
+[Setting Up Github Pages site with Jekyll Tutorial](https://dev.to/azukacchi/setting-up-github-pages-site-with-jekyll-tutorial-1l60)   
 
-Edit the Gemfile that Jekyll created.   
-* Add "#" to the beginning of the line that starts with gem "jekyll" to 
-  comment out this line.   
-* Add the github-pages gem by editing the line starting with # gem "github-pages". Change this line to:    
-    `gem "github-pages", "~> GITHUB-PAGES-VERSION", group: :jekyll_plugins`   
-* Replace GITHUB-PAGES-VERSION with the latest supported version of the 
-  github-pages gem.  Check the version here: [Dependency versions](https://pages.github.com/versions/)  
-* Save and close the Gemfile  
-* If you're using Jekyll theme other than the supported themes, edit 
-  your `_config.yml` file.  For example, for "Just-the-Docs" theme, 
-  change this line: theme: "just-the-docs to this:    
-  `remote_theme: pmarsceill/just-the-docs`     
-For another theme, check the theme documentation.
+[Setting Up Github Pages site with Jekyll Tutorial for Absolute Beginner](https://github.com/azukacchi/azukacchi.github.io)   
+
+[Minimal tutorial on making a simple website with GitHub Pages](https://github.com/kbroman/simple_site)
+
+[Simple site - Easy websites with GitHub Pages](https://kbroman.org/simple_site/)    
+
+[You have already activated X, but your Gemfile requires Y](https://stackoverflow.com/questions/6317980/you-have-already-activated-x-but-your-gemfile-requires-y)    
+
+[Jekyll-Bootstrap -- The quickest way to start and publish your Jekyll powered blog. 100% compatible with GitHub pages](https://github.com/plusjade/jekyll-bootstrap)
+
+[Using Jekyll with Bundler](https://jekyllrb.com/tutorials/using-jekyll-with-bundler/)
+
+[Jekyll Themes](https://jekyllrb.com/docs/themes/)
+
+[Search for Jekyll Themes](https://rubygems.org/search?utf8=%E2%9C%93&query=jekyll-theme)
+
+[Step by Step Tutorial](https://jekyllrb.com/docs/step-by-step/10-deployment/)
+
+[Jekyll-Now -- Build a Jekyll blog in minutes, without touching the command line](https://github.com/barryclark/jekyll-now)   
+
+[Markdown Style Guide - Jekyll Now](https://www.jekyllnow.com/Markdown-Style-Guide/)    
+
+[GitHub Pages - Dependency versions](https://pages.github.com/versions/)
 
 ---
 
