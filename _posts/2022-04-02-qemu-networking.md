@@ -391,7 +391,7 @@ $ /usr/libexec/qemu-kvm \
 ```
 
 
-#### How To Create a Bridged Networking (Tun Device in Tap Mode) for QEMU with an IP Address Visible on the Host's Network and via a Bridge Interface You Created
+### How To Create a Bridged Networking (Tun Device in Tap Mode) for QEMU with an IP Address Visible on the Host's Network and via a Bridge Interface You Created
 
 When you don't want to use the [default] bridge `virbr0` provided by the 
 libvirt library, you need to configure the new bridge *before* running qemu. 
@@ -443,6 +443,18 @@ Network bridging doesn't work with Wi-Fi:
 
 #### Create a New Bridge Connection 
 
+This new bridge connection will be linked to the eno1 network interface.
+
+```
+$ ip address show
+[...]
+4: eno1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 08:94:ef:f4:00:04 brd ff:ff:ff:ff:ff:ff
+    inet 123.12.23.148/24 brd 123.12.23.254 scope global noprefixroute eno1
+       valid_lft forever preferred_lft forever
+[...]
+```
+
 Create a new bridge connection named br0.  
 
 ```
@@ -484,7 +496,7 @@ bridge.vlans:                           --
 ```
 
 
-#### Convert Settings from NIC (Network Interface Controller) to Bridge Interface
+##### Convert Settings from NIC (Network Interface Controller) to Bridge Interface
 
 Allocate a static IP address to the new br0 interface.  (If the DHCP server 
 is available, it would provide IP addresses and other settings but since 
@@ -807,6 +819,164 @@ $ bridge link show
 4: eno1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0 
      state forwarding priority 32 cost 100 
 4: eno1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0 hwmode VEPA 
+```
+
+
+### Create a Second Bridge Connection 
+
+This new bridge connection will be linked to the eno2 network interface, 
+which is used for a non-routable private network (for a cluster of compute 
+nodes).   
+
+
+```
+$ ip address show
+[...]
+5: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP 
+      group default qlen 1000
+    link/ether 08:94:ef:00:11:22 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.80.210/24 brd 192.168.80.255 scope global noprefixroute eno2
+       valid_lft forever preferred_lft forever
+[...]
+```
+
+
+Create a new bridge connection named br1 on the host system. 
+
+```
+$ sudo nmcli connection add type bridge con-name br1 ifname br1
+```
+
+#### Convert Settings from NIC (Network Interface Controller) to Bridge Interface
+
+```
+$ nmcli connection show eno2 | grep 'ipv4.addresses'
+ipv4.addresses :                  192.168.80.210/24
+
+$ nmcli connection show eno2 | grep 'ipv4.gateway' 
+ipv4.gateway:                     --
+
+$ nmcli connection show eno2 | grep 'ipv4.dns'
+ipv4.dns:                         --
+
+$ nmcli connection show eno2 | grep 'ipv4.method'
+ipv4.method:                      manual
+```
+
+```
+$ sudo nmcli connection add type bridge-slave ifname eno2 master br1
+```
+
+```
+$ sudo nmcli connection modify br1 ipv4.addresses '192.168.80.210/24'
+$ sudo nmcli connection modify br1 ipv4.method manual
+```
+
+```
+$ sudo nmcli connection delete eno2
+```
+
+```
+$ ip address show br1
+53: br1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue 
+      state DOWN group default qlen 1000
+    link/ether 52:c3:05:11:22:33 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.80.210/24 brd 192.168.80.255 scope global noprefixroute br1
+       valid_lft forever preferred_lft forever
+```
+
+```
+$ nmcli connection show
+NAME               UUID                                  TYPE      DEVICE
+br0                07d25404-...........................  bridge    br0
+br1                1f0c11be-...........................  bridge    br1
+virbr0             3216d7f0-...........................  bridge    virbr0
+bridge-slave-eno1  02132481-...........................  ethernet  eno1
+bridge-slave-eno2  6f94adf1-...........................  ethernet  eno2
+eno3               70568f00-...........................  ethernet  --
+eno4               39d9c6c1-...........................  ethernet  --
+```
+
+```
+$ nmcli device
+DEVICE      TYPE      STATE                   CONNECTION
+br0         bridge    connected               br0
+br1         bridge    connected               br1
+virbr0      bridge    connected (externally)  virbr0
+eno1        ethernet  connected               bridge-slave-eno1
+eno2        ethernet  connected               bridge-slave-eno2
+eno3        ethernet  disconnected            --
+eno4        ethernet  disconnected            --
+lo          loopback  unmanaged               --
+virbr0-nic  tun       unmanaged               --
+```
+
+```
+$ printf %s\\n "allow br1" | sudo tee  -a /etc/qemu-kvm/bridge.conf
+```
+
+```
+$ cat /etc/qemu-kvm/bridge.conf
+allow virbr0
+allow br0
+allow br1
+```
+
+```
+$ sudo systemctl restart NetworkManager
+```
+
+
+You might need to restart dhcpd service too.
+
+```
+$ sudo systemctl restart dhcpd
+```
+
+
+After you launch an instance of QEMU guest VM that uses the both bridge 
+devices (br0 and br1) you've created (see section below), QEMU automatically
+creates TUN devices named tun0 and tun1.  Run the following three commands
+on the host while the guest virtual machine is running.  
+
+```
+$ nmcli connection
+NAME               UUID                                  TYPE      DEVICE
+br0                07d25404-...........................  bridge    br0
+br1                1f0c11be-...........................  bridge    br1
+virbr0             3216d7f0-...........................  bridge    virbr0
+bridge-slave-eno1  02132481-...........................  ethernet  eno1
+bridge-slave-eno2  6f94adf1-...........................  ethernet  eno2
+tap0               4da9861f-...........................  tun       tap0
+tap1               9837b7c2-...........................  tun       tap1
+eno3               70568f00-...........................  ethernet  --
+eno4               39d9c6c1-...........................  ethernet  --
+```
+
+```
+$ nmcli device
+DEVICE      TYPE      STATE                   CONNECTION
+br0         bridge    connected               br0
+br1         bridge    connected               br1
+virbr0      bridge    connected (externally)  virbr0
+eno1        ethernet  connected               bridge-slave-eno1
+eno2        ethernet  connected               bridge-slave-eno2
+tap0        tun       connected (externally)  tap0
+tap1        tun       connected (externally)  tap1
+eno3        ethernet  disconnected            --
+eno4        ethernet  disconnected            --
+lo          loopback  unmanaged               --
+virbr0-nic  tun       unmanaged               --
+```
+
+```
+$ brctl show
+bridge name     bridge id               STP enabled     interfaces
+br0             8000.0894eff40004       yes             eno1
+                                                        tap0
+br1             8000.0894eff40005       yes             eno2
+                                                        tap1
+virbr0          8000.525400a7c2ab       yes             virbr0-nic
 ```
 
 
