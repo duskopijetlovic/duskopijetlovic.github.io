@@ -3263,7 +3263,7 @@ a.k.a. the webserver (for WebMO).
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh root@192.168.80.220
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># command -v qstat ; type -a qstat ; whereis qstat ; which qstat
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># command -v qstat; type -a qstat; whereis qstat; which qstat
 /global/software/torque/x86_64/bin/qstat
 qstat is /global/software/torque/x86_64/bin/qstat
 qstat is /global/software/torque/x86_64/bin/qstat
@@ -4113,7 +4113,7 @@ defined the <code class="language-plaintext highlighter-rouge">domain</code> att
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># makehosts
 </code></pre></div></div>
 
-<p>This add the compute being created to <code class="language-plaintext highlighter-rouge">/etc/hosts</code>. Specifically, this 
+<p>This adds the compute being created to <code class="language-plaintext highlighter-rouge">/etc/hosts</code>. Specifically, this 
 line is added to the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file: <br />
 <code class="language-plaintext highlighter-rouge">192.168.80.9 abacus109 abacus109.mydomain.com</code></p>
 
@@ -4563,6 +4563,10 @@ the <code class="language-plaintext highlighter-rouge">postbootscripts</code> li
 Object name: abacus109
     postbootscripts=otherpkgs
 </code></pre></div></div>
+
+<p><strong>NOTE:</strong>  The following two <code class="language-plaintext highlighter-rouge">nodegrpch</code> commands do not need to be run 
+if you’ve already setup <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> for the 
+<code class="language-plaintext highlighter-rouge">compute</code> group.</p>
 
 <p>Upgrade the group <code class="language-plaintext highlighter-rouge">compute</code> with the required <code class="language-plaintext highlighter-rouge">postscripts</code> 
 and <code class="language-plaintext highlighter-rouge">postbootscripts</code> script files:</p>
@@ -5691,7 +5695,12 @@ abacus104            offline
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus104 systemctl restart pbs_mom.service
 </code></pre></div></div>
 
-<p><strong>[Note]</strong>  If no state is specified with the <code class="language-plaintext highlighter-rouge">-l</code> option in the <code class="language-plaintext highlighter-rouge">pbsnodes</code>
+<p><strong>NOTE:</strong>  If you are still not getting the <code class="language-plaintext highlighter-rouge">free</code> status for the compute 
+           node, most likely you need to retart the <code class="language-plaintext highlighter-rouge">pbs_server</code> service 
+	   on the head node; that is, on the head node:
+           <code class="language-plaintext highlighter-rouge">systemctl restart pbs_server.service</code>.</p>
+
+<p><strong>Note:</strong>   If no state is specified with the <code class="language-plaintext highlighter-rouge">-l</code> option in the <code class="language-plaintext highlighter-rouge">pbsnodes</code>
             command, it only lists nodes in the DOWN, OFFLINE, or UNKNOWN
 	    states.  Specifying a state string acts as an output
             filter.   Valid  state  strings  are  “active”,   “all”,

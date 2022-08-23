@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 13 Aug 2022 19:16:44 -0700</pubDate>
-    <lastBuildDate>Sat, 13 Aug 2022 19:16:44 -0700</lastBuildDate>
+    <pubDate>Mon, 22 Aug 2022 18:24:09 -0700</pubDate>
+    <lastBuildDate>Mon, 22 Aug 2022 18:24:09 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -5129,7 +5129,7 @@ a.k.a. the webserver (for WebMO).
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh root@192.168.80.220
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# command -v qstat ; type -a qstat ; whereis qstat ; which qstat
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# command -v qstat; type -a qstat; whereis qstat; which qstat
 /global/software/torque/x86_64/bin/qstat
 qstat is /global/software/torque/x86_64/bin/qstat
 qstat is /global/software/torque/x86_64/bin/qstat
@@ -5979,7 +5979,7 @@ defined the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# makehosts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This add the compute being created to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;. Specifically, this 
+&lt;p&gt;This adds the compute being created to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;. Specifically, this 
 line is added to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file: &lt;br /&gt;
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.9 abacus109 abacus109.mydomain.com&lt;/code&gt;&lt;/p&gt;
 
@@ -6429,6 +6429,10 @@ the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postboots
 Object name: abacus109
     postbootscripts=otherpkgs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  The following two &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodegrpch&lt;/code&gt; commands do not need to be run 
+if you’ve already setup &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; for the 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; group.&lt;/p&gt;
 
 &lt;p&gt;Upgrade the group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; with the required &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; 
 and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; script files:&lt;/p&gt;
@@ -7557,7 +7561,12 @@ abacus104            offline
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus104 systemctl restart pbs_mom.service
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;[Note]&lt;/strong&gt;  If no state is specified with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-l&lt;/code&gt; option in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbsnodes&lt;/code&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  If you are still not getting the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;free&lt;/code&gt; status for the compute 
+           node, most likely you need to retart the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbs_server&lt;/code&gt; service 
+	   on the head node; that is, on the head node:
+           &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemctl restart pbs_server.service&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;   If no state is specified with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-l&lt;/code&gt; option in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbsnodes&lt;/code&gt;
             command, it only lists nodes in the DOWN, OFFLINE, or UNKNOWN
 	    states.  Specifying a state string acts as an output
             filter.   Valid  state  strings  are  “active”,   “all”,
