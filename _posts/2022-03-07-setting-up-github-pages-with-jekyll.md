@@ -69,6 +69,30 @@ Wait a couple of minutes for DNS check to complete.
 
 ---
 
+
+### Cloning the Website and then Pushing Updates to GitHub Pages
+
+```
+% cd
+% pwd
+/usr/home/dusko
+```
+
+```
+% git clone https://github.com/duskopijetlovic/duskopijetlovic.github.io
+```
+
+```
+% cd ~/duskopijetlovic.github.io/
+% git status
+% git config --list
+% git add .
+% git commit -a
+% git push
+```
+
+---
+
 **References:**   
 
 All references below retrieved on Mar 7, 2022.   
