@@ -1,0 +1,435 @@
+##=== Re: mutt, PuTTY, and ISO-8859-1, oh my!
+##    http://does-not-exist.org/mail-archives/mutt-users/msg05548.html
+# PROBLEM
+# Characters from the Latin1 character set are not displayed
+# correctly.  This could be because your Mutt is not
+# configured to show them, or (as in my case), because the
+# header on this particular message listed a charset of
+# 'us-ascii' even though the email actually used ISO-8859-1
+# characters.
+# SOLUTION
+# Summary:  Tell Mutt that 'us-ascii' is just an alias for
+# 'iso-8859-1'.
+# 
+# In my .muttrc:
+#  These four lines tell Mutt to use Latin1 (ISO-8859-1) as
+#  its standard charset.
+#set charset="ISO-8859-1"
+#set send_charset="ISO-8859-1:us-ascii"
+#set use_8bitmime
+#set allow_8bit
+
+# Unicode Characters in Mutt Attachments
+# https://unix.stackexchange.com/questions/387693/unicode-characters-in-mutt-attachments
+set rfc2047_parameters = yes
+
+# Unicode Support on FreeBSD
+# http://opal.com/jr/freebsd/unicode/
+# The former variant of send_charset tells mutt to tag outgoing mail as either 
+# US-ASCII if the content of the message can be represented in US-ASCII, or UTF-8 
+# if the content cannot be represented in US-ASCII. This behavior is consistent with other mailers. 
+# However, some mailers apparently limit the encoding of replies to the charset of the received 
+# message, which makes a message containing UTF-8 characters not possible from such mailers 
+# as a reply to a message containing only US-ASCII. The second variant of send_charset, above, 
+# tags all your outgoing messages as UTF-8, which avoids this problem, but which may cause 
+# problems if you send an ASCII message to someone with a mailer which does not support UFT-8.
+set send_charset="US-ASCII:UTF-8"
+#set send_charset="UTF-8"
+
+set use_envelope_from="yes"
+
+# If your incoming mail is not displayed properly, check that you have the LANG environment 
+# variable properly set (as described above) or configure mutt:
+#set charset="UTF-8"
+#set charset="en_CA.UTF-8"
+
+# Mutt: Fixing Erroneous Charsets, part 632
+# https://shallowsky.com/blog/linux/mutt-8859.html
+# Instead of the author's 
+#     charset-hook iso-8859-1 cp1252
+# the fix for incorrectly displayed special characters 
+# (for example: em dash, right single quotation mark) tell mutt when it sees 
+# iso-8859-1, to use UTF-8 instead: 
+# 
+# How did I find out which character set to replace iso-8859-1 with?
+#   A: I copied the text of the original message, pasted it in 
+#      TEA text editor (http://semiletov.org/tea), (https://github.com/psemiletov/tea-qt) 
+#      saved it, and reloaded it a few times (In TEA: File > File actions > Reload with encoding). 
+#      - With encoding set to ISO-8859-1, TEA displayed the bad characters 
+#        the same as Mozilla Firefox was showing them, that is: 
+#          â€”  -- Latin small letter A with circumflex, Euro symbol, quotation mark 
+#          €™   -- Euro symbol, Trade Mark sign 
+#      - With encoding set to UTF-8, TEA displayed the characters correctly. 
+# Also, 
+# Ran the hexdump on the file:  
+#     hexdump -b fileToConvert.txt
+# And the outpuut was:
+#     0000000 342 200 224 040 342 200 231
+#     0000007
+# From the man page for hexdump(1), for the -b option:
+#     -b     One-byte octal display.  Display the input offset in hexadecimal,
+#            followed by sixteen space-separated, three column, zero-filled,
+#            bytes of input data, in octal, per line.
+# 
+# Decoded the values by using the following table:
+# "Dynamic charset converter — interactive conversion tables to compare 8-bits character sets 
+# viewing their unicode names and binary, octal, decimal, hexadecimal and UTF-8 values"
+#     http://www.acc.umu.se/~saasha/charsets/?charset=iso_8859-1&charset=cp1252
+# Under "byte rendering" column, selected Input drop-down to be iso_8859-1,
+# and the output to cp1252. 
+# The sequence 
+#    342 200 224 
+# was in the "oct" sub-column of "UTF-8 encoding of each cp1252 character" column
+# indicating that character and its formal unicode name is "em dash".
+# Similarly, the sequence 
+#     342 200 231 
+# was in the "oct" sub-column of "UTF-8 encoding of each cp1252 character" column
+# indicating that character and its formal unicode name is "right single quotation mark". 
+# 
+# These two sequences were exactly the same as Mutt was displaying them befor the fix,
+# that is:
+# > I got your message from Mike â\200\224 It doesnâ\200\231t happen to me, although I log
+# > off when Iâ\200\231m done with my session.
+charset-hook iso-8859-1 UTF-8
+
+
+# This line makes us-ascii an alias for iso-8859-1
+# charset-hook us-ascii iso-8859-1
+# In my .profile: 
+#      export LC_CTYPE=en_US.ISO8859-1
+##--- Also see:
+##=== Charset
+##    Umlauts, accents, and other non-ASCII characters are displayed as '?' or '\123' -- locales
+## https://gitlab.com/muttmua/mutt/wikis/MuttFaq/Charset
+##=== 
+## Character set encoding in mutt
+##     https://stackoverflow.com/questions/9438301/character-set-encoding-in-mutt
+
+set spoolfile=imaps://mailx.example.com/INBOX
+set imap_user=dusko
+
+set smtp_url=smtps://dusko@mailx.example.com
+set folder=imaps://mailx.example.com:993
+set spoolfile="+INBOX"
+
+mailboxes            imaps://mailx.example.com:993/Inbox\
+                     imaps://mailx.example.com:993/Drafts\
+                     imaps://mailx.example.com:993/Sent\
+                     imaps://mailx.example.com:993/Trash\
+                     "imaps://mailx.example.com:993/Spam"
+
+bind index G imap-fetch-mail
+set record="=Sent"
+set postponed = "=Drafts" 
+set imap_idle="yes" # Use IMAP IDLE for pushing mail
+
+# To ensure that mutt does not put 'username@localhost.localdomain' in From
+set from="dusko@example.com"
+set realname = "Dusko Pijetlovic"
+set use_from=yes
+set envelope_from="yes"
+
+## === From  http://wcm1.web.rice.edu/mutt-tips.html ===
+# You want all of your plain text messages to be in this format. Otherwise, 
+# they will look ugly and barely readable when your recipients open them on 
+# their email clients.
+## Disabled it on Jun 6, 2017.
+## REASONS:
+## 1) With the editor set to the traditional vi, if a composed message's line
+## before the last line is shorter than 78 characters, e.g., the last line
+## is the sender's name (signature), Mutt fills up the penultimate line
+## with characters from the last line. 
+## 2) Explanation from
+##       http://www.firstpr.com.au/web-mail/Mozilla-mail/
+## Format=Flowed (RFC 2646) is a pesky (more like infuriating and stupid, 
+## I think - unless the sender makes an intelligent, informed and explicit 
+## choice to use it) way of sending an otherwise plain text email.  
+## The outgoing email is different from what is written and with 
+## "Format=flowed" in the header, the receiving client is supposed to 
+## rewrap the text to whatever margins there are in the current display window.
+## The trouble is that this screws up the formatting of messages which have 
+## been deliberately manually formatted for good reason.
+#set text_flowed=yes
+
+## === From https://www.linux.com/news/training-your-mutt ===
+# Sane header display
+ignore headers *
+unignore headers from to subject date cc
+
+# Order headers appear in
+hdr_order to from subject date
+
+# For long lines, Mutt automatically displays a "+" marker at the 
+# beginning of each wrapped line.
+# Disable this by setting the markers directive to no.
+set markers=no
+
+# When plowing through a large amount of mail, do not ask whether you
+# really want to append a message to a mailbox every time you try
+# to file a message.
+set noconfirmappend
+
+# https://www.rosipov.com/blog/elegant-mutt-setup-for-use-with-gmail/
+#set display_filter="t-prot -cemt -M=mutt"
+
+## === From 
+## https://www.reddit.com/r/commandline/comments/1dafbe/mutt_i_dont_get_it/
+# Make forwarding email change the subject line in a way you might expect.
+set forward_format="Fw: %s"
+
+# Use classic vi with wordwrap at 77
+# If it were Vim -> set editor="vim +':set textwidth=77' +':set wrap'"
+# set editor = "vim -c 'set spell spelllang=en' -c 'set tw=72' -c 'set filetype=mail'"
+# (From  https://github.com/l0b0/tilde/blob/master/.muttrc)
+#set editor=vi
+
+# Q: Why did I switch from the classic vi to Vim?
+# A: The classic vi doesn't handle Unicode while Vim does.
+# Use Vim with wordwrap at 72
+# 
+# (From  https://github.com/l0b0/tilde/blob/master/.muttrc)
+#set editor="vim -c 'set spell spelllang=en' -c 'set tw=72' -c 'set filetype=mail' -c 'set wrap'"
+set editor="vim +':set textwidth=72' +':set wrap'"
+
+# From Mutt settings (.muttrc) - Openwall Community Wiki
+# http://openwall.info/wiki/internal/email/muttrc
+# Use this when "ispell" is actually the "aspell" wrapper (press "i" to invoke)
+set ispell="ispell --mode=email"
+# Alternatively:
+# From "My first mutt > Text editing"
+# http://mutt.postle.net/editing/
+#set ispell="aspell -e -c"
+#set ispell="aspell language-tag=en_CA.UTF-8 --mode=email --check"
+
+# Prompt before Mutt exits.
+set quit=ask-yes
+
+# For mailing lists - to automatically sorts messages by topic, so that 
+# messages with the same topic are organized sequentially. You can then 
+# use the cursor keys to navigate between messages in the same thread, 
+# allowing you to quickly view all the replies to a particular message. 
+set sort=threads
+
+# When reading an email, make up and down scroll the message, rather than 
+# switch to the next/previous message, and don't automatically move to 
+# the next message at the end.
+bind pager <down> next-line
+bind pager <up> previous-line
+set pager_stop=yes
+
+# Do not mark new messages "old".
+set mark_old=no
+
+## === From http://jasonwryan.com/blog/2012/05/12/mutt/
+## https://debian-administration.org/article/75/Reading_HTML_email_with_Mutt
+## https://gist.github.com/Lance0312/3754133
+set mailcap_path = /mnt/usbflashdrive/mydotfiles/mutt-common-files/mailcap
+auto_view text/html
+####alternative_order text/plain text/enriched text/html *
+##
+## === From https://dev.mutt.org/trac/wiki/MuttFaq/Attachment
+# this helps with multipart messages
+alternative_order text/plain text/html
+
+set header_cache = /mnt/usbflashdrive/muttcache/example.com.dusko/cache
+set message_cachedir =  /mnt/usbflashdrive/muttcache/example.com.dusko/cache/bodies 
+
+# Keeping addresses -- Address book 
+# Using mutt with an LDAP address book
+#     http://www.scottro.net/mutt.html
+# When you open up mutt, and type 'm' to send an email, if you type the alias 
+# in the the To: section, mutt will send it to the desired address. 
+# (You won't see this until after you've edited the message--at first, you
+#  would only see the alias that you entered). 
+# If you need to simply view your addresses, when you hit m and are given 
+# the To: line you can simply hit tab which will show your alias list--
+# you can scroll down to the name you want and hit enter.
+# Also, if you're looking at an email and want to add the person to your 
+# address book, you can just hit 'a' and mutt will take you through a 
+# dialog of creating an alias. Often, however, the last question will be 
+# 'Save to file /.mutt_aliases?' You will have to change that from 
+# /.mutt_aliases to ~/.mutt_aliases. 
+set alias_file = /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttaliases 
+source /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttaliases
+
+# If you haven't bound  shift+q  to anything, it's the default macro for a query. 
+# To check the LDAP database for an address hit  shift+q  and you will see Query:
+# Type in part of the name and mutt will show you a list of matching addresses.
+# Use the arrow key to highlight the desired address and mutt will use it.
+set query_command="/mnt/usbflashdrive/mydotfiles/mutt-common-files/muttldap.pl %s"
+#set query_command="/usr/local/libexec/lbdb/mutt_ldap_query \
+#--server="ldap.example.com" \
+#--search_base="ou=People,dc=myorg" \
+#--tls=0 '%s'"
+
+# A Quick Guide to Mutt
+# https://srobb.net/mutt.html
+# Enable use of the Alt key (or Escape key)
+#
+# The command is double-quoted and ends with the word Enter in brackets.
+# In this case, using \n for a newline doesn't work. Also note that 
+# I typed an exclamation point within the double quotes. The important 
+# thing here is that I am duplicating what I would type while mutt is open.
+# I usually try to get away with \n and if that doesn't work, then try 
+# again with Enter in brackets. 
+# 
+# If you do this, then using a keyboard macro beginning with \e will work 
+# with either the escape or the alt key. It's usually turned off by default.
+# As usual, you can check your system-wide Muttrc. If you leave that set 
+# meta_key option at its default of no, then using \e will work with the 
+# escape key, but not the Alt key.
+#
+# Some googling indicated that this was because ctl+s stops sending data 
+# to the terminal. Most Unix and Unix-like terminals still support this. 
+# So, if a macro doesn't work, sometimes trying a different keyboard 
+# combination might help--at least it should let you know if the problem 
+# is your syntax or your chosen combination.
+set meta_key=yes
+
+# ESCAPE + l, that is ESC + small letter 'l' (el) will launch a shell script
+# for adding a contact to the aliases file:
+# Shell command: /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttalias.sh
+# - For example, to add an alias for an email address with 'dusko' in it:
+# Shell command: /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttalias.sh dusko
+# - After that, mutt will prompt you to press any key to return from 
+#   the shell to mutt:
+# Press any key to continue...
+macro index \el "!/mnt/usbflashdrive/mydotfiles/mutt-common-files/muttalias.sh"
+
+macro index,pager gt "<save-message>=Trash<enter>" "move message to the trash"
+macro generic S "<shell-escape>nmzmail<return><esc>c~/.nmzmail/result<return>" "Search via nmzmail"
+
+##=== This part from
+##    http://www.devshed.com/c/a/administration/a-man-and-his-mutt/ 
+color index brightwhite default ~N   # color for new messages
+#color status brightblue magenta      
+#color signature brightyellow black    
+
+color attachment brightyellow default    # file attachments
+#color search brightred default           # search matches
+color quoted brightyellow default        # quoted text in replies
+color quoted1 magenta default            # quoted text in replies
+color quoted2 red black 
+color quoted3 green black
+color quoted4 cyan black
+color quoted5 yellow black
+color quoted6 red black
+color quoted7 green black
+
+##=== This part from
+##    http://nongeekshandbook.blogspot.ca/2009/03/mutt-color-configuration.html
+# Default color definitions
+color hdrdefault white green
+color signature brightmagenta black
+color indicator black cyan 
+#color attachment black green
+color error red black
+color message white black
+color search brightwhite magenta
+color status brightyellow blue
+color tree brightblue black
+color normal white black
+color tilde green black
+color bold brightyellow black
+#color underline magenta black
+color markers brightcyan black
+# Colour definitions when on a mono screen
+mono bold bold
+mono underline underline
+mono indicator reverse
+
+color body green default "[-a-z_0-9.+]+@[-a-z_0-9.]+"            # email
+##===
+
+##=== This part from:
+##    http://lugatgt.org/content/mutt/downloads/presentation.pdf 
+#color body green default "(ftp|http)://[ˆ ]+"
+
+##=== This part from:
+##    http://nongeekshandbook.blogspot.ca/2009/03/mutt-color-configuration.html
+# URLs
+color body brightgreen black "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+color body brightgreen black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+mono body bold "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+mono body bold "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+# header
+color header green black "^from:"
+color header green black "^to:"
+color header green black "^cc:"
+color header green black "^date:"
+color header yellow black "^newsgroups:"
+color header yellow black "^reply-to:"
+color header brightcyan black "^subject:"
+color header green black "^x-mailer:"
+color header yellow black "^message-id:"
+color header yellow black "^Organization:"
+color header yellow black "^Organisation:"
+color header yellow black "^User-Agent:"
+color header yellow black "^message-id: .*pine"
+color header yellow black "^X-Message-Flag:"
+color header yellow black "^X-Spam-Status:"
+color header yellow black "^X-ChemNet-Spam:"
+color header red black "^x-originating-ip:"
+
+# Reply to all recepients
+# From LH's Mutt config: .mailrc/muttrc-bindings
+# http://hermitte.free.fr/mutt/files/mailrc/muttrc-bindings.html
+# Adding a prefix to index mail commands:
+# I do this so I can use the letters for pager commands.
+# This prevents accindental invocation of the editor.
+# I do not use ESC as the prefix key as there needs to be
+# a pause between ESC and the following key - annoying.
+# I once used the backslash key - but \n, \r, and \t
+# are now used for newline, return, and tab.  *sigh*
+bind pager ,g   group-reply
+
+# Printing to PDF in Mutt
+#   http://terminalmage.net/2011/10/12/printing-to-pdf-in-mutt.html
+##set print_command="/mnt/usbflashdrive/mydotfiles/mutt-common-files/muttprint.sh"
+
+# Colours for items in the index
+color index brightcyan black ~N
+# Hmm, don't like this.
+#color index brightgreen black "~N (~x byers.world)|(~x byers.x)|(~x langly.levallois123.axialys.net)|(~x the.earth.li)"
+color index brightyellow black ~F
+color index black green ~T
+color index brightred black ~D
+mono index bold ~N
+mono index bold ~F
+mono index bold ~T
+mono index bold ~D
+
+## Forwarding a message with attachments
+## ---------------------------------------------------------------------
+## From 
+## Subject: [ILUG] Re: forwarding whole messages in mutt
+## ---------------------------------------------------------------------
+## The last message on this page of collected mutt forwarding info:
+## ftp://linuxmafia.com/faq/Mail/mutt-forwarding-attachments.html
+##
+## Date: Mon, 11 Mar 2002 15:28:43 +0000
+## From: Lars Hecking lhecking@nmrc.ie
+## To: ilug@linux.ie
+## User-Agent: Mutt/1.5.0i
+## Subject: [ILUG] Re: forwarding whole messages in mutt
+## ---------------------------------------------------------------------
+## The central anchor is the mime_forward variable. It's a quad option,
+## defaults to "no", and I recommend setting it to "ask-no" (you want
+## mutt to give you a choice, and you'll want to forward just the plain
+## message body more often than not).
+## ... ... ... [ snip ] ... ... ...
+## _and_ leaving mime_forward_decode unset, as it defaults to no.
+## ---------------------------------------------------------------------
+## From
+## How do I forward a message including attachments?
+## https://dev.mutt.org/trac/wiki/MuttFaq/Attachment
+## suggests: 
+##   set mime_forward=yes 
+##   set mime_forward_rest=yes
+## However, set mime_forward_rest=yes this will cause Mutt to attach the 
+## message rather than quoting it in the body of the message.
+## ---------------------------------------------------------------------
+set mime_forward=ask-no
+
+source /mnt/usbflashdrive/mydotfiles/mutt-common-files/gpg.rc

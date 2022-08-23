@@ -1,0 +1,39 @@
+## === From https://dev.mutt.org/trac/wiki/MuttFaq/Attachment
+##this is used when (v)iewing a text/html attachment:
+##allowing you to browse and "click" links
+##order matters the first entry which passes the test is used
+#gui browser if $DISPLAY is set
+text/html; /usr/local/bin/firefox %s; test=test -n "$DISPLAY"; nametemplate=%s.html
+#text browser otherwise
+text/html; w3m -v -F -T text/html %s; nametemplate=%s.html; needsterminal
+
+##auto_view will use the entry with the copiousoutput part:
+text/html; lynx -stdin -dump -force_html ; copiousoutput
+
+####text/html; w3m -I %{charset} -T text/html; copiousoutput;\n
+
+# From
+#   https://groups.google.com/forum/#!topic/comp.mail.mutt/_CiQVHh40fc
+#   https://quickstop.pirek.de/mediawiki/index.php/Mutt-config
+#   https://github.com/honza/dotfiles/blob/master/mutt/mailcap
+application/vnd.ms-excel;                                                libreoffice %s
+application/x-msexcel;                                                   libreoffice %s
+application/msexcel;                                                     libreoffice %s
+application/msexcell;                                                    libreoffice %s
+application/vnd.ms-excel.sheet.binary.macroEnabled.12;                   libreoffice %s
+application/vnd.ms-excel.sheet.macroEnabled.12;                          libreoffice %s
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;       libreoffice %s
+
+application/msword;                                                      libreoffice %s
+application/vnd.ms-word.document.macroEnabled.12;                        libreoffice %s
+
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
+application/vnd.openxmlformats-officedocument.wordprocessingml.template; libreoffice %s
+
+application/pdf;                                                         zathura %s
+
+image/jpeg;                                                              xv %s
+image/pjpeg;                                                             xv %s
+image/png;                                                               xv %s
+image/gif;                                                               xv %s
+image/tiff;                                                              xv %s

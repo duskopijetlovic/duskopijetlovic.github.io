@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 22 Aug 2022 18:41:06 -0700</pubDate>
-    <lastBuildDate>Mon, 22 Aug 2022 18:41:06 -0700</lastBuildDate>
+    <pubDate>Tue, 23 Aug 2022 14:08:02 -0700</pubDate>
+    <lastBuildDate>Tue, 23 Aug 2022 14:08:02 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -7331,7 +7331,7 @@ a.k.a. the webserver (for WebMO).
 &lt;strong&gt;NOTE:&lt;/strong&gt;  This is &lt;strong&gt;not&lt;/strong&gt; the xCAT MN (management node), 
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt; (IP address: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;).&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh root@192.168.80.220
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh root@192.168.80.210
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# command -v qstat; type -a qstat; whereis qstat; which qstat
@@ -8184,8 +8184,8 @@ defined the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# makehosts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This adds the compute being created to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;. Specifically, this 
-line is added to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file: &lt;br /&gt;
+&lt;p&gt;This adds the compute node being created to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;. Specifically, 
+this line is added to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file: &lt;br /&gt;
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.9 abacus109 abacus109.mydomain.com&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Update DNS records with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;makedns(8)&lt;/code&gt; command.&lt;br /&gt;
@@ -8232,6 +8232,46 @@ mp.mpa=xbcmm1n \
 mp.id=9
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t osimage -i synclists
+Object name: centos7.9-x86_64-install-compute
+    synclists=/install/custom/install/centos/compute.centos7.x86_64.synclist
+Object name: centos7.9-x86_64-netboot-compute
+    synclists=
+Object name: centos7.9-x86_64-statelite-compute
+    synclists=
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Explanation for options: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt;: type, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-o&lt;/code&gt;: object, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-i&lt;/code&gt;: information/inquire.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 -i postscripts,postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs
+    postscripts=syslog,remoteshell,syncfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So you need to add the necessary (for this particular configuration; 
+that is, configuration of this example) scripts (both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt;) to the compute node that is being provisioned:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
+node=abacus109 \
+postscripts.postscripts=setupntp,compute_custom_post \
+postscripts.postbootscripts=abacus_custom_postboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now the node includes all the needed scripts:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 -i postscripts,postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs,abacus_custom_postboot
+    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;Check &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; hardware control.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; power management:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 state
@@ -8276,13 +8316,13 @@ abacus109: hd0,cdrom,none,none
 &lt;p&gt;In this case, the blade was not configured to boot from the Ethernet (net) 
 device so you need to change it with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rbootseq(1)&lt;/code&gt; command:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rbootseq abacus109 net,hd0,none,none
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rbootseq abacus109 net,hd0,cdrom,none
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Confirm that the boot order has been changed:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rbootseq abacus109 list
-abacus109: net,hd0,none,none
+abacus109: net,hd0,cdrom,none
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Make sure that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;goconserver.service&lt;/code&gt; is running.&lt;/p&gt;
@@ -8332,20 +8372,39 @@ start installation process:&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodeset abacus109 osimage=centos7.9-x86_64-install-compute
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
+&lt;p&gt;The first terminal &lt;strong&gt;might&lt;/strong&gt;  (it doesn’t always show this message) 
+update with the following:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:29 Use command rpower to reboot node abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Back in the second terminal, as per the message above, use command 
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower&lt;/code&gt; to reboot node abacus109:&lt;/p&gt;
+&lt;p&gt;Back in the second terminal, as per the message above, to reboot the 
+compute node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; you would normally use this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower&lt;/code&gt; 
+command here: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus101 boot&lt;/code&gt;.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 boot
+&lt;p&gt;However, at least in this setup, I’ve found it inconsistent because when 
+running that command, the compute node would power off &lt;strong&gt;but&lt;/strong&gt; would not 
+power back on; that is, it wouldn’t actually restart.&lt;/p&gt;
+
+&lt;p&gt;Therefore, I first power the node off and then power it on so run this 
+in the second terminal:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 off 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:36 Node status is changed to powering-on
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:36 Node status is changed to powering-off
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, from the second terminal, power on the compute node:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:48 Node status is changed to powering-on
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Launch yet another separate shell session and in there (let’s call it&lt;br /&gt;
@@ -8354,70 +8413,7 @@ the third terminal), check and monitor provisioning process:&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Output:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[Enter `^Ec?&apos; for help]
-goconserver(2022-08-11T19:38:41-07:00): Hello 192.168.80.220:57956, 
-welcome to the session of abacus109
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;If nothing happens (for example, there’s no additional output), wait 
-for a couple of minutes.  If there are still no updates or if you receive a warning similar to this:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Could not receive message, error: EOF.
-[Enter `^Ec.&apos; to exit]
-Session is teminated unexpectedly, retrying....
-[Enter `^Ec?&apos; for help]
-goconserver(2022-08-11T19:41:50-07:00): Hello 192.168.80.220:57982, 
-welcome to the session of abacus109
-Acquiring startup lock...done
-Connection to xbcmm1n closed.
-
-system&amp;gt; console -o -T blade[9]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enter&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;In this case, it identified that the node was not rebooting and that it 
-actually was powered off:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;             DESTINATION BLADE IS IN POWER OFF STATE 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Disconnect; that is, exit the console session, by entering the following 
-sequence:  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Ctrl-e&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt; (3 characters: Ctrl-e, ‘c’ and ‘.’)&lt;/p&gt;
-
-&lt;p&gt;While still in the third terminal, connect to the BMC:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@192.168.80.135
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Verify whether the blade is really powered off: &lt;br /&gt;
-(&lt;strong&gt;Note:&lt;/strong&gt; Don’t type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;system&amp;gt;&lt;/code&gt;. It’s a BMC CLI prompt and it’s shown 
-here to indicate that you are using the MM (or AMM).)&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;system&amp;gt; power -state -T blade[9]
-Off
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Power on the blade:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;system&amp;gt; power -on -T blade[9]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Exit the BMC’s CLI.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;system&amp;gt; exit
-Connection to 192.168.80.135 closed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Connect to the node by establishing a connection to an already 
-registered session with the goconserver service:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The output now shows that the node is booting up:&lt;/p&gt;
+&lt;p&gt;The output shows that the node is booting up:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[Enter `^Ec?&apos; for help]
 goconserver(2022-08-11T20:06:46-07:00): Hello 192.168.80.220:58102, 
@@ -8568,216 +8564,6 @@ abacus109: CentOS Linux release 7.9.2009 (Core)
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rm -i ~/.ssh/known_hosts.bkp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;touchup-postscripts-and-postbootscripts&quot;&gt;Touchup Postscripts and Postbootscripts&lt;/h3&gt;
-
-&lt;p&gt;The following steps need to be run on the management 
-node, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Confirm that the object &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage&lt;/code&gt; has the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;synclists&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t osimage -i synclists
-Object name: centos7.9-x86_64-install-compute
-    synclists=/install/custom/install/centos/compute.centos7.x86_64.synclist
-Object name: centos7.9-x86_64-netboot-compute
-    synclists=
-Object name: centos7.9-x86_64-statelite-compute
-    synclists=
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Since it’s included in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage&lt;/code&gt; object, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;syncfiles&lt;/code&gt; has been 
-addeed to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; attribute of the compute node that you’re 
-configuring (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;):&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
-Object name: abacus109
-    postscripts=syslog,remoteshell,syncfiles
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep profile
-    profile=compute
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep provmethod 
-    provmethod=centos7.9-x86_64-install-compute
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep -w -i os 
-    os=centos7.9
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodels abacus109 nodetype | grep profile
-abacus109: nodetype.profile: compute
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump nodetype
-#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
----- snip ----
-&quot;abacus109&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,&quot;compute&quot;,&quot;centos7.9-x86_64-install-compute&quot;,,,,
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;As of now, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; attribute for the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; has not 
-been updated with the required scripts.  From the definition of the object 
-type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node&lt;/code&gt;, for the object &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;, display the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt;. 
-You’ll notice that  both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setupntp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute_custom_post&lt;/code&gt; have not 
-been appended to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; line:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
-Object name: abacus109
-    postscripts=syslog,remoteshell,syncfiles
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Similarly, when you ask for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attribute of the node 
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus_custom_postboot&lt;/code&gt; script is missing from 
-the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; line:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postbootscripts
-Object name: abacus109
-    postbootscripts=otherpkgs
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  The following two &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodegrpch&lt;/code&gt; commands do not need to be run 
-if you’ve already setup &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; for the 
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; group.&lt;/p&gt;
-
-&lt;p&gt;Upgrade the group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; with the required &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; 
-and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; script files:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodegrpch compute postscripts.postscripts=setupntp,compute_custom_post
-# nodegrpch compute postscripts.postbootscripts=abacus_custom_postboot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Confirm that it’s been done:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts
-#node,postscripts,postbootscripts,comments,disabl
----- snip ----
-&quot;compute&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Also, you’ll see that the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;) has not been added 
-to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; table:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts | grep abacus109
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Update the node by adding the required &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; 
-script files to it:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
-node=abacus109 \
-postscripts.postscripts=setupntp,compute_custom_post \
-postscripts.postbootscripts=abacus_custom_postboot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;To confirm that the needed postscripts are now included with the node:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep postscripts 
-    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep postbootscripts
-    postbootscripts=otherpkgs,abacus_custom_postboot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts
-#node,postscripts,postbootscripts,comments,disable
----- snip ----
-&quot;abacus109&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts | grep abacus109
-&quot;abacus109&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Continuing with the setup, confirm that the node’s profile is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; 
-as that’s the name of the whole group you modified earlier above.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodels abacus109 nodetype
-abacus109: nodetype.arch: x86_64
-abacus109: nodetype.node: abacus109
-abacus109: nodetype.os: centos7.9
-abacus109: nodetype.profile: compute
-abacus109: nodetype.provmethod: centos7.9-x86_64-install-compute
-abacus109: nodetype.supportedarchs: 
-abacus109: nodetype.comments: 
-abacus109: nodetype.nodetype: 
-abacus109: nodetype.disable: 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump nodetype
-#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
----- snip ----
-&quot;abacus109&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,&quot;compute&quot;,&quot;centos7.9-x86_64-install-compute&quot;,,,,
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
-Object name: abacus109
-    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postbootscripts
-Object name: abacus109
-    postbootscripts=otherpkgs,abacus_custom_postboot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatdebugmode&lt;/code&gt; in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;site&lt;/code&gt; table to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chdef -t site xcatdebugmode=2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Push &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;syncfiles&lt;/code&gt; to the node.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P syncfiles
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -F -V
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Log in to the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;):&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CentOS Linux 7 (Core)
-Kernel 3.10.0-1160.el7.x86_64 on an x86_64
-
-abacus109 login: root
-Password:
-
-[root@abacus109 ~]#
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Run the following command:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# USEOPENSSLFORXCAT=1 \
-XCATSERVER=192.168.80.220:3001 \
-/xcatpost/startsyncfiles.awk -v RCP=/usr/bin/rsync
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Exit the compute node.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# exit
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CentOS Linux 7 (Core)
-Kernel 3.10.0-1160.el7.x86_64 on an x86_64
-
-abacus109 login:
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Ctrl-e&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt; (three characters: Ctrl-e, ‘c’ and ‘.’) to 
-disconnect by closing the session with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;makegocons&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Back in the management node, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdcp abacus109 -F /install/custom/install/centos/compute.centos7.x86_64.synclist
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Update the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; but limit it to only run the scripts.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
 &lt;p&gt;Check whether the run of the scripts worked.&lt;/p&gt;
 
 &lt;p&gt;Yeah, it worked for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;synclist&lt;/code&gt;; that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute.centos7.x86_64.synclist&lt;/code&gt;:&lt;/p&gt;
@@ -8839,10 +8625,10 @@ abacus109:    Active: active (running) since Fri 2022-03-20 18:53:38 PDT; 2min a
 
 &lt;p&gt;Yep, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus_custom_postboot&lt;/code&gt; script run worked as well:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 systemctl is-active pbs_mom.service 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 systemctl is-active pbs_mom.service
 abacus109: active
 
-# xdsh abacus109 systemctl status pbs_mom.service 
+# xdsh abacus109 systemctl status pbs_mom.service
 abacus109: * pbs_mom.service - PBS Mom service
 abacus109: Loaded: loaded (/etc/systemd/system/pbs_mom.service; enabled; vendor preset: disabled)
 abacus109: Active: active (running) since Fri 2022-03-20 18:53:39 PDT; 2min ago
@@ -8851,34 +8637,6 @@ abacus109: Active: active (running) since Fri 2022-03-20 18:53:39 PDT; 2min ago
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 --verify ls -lh /
 abacus109: total 28K
 ---- snip ----
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; &lt;br /&gt;
-If the above &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode abacus109 -P&lt;/code&gt; does not work, you can try fixing 
-it by the following sequence of commands:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P syncfiles
-# updatenode abacus109 -P &quot;confignetwork -s&quot;
-# updatenode abacus109 -P
-# updatenode abacus109 -P -F -V
-# updatenode abacus109 -P syncfiles -P &quot;confignics -s&quot;
-# updatenode abacus109 -P syncfiles -F -V
-# xdsh abacus109 shutdown -r now
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;em&gt;Explanation:&lt;/em&gt;  &lt;br /&gt;
-If you want to run all the customization scripts that have been designated for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; node (in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attributes), the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-P&lt;/code&gt; option (i.e, the command: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode abacus109 -P&lt;/code&gt;) will not work after install.  Instead, after install use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-F&lt;/code&gt; option for file synchronization (including synchronization of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attributes).&lt;/p&gt;
-
-&lt;p&gt;From the man page for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode(1)&lt;/code&gt; command:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-F|--sync     Specifies that file synchronization should be performed on the
-              nodes.  rsync/scp and ssh must be installed and configured on
-	      the nodes.
-[...]
--P|--scripts  Specifies that postscripts and postbootscripts should be run on
-              the nodes.  File sync with updatenode -P syncfiles is not
-	      supported.  The syncfiles postscript can only be run during
-	      install.  You should use updatenode -F instead.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The only thing left is to run a test job as explained above, under 
@@ -16377,7 +16135,10 @@ https://github.com/yuzutech/kroki/releases&lt;/p&gt;
     
       <item>
         <title>Dotfiles</title>
-        <description>&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% cat /etc/rc.conf
+        <description>&lt;p&gt;OS: FreeBSD 13   &lt;br /&gt;
+Shell: csh&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% cat /etc/rc.conf
 zfs_enable=&quot;YES&quot;
 dumpdev=&quot;AUTO&quot;
 powerd_enable=&quot;YES&quot;
@@ -16408,6 +16169,369 @@ dnsmasq_enable=&quot;YES&quot;
 wlans_iwm0=&quot;wlan0&quot;
 ifconfig_wlan0=&quot;wpa DHCP&quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;x11-aka-x-window-system---my-dotfiles&quot;&gt;X11 aka X Window System - My Dotfiles&lt;/h2&gt;
+
+&lt;p&gt;From the man page for X(7):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The X.Org Foundation requests that the following names be used when
+referring to this software:
+
+                                   X
+                            X Window System
+                             X Version 11
+                      X Window System, Version 11
+                                  X11
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;x11-global-settings&quot;&gt;X11 Global Settings&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% grep -n Path /var/log/Xorg.0.log
+28:[1065569.793] (==) FontPath set to:
+36:[1065569.793] (==) ModulePath set to &quot;/usr/local/lib/xorg/modules&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% grep -n FontPath /var/log/Xorg.0.log
+28:[1065569.793] (==) FontPath set to:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sed -n 28,35p /var/log/Xorg.0.log
+[1065569.793] (==) FontPath set to:
+        /usr/local/share/fonts/misc/,
+        /usr/local/share/fonts/TTF/,
+        /usr/local/share/fonts/OTF/,
+        /usr/local/share/fonts/Type1/,
+        /usr/local/share/fonts/100dpi/,
+        /usr/local/share/fonts/75dpi/,
+        catalogue:/usr/local/etc/X11/fontpath.d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% grep -n ModulePath /var/log/Xorg.0.log
+36:[1065569.793] (==) ModulePath set to &quot;/usr/local/lib/xorg/modules&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;directory--usrlocaletcx11&quot;&gt;Directory:  /usr/local/etc/X11/&lt;/h4&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/etc/X11/ | wc -l
+       6
+ 
+% ls -lh /usr/local/etc/X11/ | wc -l
+       4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/
+total 2
+drwxr-xr-x  2 root  wheel     4B Oct 18  2021 fontpath.d
+drwxr-xr-x  3 root  wheel     4B Aug 17  2021 xinit
+drwxr-xr-x  2 root  wheel     6B Jan  4  2022 xorg.conf.d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/etc/X11/fontpath.d/ | wc -l
+       5
+ 
+% ls -lh /usr/local/etc/X11/fontpath.d/ | wc -l
+       3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/fontpath.d/ 
+total 1
+lrwxr-xr-x  1 root  wheel    27B Sep 25  2021 ipamjm:pri=60 -&amp;gt; ../../../share/fonts/ipamjm
+lrwxr-xr-x  1 root  wheel    29B Jul 25  2021 vlgothic:pri=60 -&amp;gt; ../../../share/fonts/vlgothic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/etc/X11/xinit/ | wc -l
+       5
+ 
+% ls -lh /usr/local/etc/X11/xinit/ | wc -l
+       3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/xinit/ 
+total 5
+-rw-r--r--  1 root  wheel   780B Jul 24  2021 xinitrc
+drwxr-xr-x  2 root  wheel     3B Feb  3 11:03 xinitrc.d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% wc -l /usr/local/etc/X11/xinit/xinitrc
+      56 /usr/local/etc/X11/xinit/xinitrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sed &apos;/^[[:space:]]*$/d&apos; /usr/local/etc/X11/xinit/xinitrc | grep -v \# | wc -l
+      27
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sed &apos;/^[[:space:]]*$/d&apos; /usr/local/etc/X11/xinit/xinitrc | grep -v \#
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/usr/local/etc/X11/xinit/.Xresources
+sysmodmap=/usr/local/etc/X11/xinit/.Xmodmap
+if [ -f $sysresources ]; then
+    xrdb -merge $sysresources
+fi
+if [ -f $sysmodmap ]; then
+    xmodmap $sysmodmap
+fi
+if [ -f &quot;$userresources&quot; ]; then
+    xrdb -merge &quot;$userresources&quot;
+fi
+if [ -f &quot;$usermodmap&quot; ]; then
+    xmodmap &quot;$usermodmap&quot;
+fi
+if [ -d /usr/local/etc/X11/xinit/xinitrc.d ] ; then
+        for f in /usr/local/etc/X11/xinit/xinitrc.d/?*.sh ; do
+                [ -x &quot;$f&quot; ] &amp;amp;&amp;amp; . &quot;$f&quot;
+        done
+        unset f
+fi
+twm &amp;amp;
+xclock -geometry 50x50-1+1 &amp;amp;
+xterm -geometry 80x50+494+51 &amp;amp;
+xterm -geometry 80x20+494-0 &amp;amp;
+exec xterm -geometry 80x66+0+0 -name login
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/xinit/.Xmodmap
+ls: /usr/local/etc/X11/xinit/.Xmodmap: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -ld /usr/local/etc/X11/xinit/xinitrc.d
+drwxr-xr-x  2 root  wheel  3 Feb  3 11:03 /usr/local/etc/X11/xinit/xinitrc.d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/etc/X11/xinit/xinitrc.d/ | wc -l
+       4
+
+% ls -lh /usr/local/etc/X11/xinit/xinitrc.d/ | wc -l
+       2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/xinit/xinitrc.d/
+total 5
+-r-xr-xr-x  1 root  wheel   1.0K Jan 29  2022 90-consolekit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;directory--usrlocalsharex11&quot;&gt;Directory:  /usr/local/share/X11/&lt;/h4&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/share/X11/ | wc -l
+       7
+ 
+% ls -lh /usr/local/share/X11/ | wc -l
+       5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/etc/X11/xorg.conf.d/ | wc -l
+       7
+
+% ls -lh /usr/local/etc/X11/xorg.conf.d/ | wc -l
+       5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/xorg.conf.d/ 
+total 14
+-rw-r--r--  1 root  wheel   404B Jan  4  2022 card.conf
+-rw-r--r--  1 root  wheel   140B Jan  4  2022 layout.conf
+-rw-r--r--  1 root  wheel    48B Aug 18  2021 modules.conf
+-rw-r--r--  1 root  wheel   1.0K Jan  4  2022 monitors.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/share/X11/ 
+total 18
+drwxr-xr-x  2 root  wheel    18B Sep 16  2021 app-defaults
+drwxr-xr-x  2 root  wheel     3B Aug 17  2021 twm
+drwxr-xr-x  8 root  wheel     9B Feb  3 11:02 xkb
+drwxr-xr-x  2 root  wheel     5B Feb  3 11:03 xorg.conf.d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -alh /usr/local/share/X11/xorg.conf.d/ | wc -l
+       6
+ 
+% ls -lh /usr/local/share/X11/xorg.conf.d/ | wc -l
+       4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/share/X11/xorg.conf.d/ 
+total 14
+-rw-r--r--  1 root  wheel   1.3K Jan 26  2022 10-quirks.conf
+-rw-r--r--  1 root  wheel   152B Jan 26  2022 20-evdev-kbd.conf
+-rw-r--r--  1 root  wheel   1.4K Aug 13  2021 40-libinput.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;directory--usrlocaletcfonts&quot;&gt;Directory:  /usr/local/etc/fonts/&lt;/h4&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -ld /usr/local/etc/fonts/
+drwxr-xr-x  4 root  wheel  7 Feb  3  2022 /usr/local/etc/fonts/
+
+% ls -alh /usr/local/etc/fonts/ | wc -l
+       8
+
+% ls -lh /usr/local/etc/fonts/ | wc -l
+       6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/fonts/
+total 79
+drwxr-xr-x  2 root  wheel    51B Feb  3  2022 conf.avail
+drwxr-xr-x  2 root  wheel    33B Feb  3  2022 conf.d
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 fonts.conf
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 fonts.conf.sample
+-rw-r--r--  1 root  wheel   8.1K Dec  3  2020 fonts.dtd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;x11-user-settings&quot;&gt;X11 User Settings&lt;/h3&gt;
+
+&lt;p&gt;In my home directory:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls ~/.xinitrc
+/home/dusko/.xinitrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create a symlink from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.xinitrc&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.xsession&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ln -s ~/.xinitrc ~/.xsession
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% file ~/.xsession
+/home/dusko/.xsession: symbolic link to /home/dusko/.xinitrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh $HOME/.Xresources
+-rw-r--r--  1 dusko  dusko   5.2K Jan 26 11:44 /home/dusko/.Xresources
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh $HOME/.Xmodmap
+ls: /home/dusko/.Xmodmap: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/etc/X11/xinit/.Xresources
+ls: /usr/local/etc/X11/xinit/.Xresources: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;xset1---user-preference-utility-for-x&quot;&gt;xset(1) - User Preference Utility for X&lt;/h3&gt;
+
+&lt;p&gt;For status information:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% xset -q | wc -l
+      27
+
+% xset q | wc -l
+      27
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% xset -q 
+Keyboard Control:
+  auto repeat:  on    key click percent:  0    LED mask:  00000000
+  XKB indicators:
+    00: Caps Lock:   off    01: Num Lock:    off    02: Scroll Lock: off
+    03: Compose:     off    04: Kana:        off    05: Sleep:       off
+    06: Suspend:     off    07: Mute:        off    08: Misc:        off
+    09: Mail:        off    10: Charging:    off    11: Shift Lock:  off
+    12: Group 2:     off    13: Mouse Keys:  off
+  auto repeat delay:  660    repeat rate:  25
+  auto repeating keys:  00ffffffdffffbbf
+                        fadfffefffedffff
+                        9fffffffffffffff
+                        fff7ffffffffffff
+  bell percent:  0    bell pitch:  400    bell duration:  100
+Pointer Control:
+  acceleration:  2/1    threshold:  4
+Screen Saver:
+  prefer blanking:  yes    allow exposures:  yes
+  timeout:  600    cycle:  600
+Colors:
+  default colormap:  0x22    BlackPixel:  0x0    WhitePixel:  0xffffff
+Font Path:
+  /usr/local/share/fonts/misc/,/usr/local/share/fonts/TTF/,/usr/local/share/fonts/OTF/,/usr/local/share/fonts/Type1/,/usr/local/share/fonts/100dpi/,/usr/local/share/fonts/75dpi/,catalogue:/usr/local/etc/X11/fontpath.d,built-ins,/usr/local/share/fonts/100dpi,/usr/local/share/fonts/75dpi,/usr/local/share/fonts/adobe-cmaps,/usr/local/share/fonts/bitstream-vera,/usr/local/share/fonts/Caladea,/usr/local/share/fonts/cantarell,/usr/local/share/fonts/Carlito,/usr/local/share/fonts/ChromeOS,/usr/local/share/fonts/comic-neue,/usr/local/share/fonts/cyrillic,/usr/local/share/fonts/dejavu,/usr/local/share/fonts/GentiumBasic,/usr/local/share/fonts/gnu-unifont,/usr/local/share/fonts/ipamjm,/usr/local/share/fonts/jmk-x11-fonts,/usr/local/share/fonts/Liberation,/usr/local/share/fonts/LinLibertineG,/usr/local/share/fonts/misc,/usr/local/share/fonts/Monoid,/usr/local/share/fonts/nanum-coding-ttf,/usr/local/share/fonts/nanum-ttf,/usr/local/share/fonts/noto,/usr/local/share/fonts/OTF,/usr/local/share/fonts/SourceCodePro,/usr/local/share/fonts/SourceHanSans,/usr/local/share/fonts/SourceHanSansK,/usr/local/share/fonts/SourceHanSansSC,/usr/local/share/fonts/SourceHanSansTC,/usr/local/share/fonts/SourceSansPro,/usr/local/share/fonts/symbola,/usr/local/share/fonts/terminus-font,/usr/local/share/fonts/TerminusTTF,/usr/local/share/fonts/TTF,/usr/local/share/fonts/twemoji-color-font-ttf,/usr/local/share/fonts/Type1,/usr/local/share/fonts/uw-ttyp0,/usr/local/share/fonts/vlgothic,/usr/local/share/fonts/wqy,/usr/home/dusko/.fonts/knxt
+DPMS (Energy Star):
+  Standby: 600    Suspend: 600    Off: 600
+  DPMS is Enabled
+  Monitor is On
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;starting-x&quot;&gt;Starting X&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% exec startx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Or:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% exec xinit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;mutt---my-dotfiles&quot;&gt;Mutt - My Dotfiles&lt;/h2&gt;
+
+&lt;h3 id=&quot;mutt-mua-mail-user-agent&quot;&gt;Mutt MUA (Mail User Agent)*&lt;/h3&gt;
+
+&lt;p&gt;[*] aka Email Client or Mail Reader&lt;/p&gt;
+
+&lt;p&gt;Starting mutt with my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttrc&lt;/code&gt; configuration file:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ mutt -F /mnt/usbflashdrive/mydotfiles/mutt-imap/.muttrc.example.com.imap
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Note 1:&lt;/strong&gt;  &lt;br /&gt;
+Per these excerpts from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttrc&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set mailcap_path = /mnt/usbflashdrive/mydotfiles/mutt-common-files/mailcap
+
+set alias_file = /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttaliases
+source /mnt/usbflashdrive/mydotfiles/mutt-common-files/muttaliases
+
+set query_command=&quot;/mnt/usbflashdrive/mydotfiles/mutt-common-files/muttldap.pl %s&quot;
+
+macro index \el &quot;!/mnt/usbflashdrive/mydotfiles/mutt-common-files/muttalias.sh&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;you’ll need the following additional files: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.muttrc.example.com.imap&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttaliases&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttldap.pl&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttalias.sh&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mailcap&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The content of those files for download (you’ll need to adjust them for your environment):&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.muttrc.example.com.imap&lt;/code&gt; file:  &lt;a href=&quot;http://localhost:4000/assets/txt/dot.muttrc&quot;&gt;.muttrc.example.com.imap&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttaliases&lt;/code&gt; file: &lt;a href=&quot;http://localhost:4000/assets/txt/muttaliases&quot;&gt;muttaliases&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttldap.pl&lt;/code&gt; file: &lt;a href=&quot;http://localhost:4000/assets/txt/muttldap.pl&quot;&gt;muttldap.pl&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttalias.sh&lt;/code&gt; file: &lt;a href=&quot;http://localhost:4000/assets/txt/muttalias.sh&quot;&gt;muttalias.sh&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mailcap&lt;/code&gt; file: &lt;a href=&quot;http://localhost:4000/assets/txt/mailcap&quot;&gt;mailcap&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note 2:&lt;/strong&gt;  &lt;br /&gt;
+As per another excerpt from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttrc&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set header_cache = /mnt/usbflashdrive/muttcache/example.com.dusko/cache
+set message_cachedir = /mnt/usbflashdrive/muttcache/example.com.dusko/cache/bodies
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;you’ll need to create a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;muttcache&lt;/code&gt; directory structure.&lt;/p&gt;
+
+&lt;p&gt;In my case:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% mkdir -p /mnt/usbflashdrive/muttcache/example.com.dusko/cache/bodies
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;which creates four directories inside &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/&lt;/code&gt; &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/example.com.dusko/&lt;/code&gt;  &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/example.com.dusko/cache&lt;/code&gt; &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/example.com.dusko/cache/bodies&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note 3:&lt;/strong&gt;  &lt;br /&gt;
+Message bodies are in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bodies&lt;/code&gt; &lt;strong&gt;directory&lt;/strong&gt;:   &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/example.com.dusko/cache/bodies&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Message headers are in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;headers&lt;/code&gt; &lt;strong&gt;file&lt;/strong&gt;:   &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/muttcache/example.com.dusko/cache/headers&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note 4:&lt;/strong&gt;  &lt;br /&gt;
+As of time of this writing, I’m not using 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/mnt/usbflashdrive/mydotfiles/mutt-common-files/gpg.rc&lt;/code&gt; so I’m not listing its content.&lt;/p&gt;
+
+&lt;hr /&gt;
 
 </description>
         <pubDate>Wed, 23 Feb 2022 18:14:33 -0800</pubDate>
