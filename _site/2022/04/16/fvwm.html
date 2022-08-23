@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>FVWM - F Virtual Window Manager - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="FVWM - F Virtual Window Manager" />
+    <meta name="keywords" content="FVWM - F Virtual Window Manager, Dusko Pijetlovic, " />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="FVWM - F Virtual Window Manager" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/2022/04/16/fvwm.html" property="og:url">
+    
+
+    
+      <meta content="2022-04-16T08:12:34-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="FVWM - F Virtual Window Manager">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/2022/04/16/fvwm.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">FVWM - F Virtual Window Manager</h1>
+</header>
+
+<span class="time">16 Apr 2022</span>
+
+  <span class="categories">
+    &raquo; 
+  </span>
+
+
+<div class="content">
+  <div class="post"><hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo pkg install fvwm
+</code></pre></div></div>
+
+<p>About FVWM - from <code class="language-plaintext highlighter-rouge">pkg info --regex --full fvwm</code> 3 <sup><a href="#footnotes">1</a></sup>/<sub>4</sub></p>
+
+<p><strong>[TODO]</strong> <br />
+Replace <code class="language-plaintext highlighter-rouge">mydotfiles...</code> with
+<code class="language-plaintext highlighter-rouge">fetch https://zensites.net/fvwm/guide/fvwm-guide-icons.tar.bz2</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cp -rf \
+ /mnt/usbflashdrive/mydotfiles/FVWM.freebsd.lenovo.x280.2022_07_10_2200/THEME-2-ARCTIC/.fvwm/* \
+ ~/.fvwm/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grep -n icons ~/.fvwm/config
+36:#   2. Place all icons in this directory:
+37:#        /usr/local/share/icons/gnant
+38:#   3. It might take a couple of minutes for some icons in the dock
+40:#      clock icons.
+49:SetEnv  fvwm_icon               /usr/local/share/icons/$[fvm_gnome_icon_theme]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grep -n fvm_gnome_icon_theme ~/.fvwm/config
+48:SetEnv  fvm_gnome_icon_theme    gnant
+49:SetEnv  fvwm_icon               /usr/local/share/icons/$[fvm_gnome_icon_theme]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch https://strog.org/files/gnant-0.2.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tar xf gnant-0.2.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mv gnant /usr/local/share/icons/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rm -i gnant-0.2.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch https://zensites.net/fvwm/guide/fvwm-guide-icons.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tar xf fvwm-guide-icons.tar.bz2 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -alh
+total 198
+drwxr-xr-x   3 dusko  wheel     4B Apr 16 08:25 .
+drwxrwxrwt  37 root   wheel   570B Apr 16 08:23 ..
+drwxr-xr-x   7 dusko  wheel     8B Aug  5  2004 .fvwm
+-rw-r--r--   1 dusko  wheel    73K Jan 14  2008 fvwm-guide-icons.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -alh .fvwm/
+total 20
+drwxr-xr-x  7 dusko  wheel     8B Aug  5  2004 .
+drwxr-xr-x  3 dusko  wheel     4B Jul 11 19:25 ..
+-rw-r--r--  1 dusko  wheel    17K Aug  5  2004 fvwm2rc-guide
+drwxr-xr-x  5 dusko  wheel     5B Aug  5  2004 icons
+drwxr-xr-x  5 dusko  wheel     5B Aug  5  2004 images
+drwxr-xr-x  2 dusko  wheel     2B Aug  4  2004 screenshot
+drwxr-xr-x  2 dusko  wheel     2B Aug  4  2004 scripts
+drwxr-xr-x  2 dusko  wheel     2B Aug  4  2004 tmp
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -alh .fvwm/icons/
+total 35
+drwxr-xr-x  5 dusko  wheel     5B Aug  5  2004 .
+drwxr-xr-x  7 dusko  wheel     8B Aug  5  2004 ..
+drwxr-xr-x  2 dusko  wheel    10B Aug  5  2004 48x48
+drwxr-xr-x  2 dusko  wheel    28B Aug  5  2004 menu
+drwxr-xr-x  2 dusko  wheel     7B Aug  5  2004 mini
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo cp -rf .fvwm/icons/menu /usr/local/share/icons/gnant/
+$ sudo cp -rf .fvwm/icons/mini /usr/local/share/icons/gnant/
+$ sudo cp -rf .fvwm/icons/48x48/* /usr/local/share/icons/gnant/48x48/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rm -rf .fvwm/
+$ rm -i fvwm-guide-icons.tar.bz2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo pkg install rox-filer
+% sudo pkg install 3ddesktop
+</code></pre></div></div>
+
+<pre><code class="language-`">% pkill Xorg
+</code></pre>
+
+<p>Start X:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% exec xinit 
+</code></pre></div></div>
+
+<p>Alternatively:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ exec startx
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="footnotes">Footnotes</h2>
+
+<p>[1] From <code class="language-plaintext highlighter-rouge">pkg info --regex --full fvwm</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WWW            : http://www.fvwm.org/
+Comment        : Popular virtual window manager for X
+
+Description    :
+Fvwm is a very famous window manager for X, which provides a
+virtual/multiple disjoint desktop, a 3-D look for windows decorations,
+shaped/color icons. It gives a very good emulation of mwm. A nice
+button-bar can be used to provide convenient access to frequently used
+functions or programs.
+
+WWW: http://www.fvwm.org/
+
+Jason C. Wells
+</code></pre></div></div>
+
+<p>From <a href="https://www.fvwm.org/">https://www.fvwm.org/</a> (Retrieved on Apr 16, 2022):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fvwm is a virtual window manager for the X windows system. It was 
+originally a feeble fork of TWM by Robert Nation in 1993 (fvwm history), 
+and has evolved into the fantastic, fabulous, famous, flexible, and so on, 
+window manager we have today.
+
+Fvwm is ICCCM-compliant and highly configurable. Starting from a minimal 
+configuration, Fvwm can be configured with both internal tools and third 
+party software to customize most aspects of a desktop.
+
+This site is an archive of documentation for Fvwm version 2.6.x, which is 
+the current frozen release. For information about the development of Fvwm 
+version 3, check out fvwmorg/fvwm3 on GitHub.
+</code></pre></div></div>
+
+<hr />
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/2022/04/16/fvwm.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+  
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/wm/x11/xorg/freebsd/unix/dotfiles/2022/04/03/twm.html">&laquo; TWM - Tab Window Manager for the X Window System</a>
+  
+  
+    <a class="next" href="/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html">Fonts in X11 - aka Fonts in X (Xorg) &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_FVWM - F Virtual Window Manager";
+    var disqus_title = "FVWM - F Virtual Window Manager";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

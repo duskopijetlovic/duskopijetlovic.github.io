@@ -1,0 +1,4952 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Fonts in X11 - aka Fonts in X (Xorg) - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Fonts in X11 - aka Fonts in X (Xorg)" />
+    <meta name="keywords" content="Fonts in X11 - aka Fonts in X (Xorg), Dusko Pijetlovic, font, freebsd, unix, x11, xorg, dotfiles" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Fonts in X11 - aka Fonts in X (Xorg)" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html" property="og:url">
+    
+
+    
+      <meta content="2022-04-17T09:14:33-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="font" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Fonts in X11 - aka Fonts in X (Xorg)">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Fonts in X11 - aka Fonts in X (Xorg)</h1>
+</header>
+
+<span class="time">17 Apr 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/font">font</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/unix">unix</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/dotfiles">dotfiles</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>OS: FreeBSD 13   <br />
+Shell: csh</p>
+
+<hr />
+
+<p><strong>[TODO]</strong>:</p>
+<ul>
+  <li>iconv</li>
+  <li>python; e.g.:  <code class="language-plaintext highlighter-rouge">print(b.decode("utf8"))</code></li>
+  <li>Perl</li>
+  <li>Also, basically all or most from here:
+<a href="https://charbase.com/02b7-unicode-modifier-letter-small-w">https://charbase.com/02b7-unicode-modifier-letter-small-w</a>:  <strong>Decomposition</strong>, Index, Class, Block, Java escape, Javascript escape, Python escape, HTML escapes, URL encoded, UTF8, UTF16</li>
+  <li>xterm tests - from e.g. Thomas E. Dickey <a href="http://invisible-island.net/ncurses/">http://invisible-island.net/ncurses/</a></li>
+</ul>
+
+<hr />
+
+<h2 id="fonts-in-x11-x-window-system-aka-x">Fonts in X11 (X Window System, aka X)</h2>
+
+<p>From “Linux in a Windows World” by Roderick W Smith
+(O’Reilly Media, Inc. February 2005):</p>
+
+<p>Two font systems:</p>
+
+<ul>
+  <li>The X core fonts (a.k.a. X fonts)
+    <ul>
+      <li>Designed with bitmap fonts in mind, meaning that individual characters
+were designed for display at a specific size in pixels.
+        <ul>
+          <li>To support scaleable fonts, which can be resized, multiple bitmap
+font files are required, one for each size. X servers ship with
+several bitmap fonts in a variety of sizes, designed for both
+72 dots per inch (dpi) and 100-dpi displays.</li>
+          <li>Most modern fonts, though, use scaleable font (a.k.a. outline font)
+technologies, in which the font is described in terms of mathematical
+descriptions of lines and curves.  These descriptions provide an
+outline of a character, which the font renderer can scale to any
+desired resolution and fill in.
+            <ul>
+              <li>The two most common scaleable font formats today are
+<strong>PostScript Type 1</strong> (a.k.a. Adobe Type Manager or ATM) fonts and
+<strong>TrueType</strong> fonts (TTF).</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Xft fonts (aka outline fonts or scalable fonts)
+    <ul>
+      <li>Designed around the FreeType library, which was originally a tool for
+rendering TrueType fonts.  Today, though, Xft supports both TrueType
+and Type 1 fonts.</li>
+      <li>Improved limitations in the X core fonts:
+        <ul>
+          <li>X core fonts can’t readily handle more than two colors per font
+(Required a font technology known as font smoothing or anti-aliasing.
+ Font smoothing uses shades of gray to deliberately blur fonts,
+ which has the subjective effect of improving the appearance of
+ fonts because it tends to hide the jagged edges along diagonal
+ lines and curves.)</li>
+        </ul>
+      </li>
+      <li>Installing the X core fonts can be tricky.</li>
+      <li>X core fonts were not designed with printing in mind, and coordinating
+the display and print fonts can be a challenge when using these fonts.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>NOTE:</strong>
+Individual X-based programs sometimes employ their own font-handling systems.</p>
+
+<h2 id="installing-x-core-fonts-aka-traditional-x-fonts">Installing X Core Fonts (aka “Traditional” X Fonts)</h2>
+
+<p><strong>[TODO]</strong>  ORDER</p>
+
+<ol>
+  <li>Install font; that is, copy its files</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">mkfontdir</code> to recreate the font database</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">mkfontscale</code> to recreate an index of scalable font files for X</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">xset fp+ /path/to/the/new/font</code>  to append it to the font path</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">xset fp rehash</code> to  reread the font databases in the font path</li>
+</ol>
+
+<h3 id="file-fontsdir----todo">File fonts.dir    <strong>[TODO]</strong></h3>
+
+<h3 id="file-fontsscale--todo">File fonts.scale  <strong>[TODO]</strong></h3>
+
+<h3 id="refresh-rehash-the-font-databases">Refresh (Rehash) the Font Databases</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xset fp rehash
+</code></pre></div></div>
+
+<p>From the man page for <code class="language-plaintext highlighter-rouge">xset(1)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fp rehash
+        The rehash argument resets the font path to its current value,
+        causing the server to reread the font databases in the current
+        font path.  This is generally only used when adding new fonts
+        to a font directory (after running mkfontdir to recreate the
+        font database).
+</code></pre></div></div>
+
+<p><strong>Note:</strong>
+To reset the font path to the server’s (that is, X server’s) default:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xset fp default
+</code></pre></div></div>
+
+<h3 id="xlsfonts1---server-font-list-displayer-for-x">xlsfonts(1) - Server Font List Displayer for X</h3>
+
+<p>List all X core fonts on the system:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xlsfonts | wc -l
+   25462
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo xlsfonts | wc -l
+Password:
+   25462
+</code></pre></div></div>
+
+<h4 id="converting-a-file-from-an-8-bit-character-set-for-example-iso_8859-1-to-utf-8-without-posting-the-file-to-a-remote-server">Converting a File from an 8-bit Character Set (For Example ISO_8859-1) to UTF-8 without POSTing the File to a Remote server</h4>
+
+<p><a href="http://www.acc.umu.se/~saasha/charconv/">Converting a file from an 8-bit character set (for example ISO_8859-1) to UTF-8 without POSTing the file to a remote server</a> (Retrieved on Apr 17, 2022):</p>
+
+<blockquote>
+  <p> In many cases, the most obvious way to solve such a problem is to save 
+the file, open a terminal, move to the directory where the file resides 
+(with cd …) and use <code class="language-plaintext highlighter-rouge">iconv</code> similarly to:</p>
+
+  <p><code class="language-plaintext highlighter-rouge">iconv -f iso88591 -t utf8 fileToConvert.txt &gt; convertedFile.txt</code></p>
+
+  <p>Unfortunately, finding out how to start a terminal is not always easy 
+in today’s GUI’s!</p>
+
+  <p>Here, you are given the opportunity to achieve such a conversion locally. 
+Choose a character set (charset, encoding) in the list below and choose 
+the file you wish to convert.  The JavaScript program linked to by this 
+page will try to make your browser convert the file to UTF-8. 
+If the conversion succeeds, you will be given the opportunity to save 
+the converted file.</p>
+
+  <p>You do not need any Internet connection to achieve this conversion. 
+You can save this page locally together with (in the same directory than) 
+the JavaScript program it is linked to and open it in a browser to 
+achieve the conversions even without any Internet connection.</p>
+
+  <p>Comments and suggestions may be sent to saasha@acc.umu.se.</p>
+</blockquote>
+
+<h2 id="installing-xft-fonts-aka-fontconfig">Installing Xft Fonts (aka Fontconfig)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /usr/local/share/fonts/ | wc -l
+      42
+
+% ls -lh /usr/local/share/fonts/ | wc -l
+      40
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /usr/local/etc/fonts/
+drwxr-xr-x  4 root  wheel  7 Feb  3  2022 /usr/local/etc/fonts/
+
+% ls -alh /usr/local/etc/fonts/ | wc -l
+       8
+
+% ls -lh /usr/local/etc/fonts/ | wc -l
+       6
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/etc/fonts/
+total 79
+drwxr-xr-x  2 root  wheel    51B Feb  3  2022 conf.avail
+drwxr-xr-x  2 root  wheel    33B Feb  3  2022 conf.d
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 fonts.conf
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 fonts.conf.sample
+-rw-r--r--  1 root  wheel   8.1K Dec  3  2020 fonts.dtd
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /usr/local/etc/fonts/conf.avail/ | wc -l
+      52
+
+% ls -lh /usr/local/etc/fonts/conf.avail/ | wc -l
+      50
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /usr/local/etc/fonts/conf.d/ | wc -l
+      34
+
+% ls -lh /usr/local/etc/fonts/conf.d/ | wc -l
+      32
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /usr/local/etc/fonts/conf.d/README
+conf.d/README
+
+Each file in this directory is a fontconfig configuration file.  Fontconfig
+scans this directory, loading all files of the form [0-9][0-9]*.conf.
+These files are normally installed in /usr/local/etc/fonts/conf.avail
+and then symlinked here, allowing them to be easily installed and then
+enabled/disabled by adjusting the symlinks.
+
+The files are loaded in numeric order, the structure of the configuration
+has led to the following conventions in usage:
+
+ Files beginning with:  Contain:
+
+ 00 through 09          Font directories
+ 10 through 19          system rendering defaults (AA, etc)
+ 20 through 29          font rendering options
+ 30 through 39          family substitution
+ 40 through 49          generic identification, map family-&gt;generic
+ 50 through 59          alternate config file loading
+ 60 through 69          generic aliases, map generic-&gt;family
+ 70 through 79          select font (adjust which fonts are available)
+ 80 through 89          match target="scan" (modify scanned patterns)
+ 90 through 99          font synthesis
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/local/etc/fonts/fonts.conf*
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 /usr/local/etc/fonts/fonts.conf
+-rw-r--r--  1 root  wheel   2.6K Jan 21  2022 /usr/local/etc/fonts/fonts.conf.sample
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff /usr/local/etc/fonts/fonts.conf.sample /usr/local/etc/fonts/fonts.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file /usr/local/etc/fonts/fonts.conf
+/usr/local/etc/fonts/fonts.conf: XML 1.0 document, ASCII text
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l /usr/local/etc/fonts/fonts.conf
+     103 /usr/local/etc/fonts/fonts.conf
+
+% sed '/^[[:space:]]*$/d' /usr/local/etc/fonts/fonts.conf | grep -v \# | wc -l
+      87
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed '/^[[:space:]]*$/d' /usr/local/etc/fonts/fonts.conf | grep -v \#
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd"&gt;
+&lt;!-- /etc/fonts/fonts.conf file to configure system font access --&gt;
+&lt;fontconfig&gt;
+        &lt;description&gt;Default configuration file&lt;/description&gt;
+&lt;!--
+        DO NOT EDIT THIS FILE.
+        IT WILL BE REPLACED WHEN FONTCONFIG IS UPDATED.
+        LOCAL CHANGES BELONG IN 'local.conf'.
+        The intent of this standard configuration file is to be adequate for
+        most environments.  If you have a reasonably normal environment and
+        have found problems with this configuration, they are probably
+        things that others will also want fixed.  Please submit any
+        problems to the fontconfig bugzilla system located at fontconfig.org
+        Note that the normal 'make install' procedure for fontconfig is to
+        replace any existing fonts.conf file with the new version.  Place
+        any local customizations in local.conf which this file references.
+        Keith Packard
+--&gt;
+&lt;!-- Font directory list --&gt;
+        &lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+        &lt;dir&gt;/usr/local/lib/X11/fonts&lt;/dir&gt;
+        &lt;dir prefix="xdg"&gt;fonts&lt;/dir&gt;
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;dir&gt;~/.fonts&lt;/dir&gt;
+&lt;!--
+  Accept deprecated 'mono' alias, replacing it with 'monospace'
+--&gt;
+        &lt;match target="pattern"&gt;
+                &lt;test qual="any" name="family"&gt;
+                        &lt;string&gt;mono&lt;/string&gt;
+                &lt;/test&gt;
+                &lt;edit name="family" mode="assign" binding="same"&gt;
+                        &lt;string&gt;monospace&lt;/string&gt;
+                &lt;/edit&gt;
+        &lt;/match&gt;
+&lt;!--
+  Accept alternate 'sans serif' spelling, replacing it with 'sans-serif'
+--&gt;
+        &lt;match target="pattern"&gt;
+                &lt;test qual="any" name="family"&gt;
+                        &lt;string&gt;sans serif&lt;/string&gt;
+                &lt;/test&gt;
+                &lt;edit name="family" mode="assign" binding="same"&gt;
+                        &lt;string&gt;sans-serif&lt;/string&gt;
+                &lt;/edit&gt;
+        &lt;/match&gt;
+&lt;!--
+  Accept deprecated 'sans' alias, replacing it with 'sans-serif'
+--&gt;
+        &lt;match target="pattern"&gt;
+                &lt;test qual="any" name="family"&gt;
+                        &lt;string&gt;sans&lt;/string&gt;
+                &lt;/test&gt;
+                &lt;edit name="family" mode="assign" binding="same"&gt;
+                        &lt;string&gt;sans-serif&lt;/string&gt;
+                &lt;/edit&gt;
+        &lt;/match&gt;
+&lt;!--
+  Accept alternate 'system ui' spelling, replacing it with 'system-ui'
+--&gt;
+        &lt;match target="pattern"&gt;
+                &lt;test qual="any" name="family"&gt;
+                        &lt;string&gt;system ui&lt;/string&gt;
+                &lt;/test&gt;
+                &lt;edit name="family" mode="assign" binding="same"&gt;
+                        &lt;string&gt;system-ui&lt;/string&gt;
+                &lt;/edit&gt;
+        &lt;/match&gt;
+&lt;!--
+  Load local system customization file
+--&gt;
+        &lt;include ignore_missing="yes"&gt;conf.d&lt;/include&gt;
+&lt;!-- Font cache directory list --&gt;
+        &lt;cachedir&gt;/var/db/fontconfig&lt;/cachedir&gt;
+        &lt;cachedir prefix="xdg"&gt;fontconfig&lt;/cachedir&gt;
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;cachedir&gt;~/.fontconfig&lt;/cachedir&gt;
+        &lt;config&gt;
+&lt;!--
+  Rescan configuration every 30 seconds when FcFontSetList is called
+ --&gt;
+                &lt;rescan&gt;
+                        &lt;int&gt;30&lt;/int&gt;
+                &lt;/rescan&gt;
+        &lt;/config&gt;
+&lt;/fontconfig&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /etc/fonts/fonts.conf
+ls: /etc/fonts/fonts.conf: No such file or directory
+</code></pre></div></div>
+
+<h3 id="font-directory-list">Font Directory List</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n 'Font directory list' /usr/local/etc/fonts/fonts.conf
+25:&lt;!-- Font directory list --&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 25,35p /usr/local/etc/fonts/fonts.conf
+&lt;!-- Font directory list --&gt;
+
+        &lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+        &lt;dir&gt;/usr/local/lib/X11/fonts&lt;/dir&gt;
+
+
+        &lt;dir prefix="xdg"&gt;fonts&lt;/dir&gt;
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;dir&gt;~/.fonts&lt;/dir&gt;
+
+&lt;!--
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  <code class="language-plaintext highlighter-rouge">~/.fonts</code> directory will be removed in the future:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n removed /usr/local/etc/fonts/fonts.conf
+32:     &lt;!-- the following element will be removed in the future --&gt;
+91:     &lt;!-- the following element will be removed in the future --&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 32,34p /usr/local/etc/fonts/fonts.conf
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;dir&gt;~/.fonts&lt;/dir&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -alh /usr/local/share/fonts/ | wc -l
+      42
+
+% ls -lh /usr/local/share/fonts/ | wc -l
+      40
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls /usr/local/share/fonts/
+100dpi                  gnu-unifont             SourceHanSansK
+75dpi                   ipamjm                  SourceHanSansSC
+adobe-cmaps             jmk-x11-fonts           SourceHanSansTC
+bitstream-vera          Liberation              SourceSansPro
+Caladea                 LinLibertineG           symbola
+cantarell               misc                    terminus-font
+Carlito                 Monoid                  TerminusTTF
+ChromeOS                nanum-coding-ttf        TTF
+comic-neue              nanum-ttf               twemoji-color-font-ttf
+cyrillic                noto                    Type1
+dejavu                  OTF                     uw-ttyp0
+encodings               SourceCodePro           vlgothic
+GentiumBasic            SourceHanSans           wqy
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /usr/local/lib/X11/fonts
+ls: /usr/local/lib/X11/fonts: No such file or directory
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld ~/.fonts/
+drwxr-xr-x  3 dusko  dusko  214 Nov 22  2021 /home/dusko/.fonts/
+
+% ls -alh ~/.fonts/ | wc -l
+     215
+
+% ls -lh ~/.fonts/ | wc -l
+     213
+</code></pre></div></div>
+
+<h3 id="font-cache-directory-list">Font Cache Directory List</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n -i list /usr/local/etc/fonts/fonts.conf
+25:&lt;!-- Font directory list --&gt;
+87:&lt;!-- Font cache directory list --&gt;
+96:  Rescan configuration every 30 seconds when FcFontSetList is called
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 87,94p /usr/local/etc/fonts/fonts.conf
+&lt;!-- Font cache directory list --&gt;
+
+        &lt;cachedir&gt;/var/db/fontconfig&lt;/cachedir&gt;
+        &lt;cachedir prefix="xdg"&gt;fontconfig&lt;/cachedir&gt;
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;cachedir&gt;~/.fontconfig&lt;/cachedir&gt;
+
+        &lt;config&gt;
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  <code class="language-plaintext highlighter-rouge">~/.fontconfig</code> directory will be removed in the future:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% grep -n removed /usr/local/etc/fonts/fonts.conf
+32:     &lt;!-- the following element will be removed in the future --&gt;
+91:     &lt;!-- the following element will be removed in the future --&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sed -n 91,92p /usr/local/etc/fonts/fonts.conf
+        &lt;!-- the following element will be removed in the future --&gt;
+        &lt;cachedir&gt;~/.fontconfig&lt;/cachedir&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld /var/db/fontconfig/
+drwxr-xr-x  2 root  wheel  57 Mar 31 13:49 /var/db/fontconfig/
+
+% ls -alh /var/db/fontconfig/ | wc -l
+      58
+
+% ls -lh /var/db/fontconfig/ | wc -l
+      56
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /var/db/fontconfig/CACHEDIR.TAG
+Signature: 8a477f597d28d172789f06886806bc55
+# This file is a cache directory tag created by fontconfig.
+# For information about cache directory tags, see:
+#       http://www.brynosaurus.com/cachedir/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -ld ~/.fontconfig
+ls: /home/dusko/.fontconfig: No such file or directory
+</code></pre></div></div>
+
+<h3 id="file--fontsalias">File:  fonts.alias</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo locate fonts.alias
+/usr/local/share/fonts/100dpi/fonts.alias
+/usr/local/share/fonts/75dpi/fonts.alias
+/usr/local/share/fonts/cyrillic/fonts.alias
+/usr/local/share/fonts/misc/fonts.alias
+</code></pre></div></div>
+
+<h3 id="list-information-about-current-fonts-configuration-font-path">List Information about Current Fonts Configuration, Font Path</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xset -q | grep -n Font
+22:Font Path:
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xset -q | sed -n 22,23p
+Font Path:
+  /usr/local/share/fonts/misc/,/usr/local/share/fonts/TTF/,/usr/local/share/fonts/OTF/,/usr/local/share/fonts/Type1/,/usr/local/share/fonts/100dpi/,/usr/local/share/fonts/75dpi/,catalogue:/usr/local/etc/X11/fontpath.d,built-ins,/usr/local/share/fonts/100dpi,/usr/local/share/fonts/75dpi,/usr/local/share/fonts/adobe-cmaps,/usr/local/share/fonts/bitstream-vera,/usr/local/share/fonts/Caladea,/usr/local/share/fonts/cantarell,/usr/local/share/fonts/Carlito,/usr/local/share/fonts/ChromeOS,/usr/local/share/fonts/comic-neue,/usr/local/share/fonts/cyrillic,/usr/local/share/fonts/dejavu,/usr/local/share/fonts/GentiumBasic,/usr/local/share/fonts/gnu-unifont,/usr/local/share/fonts/ipamjm,/usr/local/share/fonts/jmk-x11-fonts,/usr/local/share/fonts/Liberation,/usr/local/share/fonts/LinLibertineG,/usr/local/share/fonts/misc,/usr/local/share/fonts/Monoid,/usr/local/share/fonts/nanum-coding-ttf,/usr/local/share/fonts/nanum-ttf,/usr/local/share/fonts/noto,/usr/local/share/fonts/OTF,/usr/local/share/fonts/SourceCodePro,/usr/local/share/fonts/SourceHanSans,/usr/local/share/fonts/SourceHanSansK,/usr/local/share/fonts/SourceHanSansSC,/usr/local/share/fonts/SourceHanSansTC,/usr/local/share/fonts/SourceSansPro,/usr/local/share/fonts/symbola,/usr/local/share/fonts/terminus-font,/usr/local/share/fonts/TerminusTTF,/usr/local/share/fonts/TTF,/usr/local/share/fonts/twemoji-color-font-ttf,/usr/local/share/fonts/Type1,/usr/local/share/fonts/uw-ttyp0,/usr/local/share/fonts/vlgothic,/usr/local/share/fonts/wqy,/usr/home/dusko/.fonts/knxt
+</code></pre></div></div>
+
+<h3 id="fc-cache1---build-font-information-cache-files">fc-cache(1) - Build Font Information Cache Files</h3>
+
+<p>To refresh only system fonts:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-cache -sv
+</code></pre></div></div>
+
+<p>From the man page for <code class="language-plaintext highlighter-rouge">fc-cache(1)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DESCRIPTION
+       fc-cache scans the font directories on the system and builds font
+       information cache files for applications using fontconfig for their
+       font handling.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-s     Only scan system-wide directories, omitting the places located
+       in the user's home directory.
+
+-v     Display status information while busy.
+</code></pre></div></div>
+
+<p>To force refresh fonts cache:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-cache -fv
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-f     Force re-generation of apparently up-to-date cache files,
+       overriding the timestamp checking.
+</code></pre></div></div>
+
+<p>Erase all existing cache files and rescan:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-cache -rv
+</code></pre></div></div>
+
+<h3 id="fc-list1---list-available-fonts">fc-list(1) - List Available Fonts</h3>
+
+<p>From the man page for <code class="language-plaintext highlighter-rouge">fc-list(1)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DESCRIPTION
+       fc-list lists fonts and styles available on the system for applications
+       using fontconfig.  If any elements are specified, only those are
+       printed.  Otherwise family and style are printed, unless verbose output
+       is requested.
+</code></pre></div></div>
+
+<p>Number of <strong>fontconfig</strong> fonts available to the user (lists all font faces):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-list | wc -l
+    3182
+</code></pre></div></div>
+
+<p>Number of <strong>fontconfig</strong> fonts available to root user (lists all font faces):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo fc-list | wc -l
+Password:
+    2966
+</code></pre></div></div>
+
+<h4 id="fc-conflist1---show-the-ruleset-files-information-on-the-system">fc-conflist(1) - Show the ruleset files information on the system</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-conflist | wc -l
+      51
+
+% sudo fc-conflist | wc -l
+      50
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% fc-conflist | grep dusko
++ /home/dusko/.config/fontconfig/fonts.conf: No description
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% sudo fc-conflist | grep dusko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /home/dusko/.config/fontconfig/fonts.conf
+-rw-r--r--  1 dusko  dusko   1.8K Oct 21  2021 /home/dusko/.config/fontconfig/fonts.conf
+</code></pre></div></div>
+
+<p><strong>[TODO]</strong>: Courtesy of <strong>vermaden</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% wc -l /home/dusko/.config/fontconfig/fonts.conf
+      52 /home/dusko/.config/fontconfig/fonts.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat /home/dusko/.config/fontconfig/fonts.conf
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+
+&lt;fontconfig&gt;
+
+  &lt;!-- ANTIALIAS ALL FONTS --&gt;
+  &lt;match target="font"&gt;
+    &lt;edit name="antialias" mode="assign"&gt;&lt;bool&gt;true&lt;/bool&gt;&lt;/edit&gt;
+    &lt;edit name="hinting"   mode="assign"&gt;&lt;bool&gt;false&lt;/bool&gt;&lt;/edit&gt;
+    &lt;edit name="hintstyle" mode="assign"&gt;&lt;int&gt;0&lt;/int&gt;&lt;/edit&gt;
+    &lt;edit name="dpi"       mode="assign"&gt;&lt;double&gt;75&lt;/double&gt;&lt;/edit&gt;
+    &lt;edit name="rgba"      mode="assign"&gt;&lt;const&gt;none&lt;/const&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;!-- REPLACE THESE WITH A BETTER LOOKING FONT (MONO) --&gt;
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;Courier [Adobe]&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;Courier 10 Pitch&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;Fixed&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;Courier 10 Pitch&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;courier&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;Courier 10 Pitch&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;!-- REPLACE THESE WITH A BETTER LOOKING FONT (SANS) --&gt;
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;helvetica&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;arial&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;times&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;garamond&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;match target="pattern"&gt;
+    &lt;test name="family"    qual="any"&gt;&lt;string&gt;lucida&lt;/string&gt;&lt;/test&gt;
+    &lt;edit name="family" mode="assign"&gt;&lt;string&gt;trebuchet ms&lt;/string&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+  &lt;!-- DISABLE EMBEDDED BITMAPS --&gt;
+  &lt;match target="font" &gt;
+    &lt;edit name="embeddedbitmap" mode="assign"&gt;&lt;bool&gt;false&lt;/bool&gt;&lt;/edit&gt;
+    &lt;/match&gt;
+
+&lt;/fontconfig&gt;
+</code></pre></div></div>
+
+<h2 id="useful-tools-commands-and-code-snippets-for-exploring-fonts-in-x11">Useful Tools, Commands and Code Snippets for Exploring Fonts in X11</h2>
+
+<p>Start <code class="language-plaintext highlighter-rouge">xterm</code> with red cursor, font Source Code Pro and font size 18:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xterm -cr red -fa 'Source Code Pro' -fs 18
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  The <code class="language-plaintext highlighter-rouge">-fa</code> option enables <code class="language-plaintext highlighter-rouge">xterm</code> to render <strong>Xft</strong> fonts 
+(a.k.a. fontconfig).</p>
+
+<p>The venerable <code class="language-plaintext highlighter-rouge">file(1)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% file /usr/local/share/fonts/SourceCodePro/SourceCodePro-Regular.ttf
+/usr/local/share/fonts/SourceCodePro/SourceCodePro-Regular.ttf: TrueType Font data, digitally signed, 15 tables, 1st "BASE", 72 names, Microsoft, language 0x408, type 256 string, \261\300\273\314 a\261\300\273\314 gi &amp; l \274\265 \261\272\301\265\274\314\275\265\302\243\254\
+</code></pre></div></div>
+
+<p>Report information about OpenType fonts with <code class="language-plaintext highlighter-rouge">otfinfo(1)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% otfinfo --info /usr/local/share/fonts/SourceCodePro/SourceCodePro-Regular.ttf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% otfinfo --features /usr/local/share/fonts/SourceCodePro/SourceCodePro-Regular.ttf
+</code></pre></div></div>
+
+<p>Print supported scripts and languages:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% otfinfo --scripts /usr/local/share/fonts/SourceCodePro/SourceCodePro-Regular.ttf
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DFLT            Default
+cyrl            Cyrillic
+cyrl.SRB        Cyrillic/Serbian
+grek            Greek
+latn            Latin
+latn.ATH        Latin/Athapaskan
+latn.NSM        Latin/Northern Sami
+latn.SKS        Latin/Skolt Sami
+</code></pre></div></div>
+
+<p>Other interesting <code class="language-plaintext highlighter-rouge">otfinfo</code>’s options:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-g, --glyphs
+     Print the name of every glyph in each font, one per line.
+
+-u, --unicode
+     Print each Unicode code point supported by the font, followed by
+     the glyph number representing that code point (and, if present,
+     the name of the corresponding glyph).
+
+-t, --tables
+     Print the size and name of every OpenType table in the font.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-z, --optical-size
+     Print optical size information.
+
+-p, --postscript-name
+      Print each font's PostScript name.
+
+-a, --family
+     Print each font's family name.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xset -q
+Keyboard Control:
+  auto repeat:  on    key click percent:  0    LED mask:  00000000
+  XKB indicators:
+    00: Caps Lock:   off    01: Num Lock:    off    02: Scroll Lock: off
+    03: Compose:     off    04: Kana:        off    05: Sleep:       off
+    06: Suspend:     off    07: Mute:        off    08: Misc:        off
+    09: Mail:        off    10: Charging:    off    11: Shift Lock:  off
+    12: Group 2:     off    13: Mouse Keys:  off
+  auto repeat delay:  660    repeat rate:  25
+  auto repeating keys:  00ffffffdffffbbf
+                        fadfffefffedffff
+                        9fffffffffffffff
+                        fff7ffffffffffff
+  bell percent:  0    bell pitch:  400    bell duration:  100
+Pointer Control:
+  acceleration:  2/1    threshold:  4
+Screen Saver:
+  prefer blanking:  yes    allow exposures:  yes
+  timeout:  600    cycle:  600
+Colors:
+  default colormap:  0x22    BlackPixel:  0x0    WhitePixel:  0xffffff
+Font Path:
+  /usr/local/share/fonts/misc/,/usr/local/share/fonts/TTF/,/usr/local/share/fonts/OTF/,/usr/local/share/fonts/Type1/,/usr/local/share/fonts/100dpi/,/usr/local/share/fonts/75dpi/,catalogue:/usr/local/etc/X11/fontpath.d,built-ins,/usr/local/share/fonts/100dpi,/usr/local/share/fonts/75dpi,/usr/local/share/fonts/adobe-cmaps,/usr/local/share/fonts/bitstream-vera,/usr/local/share/fonts/Caladea,/usr/local/share/fonts/cantarell,/usr/local/share/fonts/Carlito,/usr/local/share/fonts/ChromeOS,/usr/local/share/fonts/comic-neue,/usr/local/share/fonts/cyrillic,/usr/local/share/fonts/dejavu,/usr/local/share/fonts/GentiumBasic,/usr/local/share/fonts/gnu-unifont,/usr/local/share/fonts/ipamjm,/usr/local/share/fonts/jmk-x11-fonts,/usr/local/share/fonts/Liberation,/usr/local/share/fonts/LinLibertineG,/usr/local/share/fonts/misc,/usr/local/share/fonts/Monoid,/usr/local/share/fonts/nanum-coding-ttf,/usr/local/share/fonts/nanum-ttf,/usr/local/share/fonts/noto,/usr/local/share/fonts/OTF,/usr/local/share/fonts/politika-otf,/usr/local/share/fonts/politika-ttf,/usr/local/share/fonts/SourceCodePro,/usr/local/share/fonts/SourceHanSans,/usr/local/share/fonts/SourceHanSansK,/usr/local/share/fonts/SourceHanSansSC,/usr/local/share/fonts/SourceHanSansTC,/usr/local/share/fonts/SourceSansPro,/usr/local/share/fonts/symbola,/usr/local/share/fonts/terminus-font,/usr/local/share/fonts/TerminusTTF,/usr/local/share/fonts/TTF,/usr/local/share/fonts/twemoji-color-font-ttf,/usr/local/share/fonts/Type1,/usr/local/share/fonts/uw-ttyp0,/usr/local/share/fonts/vlgothic,/usr/local/share/fonts/wqy,/usr/home/dusko/.fonts/knxt
+DPMS (Energy Star):
+  Standby: 600    Suspend: 600    Off: 600
+  DPMS is Enabled
+  Monitor is On
+</code></pre></div></div>
+
+<p><strong>NOTE</strong> the content of the <code class="language-plaintext highlighter-rouge">Font Path:</code> line.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xrdb -query
+! screen-independent resources
+XTerm*saveLines:        1048576
+XTerm*loginShell:       true
+XTerm*charClass:        33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
+XTerm*eightBitInput:    false
+XTerm*borderWidth:      4
+Xcursor.theme:  Vanilla-DMZ
+XTerm*cursorBlink:      true
+XTerm*scrollKey:        true
+XTerm*colorUL:  Yellow
+XTerm*colorULMode:      true
+XTerm*cursorColor:      Cyan
+XTerm*background:       Black
+XTerm*foreground:       White
+XTerm*locale:   UTF-8
+XTerm*faceNameDoublesize:       Noto Serif CJK JP
+XTerm*scrollTtyOutput:  false
+XTerm*selectToClipboard:        true
+Xft.autohint:   0
+Xft.antialias:  1
+Xft.hinting:    1
+Xft.rgba:       rgb
+Xft.hintstyle:  hintlight
+Xft.lcdfilter:  lcddefault
+*VT100.Translations:    #override Button1 &lt;Btn3Down&gt;: select-end(PRIMARY,CUT_BUFFER0,CLIPBOARD) \n !Shift &lt;Btn2Up&gt;: insert-selection(CLIPBOARD) \n ~Shift ~Ctrl ~Meta &lt;Btn2Up&gt;: insert-selection(PRIMARY,CUT_BUFFER0) \n &lt;Key&gt;F3: string("cd ~/scratch/tmpscratch2") string(0x0d) \n Alt &lt;Key&gt;t: string("date | dzen2 -xs 2 -p 5 -bg blue") string(0x0d)
+Xmessage*Scrollbar.thumb:       vlines2
+Xmessage*Scrollbar.width:       2
+
+! screen 0 resources
+#if SCREEN_NUM == 0
+#endif
+
+! screen 1 resources
+#if SCREEN_NUM == 1
+#endif
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> This environment has two monitors so there are references to 
+both of them: <code class="language-plaintext highlighter-rouge">#if SCREEN_NUM == 0</code> and <code class="language-plaintext highlighter-rouge">#if SCREEN_NUM == 1</code>.</p>
+
+<p><strong>NOTE:</strong> The <code class="language-plaintext highlighter-rouge">*VT100.Translations:</code> is my own customization.</p>
+
+<hr />
+
+<p><strong>List all monospaced fonts:</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">$ fc-list | cut -f2 -d: | sort -u | grep -i Mono</code></p>
+
+<p><strong>Print out the fixed width fonts that are available:</strong> 
+<code class="language-plaintext highlighter-rouge">$ fc-list :scalable=true:spacing=mono:</code></p>
+
+<p><strong>Print out the fixed width fonts that are available with their family name:</strong> 
+<code class="language-plaintext highlighter-rouge">$ fc-list :scalable=true:spacing=mono: family</code></p>
+
+<p><strong>Sort and page through the available fonts - not only fixed width fonts:</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">$ fc-list | cut -f2 -d: | sort -u | less</code></p>
+
+<p><strong>To test the status of your colour support in XTerm:</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tput colors
+80
+</code></pre></div></div>
+
+<p>References: <br />
+(Retrieved on Apr 17, 2022)</p>
+
+<p><a href="http://www.futurile.net/2016/06/14/xterm-setup-and-truetype-font-configuration/">XTerm introduction and TrueType fonts configuration</a></p>
+
+<p><a href="http://www.futurile.net/2016/06/15/xterm-256color-themes-molokai-terminal-theme/">XTerm colour set-up and Molokai theme</a></p>
+
+<h3 id="installing-an-xft-font-aka-fontconfig---a-full-example">Installing an Xft Font (aka Fontconfig) - A Full Example</h3>
+
+<p>OS:  FreeBSD 13.0 <br />
+Shell:  csh</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list | wc -l
+    3186
+ 
+$ sudo fc-list | wc -l
+    2968
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list | grep -i hermit
+$ sudo fc-list | grep -i hermit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xlsfonts | wc -l
+   25462
+ 
+$ sudo xlsfonts | wc -l
+   25462
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xlsfonts | grep -i hermit
+$ sudo xlsfonts | grep -i hermit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pkg search hermit
+hermit-font-2.0_1      Monospaced font for programmers by a programmer
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo pkg install hermit-font
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list | wc -l
+    3192
+ 
+$ sudo fc-list | wc -l
+    2974
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list | grep -i hermit | wc -l
+       6
+
+$ sudo fc-list | grep -i hermit | wc -l
+       6
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list | grep -i hermit
+/usr/local/share/fonts/hermit/Hermit-LightItalic.otf: Hermit,Hermit LightItalic:style=LightItalic,Regular
+/usr/local/share/fonts/hermit/Hermit-Bold.otf: Hermit:style=Bold
+/usr/local/share/fonts/hermit/Hermit-Regular.otf: Hermit:style=Regular
+/usr/local/share/fonts/hermit/Hermit-RegularItalic.otf: Hermit:style=RegularItalic,Italic
+/usr/local/share/fonts/hermit/Hermit-Light.otf: Hermit,Hermit Light:style=Light,Regular
+/usr/local/share/fonts/hermit/Hermit-BoldItalic.otf: Hermit:style=BoldItalic
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xlsfonts | wc -l
+   25462
+
+$ sudo xlsfonts | wc -l
+   25462
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xlsfonts | grep -i hermit
+$ sudo xlsfonts | grep -i hermit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list : fullname | grep -i hermit | wc -l
+       6
+
+$ fc-list : fullname | grep -i hermit
+:fullname=Hermit Bold
+:fullname=Hermit Light
+:fullname=Hermit RegularItalic
+:fullname=Hermit BoldItalic
+:fullname=Hermit LightItalic
+:fullname=Hermit Regular
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list : postscriptname | grep -i hermit | wc -l
+       6
+
+$ fc-list : postscriptname | grep -i hermit
+:postscriptname=Hermit-Regular
+:postscriptname=Hermit-RegularItalic
+:postscriptname=Hermit-LightItalic
+:postscriptname=Hermit-Bold
+:postscriptname=Hermit-Light
+:postscriptname=Hermit-BoldItalic
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-match hermit 
+Hermit-Regular.otf: "Hermit" "Regular"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-match Hermit
+Hermit-Regular.otf: "Hermit" "Regular"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-query /usr/local/share/fonts/hermit/Hermit-Regular.otf | wc -l
+      41
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-query /usr/local/share/fonts/hermit/Hermit-Regular.otf 
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ file /usr/local/share/fonts/hermit/Hermit-Regular.otf
+/usr/local/share/fonts/hermit/Hermit-Regular.otf: OpenType font data
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --info /usr/local/share/fonts/hermit/Hermit-Regular.otf
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --features /usr/local/share/fonts/hermit/Hermit-Regular.otf
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --scripts /usr/local/share/fonts/hermit/Hermit-Regular.otf
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --glyphs /usr/local/share/fonts/hermit/Hermit-Regular.otf | wc -l
+     393
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --glyphs /usr/local/share/fonts/hermit/Hermit-Regular.otf | wc -l
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --unicode /usr/local/share/fonts/hermit/Hermit-Regular.otf | wc -l
+     391
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --unicode /usr/local/share/fonts/hermit/Hermit-Regular.otf 
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --font-version /usr/local/share/fonts/hermit/Hermit-Regular.otf
+Version 2.000;PS 002.000;hotconv 1.0.88;makeotf.lib2.5.64775
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --optical-size /usr/local/share/fonts/hermit/Hermit-Regular.otf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otfinfo --postscript-name /usr/local/share/fonts/hermit/Hermit-Regular.otf
+Hermit-Regular
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list -v Hermit-Regular charset 
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-list -v Hermit-Regular
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xfd -fa Hermit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xterm -fa Hermit -fs 14
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xterm -fa 'Hermit:light' -fs 14
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> Font face size (<code class="language-plaintext highlighter-rouge">-fs</code> option for <code class="language-plaintext highlighter-rouge">xterm</code>) and <code class="language-plaintext highlighter-rouge">pixelsize</code> are 
+not the same so the following two are different:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xterm -fa 'Hermit:light:pixelsize=14:antialias=true:autohint=true'
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xterm -fa 'Hermit:light:antialias=true:autohint=true' -fs 14
+</code></pre></div></div>
+
+<p>This table gives an approximate conversion between points and pixels:<br />
+<a href="https://reeddesign.co.uk/test/points-pixels.html">Approximate conversion from points to pixels - ReedDesign</a>:</p>
+
+<blockquote>
+  <p>Here’s a chart that converts points to pixels (and ems and %). 
+It’s an approximation, which will depend on font, browser and OS, but 
+it’s a good starting point.</p>
+</blockquote>
+
+<p>As per that table, 14pt is approximately 19px:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xterm -fa 'Hermit:light:pixelsize=19:antialias=true:autohint=true'
+</code></pre></div></div>
+
+<p>and that’s the same (similar) to the font face size of 14: <br />
+<code class="language-plaintext highlighter-rouge">$ xterm -fa 'Hermit:light:antialias=true:autohint=true' -fs 14</code></p>
+
+<p>Hermit font setup reference: <br />
+<a href="http://eradman.com/posts/openbsd-workstation.html">Eric Radman - Workstation Notes</a> (Retrieved on Apr 17, 2022)</p>
+
+<h2 id="converting-unicode-to-utf-8">Converting Unicode to UTF-8</h2>
+
+<h3 id="a-short-introduction">A Short Introduction</h3>
+
+<p><strong>NOTE:</strong> Not going into details about different operating systems, 
+different shells, different fonts, locales, different editors, 
+different ordering and byte format (7-bit, 8-bit, single byte, 
+double byte, multi-byte), double-wide characters, collation, 
+endianness, composing &amp; decomposing, UTF-8 vs. UTF-16 vs. UTF-32
+<sup><a href="#footnotes">1</a></sup>, etc.</p>
+
+<p>Here’s just a few references to illustrate how complex this area is:</p>
+
+<p><a href="https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&amp;id=UnicodeSupport">Software requirements for different levels of Unicode Support</a> (Retrieved on Apr 17, 2022):</p>
+<blockquote>
+  <p>Vim supports editing Unicode in the GUI version and in terminals that 
+support UTF-8.  Double-wide characters can be used, and up to two 
+composing characters are supported.  When reading a file, Vim can often 
+detect how it is encoded and convert the text when necessary. 
+UTF-8 files are edited without conversion.  Other Unicode formats 
+(16 bit and 32 bit) are converted internally.  Conversion is also used 
+to edit files in just about any encoding, using an external converter.</p>
+</blockquote>
+
+<p><a href="https://invisible-island.net/ncurses/ncurses.faq.html">About Vim’s Unicode support - from What is ncurses? - by Thomas E. Dickey, developer and maintainer of xterm</a> <br />
+(Updated on Mar 16, 2022) (Retrieved on Apr 17, 2022):</p>
+<blockquote>
+  <p>Vim <br />
+Vim’s developers provide their own termcap definitions, just in case 
+there is nothing good enough on the system, and provide features for 
+overriding the system’s termcap capabilities even when using the system 
+definition as a starting point.  Because of this, vim has had little 
+impact on ncurses development; the change-log does not mention vim. 
+On the other hand, unlike screen, the source-code for vim still contains 
+a comment about a bug in ncurses which was addressed in late 1997, 
+before ncurses 4.2 was released.</p>
+</blockquote>
+
+<p><a href="https://vi.stackexchange.com/questions/341/what-is-the-relation-between-vi-nvi-and-vim">History of - What is the relation between vi, nvi and vim? - Vi and Vim Stack Exchange</a> (Retrieved on Apr 17, 2022)</p>
+
+<p>From <a href="http://ex-vi.sourceforge.net/">The Traditional Vi</a> (Retrieved on Apr 17, 2022):</p>
+<blockquote>
+  <p>This port of vi has generally preserved the original style, terminal 
+control, and feature set.  It adds <strong>support for international character 
+sets, including multibyte encodings such as UTF-8</strong> (<em>emphasis mine</em>), 
+and some minor enhancements that were not present in BSD vi 3.7, but had 
+been included in later vi versions for System V or in POSIX.2.</p>
+</blockquote>
+
+<p>and</p>
+
+<p>From <a href="http://ex-vi.sourceforge.net/README">The Traditional Vi README</a> (Retrieved on Apr 17, 2022):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Welcome to the ex/vi port!
+==========================
+
+This implementation is derived from ex/vi 3.7 of 6/7/85 and the BSD
+termcap library, originally from the 2.11BSD distribution. All of them
+were changed to compile and run on newer POSIX compatible Unix systems.
+Support for international character sets was added, including support
+for multibyte locales (based on UTF-8 or East Asian encodings), and some
+changes were made to get closer to the POSIX.2 guidelines for ex and
+vi. Some issues that were clearly bugs and not features have also been
+resolved; see the Changes file for details.
+</code></pre></div></div>
+
+<p>On FreeBSD 13.1 - RELEASE:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v vi; type vi; whereis vi; which vi
+/usr/bin/vi
+vi is /usr/bin/vi
+vi: /usr/bin/vi /usr/share/man/man1/vi.1.gz
+/usr/bin/vi
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ls -lh /usr/bin/vi
+-r-xr-xr-x  6 root  wheel   463K Jul 27 11:06 /usr/bin/vi
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v nvi; type nvi; whereis nvi; which nvi
+/usr/bin/nvi
+nvi is /usr/bin/nvi
+nvi: /usr/bin/nvi /usr/share/man/man1/nvi.1.gz
+/usr/bin/nvi
+ 
+% ls -lh /usr/bin/nvi
+-r-xr-xr-x  6 root  wheel   463K Jul 27 11:06 /usr/bin/nvi
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% diff /usr/bin/vi /usr/bin/nvi
+</code></pre></div></div>
+
+<p>Reference:  <br />
+From a FreeBSD Forum post started on Dec 24, 2014 <br />
+<a href="https://forums.freebsd.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/">How do I type in special characters, such as ∞ in the terminal in vi?</a>, 
+post #3 <a href="https://forums.FreeBSD.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/post-277491">https://forums.FreeBSD.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/post-277491</a> (Retrieved on Apr 17, 2022): <sup><a href="#footnotes">2</a></sup></p>
+
+<p>For a complete and detailed list of differences and improvements, 
+here’s the official <a href="https://vimhelp.org/vi_diff.txt.html#vi-differences">Differences between Vim and Vi</a> document at the <a href="https://vimhelp.org/">Vim help files</a> site (an HTML version of the Vim help pages).</p>
+
+<hr />
+
+<h3 id="converting-unicode-to-utf-8-when-you-know-unicode-code-point">Converting Unicode to UTF-8 When You Know Unicode Code Point</h3>
+
+<p><strong>Note:</strong>  Code point is also known as codepoint or code position.</p>
+
+<h4 id="converting-with-od1">Converting with od(1)</h4>
+
+<p>OS: FreeBSD 13.1 <br />
+Shell: csh</p>
+
+<p>For example, use the character U+02B7: MODIFIER LETTER SMALL W for testing: <br />
+<a href="https://charbase.com/02b7-unicode-modifier-letter-small-w">U+02B7: MODIFIER LETTER SMALL W</a></p>
+
+<p><a href="https://charbase.com/">Charbase - A visual Unicode database</a>
+(Retrieved on Apr 17, 2022)</p>
+<blockquote>
+  <p>Charbase is a visual database of characters from the Unicode 6.1 
+standard, made available without clutter.</p>
+</blockquote>
+
+<p>With <code class="language-plaintext highlighter-rouge">uni.pl</code> Perl script, obtained from Leah Neukirchen’s dotfiles and bin section:  <br />
+<a href="https://leahneukirchen.org/dotfiles/bin/uni">uni PATTERN - list unicode symbols matching PATTERN</a>) (Retrieved on Apr 17, 2022):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ./uni.pl ʷ
+ʷ       02B7    MODIFIER LETTER SMALL W
+</code></pre></div></div>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf ʷ &gt; chartest
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat chartest
+ʷ% 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -ac chartest
+0000000   ca  b7
+           ʷ  **
+0000002
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf %s\\n ʷ &gt; chartest
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat chartest
+ʷ
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -ac chartest
+0000000   ca  b7  nl
+           ʷ  **  \n
+0000003
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -N 1 -ac chartest
+0000000   ca
+         312
+0000001
+</code></pre></div></div>
+
+<p>This is a 2-byte character:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -N 2 -ac chartest
+0000000   ca  b7
+           ʷ  **
+0000002
+</code></pre></div></div>
+
+<p>In <strong>UTF-8</strong>, this character is  <code class="language-plaintext highlighter-rouge">CA B7</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -N 2 -t x1 chartest
+0000000    ca  b7
+0000002
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -N 2 -c -t x1 chartest
+0000000    ʷ  **
+           ca  b7
+0000002
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% od -N 2 -ab chartest
+0000000   ca  b7
+          312 267
+0000002
+</code></pre></div></div>
+
+<p><strong>TIP:</strong><br />
+For POSIX compliance, use <code class="language-plaintext highlighter-rouge">printf</code> instead of <code class="language-plaintext highlighter-rouge">echo</code>.</p>
+
+<p><a href="https://unix.stackexchange.com/questions/65803/why-is-printf-better-than-echo">Why is printf better than echo?</a> (Retrieved on Apr 17, 2022)</p>
+
+<p><a href="https://www.in-ulm.de/%7Emascheck/various/echo+printf/">echo(1) and printf(1)</a> (Retrieved on Apr 17, 2022)</p>
+
+<p><a href="http://www.etalabs.net/sh_tricks.html">Rich’s sh (POSIX shell) tricks</a> (Retrieved on Apr 17, 2022)</p>
+
+<p>For POSIX compliance, for <code class="language-plaintext highlighter-rouge">printf</code> you need <strong>octal</strong>.</p>
+
+<p><strong>NOTE:</strong> Not going into details about different operating systems, 
+different shells, different fonts, locales, etc.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf '\312\267'
+ʷ%
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf '\312\267\n'
+ʷ
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong>  On FreeBSD 13.1-RELEASE in csh:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v printf; type printf; whereis printf; which printf
+printf
+printf is a shell builtin
+printf: /usr/bin/printf /usr/share/man/man1/printf.1.gz
+/usr/bin/printf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% freebsd-version
+13.1-RELEASE
+
+% ps $$
+  PID TT  STAT    TIME COMMAND
+22492  9  Ss   0:00.17 -csh (csh)
+
+% printf %s\\n "$SHELL"
+/bin/csh
+</code></pre></div></div>
+
+<hr />
+
+<p><strong>TIP:</strong>  You can use the Posix-standard <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/command.html">command</a> command to avoid the use of the <code class="language-plaintext highlighter-rouge">printf</code> builtin: <br />
+  <code class="language-plaintext highlighter-rouge">command printf</code></p>
+
+<p>You can also do it directly by specifying the complete path to the 
+non-builtin <code class="language-plaintext highlighter-rouge">printf</code>:  <br />
+  <code class="language-plaintext highlighter-rouge">/usr/bin/printf</code></p>
+
+<p>Discussion about this (retrieved on Apr 17, 2022): <br />
+<a href="https://stackoverflow.com/questions/27652458/whats-the-best-way-to-embed-a-unicode-character-in-a-posix-shell-script">What’s the best way to embed a Unicode character in a POSIX shell script?</a></p>
+
+<hr />
+
+<p>Per this reference (retrieved on Apr 17, 2022):  <br />
+<a href="https://askubuntu.com/questions/601137/how-to-print-an-octal-values-corresponding-utf-8-character-in-bash">https://askubuntu.com/questions/601137/how-to-print-an-octal-values-corresponding-utf-8-character-in-bash</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf "%b\n" '\312\267'
+ʷ
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% awk 'BEGIN {print "\312\267"}'
+ʷ
+</code></pre></div></div>
+
+<h3 id="converting-unicode-to-utf-8-when-you-dont-know-unicode-code-point">Converting Unicode to UTF-8 When You Don’t Know Unicode Code Point</h3>
+
+<p>From 
+<a href="https://unix.stackexchange.com/questions/55770/does-hexdump-respect-the-endianness-of-its-system">Does hexdump respect the endianness of its system?</a> 
+(Retrieved on Apr 17, 2022):</p>
+
+<blockquote>
+  <p>The traditional BSD hexdump utility uses the platform’s endianness so 
+the output you see means your machine is little-endian.</p>
+
+</blockquote>
+
+<p><strong>TIP:</strong></p>
+<blockquote>
+  <p>Use <code class="language-plaintext highlighter-rouge">hexdump -C</code> (or <code class="language-plaintext highlighter-rouge">od -t x1</code>) to get <strong>consistent byte-by-byte output 
+irrespective of the platform’s endianness</strong> (<em>emphasis mine</em>).</p>
+</blockquote>
+
+<p>Therefore:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf ʷ | hexdump -C
+00000000  ca b7                                             |..|
+00000002
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf ʷ | od -t x1
+0000000    ca  b7
+0000002
+</code></pre></div></div>
+
+<p>From here, follow the instructions above for:  <br />
+<a href="#converting-unicode-to-utf-8-when-you-know-unicode-code-point">Converting Unicode to UTF-8 When You Know Unicode Code Point</a></p>
+
+<p>Also, from the same question - different answer:  <br />
+<a href="https://unix.stackexchange.com/questions/55770/does-hexdump-respect-the-endianness-of-its-system/55771#55771">https://unix.stackexchange.com/questions/55770/does-hexdump-respect-the-endianness-of-its-system/55771#55771</a>
+(Retrieved on Apr 17, 2022):</p>
+
+<p>Your output is little-endian (least significant byte first), which is also the endianness of the x86 and x86_64 architectures, which you are probably using.</p>
+
+<p><strong>Note:</strong>  If no format strings are specified, the default display 
+in <code class="language-plaintext highlighter-rouge">hexdump(1)</code> is equivalent to specifying the <code class="language-plaintext highlighter-rouge">-x</code> option – From the 
+<code class="language-plaintext highlighter-rouge">hexdump(1)</code> manpage:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-x      Two-byte hexadecimal display.  Display the input offset in hexa‐
+        decimal, followed by eight, space separated, four column, zero-
+        filled, two-byte quantities of input data, in hexadecimal, per
+        line.
+
+... 
+
+If no format strings are specified, the default display is equivalent 
+to specifying the -x option.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% printf ʷ | hexdump
+0000000 b7ca
+0000002
+</code></pre></div></div>
+
+<h2 id="troubleshooting-fonts">Troubleshooting Fonts</h2>
+
+<h3 id="try-a-different-application">Try a Different Application</h3>
+
+<p>Even though you can list a font with <code class="language-plaintext highlighter-rouge">fc-list(1)</code> and then grep for it,
+sometimes it will not be available in some applications, or if it’s
+available it will not work.</p>
+
+<p>Possible fix: try a different app.
+For example, I had a problem with a font in TEA <sup><a href="#footnotes">3</a></sup>
+and LibreOffice <sup><a href="#footnotes">4</a></sup> – The fix was to use
+AbiWord <sup><a href="#footnotes">5</a></sup>, which worked fine with that font.</p>
+
+<h3 id="useful-tools-commands-and-code-snippets-for-troubleshooting-fonts-in-x11">Useful Tools, Commands and Code Snippets for Troubleshooting Fonts in X11</h3>
+
+<p><strong>Search for a font by its name:</strong>
+<code class="language-plaintext highlighter-rouge">fc-list : fullname | grep -i FontNameHere</code></p>
+
+<p><strong>Search for a font by its PostScript name:</strong>
+<code class="language-plaintext highlighter-rouge">fc-list : postscriptname | grep -i FontNameHere</code></p>
+
+<p><strong>Show the list of supported characters in a font:</strong>
+<code class="language-plaintext highlighter-rouge">fc-list -v 'FontName: style=Regular' charset</code>   <br />
+<code class="language-plaintext highlighter-rouge">fc-list -v 'FontName' charset</code></p>
+
+<p><strong>Query the font:</strong>
+<code class="language-plaintext highlighter-rouge">fc-query /usr/local/share/fonts/FontNameHere/FontFile.ttf</code>
+Number of elts (size) that pattern has, family, style (e.g. Regular),
+fullname, slant, weight, width, foundry, is it outline, is it scalable,
+charset, lang (supported languages), fontversion, postscriptname,
+is it color.</p>
+
+<p><strong>Display the font (display all the characters) in an X core font:</strong>
+<code class="language-plaintext highlighter-rouge">xfd -fn FontName</code></p>
+
+<p><strong>Display the font (display all the characters) in an Xft font:</strong>
+<code class="language-plaintext highlighter-rouge">xfd -fa FontName</code></p>
+
+<p><strong>Check if the current terminal and font support a Unicode character
+(with Perl) (e.g. “ʷ” U+02B7: Modifier Letter Small W):</strong>
+<code class="language-plaintext highlighter-rouge">perl -C -e 'print chr 0x02B7'</code>
+    or
+<code class="language-plaintext highlighter-rouge">perl -C -e 'print pack("U",0x02b7)."\n"'</code></p>
+
+<p>Reference:  Create unicode character with pack <sup><a href="#footnotes">6</a></sup></p>
+
+<hr />
+
+<p>A simple Perl one-liner:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% perl -e 'print chr(0x02b7); print "\n"'
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Wide character in print at -e line 1.
+ʷ
+</code></pre></div></div>
+
+<p>Alternatively:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% perl -e 'print "\x{02b7}\n"'
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Wide character in print at -e line 1.
+ʷ
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  “Wide character in print at …”
+Perl warns you if you print a string that has a character with an ordinal
+value greater than 255 (hence it is a “wide” character that requires more
+than one byte of storage).
+Explicitly <a href="https://en.wikibooks.org/wiki/Perl_Programming/Unicode_UTF-8#3._Encoding_and_output">encode your output</a> to avoid this warning:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% perl -e 'binmode STDOUT, ":encoding(utf8)"; print "\x{02b7}\n"'
+ʷ
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% perl -e 'binmode STDOUT, ":encoding(utf8)"; print chr(0x02b7); print "\n"'
+ʷ
+</code></pre></div></div>
+
+<hr />
+
+<p>From <a href="https://stackoverflow.com/questions/31198425/perl-pack-a-utf-8-chinese-character-how-to-unpack-to-get-this-character">perl pack a utf-8 Chinese Character how to unpack to get this Character?</a> (Retrieved on Apr 17, 2022):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat unpack.pl
+#!/usr/local/bin/perl
+
+use utf8;
+binmode STDOUT,":utf8";
+
+my $packed = pack("U*", 0x02b7);
+print "$packed\n";  # ʷ
+
+my $unpacked = unpack("U*", "ʷ");
+printf "0x%X\n", $unpacked;  # 0x02b7
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% chmod 0744 unpack.pl
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ./unpack.pl
+ʷ
+0x2B7
+</code></pre></div></div>
+
+<p>Another useful Perl Unicode code snippet:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% perl -MDevel::Peek -e 'Dump(pack("U", 0x02b7));'
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SV = PV(0x800e28060) at 0x800e5f7b0
+  REFCNT = 1
+  FLAGS = (PADTMP,POK,READONLY,PROTECT,pPOK,UTF8)
+  PV = 0x800f16480 "\312\267"\0 [UTF8 "\x{2b7}"]
+  CUR = 2
+  LEN = 32
+</code></pre></div></div>
+
+<p><strong>Check if the current terminal and font support a Unicode character
+(with Python):</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v python; which python
+python: Command not found.
+
+% command -v python2; which python2
+python2: Command not found.
+
+% command -v python3; which python3
+python3: Command not found.
+
+% command -v python3.7; which python3.7
+python3.7: Command not found.
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% command -v python3.8; which python3.8
+/usr/local/bin/python3.8
+/usr/local/bin/python3.8
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% python3.8 -c 'print(u"\u02B7")'
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% python3.8 -c 'print(u"\u02B7\n")'
+</code></pre></div></div>
+
+<hr />
+
+<p>From “Beyond Linux® From Scratch (System V Edition) - Version r11.1-906 - Chapter 24. Graphical Environments”, <a href="https://www.linuxfromscratch.org/blfs/view/svn/x/tuning-fontconfig.html">Tuning Fontconfig</a>
+(retrieved on Apr 17, 2022):</p>
+
+<p><code class="language-plaintext highlighter-rouge">fc-list | less</code>: show a list of all available fonts (/path/to/filename:
+Font Name:style).  If you installed a font more than 30 seconds ago but
+it does not show, then it or one of its directories is not readable by
+your user.</p>
+
+<p><code class="language-plaintext highlighter-rouge">fc-match 'Font Name'</code>: will tell you which font will be used if the named
+font is requested.  Typically you would use this to see what happens if a
+font you have not installed is requested, but you can also use it if the
+system is giving you a different font from what you expected (perhaps
+because fontconfig does not agree that the font supports your language).</p>
+
+<p><code class="language-plaintext highlighter-rouge">fc-match -a 'Type' | less</code>: will provide a list of all fonts which can be
+used for that type (Monospace, Sans, Serif).  Note that in-extremis
+fontconfig will take a glyph from any available font, even if it is not of
+the specified type, and unless it knows about the font’s type it will
+assume it is Sans.</p>
+
+<p>If you wish to know which font will be used for a string of text (i.e. one
+or more glyphs, preceded by a space), paste the following command and
+replace the xyz by the text you care about:</p>
+
+<p><code class="language-plaintext highlighter-rouge">FC_DEBUG=4 pango-view --font=monospace -t xyz | grep family</code>: this requires
+<a href="https://www.linuxfromscratch.org/blfs/view/svn/x/pango.html">Pango-1.50.8</a>
+and <a href="https://www.linuxfromscratch.org/blfs/view/svn/general/imagemagick.html">ImageMagick-7.1.0-25</a> - it will invoke display to show the
+text in a tiny window, and after closing that the last line of the output
+will show which font was chosen.  This is particularly useful for CJK
+languages, and you can also pass a language,
+e.g. PANGO_LANGUAGE=en;ja (English, then assume Japanese) or
+just zh-cn (or other variants - ‘zh’ on its own is not valid). – My Note:
+This works in <code class="language-plaintext highlighter-rouge">bash</code> and compatible shells.
+For <code class="language-plaintext highlighter-rouge">csh/tcsh</code>, use:
+<code class="language-plaintext highlighter-rouge">env DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t xyz | grep family</code>
+    or
+<code class="language-plaintext highlighter-rouge">env FC_DEBUG=4 pango-view --font=monospace -t xyz | grep family</code>
+    or (for no output, reduce debugging level to zero):
+<code class="language-plaintext highlighter-rouge">env FC_DEBUG=0 pango-view --font=monospace -t xyz | grep family</code></p>
+
+<hr />
+
+<h3 id="tools-and-test-pages-available-online-unicode-utf-8-encodings">Tools and Test Pages Available Online: Unicode, UTF-8, Encodings</h3>
+
+<ul>
+  <li><a href="https://jkorpela.fi/chars/test8.htm">Test page for 8-bit encodings</a> <br />
+(Created on May 11, 2005 - Retrieved on Apr 17, 2022)
+    <blockquote>
+      <p>The table contains alternating rows with octets in the range 
+128–255 (decimal) and ISO 8859-1 characters with the same code numbers. 
+The first two rows for ISO 8859-1 have been greyed out, since those 
+code positions do not contain printable characters but are reserved 
+for control character purposes.</p>
+
+      <p>This document has no character encoding information.  This allows you 
+to view it using various 8-bit encodings.  On Internet Explorer, 
+&lt; for example, select View, then Encoding, and then for example 
+Baltic (Windows) in order to compare Windows Baltic with ISO 8859-1.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://jkorpela.fi/fui.html8">Full Unicode Input utility (for Unicode version 14)</a> <br />
+(Created on Oct 2, 2012 - Retrieved on Apr 17, 2022)
+    <blockquote>
+      <p>This utility can be characterized as an online extended character map 
+oriented towards writing characters.  It displays a table that looks 
+like a set of keyboard buttons, and clicking on a button you enter the 
+character in question.  The characters will be appended to the text 
+input area on the right.</p>
+
+      <p>You can also type the Unicode number of a character in the box prefixed 
+by “U+” and press Enter or click on the Add button.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<p>And, of course, have in mind:</p>
+
+<p><a href="https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/">I stared into the fontconfig, and the fontconfig stared back at me</a> - Posted: May 20, 2015 – Retrieved: Apr 17, 2022</p>
+
+<p><a href="https://www.reddit.com/r/linux/comments/97z73q/i_stared_into_the_fontconfig_and_the_fontconfig/">I stared into the fontconfig, and the fontconfig stared back at me / fuzzy notepad - r/linux</a> – Retrieved: Apr 17, 2022</p>
+
+<p><a href="https://www.reddit.com/r/programming/comments/36wcu7/i_stared_into_the_fontconfig_and_the_fontconfig/">I stared into the fontconfig, and the fontconfig stared back at me - r/programming</a> – Retrieved: Apr 17, 2022</p>
+
+<hr />
+
+<p>From blog post:
+<a href="https://eev.ee/blog/2015/05/20/i-stared-into-the-fontconfig-and-the-fontconfig-stared-back-at-me/">I stared into the fontconfig, and the fontconfig stared back at me</a> - Posted: May 20, 2015 – Retrieved: Apr 17, 2022:</p>
+
+<p><strong>Some hot parting tips</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">fc-cache</code> will force fontconfig to pick up any changes.  There’s a <code class="language-plaintext highlighter-rouge">-f</code>,
+but in all my fighting with fontconfig it never once made a difference.</p>
+
+<p>As far as I can tell, there is no reason to ever run sudo <code class="language-plaintext highlighter-rouge">fc-cache -vf</code>.
+This has been floating around the Internet for years, but it seems to be
+apocryphal copy/paste.  You don’t need to flush root’s fontconfig cache
+unless you’re running GUI stuff as root.</p>
+
+<p><code class="language-plaintext highlighter-rouge">fc-match &lt;font&gt;</code> will tell you what font will be used in practice.
+You might think that’s what <code class="language-plaintext highlighter-rouge">fc-query</code> does, and you’d be wrong.
+<code class="language-plaintext highlighter-rouge">fc-query</code>’s primary use is to produce bizarre error messages when you
+accidentally use it instead of <code class="language-plaintext highlighter-rouge">fc-match</code>.</p>
+
+<p>It is really fxxxing difficult to figure out what font will be used for
+a specific glyph.  There are two approaches:</p>
+
+<p>1. Do it in a [web] browser.  Make a URL like this (that is, enter it in the
+browser’s address bar):
+<code class="language-plaintext highlighter-rouge">data:text/html,&lt;meta charset="utf8"&gt;&lt;p style="font-family: monospace;"&gt;☺&lt;/p&gt;</code></p>
+
+<p>Then pop open your dev tools, and look for where it tells you the fonts
+that are actually being used.  Firefox’s Inspector has a dedicated “fonts”
+tab in the panel on the right; Chromium’s Elements lists fonts at the
+bottom of the “computed” tab.</p>
+
+<p>Fair warning: this is one level removed from fontconfig, because CSS font
+rules may interfere.  This bit me above when I tried to confirm my new
+cursive font in Firefox!</p>
+
+<p>Another warning: while Firefox picks up fontconfig changes more or less
+instantly (after an <code class="language-plaintext highlighter-rouge">fc-cache</code>), Chromium does not.  Worse, Chromium seems
+to outright ignore fontconfig when it feels like it, such as when it used
+a sans serif Japanese font for text styled as serif.</p>
+
+<p>2. You can also do this nonsense in a terminal:
+<code class="language-plaintext highlighter-rouge">DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:</code></p>
+
+<p><strong>My note:</strong> -&gt; for <code class="language-plaintext highlighter-rouge">csh/tcsh</code>:
+<code class="language-plaintext highlighter-rouge">env DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">pango-view</code> is a tiny program that just pops open a window containing
+some text in a particular font.  <code class="language-plaintext highlighter-rouge">FC_DEBUG</code> is an environment variable to
+make fontconfig spit out mountains of fxxxing text on stdout.  The <code class="language-plaintext highlighter-rouge">grep</code>
+cuts it down to something a little more manageable.  Most likely the last
+family you see listed is the font actually being used to render your
+favourite glyph.</p>
+
+<p>If you’re really curious how the <code class="language-plaintext highlighter-rouge">&lt;match&gt;</code> blocks work, good news:
+they are the one thing the <a href="http://www.freedesktop.org/software/fontconfig/fontconfig-user.html">fontconfig docs</a> actually kind of explain.
+And of course your <code class="language-plaintext highlighter-rouge">/etc/fonts/conf.d</code>
+(<strong>my note:</strong> <code class="language-plaintext highlighter-rouge">/usr/local/etc/fonts/conf.d</code> on FreeBSD) is probably full
+of real-world practical examples.</p>
+
+<p>…</p>
+
+<p>From the same blog:</p>
+<blockquote>
+  <p>I haven’t put my fontconfig font config (…) in my
+<a href="https://github.com/eevee/rc/">rc.git</a>; it seems pretty specific to my
+desktop’s particular setup.
+But here’s <a href="https://gist.github.com/eevee/ba231c1b9b64e6ced70d">the whole thing in a gist</a>, if you’re interested.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="footnotes">Footnotes</h2>
+
+<p>[1] A nice overview and discussion about UTF-8, UTF-16 and UTF-32 on StackOverflow:  <a href="https://stackoverflow.com/questions/496321/utf-8-utf-16-and-utf-32">UTF-8, UTF-16, and UTF-32</a> (Posted on Jan 30, 2009; Retrieved on Apr 17, 2022)</p>
+
+<p>[2] From a FreeBSD Forum post started on Dec 24, 2014 <a href="https://forums.freebsd.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/">How do I type in special characters, such as ∞ in the terminal in vi?</a>, 
+post #3 <a href="https://forums.FreeBSD.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/post-277491">https://forums.FreeBSD.org/threads/how-do-i-type-in-special-characters-such-as-in-the-terminal-in-vi.49659/post-277491</a> (Retrieved on Apr 17, 2022):</p>
+
+<blockquote>
+  <p>Which vi?  vi on Linux is just a soft link to Vim.  On BSDs vi is 
+symbolic link to nvi (new vi) which is a re-implementation of the 
+“classic Berkeley vi”.  “Classical Berkeley vi” has multiple versions 
+IIRC one of which is personal copy of Bill Joy.  Solaris’ version of vi 
+could also be considered classical as well as traditional vi 
+<a href="http://ex-vi.sourceforge.net/">http://ex-vi.sourceforge.net/</a>. 
+Reading documentation of traditional vi project is a good start.</p>
+
+  <p>To make matters more confusing BSD projects continue to use nvi 
+version 1.79 due to licensing issues between Berkeley Database 1.85 and 
+the later versions by Sleepycat Software.  nvi has a support for Unicode 
+but I am not sure if the version 1.79 includes or not as I have never 
+used Unicode with nvi.
+Now <a href="https://forums.freebsd.org/members/scottro.1587/">scottro</a> made 
+a major mistake mentioning Unicode as <code class="language-plaintext highlighter-rouge">$\infty$</code> as written in TeX is 
+extended ASCII character and one doesn’t need Unicode to type it. 
+I do not know how would you type <code class="language-plaintext highlighter-rouge">$\infty$</code> in nvi as a professional 
+mathematician I have never seen any mathematical symbols or mathematical 
+text typing without serious text typing system such as TeX or Troff. 
+TeX is de-facto standard for typing mathematics adopted since 
+1979 by AMS.  Troff uses mathematical pre-processor and is definitely 
+able to produce all special mathematical characters.  On the web we use 
+MathJax, a cross-browser JavaScript library that displays in web, 
+using MathML, LaTeX and ASCIIMathML markup to write mathematics.</p>
+</blockquote>
+
+<p>[3] Retrieved on Apr 17, 2022: <br />
+    <a href="https://tea.ourproject.org/">TEA - text editor</a>    <br />
+    <a href="https://en.wikipedia.org/wiki/TEA_%28text_editor%29">TEA (text editor) - Wikipedia</a>   <br />
+    <a href="https://www.linuxinsider.com/story/tea-a-smooth-text-editor-that-hits-the-sweet-spot-74677.html">TEA: A Smooth Text Editor That Hits the Sweet Spot</a></p>
+
+<p>[4] Retrieved on Apr 17, 2022:  <br />
+    <a href="https://www.libreoffice.org/">LibreOffice</a></p>
+
+<p>[5] Retrieved on Apr 17, 2022:  <br />
+    <a href="http://www.abisource.com/">AbiWord</a></p>
+
+<p>[6] Retrieved on Apr 17, 2022:  <br />
+    <a href="https://stackoverflow.com/questions/30851728/create-unicode-character-with-pack">Create unicode character with pack</a></p>
+
+<hr />
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/wm/x11/xorg/freebsd/unix/dotfiles/2022/04/03/twm.html">TWM - Tab Window Manager for the X Window System</a>
+                  
+                    (Categories: <a href="/category/wm">wm</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/unix">unix</a>, <a href="/category/dotfiles">dotfiles</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/perl">perl</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/sendmail/howto/dotfiles/2022/02/28/sendmail-procmail-recipe-vacation-reply-to-certain-domains.html">Procmail Recipe for Vacation Auto-Reply Only to Senders from Certain Domains</a>
+                  
+                    (Categories: <a href="/category/sendmail">sendmail</a>, <a href="/category/howto">howto</a>, <a href="/category/dotfiles">dotfiles</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/freebsd/rhel/linux/howto/oneliner/sed/cli/terminal/shell/script/2022/02/27/sed-stream-editor.html">sed - Stream Editor</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/rhel">rhel</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/oneliner">oneliner</a>, <a href="/category/sed">sed</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html">Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/2022/04/16/fvwm.html">&laquo; FVWM - F Virtual Window Manager</a>
+  
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Fonts in X11 - aka Fonts in X (Xorg)";
+    var disqus_title = "Fonts in X11 - aka Fonts in X (Xorg)";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,3652 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>TWM - Tab Window Manager for the X Window System - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="TWM - Tab Window Manager for the X Window System" />
+    <meta name="keywords" content="TWM - Tab Window Manager for the X Window System, Dusko Pijetlovic, wm, x11, xorg, freebsd, unix, dotfiles" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="TWM - Tab Window Manager for the X Window System" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/wm/x11/xorg/freebsd/unix/dotfiles/2022/04/03/twm.html" property="og:url">
+    
+
+    
+      <meta content="2022-04-03T09:27:31-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="wm" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="TWM - Tab Window Manager for the X Window System">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/wm/x11/xorg/freebsd/unix/dotfiles/2022/04/03/twm.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">TWM - Tab Window Manager for the X Window System</h1>
+</header>
+
+<span class="time">03 Apr 2022</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/wm">wm</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/unix">unix</a>, <a href="/category/dotfiles">dotfiles</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>OS: FreeBSD 13.0  <br />
+Shell: csh/tcsh</p>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat ~/.twmrc
+RestartPreviousState      # Reiconify iconified windows on startup
+UsePPosition        "on"  # Use program-specified size hints accepted
+NoTitle                   # No titlebars
+BorderWidth         1     # Number of pixels for border around entire window
+DontMoveOff               # Disallow moving windows off the visible screen
+IconifyByUnmapping        # Iconifying a window sends it to the Icon Manager
+AutoRelativeResize        # Don't wait until the window edge is crossed
+NoGrabServer
+RandomPlacement
+
+IconManagerFont           "a14"
+IconRegion                "90x44-0+0" North East 40 30 
+IconManagerGeometry       "90x44-0+0" 1
+
+IconManagerDontShow
+{
+  "xclock" "xload"
+}
+
+Color
+{
+    BorderColor "red"
+    {
+      "XTerm" "red"       # Active xterm window border: red
+    }
+
+    BorderColor           "yellow"
+    BorderTileBackground  "yellow"
+    BorderTileForeground  "yellow"
+
+    DefaultBackground     "rgb:2/a/9"
+    DefaultForeground     "gray85"
+    TitleBackground       "rgb:2/a/9"
+    TitleForeground       "gray85"
+    MenuBackground        "rgb:2/a/9"
+    MenuForeground        "gray85"
+    MenuBorderColor       "slategrey"
+    MenuTitleBackground   "gray70"
+    MenuTitleForeground   "rgb:2/a/9"
+    IconBackground        "rgb:2/a/9"
+    IconForeground        "gray85"
+    IconBorderColor       "gray85"
+
+    IconManagerHighlight  "white"
+
+    IconManagerBackground "rgb:2/a/9"
+    {
+      "XTerm"             "#ff595e"
+      "tea"               "#1982c4"
+      "KeePassXC"         "#ffca3a"
+      "Thunderbird"       "#6a4c93"
+      "Firefox"           "#8ac926" 
+      "LibreOffice"       "#deff0a"
+      "soffice.bin"       "#deff0a"
+      "Zathura"           "#be0aff"
+    }
+
+    IconManagerForeground "gray85"
+    {
+      "XTerm"             "#fae0e4"
+      "tea"               "#84DE02"
+      "KeePassXC"         "#219ebc" 
+      "Thunderbird"       "#ff595e"
+      "Firefox"           "#ffff3f"
+      "LibreOffice"       "#ff595e"
+      "soffice.bin"       "#ff595e"
+      "Zathura"           "#0aff99"
+    }
+}
+
+Cursors
+{
+  Frame     "left_ptr"
+  Title     "left_ptr"
+  Icon      "left_ptr"
+  IconMgr   "left_ptr"
+  Move      "fleur"
+  Resize    "fleur"
+  Menu      "hand1"
+  Button    "hand2"
+  Wait      "clock"
+  Select    "dot"
+  Destroy   "pirate"
+}
+
+# ----  Mouse and keyboard bindings  ----
+# Mouse:     Button1=left, Button2=middle, Button3=right
+# Keyboard:  m=meta (alt), c=ctrl, s=shift, m4=mod4 (Win)
+
+Button1 =   : root    : f.menu "defops"
+Button1 =   : iconmgr : f.iconify
+Button1 = m : window  : f.move      # Alt + left mouse button
+Button3 = m : window  : f.resize    # Alt + right mouse button
+
+"s" =     m : all : f.showiconmgr   # Show the Icon Manager  (Alt + s)
+"s" = s | m : all : f.hideiconmgr   # Hide the Icon Manager  (Alt + Shift + s)
+"r" =     m : all : f.raiselower    # Raise window if behind (Alt + r)
+"v" =     m : all : f.iconify       # "Minimize" window      (Alt + v)
+
+# Cycle through windows with vi(1)-style key bindings 
+# NOTE: For best results, make sure that the Icon Manager is *not* hidden
+#       when the Icon Manager is hidden, only "l" and "j" work 
+"h" =     m : all : f.backiconmgr  # previous column
+"l" =     m : all : f.forwiconmgr  # next column
+"k" =     m : all : f.upiconmgr    # previous row
+"j" =     m : all : f.downiconmgr  # next row
+
+# Use keyboard arrow keys to change the input focus between windows
+# NOTE: For best results, make sure that the Icon Manager is *not* hidden
+"Left"  = m : all : f.backiconmgr  # previous column
+"Right" = m : all : f.forwiconmgr  # next column
+"Up"    = m : all : f.upiconmgr    # previous row
+"Down"  = m : all : f.downiconmgr  # next row
+
+# Show time and date (local and UTC):  Press Ctrl + Alt + t
+"t" =  m | c: all : f.exec "(date; echo ''; date -u) | \
+/usr/local/bin/xmessage -bg \"#DE3163\" -fg \"#F6EABE\" -rv -fn \
+\"-b&amp;h-lucidatypewriter-bold-r-normal-sans-26-190-100-100-m-159-iso10646-1\" \
+-geometry -0+0 -buttons OK:1 -default OK -file - &amp;"
+
+# Display virtual desktop number:      Press Ctrl + Alt + d
+"d" =  m | c: all : f.exec "(vdesk) | \
+/usr/local/bin/xmessage -bg \"#DE3163\" -fg \"#F6EABE\" -rv -fn \
+\"-b&amp;h-lucidatypewriter-bold-r-normal-sans-26-190-100-100-m-159-iso10646-1\" \
+-geometry -0+0 -buttons ' ' -default OK -file - &amp;"
+
+# Launch dmenu with Alt + p
+"p" = m      : all : f.exec "/usr/local/bin/dmenu_run"
+
+"i" = m      : all : f.identify   # Alt + i
+"d" = m      : all : f.delete     # For closing e.g. "About" windows
+"h" = s | m4 : all : f.leftzoom   # [Shift + mod4 (Win)] + h
+"l" = s | m4 : all : f.rightzoom  # [Shift + mod4 (Win)] + l
+"k" = s | m4 : all : f.topzoom    # [Shift + mod4 (Win)] + k
+"j" = s | m4 : all : f.bottomzoom # [Shift + mod4 (Win)] + j
+"f" = s | m4 : all : f.fullzoom   # [Shift + mod4 (Win)] + o
+"m" = s | m4 : all : f.zoom       # [Shift + mod4 (Win)] + m &lt;- Zoom vertically
+"c" = s | m4 : all : f.circledown # [Shift + mod4 (Win)] + c
+"u" = s | m4 : all : f.circleup   # [Shift + mod4 (Win)] + u
+
+# QUIT menu
+# Defined here, used in the "Main Menu" (below),
+#      i.e.  it's a sub-menu of the Main Menu
+menu "quitmenu"
+{
+ "Really Quit?"   f.title
+ "No"             f.nop
+ "Yes"            f.quit
+}
+
+# Add a menu with the usual things
+menu "defops"
+{
+  "Twm"           f.title
+  "Iconify"       f.iconify
+  "Resize"        f.resize
+  "Move"          f.move
+  "Raise"         f.raise
+  "Lower"         f.lower
+  ""              f.nop
+  "Focus"         f.focus
+  "Unfocus"       f.unfocus
+  "Show Iconmgr"  f.showiconmgr
+  "Hide Iconmgr"  f.hideiconmgr
+  ""              f.nop
+  "Xterm"         f.exec "exec xterm &amp;"
+  ""              f.nop
+  "Kill"          f.destroy
+  "Delete"        f.delete
+  ""              f.nop
+  "Restart"       f.restart
+  "Exit"          f.menu "quitmenu"
+}
+
+# Virtual desktops with vdesk  ---- http://offog.org/code/vdesk.html -----
+
+function "set-desktop-1"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 1"
+}
+    
+function "set-desktop-2"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 2"
+}
+  
+function "set-desktop-3"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 3"
+}
+
+function "set-desktop-4"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 4"
+}
+
+function "set-desktop-5"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 5"
+}
+
+function "set-desktop-6"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 6"
+}
+
+function "set-desktop-7"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 7"
+}
+
+function "set-desktop-8"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 8"
+}
+
+function "set-desktop-9"
+{
+   f.exec "/usr/local/bin/vdesk 0 `xwininfo -tree -root | grep xclock | awk '{print $1}'`"
+   f.exec "vdesk 9"
+}
+
+function "desktop-back"
+{
+   f.exec "A=$((`vdesk`-1)); if [ $A = 0 ] ; then A=9 ; fi ; vdesk $A"
+}
+
+# To switch to one of nine virtual desktop: Alt + [1-9]:
+"1"     =     m : all : f.function "set-desktop-1"
+"2"     =     m : all : f.function "set-desktop-2"
+"3"     =     m : all : f.function "set-desktop-3"
+"4"     =     m : all : f.function "set-desktop-4"
+"5"     =     m : all : f.function "set-desktop-5"
+"6"     =     m : all : f.function "set-desktop-6"
+"7"     =     m : all : f.function "set-desktop-7"
+"8"     =     m : all : f.function "set-desktop-8"
+"9"     =     m : all : f.function "set-desktop-9"
+
+# To cycle forward through virtual desktops:
+#     Ctrl + Meta (Win key) + right arrow key
+"Right" = c | m : all : f.function "desktop-forward"
+# To cycle backwards through virtual desktops:
+#     Ctrl + Meta (Win key) + left arrow key
+"Left"  = c | m : all : f.function "desktop-back"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat ~/.xinitrc
+xrdb -load $HOME/.Xresources 
+
+xsetroot -solid slategrey
+xset b off
+
+# Add fonts
+for m in `ls /usr/local/share/fonts/`; do
+    if [ -d "/usr/local/share/fonts/$m" ]; then
+        xset fp+ "/usr/local/share/fonts/$m"
+    fi
+done
+
+exec twm &gt; /tmp/twmrclog 2&gt;&amp;1
+</code></pre></div></div>
+
+<p>If you want to have a clock or clocks, add one or more of the following
+four lines to <code class="language-plaintext highlighter-rouge">~/.xinitrc</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exec /usr/local/bin/xclock -digital -strftime "Vancouver: %a %d %b %H:%M:%S" \
+  -update 1 -face mono:size=10 -bg "#002020" -fg "red" -geometry -0-2 &amp;
+exec env TZ=Europe/Belgrade xclock -digital -strftime \
+  "Belgrade: %a %d %b %H:%M" -face mono:size=10 -bg "#002020" -fg "gold" \
+  -geometry -256-2 &amp;
+exec env TZ=UTC /usr/local/bin/xclock -digital -strftime \
+  'UTC: %a %d %b %H:%M' -face mono:size=10 -bg '#002020' -fg '#f6eabe' \
+  -geometry -480-2 &amp; 
+exec env TZ=GMT /usr/local/bin/xclock -digital -strftime \
+  'GMT: %a %d %b %H:%M' -face mono:size=10 -bg '#002020' -fg '#aaaaaa' \
+  -geometry -664-2 &amp; 
+</code></pre></div></div>
+
+<p>If you want to have xload, you first need to install it (with <code class="language-plaintext highlighter-rouge">sudo pkg install xload</code>), and after that add this line to <code class="language-plaintext highlighter-rouge">~/.xinitrc</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exec xload -bg steelblue -fg '#001013' -nolabel -geometry 224x33-840-2 &amp;
+</code></pre></div></div>
+
+<p>Start <code class="language-plaintext highlighter-rouge">X</code> with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% exec startx
+</code></pre></div></div>
+
+<p>or:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% exec xinit 
+</code></pre></div></div>
+
+<hr />
+
+<p><strong>References:</strong></p>
+
+<p>Man pages:</p>
+
+<ul>
+  <li>twm(1) - Tab Window Manager for the X Window System</li>
+  <li>xterm(1) - terminal emulator for X</li>
+  <li>xwininfo(1) - window information utility for X</li>
+  <li>Xsecurity(7) - X display access control, <code class="language-plaintext highlighter-rouge">.Xauthority</code></li>
+  <li>Xserver(1) - X Window System display server</li>
+  <li>X(7) - Keyboards, modifiers and keysym - section KEYBOARDS</li>
+  <li>Xorg(1) - X11R7 X server</li>
+  <li>XOrgFoundation(7) -  X.Org Foundation information</li>
+  <li>xinit(1) - X Window System initializer</li>
+  <li>x11perf(1) - X11 server performance test program</li>
+  <li>xauth(1) - X authority file utility</li>
+  <li>showrgb(1) - display an rgb color-name database</li>
+  <li>xkbwatch(1) - XKB extension user utility</li>
+  <li>xkbevd(1) - XKB event daemon</li>
+  <li>xkbvleds(1) - display the state of LEDs on an XKB keyboard</li>
+  <li>xkill(1) - kill a client by its X resource</li>
+  <li>xlsatoms(1) - list interned atoms defined on server</li>
+  <li>xprop(1) - property displayer for X</li>
+  <li>xmodmap(1) - utility for modifying keymaps and pointer button mappings in X</li>
+  <li>xrdb(1) - X server resource database utility</li>
+  <li>xset(1) - user preference utility for X</li>
+  <li>xrefresh(1) - refresh all or part of an X screen</li>
+</ul>
+
+<p>Retrieved on Apr 3, 2022:</p>
+<ul>
+  <li><a href="http://www.custompc.plus.com/twm/twmrc.htm">Graham’s TWM Page!</a></li>
+  <li><a href="http://www.custompc.plus.com/twm2/Grahams_TWM_page2.html">Graham’s TWM Page! - Updated for 2021</a></li>
+  <li><a href="http://offog.org/code/vdesk/">vdesk -  a virtual desktop manager</a></li>
+</ul>
+
+<hr />
+
+<h3 id="word-cloud">Word Cloud</h3>
+
+<p>X(7), libX11, modifier, keysum, the vmodmap array, locale, 
+XkbLatchModifiers(3)</p>
+
+<hr />
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/wm/x11/xorg/freebsd/unix/dotfiles/2022/04/03/twm.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html">Fonts in X11 - aka Fonts in X (Xorg)</a>
+                  
+                    (Categories: <a href="/category/font">font</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/unix">unix</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/dotfiles">dotfiles</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/perl">perl</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/sendmail/howto/dotfiles/2022/02/28/sendmail-procmail-recipe-vacation-reply-to-certain-domains.html">Procmail Recipe for Vacation Auto-Reply Only to Senders from Certain Domains</a>
+                  
+                    (Categories: <a href="/category/sendmail">sendmail</a>, <a href="/category/howto">howto</a>, <a href="/category/dotfiles">dotfiles</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unix/freebsd/rhel/linux/howto/oneliner/sed/cli/terminal/shell/script/2022/02/27/sed-stream-editor.html">sed - Stream Editor</a>
+                  
+                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/freebsd">freebsd</a>, <a href="/category/rhel">rhel</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/oneliner">oneliner</a>, <a href="/category/sed">sed</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/freebsd/howto/diagram/java/graph/graphviz/2022/02/26/freebsd-kroki-plantuml-graphviz-diagrams.html">Create Diagrams from Textual Descriptions with Graphviz, PlantUML and Kroki</a>
+                  
+                    (Categories: <a href="/category/freebsd">freebsd</a>, <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">&laquo; QEMU Networking</a>
+  
+  
+    <a class="next" href="/2022/04/16/fvwm.html">FVWM - F Virtual Window Manager &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_TWM - Tab Window Manager for the X Window System";
+    var disqus_title = "TWM - Tab Window Manager for the X Window System";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+
