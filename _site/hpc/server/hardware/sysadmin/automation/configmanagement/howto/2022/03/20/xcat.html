@@ -4906,6 +4906,325 @@ abacus14: ip-address = 192.168.80.114, hardware-address = 00:21:5e:2c:0a:ac
 cn13: ip-address = 192.168.80.113, hardware-address = 00:21:5e:2c:15:a4
 </code></pre></div></div>
 
+<hr />
+
+<h3 id="troubleshooting-postscripts-and-postbootscripts">Troubleshooting Postscripts and Postbootscripts</h3>
+
+<p>The following steps need to be run on the management 
+node, <code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>.</p>
+
+<p>Confirm that the object <code class="language-plaintext highlighter-rouge">osimage</code> has the attribute <code class="language-plaintext highlighter-rouge">synclists</code>.
+(Options: <code class="language-plaintext highlighter-rouge">-t</code>: type, <code class="language-plaintext highlighter-rouge">-i</code>: information/inquire).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t osimage -i synclists
+Object name: centos7.9-x86_64-install-compute
+    synclists=/install/custom/install/centos/compute.centos7.x86_64.synclist
+Object name: centos7.9-x86_64-netboot-compute
+    synclists=
+Object name: centos7.9-x86_64-statelite-compute
+    synclists=
+</code></pre></div></div>
+
+<p>Since it’s included in the <code class="language-plaintext highlighter-rouge">osimage</code> object, the <code class="language-plaintext highlighter-rouge">syncfiles</code> has been 
+addeed to the <code class="language-plaintext highlighter-rouge">postscripts</code> attribute of the compute node that you’re 
+configuring (<code class="language-plaintext highlighter-rouge">abacus109</code>).
+(Options: <code class="language-plaintext highlighter-rouge">-t</code>: type, <code class="language-plaintext highlighter-rouge">-o</code>: object, <code class="language-plaintext highlighter-rouge">-i</code>: information/inquire).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus109 | grep profile
+    profile=compute
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus109 | grep provmethod 
+    provmethod=centos7.9-x86_64-install-compute
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus109 | grep -w -i os 
+    os=centos7.9
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodels abacus109 nodetype | grep profile
+abacus109: nodetype.profile: compute
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump nodetype
+#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
+---- snip ----
+"abacus109","centos7.9","x86_64","compute","centos7.9-x86_64-install-compute",,,,
+</code></pre></div></div>
+
+<p>As of now, the <code class="language-plaintext highlighter-rouge">postscripts</code> attribute for the node <code class="language-plaintext highlighter-rouge">abacus109</code> has not 
+been updated with the required scripts.  From the definition of the object 
+type <code class="language-plaintext highlighter-rouge">node</code>, for the object <code class="language-plaintext highlighter-rouge">abacus109</code>, display the attribute <code class="language-plaintext highlighter-rouge">postscripts</code>. 
+You’ll notice that  both <code class="language-plaintext highlighter-rouge">setupntp</code> and <code class="language-plaintext highlighter-rouge">compute_custom_post</code> have not 
+been appended to the <code class="language-plaintext highlighter-rouge">postscripts</code> line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles
+</code></pre></div></div>
+
+<p>Similarly, when you ask for the <code class="language-plaintext highlighter-rouge">postbootscripts</code> attribute of the node 
+<code class="language-plaintext highlighter-rouge">abacus109</code>, the <code class="language-plaintext highlighter-rouge">abacus_custom_postboot</code> script is missing from 
+the <code class="language-plaintext highlighter-rouge">postbootscripts</code> line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t node -o abacus109 -i postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong>  The following two <code class="language-plaintext highlighter-rouge">nodegrpch</code> commands do not need to be run 
+if you’ve already setup <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> for the 
+<code class="language-plaintext highlighter-rouge">compute</code> group.</p>
+
+<p>Upgrade the group <code class="language-plaintext highlighter-rouge">compute</code> with the required <code class="language-plaintext highlighter-rouge">postscripts</code> 
+and <code class="language-plaintext highlighter-rouge">postbootscripts</code> script files:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodegrpch compute postscripts.postscripts=setupntp,compute_custom_post
+# nodegrpch compute postscripts.postbootscripts=abacus_custom_postboot
+</code></pre></div></div>
+
+<p>Confirm that it’s been done:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump postscripts
+#node,postscripts,postbootscripts,comments,disabl
+---- snip ----
+"compute","setupntp,compute_custom_post","abacus_custom_postboot",,
+</code></pre></div></div>
+
+<p>Also, you’ll see that the compute node (<code class="language-plaintext highlighter-rouge">abacus109</code>) has not been added 
+to the <code class="language-plaintext highlighter-rouge">postscripts</code> table:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump postscripts | grep abacus109
+</code></pre></div></div>
+
+<p>Update the node by adding the required <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> 
+script files to it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
+node=abacus109 \
+postscripts.postscripts=setupntp,compute_custom_post \
+postscripts.postbootscripts=abacus_custom_postboot
+</code></pre></div></div>
+
+<p>To confirm that the needed postscripts are now included with the node:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus109 | grep postscripts 
+    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus109 | grep postbootscripts
+    postbootscripts=otherpkgs,abacus_custom_postboot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump postscripts
+#node,postscripts,postbootscripts,comments,disable
+---- snip ----
+"abacus109","setupntp,compute_custom_post","abacus_custom_postboot",,
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump postscripts | grep abacus109
+"abacus109","setupntp,compute_custom_post","abacus_custom_postboot",,
+</code></pre></div></div>
+
+<p>Continuing with the setup, confirm that the node’s profile is <code class="language-plaintext highlighter-rouge">compute</code> 
+as that’s the name of the whole group you modified earlier above.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodels abacus109 nodetype
+abacus109: nodetype.arch: x86_64
+abacus109: nodetype.node: abacus109
+abacus109: nodetype.os: centos7.9
+abacus109: nodetype.profile: compute
+abacus109: nodetype.provmethod: centos7.9-x86_64-install-compute
+abacus109: nodetype.supportedarchs: 
+abacus109: nodetype.comments: 
+abacus109: nodetype.nodetype: 
+abacus109: nodetype.disable: 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump nodetype
+#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
+---- snip ----
+"abacus109","centos7.9","x86_64","compute","centos7.9-x86_64-install-compute",,,,
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef -t node -o abacus109 -i postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs,abacus_custom_postboot
+</code></pre></div></div>
+
+<p>Set <code class="language-plaintext highlighter-rouge">xcatdebugmode</code> in the <code class="language-plaintext highlighter-rouge">site</code> table to <code class="language-plaintext highlighter-rouge">2</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chdef -t site xcatdebugmode=2
+</code></pre></div></div>
+
+<p>Push <code class="language-plaintext highlighter-rouge">syncfiles</code> to the node.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># updatenode abacus109 -P syncfiles
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># updatenode abacus109 -F -V
+</code></pre></div></div>
+
+<p>Log in to the compute node (<code class="language-plaintext highlighter-rouge">abacus109</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus109
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+abacus109 login: root
+Password:
+
+[root@abacus109 ~]#
+</code></pre></div></div>
+
+<p>Run the following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># USEOPENSSLFORXCAT=1 \
+XCATSERVER=192.168.80.220:3001 \
+/xcatpost/startsyncfiles.awk -v RCP=/usr/bin/rsync
+</code></pre></div></div>
+
+<p>Exit the compute node.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># exit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+abacus109 login:
+</code></pre></div></div>
+
+<p>Press <code class="language-plaintext highlighter-rouge">Ctrl-e</code> <code class="language-plaintext highlighter-rouge">c</code> <code class="language-plaintext highlighter-rouge">.</code> (three characters: Ctrl-e, ‘c’ and ‘.’) to 
+disconnect by closing the session with the <code class="language-plaintext highlighter-rouge">makegocons</code>.</p>
+
+<p>Back in the management node, <code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdcp abacus109 -F /install/custom/install/centos/compute.centos7.x86_64.synclist
+</code></pre></div></div>
+
+<p>Update the node <code class="language-plaintext highlighter-rouge">abacus109</code> but limit it to only run the scripts.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># updatenode abacus109 -P
+</code></pre></div></div>
+
+<p>Check whether the run of the scripts worked.</p>
+
+<p>Yeah, it worked for <code class="language-plaintext highlighter-rouge">synclist</code>; that is <code class="language-plaintext highlighter-rouge">compute.centos7.x86_64.synclist</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 ls -lh /opt/torque/ 
+abacus109: total 4.0K
+abacus109: drwxr-xr-x. 2 root root 4.0K May 16  2009 bin
+abacus109: drwxr-xr-x. 2 root root   92 May 16  2009 include
+abacus109: drwxr-xr-x. 2 root root  113 May 16  2009 lib
+abacus109: drwxr-xr-x. 6 root root   54 May 16  2009 man
+abacus109: drwxr-xr-x. 2 root root  147 May 16  2009 sbin
+abacus109: drwxr-xr-x. 3 root root   19 May 16  2009 var
+
+# xdsh abacus109 du -chs /opt/torque/ 
+abacus109: 108M /opt/torque/
+abacus109: 108M total
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 cat /etc/passwd 
+---- snip ----
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 cat /etc/group
+---- snip ----
+</code></pre></div></div>
+
+<p>It also worked for the <code class="language-plaintext highlighter-rouge">compute_custom_post</code> script run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 cat /etc/fstab
+---- snip ----
+abacus109: mgmt:/home    /home    nfs  defaults  1 2
+abacus109: mgmt:/global  /global  nfs  defaults  1 2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 df -hT 
+abacus109: Filesystem              Type      Size  Used Avail Use% Mounted on
+---- snip ---
+abacus109: mgmt:/home              nfs4      5.0T  1.8T  3.3T  36% /home
+abacus109: mgmt:/global            nfs4      3.9T  637G  3.3T  17% /global
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 cat /etc/hosts
+---- snip ----
+abacus109: 192.168.80.210 mgmt
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">setupntp</code> script run worked too:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 systemctl is-active chronyd.service
+abacus109: active
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 systemctl status chronyd.service
+abacus109: * chronyd.service - NTP client/server
+abacus109:    Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; vendor preset: enabled)
+abacus109:    Active: active (running) since Fri 2022-03-20 18:53:38 PDT; 2min ago
+---- snip ----
+</code></pre></div></div>
+
+<p>Yep, the <code class="language-plaintext highlighter-rouge">abacus_custom_postboot</code> script run worked as well:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 systemctl is-active pbs_mom.service 
+abacus109: active
+
+# xdsh abacus109 systemctl status pbs_mom.service 
+abacus109: * pbs_mom.service - PBS Mom service
+abacus109: Loaded: loaded (/etc/systemd/system/pbs_mom.service; enabled; vendor preset: disabled)
+abacus109: Active: active (running) since Fri 2022-03-20 18:53:39 PDT; 2min ago
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus109 --verify ls -lh /
+abacus109: total 28K
+---- snip ----
+</code></pre></div></div>
+
+<p><strong>NOTE:</strong> <br />
+If the above <code class="language-plaintext highlighter-rouge">updatenode abacus109 -P</code> does not work, you can try fixing 
+it by the following sequence of commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># updatenode abacus109 -P syncfiles
+# updatenode abacus109 -P "confignetwork -s"
+# updatenode abacus109 -P
+# updatenode abacus109 -P -F -V
+# updatenode abacus109 -P syncfiles -P "confignics -s"
+# updatenode abacus109 -P syncfiles -F -V
+# xdsh abacus109 shutdown -r now
+</code></pre></div></div>
+
+<p><em>Explanation:</em>  <br />
+If you want to run all the customization scripts that have been designated for the <code class="language-plaintext highlighter-rouge">abacus109</code> node (in the <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> attributes), the <code class="language-plaintext highlighter-rouge">-P</code> option (i.e, the command: <code class="language-plaintext highlighter-rouge">updatenode abacus109 -P</code>) will not work after install.  Instead, after install use the <code class="language-plaintext highlighter-rouge">-F</code> option for file synchronization (including synchronization of the <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> attributes).</p>
+
+<p>From the man page for the <code class="language-plaintext highlighter-rouge">updatenode(1)</code> command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-F|--sync     Specifies that file synchronization should be performed on the
+              nodes.  rsync/scp and ssh must be installed and configured on
+              the nodes.
+[...]
+-P|--scripts  Specifies that postscripts and postbootscripts should be run on
+              the nodes.  File sync with updatenode -P syncfiles is not
+              supported.  The syncfiles postscript can only be run during
+              install.  You should use updatenode -F instead.
+</code></pre></div></div>
+
+<hr />
+
 <h3 id="usefultypicall-first-commands-in-the-guest-vm-with-xcat-on-it">Useful/Typicall (First) Commands in the Guest VM with xCAT on It</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># uptime

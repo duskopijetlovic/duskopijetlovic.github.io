@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Aug 2022 14:08:02 -0700</pubDate>
-    <lastBuildDate>Tue, 23 Aug 2022 14:08:02 -0700</lastBuildDate>
+    <pubDate>Tue, 23 Aug 2022 14:30:55 -0700</pubDate>
+    <lastBuildDate>Tue, 23 Aug 2022 14:30:55 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -8976,6 +8976,325 @@ in advance.&lt;/p&gt;
 abacus14: ip-address = 192.168.80.114, hardware-address = 00:21:5e:2c:0a:ac
 cn13: ip-address = 192.168.80.113, hardware-address = 00:21:5e:2c:15:a4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;troubleshooting-postscripts-and-postbootscripts&quot;&gt;Troubleshooting Postscripts and Postbootscripts&lt;/h3&gt;
+
+&lt;p&gt;The following steps need to be run on the management 
+node, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Confirm that the object &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage&lt;/code&gt; has the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;synclists&lt;/code&gt;.
+(Options: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt;: type, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-i&lt;/code&gt;: information/inquire).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t osimage -i synclists
+Object name: centos7.9-x86_64-install-compute
+    synclists=/install/custom/install/centos/compute.centos7.x86_64.synclist
+Object name: centos7.9-x86_64-netboot-compute
+    synclists=
+Object name: centos7.9-x86_64-statelite-compute
+    synclists=
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since it’s included in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage&lt;/code&gt; object, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;syncfiles&lt;/code&gt; has been 
+addeed to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; attribute of the compute node that you’re 
+configuring (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;).
+(Options: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt;: type, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-o&lt;/code&gt;: object, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-i&lt;/code&gt;: information/inquire).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep profile
+    profile=compute
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep provmethod 
+    provmethod=centos7.9-x86_64-install-compute
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep -w -i os 
+    os=centos7.9
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodels abacus109 nodetype | grep profile
+abacus109: nodetype.profile: compute
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump nodetype
+#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
+---- snip ----
+&quot;abacus109&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,&quot;compute&quot;,&quot;centos7.9-x86_64-install-compute&quot;,,,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As of now, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; attribute for the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; has not 
+been updated with the required scripts.  From the definition of the object 
+type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node&lt;/code&gt;, for the object &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;, display the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt;. 
+You’ll notice that  both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setupntp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute_custom_post&lt;/code&gt; have not 
+been appended to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; line:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Similarly, when you ask for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attribute of the node 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus_custom_postboot&lt;/code&gt; script is missing from 
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; line:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  The following two &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodegrpch&lt;/code&gt; commands do not need to be run 
+if you’ve already setup &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; for the 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; group.&lt;/p&gt;
+
+&lt;p&gt;Upgrade the group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; with the required &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; 
+and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; script files:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodegrpch compute postscripts.postscripts=setupntp,compute_custom_post
+# nodegrpch compute postscripts.postbootscripts=abacus_custom_postboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Confirm that it’s been done:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts
+#node,postscripts,postbootscripts,comments,disabl
+---- snip ----
+&quot;compute&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Also, you’ll see that the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;) has not been added 
+to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; table:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts | grep abacus109
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Update the node by adding the required &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; 
+script files to it:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
+node=abacus109 \
+postscripts.postscripts=setupntp,compute_custom_post \
+postscripts.postbootscripts=abacus_custom_postboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To confirm that the needed postscripts are now included with the node:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep postscripts 
+    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus109 | grep postbootscripts
+    postbootscripts=otherpkgs,abacus_custom_postboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts
+#node,postscripts,postbootscripts,comments,disable
+---- snip ----
+&quot;abacus109&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts | grep abacus109
+&quot;abacus109&quot;,&quot;setupntp,compute_custom_post&quot;,&quot;abacus_custom_postboot&quot;,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Continuing with the setup, confirm that the node’s profile is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute&lt;/code&gt; 
+as that’s the name of the whole group you modified earlier above.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodels abacus109 nodetype
+abacus109: nodetype.arch: x86_64
+abacus109: nodetype.node: abacus109
+abacus109: nodetype.os: centos7.9
+abacus109: nodetype.profile: compute
+abacus109: nodetype.provmethod: centos7.9-x86_64-install-compute
+abacus109: nodetype.supportedarchs: 
+abacus109: nodetype.comments: 
+abacus109: nodetype.nodetype: 
+abacus109: nodetype.disable: 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump nodetype
+#node,os,arch,profile,provmethod,supportedarchs,nodetype,comments,disable
+---- snip ----
+&quot;abacus109&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,&quot;compute&quot;,&quot;centos7.9-x86_64-install-compute&quot;,,,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postscripts
+Object name: abacus109
+    postscripts=syslog,remoteshell,syncfiles,setupntp,compute_custom_post
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef -t node -o abacus109 -i postbootscripts
+Object name: abacus109
+    postbootscripts=otherpkgs,abacus_custom_postboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatdebugmode&lt;/code&gt; in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;site&lt;/code&gt; table to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chdef -t site xcatdebugmode=2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Push &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;syncfiles&lt;/code&gt; to the node.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P syncfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -F -V
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Log in to the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+abacus109 login: root
+Password:
+
+[root@abacus109 ~]#
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Run the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# USEOPENSSLFORXCAT=1 \
+XCATSERVER=192.168.80.220:3001 \
+/xcatpost/startsyncfiles.awk -v RCP=/usr/bin/rsync
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Exit the compute node.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# exit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+abacus109 login:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Ctrl-e&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt; (three characters: Ctrl-e, ‘c’ and ‘.’) to 
+disconnect by closing the session with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;makegocons&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Back in the management node, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdcp abacus109 -F /install/custom/install/centos/compute.centos7.x86_64.synclist
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Update the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; but limit it to only run the scripts.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check whether the run of the scripts worked.&lt;/p&gt;
+
+&lt;p&gt;Yeah, it worked for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;synclist&lt;/code&gt;; that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute.centos7.x86_64.synclist&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 ls -lh /opt/torque/ 
+abacus109: total 4.0K
+abacus109: drwxr-xr-x. 2 root root 4.0K May 16  2009 bin
+abacus109: drwxr-xr-x. 2 root root   92 May 16  2009 include
+abacus109: drwxr-xr-x. 2 root root  113 May 16  2009 lib
+abacus109: drwxr-xr-x. 6 root root   54 May 16  2009 man
+abacus109: drwxr-xr-x. 2 root root  147 May 16  2009 sbin
+abacus109: drwxr-xr-x. 3 root root   19 May 16  2009 var
+
+# xdsh abacus109 du -chs /opt/torque/ 
+abacus109: 108M /opt/torque/
+abacus109: 108M total
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 cat /etc/passwd 
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 cat /etc/group
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It also worked for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compute_custom_post&lt;/code&gt; script run:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 cat /etc/fstab
+---- snip ----
+abacus109: mgmt:/home    /home    nfs  defaults  1 2
+abacus109: mgmt:/global  /global  nfs  defaults  1 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 df -hT 
+abacus109: Filesystem              Type      Size  Used Avail Use% Mounted on
+---- snip ---
+abacus109: mgmt:/home              nfs4      5.0T  1.8T  3.3T  36% /home
+abacus109: mgmt:/global            nfs4      3.9T  637G  3.3T  17% /global
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 cat /etc/hosts
+---- snip ----
+abacus109: 192.168.80.210 mgmt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setupntp&lt;/code&gt; script run worked too:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 systemctl is-active chronyd.service
+abacus109: active
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 systemctl status chronyd.service
+abacus109: * chronyd.service - NTP client/server
+abacus109:    Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; vendor preset: enabled)
+abacus109:    Active: active (running) since Fri 2022-03-20 18:53:38 PDT; 2min ago
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Yep, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus_custom_postboot&lt;/code&gt; script run worked as well:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 systemctl is-active pbs_mom.service 
+abacus109: active
+
+# xdsh abacus109 systemctl status pbs_mom.service 
+abacus109: * pbs_mom.service - PBS Mom service
+abacus109: Loaded: loaded (/etc/systemd/system/pbs_mom.service; enabled; vendor preset: disabled)
+abacus109: Active: active (running) since Fri 2022-03-20 18:53:39 PDT; 2min ago
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus109 --verify ls -lh /
+abacus109: total 28K
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; &lt;br /&gt;
+If the above &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode abacus109 -P&lt;/code&gt; does not work, you can try fixing 
+it by the following sequence of commands:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -P syncfiles
+# updatenode abacus109 -P &quot;confignetwork -s&quot;
+# updatenode abacus109 -P
+# updatenode abacus109 -P -F -V
+# updatenode abacus109 -P syncfiles -P &quot;confignics -s&quot;
+# updatenode abacus109 -P syncfiles -F -V
+# xdsh abacus109 shutdown -r now
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Explanation:&lt;/em&gt;  &lt;br /&gt;
+If you want to run all the customization scripts that have been designated for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; node (in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attributes), the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-P&lt;/code&gt; option (i.e, the command: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode abacus109 -P&lt;/code&gt;) will not work after install.  Instead, after install use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-F&lt;/code&gt; option for file synchronization (including synchronization of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; attributes).&lt;/p&gt;
+
+&lt;p&gt;From the man page for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updatenode(1)&lt;/code&gt; command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-F|--sync     Specifies that file synchronization should be performed on the
+              nodes.  rsync/scp and ssh must be installed and configured on
+              the nodes.
+[...]
+-P|--scripts  Specifies that postscripts and postbootscripts should be run on
+              the nodes.  File sync with updatenode -P syncfiles is not
+              supported.  The syncfiles postscript can only be run during
+              install.  You should use updatenode -F instead.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
 
 &lt;h3 id=&quot;usefultypicall-first-commands-in-the-guest-vm-with-xcat-on-it&quot;&gt;Useful/Typicall (First) Commands in the Guest VM with xCAT on It&lt;/h3&gt;
 
