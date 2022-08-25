@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Aug 2022 14:30:55 -0700</pubDate>
-    <lastBuildDate>Tue, 23 Aug 2022 14:30:55 -0700</lastBuildDate>
+    <pubDate>Wed, 24 Aug 2022 19:28:18 -0700</pubDate>
+    <lastBuildDate>Wed, 24 Aug 2022 19:28:18 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -7372,9 +7372,51 @@ Job id      Name         User  Time Use S Queue
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;While still at the head node (remebmer, this is &lt;strong&gt;not&lt;/strong&gt; the xCAT 
-MN &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;), create a test job (a.k.a. batch job) that will 
-be submitted to run specifically on the compute node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus102&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;While still at the head node (remember, this is &lt;strong&gt;not&lt;/strong&gt; the xCAT 
+MN &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;), first use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbsnodes(8)&lt;/code&gt;
+&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;8&lt;/a&gt;&lt;/sup&gt; to check whether the node’s state is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;free&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# pbsnodes -l all abacus102
+abacus102            offline
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If the node is in OFFLINE state, the fix is to clear OFFLINE from the node:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# pbsnodes -c abacus102
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If the node is in DOWN state, try fixing it by restarting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbs_mom&lt;/code&gt; 
+service on the node – remember that you need to run the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xdsh(1)&lt;/code&gt; command from the xCAT MN (Management Node) so you first need to log into the xCAT MN:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh root@192.168.80.220
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the xCAT MN (IP address: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;), run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xdsh(1)&lt;/code&gt; command to 
+restart the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbs_mom&lt;/code&gt; service on the compute node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus102&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus102 systemctl restart pbs_mom.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Exit the xCAT MN (Management Node).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# exit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Back on the head node (IP address: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.210&lt;/code&gt;), restart 
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbs_server&lt;/code&gt; service.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# systemctl restart pbs_server.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Confirm that the status of the node is now &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;free&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# pbsnodes -l all abacus102
+abacus102            free
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;While still on the head node (IP address: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.210&lt;/code&gt;), create 
+a test job (a.k.a. batch job) that will be submitted to run specifically 
+on the compute node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus102&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# vi test_abacus102
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -8114,7 +8156,147 @@ the BMC.&lt;/li&gt;
   &lt;li&gt;You are configuring blade in bay number 9 (9th blade server).&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;1. Find out the compute node’s MAC address&lt;/p&gt;
+&lt;p&gt;Log into the xCAT management node (xCAT MN).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ssh root@192.168.80.220
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Run the discovery on IP address of the xCAT MN (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;) and list 
+all discovered MM (Management Node) &lt;strong&gt;service types&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsslp -s MM -i 192.168.80.220
+---- snip ----
+device  type-model  serial-number  side  ip-addresses    hostname
+---- snip ----
+mm      8852HC1     KQABCDE              192.168.80.135  Server--SNYK123456789A 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Rename the MM node to a more human-friendly name (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chdef \
+-t node \
+-o Server--SNYK123456789A \ 
+-n xbcmm1n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Add the BMC (MM) node to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt; table.&lt;/p&gt;
+
+&lt;p&gt;In other words, you are updating rows &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;username&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;password&lt;/code&gt; 
+in the table &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt;.  From the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chtab(8)&lt;/code&gt; command’s usage:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keycolname=keyvalue&lt;/code&gt;   a column name-and-value pair that identifies the 
+                        rows in a table to be changed.&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tablename.colname=newvalue&lt;/code&gt;    the new value for the specified row and 
+                                column of the table.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mpa
+#mpa,username,password,displayname,slots,urlpath,comments,disable
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keycolname&lt;/code&gt; is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; with value being the name of the 
+node that you’ll give to this BMC (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm2&lt;/code&gt;), while the 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tablename.colname=newvalue&lt;/code&gt; are 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa.username=xadmin&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa.password=YOUR_BMC_PASSWORD&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;After this explanation, run the actual command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
+mpa=xbcmm1n \
+mpa.username=xadmin \
+mpa.password=YOUR_BMC_PASSWORD
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt; table refers to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; table:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mp
+#node,mpa,id,nodetype,comments,disable
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;add the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; to the table &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
+node=xbcmm1n \
+mp.mpa=xbcmm1n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This MM (Management Module) node now includes the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; attributes 
+in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt; table:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mp
+#node,mpa,id,nodetype,comments,disable
+---- snip ----
+&quot;xbcmm1n&quot;,&quot;xbcmm1n&quot;,,,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Add the attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;. This is a MM (Management Module) and since 
+it’s customary to give value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; (zero) to MMs, assign &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; to it:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
+node=xbcmm1n \
+mp.id=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Add this MM (Management Module) node’s IP address to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# printf %s\\n &quot;192.168.80.135 xbcmm1n&quot; &amp;gt;&amp;gt; /etc/hosts
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check if you can communicate with the MM node.  For example, test whether 
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspconfig(1)&lt;/code&gt; can run without errors:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 192.168.11.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  It would’ve been good even if returned value was 
+empty (without an IP address); at this point you just want to make 
+sure there are no errors.&lt;/p&gt;
+
+&lt;p&gt;Now you can setup new ssh keys (a.k.a. enable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;snmp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh&lt;/code&gt;) 
+on this Management Module (named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpcfg=enable sshcfg=enable
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;xbcmm1n: SNMP enable: OK
+xbcmm1n: SSH enable: OK
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can now check remote hardware vitals for the MM node:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rvitals xbcmm1n
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can also check its hardware inventory:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rinv xbcmm1n
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The passwordless ssh login to the MM node works:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@xbcmm2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output (with BMC CLI prompt indicated with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;system&amp;gt;&lt;/code&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Static IP address:     192.168.80.135
+---- snip ----
+system&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After you’ve setup the MM (Management Module) node, you are ready to 
+start provisioning a new compute node.&lt;/p&gt;
+
+&lt;p&gt;Find out the compute node’s MAC address by logging in to the MM (AMM) and 
+obtaining it from there:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@192.168.80.135
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -8140,7 +8322,10 @@ Connection to 192.168.80.135 closed.
 &lt;p&gt;Create an xCAT data object definition for this node (name it &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;).&lt;br /&gt;
 Explanation: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ip&lt;/code&gt; = IP address of the node; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mac&lt;/code&gt; = MAC address of
 the node; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmc&lt;/code&gt; = IP address of the MM/AMM (BMC); &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmcusername&lt;/code&gt; = username of
-BMC (MM) account; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmcpassword&lt;/code&gt; = password for BMC (MM) user.&lt;/p&gt;
+BMC (MM) account; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmcpassword&lt;/code&gt; = password for BMC (MM) user, 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt; = object &lt;strong&gt;t&lt;/strong&gt;ype, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--template&lt;/code&gt; = name of the xCAT shipped object 
+definition template or an existing object, from which the new object 
+definition will be created.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  Use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MAC Address 1&lt;/code&gt; you obtained above.&lt;/p&gt;
 
@@ -8255,8 +8440,29 @@ Object name: abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;So you need to add the necessary (for this particular configuration; 
-that is, configuration of this example) scripts (both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and 
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt;) to the compute node that is being provisioned:&lt;/p&gt;
+that is, configuration of this example) scripts (both &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; 
+and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt;) to the compute node that is being provisioned.
+In other words, you are updating rows &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postbootscripts&lt;/code&gt; 
+in the table &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts&lt;/code&gt;. From the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chtab(8)&lt;/code&gt; command’s usage:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keycolname=keyvalue&lt;/code&gt;   a column name-and-value pair that identifies the 
+                        rows in a table to be changed.&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tablename.colname=newvalue&lt;/code&gt;    the new value for the specified row and 
+                                column of the table.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump postscripts
+#node,postscripts,postbootscripts,comments,disable
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keycolname&lt;/code&gt; is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node&lt;/code&gt; with value being the name of the 
+node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;), while the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tablename.colname=newvalue&lt;/code&gt; are 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts.postscripts=setupntp,compute_custom_post&lt;/code&gt; and 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postscripts.postbootscripts=abacus_custom_postboot&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;After this (long) explanation, run the actual command:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
 node=abacus109 \
@@ -8367,7 +8573,21 @@ Start capturing every message during OS provision process....
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Launch a separate shell session and in there (a.k.a. the second terminal), 
-start installation process:&lt;/p&gt;
+start installation process.  (The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodeset(8)&lt;/code&gt; command sets the boot 
+state for a node or node range.)&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage=imagename&lt;/code&gt; option (from the manual page for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodeset(8)&lt;/code&gt; 
+command):  &lt;br /&gt;
+“Prepare server for installing a node using the specified os
+image. The os image is defined in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;osimage&lt;/code&gt; table and
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;linuximage&lt;/code&gt; table.”&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump osimage
+#imagename,groups,profile,imagetype,description,provmethod,rootfstype,osdistroname,osupdatename,cfmdir,osname,osvers,osarch,synclists,postscripts,postbootscripts,serverrole,isdeletable,kitcomponents,environvar,comments,disable
+&quot;centos7.9-x86_64-install-compute&quot;,,&quot;compute&quot;,&quot;linux&quot;,,&quot;install&quot;,,&quot;centos7.9-x86_64&quot;,,,&quot;Linux&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,&quot;/install/custom/install/centos/compute.centos7.x86_64.synclist&quot;,,,,,,,,
+&quot;centos7.9-x86_64-netboot-compute&quot;,,&quot;compute&quot;,&quot;linux&quot;,,&quot;netboot&quot;,,&quot;centos7.9-x86_64&quot;,,,&quot;Linux&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,,,,,,,,,
+&quot;centos7.9-x86_64-statelite-compute&quot;,,&quot;compute&quot;,&quot;linux&quot;,,&quot;statelite&quot;,,&quot;centos7.9-x86_64&quot;,,,&quot;Linux&quot;,&quot;centos7.9&quot;,&quot;x86_64&quot;,,,,,,,,,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodeset abacus109 osimage=centos7.9-x86_64-install-compute
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -8378,36 +8598,61 @@ update with the following:&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:29 Use command rpower to reboot node abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;h3 id=&quot;fix-for-rpower-nodename-boot&quot;&gt;Fix for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower &amp;lt;nodename&amp;gt; boot&lt;/code&gt;&lt;/h3&gt;
+
 &lt;p&gt;Back in the second terminal, as per the message above, to reboot the 
 compute node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt; you would normally use this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower&lt;/code&gt; 
-command here: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus101 boot&lt;/code&gt;.&lt;/p&gt;
+command here: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 boot&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;However, at least in this setup, I’ve found it inconsistent because when 
 running that command, the compute node would power off &lt;strong&gt;but&lt;/strong&gt; would not 
-power back on; that is, it wouldn’t actually restart.&lt;/p&gt;
+power back on; that is, it wouldn’t actually restart.  (Even though the 
+man page for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command says for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;boot&lt;/code&gt; option: 
+“&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;boot&lt;/code&gt;:  If off, then power on.  If on, then hard reset.  This option 
+is &lt;strong&gt;recommended&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) over &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cycle&lt;/code&gt; [option].&lt;/p&gt;
 
-&lt;p&gt;Therefore, I first power the node off and then power it on so run this 
-in the second terminal:&lt;/p&gt;
+&lt;p&gt;I had to add the following options to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command to make 
+the installation work; that is, to turn the node off and then on. 
+(Alternitavely, you could first manually turn the node off: 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 off&lt;/code&gt;, and then on:  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 on&lt;/code&gt;.)&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 off 
+&lt;p&gt;Explanation for the options used in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command below:  &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m table.column==expectedstatus -m table.column=~expectedstatus&lt;/code&gt;
+Use one or multiple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flags to specify the node attributes and the
+expected status for the node installation monitoring and automatic
+retry mechanism. The operators &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;==&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!=&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=~&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!~&lt;/code&gt; are valid. 
+This flag &lt;strong&gt;must&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt; flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-r retrycount&lt;/code&gt;
+specify the number of retries that the monitoring process will
+perform before declaring the failure. The default value is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt;.
+Setting the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;retrycount&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; means only monitoring the os
+installation progress and will not re-initiate the installation if
+the node status has not been changed to the expected value after
+timeout. This flag &lt;strong&gt;must&lt;/strong&gt; be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t timeout&lt;/code&gt;
+Specify the timeout, in minutes, to wait for the expectedstatus
+specified by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag. This is a &lt;strong&gt;required&lt;/strong&gt; flag if the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag 
+is specified. &lt;br /&gt;
+Power off, then on.&lt;/p&gt;
+
+&lt;p&gt;In the second terminal, run this command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower \
+abacus109 \
+boot \
+-r 0 \
+-m nodelist.status==booting \
+-t 5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:36 Node status is changed to powering-off
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:36 Node status is changed to powering-on
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Now, from the second terminal, power on the compute node:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower abacus109 on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:48 Node status is changed to powering-on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Launch yet another separate shell session and in there (let’s call it&lt;br /&gt;
+&lt;p&gt;Launch yet another separate shell session and in there (let’s call it 
 the third terminal), check and monitor provisioning process:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
@@ -9704,6 +9949,20 @@ an alphabetic character and end with an alphanumeric character.
 Optional aliases provide for name changes, alternate spellings, shorter
 hostnames, or generic hostnames (for example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost&lt;/code&gt;).&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;[8] From the manual page for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pbsnodes(8)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DESCRIPTION
+    The pbsnodes command is used to mark nodes down, free or offline. 
+    It can also be used to list nodes and their state.  Node information
+    is obtained by sending a request to the PBS job server.  Sets of 
+    nodes can be operated on at once by specifying a node property 
+    prefixed by a colon.
+    Nodes do not exist in a single state, but actually have a set 
+    of states.  For example, a node can be simultaneously &quot;busy&quot; and 
+    &quot;offline&quot;.  The &quot;free&quot; state is the absence of all other states and 
+    so is never combined with other states.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;
 

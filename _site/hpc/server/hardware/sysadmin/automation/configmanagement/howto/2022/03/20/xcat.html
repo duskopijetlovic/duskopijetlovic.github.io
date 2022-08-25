@@ -3301,9 +3301,51 @@ Job id      Name         User  Time Use S Queue
 [...]
 </code></pre></div></div>
 
-<p>While still at the head node (remebmer, this is <strong>not</strong> the xCAT 
-MN <code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>), create a test job (a.k.a. batch job) that will 
-be submitted to run specifically on the compute node <code class="language-plaintext highlighter-rouge">abacus102</code>.</p>
+<p>While still at the head node (remember, this is <strong>not</strong> the xCAT 
+MN <code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>), first use the <code class="language-plaintext highlighter-rouge">pbsnodes(8)</code>
+<sup><a href="#footnotes">8</a></sup> to check whether the node’s state is <code class="language-plaintext highlighter-rouge">free</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pbsnodes -l all abacus102
+abacus102            offline
+</code></pre></div></div>
+
+<p>If the node is in OFFLINE state, the fix is to clear OFFLINE from the node:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pbsnodes -c abacus102
+</code></pre></div></div>
+
+<p>If the node is in DOWN state, try fixing it by restarting <code class="language-plaintext highlighter-rouge">pbs_mom</code> 
+service on the node – remember that you need to run the <code class="language-plaintext highlighter-rouge">xdsh(1)</code> command from the xCAT MN (Management Node) so you first need to log into the xCAT MN:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh root@192.168.80.220
+</code></pre></div></div>
+
+<p>In the xCAT MN (IP address: <code class="language-plaintext highlighter-rouge">192.168.80.220</code>), run <code class="language-plaintext highlighter-rouge">xdsh(1)</code> command to 
+restart the <code class="language-plaintext highlighter-rouge">pbs_mom</code> service on the compute node <code class="language-plaintext highlighter-rouge">abacus102</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus102 systemctl restart pbs_mom.service
+</code></pre></div></div>
+
+<p>Exit the xCAT MN (Management Node).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># exit
+</code></pre></div></div>
+
+<p>Back on the head node (IP address: <code class="language-plaintext highlighter-rouge">192.168.80.210</code>), restart 
+the <code class="language-plaintext highlighter-rouge">pbs_server</code> service.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># systemctl restart pbs_server.service
+</code></pre></div></div>
+
+<p>Confirm that the status of the node is now <code class="language-plaintext highlighter-rouge">free</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># pbsnodes -l all abacus102
+abacus102            free
+</code></pre></div></div>
+
+<p>While still on the head node (IP address: <code class="language-plaintext highlighter-rouge">192.168.80.210</code>), create 
+a test job (a.k.a. batch job) that will be submitted to run specifically 
+on the compute node <code class="language-plaintext highlighter-rouge">abacus102</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># vi test_abacus102
 </code></pre></div></div>
@@ -4043,7 +4085,147 @@ the BMC.</li>
   <li>You are configuring blade in bay number 9 (9th blade server).</li>
 </ul>
 
-<p>1. Find out the compute node’s MAC address</p>
+<p>Log into the xCAT management node (xCAT MN).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh root@192.168.80.220
+</code></pre></div></div>
+
+<p>Run the discovery on IP address of the xCAT MN (<code class="language-plaintext highlighter-rouge">192.168.80.220</code>) and list 
+all discovered MM (Management Node) <strong>service types</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsslp -s MM -i 192.168.80.220
+---- snip ----
+device  type-model  serial-number  side  ip-addresses    hostname
+---- snip ----
+mm      8852HC1     KQABCDE              192.168.80.135  Server--SNYK123456789A 
+</code></pre></div></div>
+
+<p>Rename the MM node to a more human-friendly name (<code class="language-plaintext highlighter-rouge">xbcmm1n</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chdef \
+-t node \
+-o Server--SNYK123456789A \ 
+-n xbcmm1n
+</code></pre></div></div>
+
+<p>Add the BMC (MM) node to the <code class="language-plaintext highlighter-rouge">mp</code> table.</p>
+
+<p>In other words, you are updating rows <code class="language-plaintext highlighter-rouge">username</code> and <code class="language-plaintext highlighter-rouge">password</code> 
+in the table <code class="language-plaintext highlighter-rouge">mpa</code>.  From the <code class="language-plaintext highlighter-rouge">chtab(8)</code> command’s usage:</p>
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">keycolname=keyvalue</code>   a column name-and-value pair that identifies the 
+                        rows in a table to be changed.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">tablename.colname=newvalue</code>    the new value for the specified row and 
+                                column of the table.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mpa
+#mpa,username,password,displayname,slots,urlpath,comments,disable
+---- snip ----
+</code></pre></div></div>
+
+<p>So, the <code class="language-plaintext highlighter-rouge">keycolname</code> is <code class="language-plaintext highlighter-rouge">mpa</code> with value being the name of the 
+node that you’ll give to this BMC (<code class="language-plaintext highlighter-rouge">xbcmm2</code>), while the 
+<code class="language-plaintext highlighter-rouge">tablename.colname=newvalue</code> are 
+<code class="language-plaintext highlighter-rouge">mpa.username=xadmin</code> and <code class="language-plaintext highlighter-rouge">mpa.password=YOUR_BMC_PASSWORD</code>.</p>
+
+<p>After this explanation, run the actual command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
+mpa=xbcmm1n \
+mpa.username=xadmin \
+mpa.password=YOUR_BMC_PASSWORD
+</code></pre></div></div>
+
+<p>As the <code class="language-plaintext highlighter-rouge">mp</code> table refers to the <code class="language-plaintext highlighter-rouge">mpa</code> table:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mp
+#node,mpa,id,nodetype,comments,disable
+---- snip ----
+</code></pre></div></div>
+
+<p>add the attribute <code class="language-plaintext highlighter-rouge">mpa</code> to the table <code class="language-plaintext highlighter-rouge">mp</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
+node=xbcmm1n \
+mp.mpa=xbcmm1n
+</code></pre></div></div>
+
+<p>This MM (Management Module) node now includes the <code class="language-plaintext highlighter-rouge">node</code> and <code class="language-plaintext highlighter-rouge">mpa</code> attributes 
+in the <code class="language-plaintext highlighter-rouge">mp</code> table:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mp
+#node,mpa,id,nodetype,comments,disable
+---- snip ----
+"xbcmm1n","xbcmm1n",,,,
+</code></pre></div></div>
+
+<p>Add the attribute <code class="language-plaintext highlighter-rouge">id</code>. This is a MM (Management Module) and since 
+it’s customary to give value <code class="language-plaintext highlighter-rouge">0</code> (zero) to MMs, assign <code class="language-plaintext highlighter-rouge">0</code> to it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
+node=xbcmm1n \
+mp.id=0
+</code></pre></div></div>
+
+<p>Add this MM (Management Module) node’s IP address to <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n "192.168.80.135 xbcmm1n" &gt;&gt; /etc/hosts
+</code></pre></div></div>
+
+<p>Check if you can communicate with the MM node.  For example, test whether 
+the <code class="language-plaintext highlighter-rouge">rspconfig(1)</code> can run without errors:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 192.168.11.2
+</code></pre></div></div>
+
+<p><strong>Note:</strong>  It would’ve been good even if returned value was 
+empty (without an IP address); at this point you just want to make 
+sure there are no errors.</p>
+
+<p>Now you can setup new ssh keys (a.k.a. enable <code class="language-plaintext highlighter-rouge">snmp</code> and <code class="language-plaintext highlighter-rouge">ssh</code>) 
+on this Management Module (named <code class="language-plaintext highlighter-rouge">xbcmm1n</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpcfg=enable sshcfg=enable
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xbcmm1n: SNMP enable: OK
+xbcmm1n: SSH enable: OK
+</code></pre></div></div>
+
+<p>You can now check remote hardware vitals for the MM node:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rvitals xbcmm1n
+---- snip ----
+</code></pre></div></div>
+
+<p>You can also check its hardware inventory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rinv xbcmm1n
+---- snip ----
+</code></pre></div></div>
+
+<p>The passwordless ssh login to the MM node works:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh xadmin@xbcmm2
+</code></pre></div></div>
+
+<p>Output (with BMC CLI prompt indicated with <code class="language-plaintext highlighter-rouge">system&gt;</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Static IP address:     192.168.80.135
+---- snip ----
+system&gt;
+</code></pre></div></div>
+
+<p>After you’ve setup the MM (Management Module) node, you are ready to 
+start provisioning a new compute node.</p>
+
+<p>Find out the compute node’s MAC address by logging in to the MM (AMM) and 
+obtaining it from there:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh xadmin@192.168.80.135
 </code></pre></div></div>
@@ -4069,7 +4251,10 @@ Connection to 192.168.80.135 closed.
 <p>Create an xCAT data object definition for this node (name it <code class="language-plaintext highlighter-rouge">abacus109</code>).<br />
 Explanation: <code class="language-plaintext highlighter-rouge">ip</code> = IP address of the node; <code class="language-plaintext highlighter-rouge">mac</code> = MAC address of
 the node; <code class="language-plaintext highlighter-rouge">bmc</code> = IP address of the MM/AMM (BMC); <code class="language-plaintext highlighter-rouge">bmcusername</code> = username of
-BMC (MM) account; <code class="language-plaintext highlighter-rouge">bmcpassword</code> = password for BMC (MM) user.</p>
+BMC (MM) account; <code class="language-plaintext highlighter-rouge">bmcpassword</code> = password for BMC (MM) user, 
+<code class="language-plaintext highlighter-rouge">-t</code> = object <strong>t</strong>ype, <code class="language-plaintext highlighter-rouge">--template</code> = name of the xCAT shipped object 
+definition template or an existing object, from which the new object 
+definition will be created.</p>
 
 <p><strong>Note:</strong>  Use the <code class="language-plaintext highlighter-rouge">MAC Address 1</code> you obtained above.</p>
 
@@ -4184,8 +4369,29 @@ Object name: abacus109
 </code></pre></div></div>
 
 <p>So you need to add the necessary (for this particular configuration; 
-that is, configuration of this example) scripts (both <code class="language-plaintext highlighter-rouge">postscripts</code> and 
-<code class="language-plaintext highlighter-rouge">postbootscripts</code>) to the compute node that is being provisioned:</p>
+that is, configuration of this example) scripts (both <code class="language-plaintext highlighter-rouge">postscripts</code> 
+and <code class="language-plaintext highlighter-rouge">postbootscripts</code>) to the compute node that is being provisioned.
+In other words, you are updating rows <code class="language-plaintext highlighter-rouge">postscripts</code> and <code class="language-plaintext highlighter-rouge">postbootscripts</code> 
+in the table <code class="language-plaintext highlighter-rouge">postscripts</code>. From the <code class="language-plaintext highlighter-rouge">chtab(8)</code> command’s usage:</p>
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">keycolname=keyvalue</code>   a column name-and-value pair that identifies the 
+                        rows in a table to be changed.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">tablename.colname=newvalue</code>    the new value for the specified row and 
+                                column of the table.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump postscripts
+#node,postscripts,postbootscripts,comments,disable
+---- snip ----
+</code></pre></div></div>
+
+<p>So, the <code class="language-plaintext highlighter-rouge">keycolname</code> is <code class="language-plaintext highlighter-rouge">node</code> with value being the name of the 
+node (<code class="language-plaintext highlighter-rouge">abacus109</code>), while the <code class="language-plaintext highlighter-rouge">tablename.colname=newvalue</code> are 
+<code class="language-plaintext highlighter-rouge">postscripts.postscripts=setupntp,compute_custom_post</code> and 
+<code class="language-plaintext highlighter-rouge">postscripts.postbootscripts=abacus_custom_postboot</code>.</p>
+
+<p>After this (long) explanation, run the actual command:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
 node=abacus109 \
@@ -4296,7 +4502,21 @@ Start capturing every message during OS provision process....
 </code></pre></div></div>
 
 <p>Launch a separate shell session and in there (a.k.a. the second terminal), 
-start installation process:</p>
+start installation process.  (The <code class="language-plaintext highlighter-rouge">nodeset(8)</code> command sets the boot 
+state for a node or node range.)</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">osimage=imagename</code> option (from the manual page for the <code class="language-plaintext highlighter-rouge">nodeset(8)</code> 
+command):  <br />
+“Prepare server for installing a node using the specified os
+image. The os image is defined in the <code class="language-plaintext highlighter-rouge">osimage</code> table and
+<code class="language-plaintext highlighter-rouge">linuximage</code> table.”</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump osimage
+#imagename,groups,profile,imagetype,description,provmethod,rootfstype,osdistroname,osupdatename,cfmdir,osname,osvers,osarch,synclists,postscripts,postbootscripts,serverrole,isdeletable,kitcomponents,environvar,comments,disable
+"centos7.9-x86_64-install-compute",,"compute","linux",,"install",,"centos7.9-x86_64",,,"Linux","centos7.9","x86_64","/install/custom/install/centos/compute.centos7.x86_64.synclist",,,,,,,,
+"centos7.9-x86_64-netboot-compute",,"compute","linux",,"netboot",,"centos7.9-x86_64",,,"Linux","centos7.9","x86_64",,,,,,,,,
+"centos7.9-x86_64-statelite-compute",,"compute","linux",,"statelite",,"centos7.9-x86_64",,,"Linux","centos7.9","x86_64",,,,,,,,,
+</code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodeset abacus109 osimage=centos7.9-x86_64-install-compute
 </code></pre></div></div>
@@ -4307,36 +4527,61 @@ update with the following:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:29 Use command rpower to reboot node abacus109
 </code></pre></div></div>
 
+<h3 id="fix-for-rpower-nodename-boot">Fix for <code class="language-plaintext highlighter-rouge">rpower &lt;nodename&gt; boot</code></h3>
+
 <p>Back in the second terminal, as per the message above, to reboot the 
 compute node <code class="language-plaintext highlighter-rouge">abacus109</code> you would normally use this <code class="language-plaintext highlighter-rouge">rpower</code> 
-command here: <code class="language-plaintext highlighter-rouge">rpower abacus101 boot</code>.</p>
+command here: <code class="language-plaintext highlighter-rouge">rpower abacus109 boot</code>.</p>
 
 <p>However, at least in this setup, I’ve found it inconsistent because when 
 running that command, the compute node would power off <strong>but</strong> would not 
-power back on; that is, it wouldn’t actually restart.</p>
+power back on; that is, it wouldn’t actually restart.  (Even though the 
+man page for the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command says for the <code class="language-plaintext highlighter-rouge">boot</code> option: 
+“<code class="language-plaintext highlighter-rouge">boot</code>:  If off, then power on.  If on, then hard reset.  This option 
+is <strong>recommended</strong> (<em>emphasis mine</em>) over <code class="language-plaintext highlighter-rouge">cycle</code> [option].</p>
 
-<p>Therefore, I first power the node off and then power it on so run this 
-in the second terminal:</p>
+<p>I had to add the following options to the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command to make 
+the installation work; that is, to turn the node off and then on. 
+(Alternitavely, you could first manually turn the node off: 
+<code class="language-plaintext highlighter-rouge">rpower abacus109 off</code>, and then on:  <code class="language-plaintext highlighter-rouge">rpower abacus109 on</code>.)</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rpower abacus109 off 
+<p>Explanation for the options used in the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command below:  <br />
+<code class="language-plaintext highlighter-rouge">-m table.column==expectedstatus -m table.column=~expectedstatus</code>
+Use one or multiple <code class="language-plaintext highlighter-rouge">-m</code> flags to specify the node attributes and the
+expected status for the node installation monitoring and automatic
+retry mechanism. The operators <code class="language-plaintext highlighter-rouge">==</code>, <code class="language-plaintext highlighter-rouge">!=</code>, <code class="language-plaintext highlighter-rouge">=~</code> and <code class="language-plaintext highlighter-rouge">!~</code> are valid. 
+This flag <strong>must</strong> (<em>emphasis mine</em>) be used with <code class="language-plaintext highlighter-rouge">-t</code> flag.</p>
+
+<p><code class="language-plaintext highlighter-rouge">-r retrycount</code>
+specify the number of retries that the monitoring process will
+perform before declaring the failure. The default value is <code class="language-plaintext highlighter-rouge">3</code>.
+Setting the <code class="language-plaintext highlighter-rouge">retrycount</code> to <code class="language-plaintext highlighter-rouge">0</code> means only monitoring the os
+installation progress and will not re-initiate the installation if
+the node status has not been changed to the expected value after
+timeout. This flag <strong>must</strong> be used with <code class="language-plaintext highlighter-rouge">-m</code> flag.</p>
+
+<p><code class="language-plaintext highlighter-rouge">-t timeout</code>
+Specify the timeout, in minutes, to wait for the expectedstatus
+specified by <code class="language-plaintext highlighter-rouge">-m</code> flag. This is a <strong>required</strong> flag if the <code class="language-plaintext highlighter-rouge">-m</code> flag 
+is specified. <br />
+Power off, then on.</p>
+
+<p>In the second terminal, run this command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rpower \
+abacus109 \
+boot \
+-r 0 \
+-m nodelist.status==booting \
+-t 5
 </code></pre></div></div>
 
 <p>The first terminal updates with the following:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:36 Node status is changed to powering-off
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:36 Node status is changed to powering-on
 </code></pre></div></div>
 
-<p>Now, from the second terminal, power on the compute node:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rpower abacus109 on
-</code></pre></div></div>
-
-<p>The first terminal updates with the following:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:48 Node status is changed to powering-on
-</code></pre></div></div>
-
-<p>Launch yet another separate shell session and in there (let’s call it<br />
+<p>Launch yet another separate shell session and in there (let’s call it 
 the third terminal), check and monitor provisioning process:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus109
@@ -5633,6 +5878,20 @@ an alphabetic character and end with an alphanumeric character.
 Optional aliases provide for name changes, alternate spellings, shorter
 hostnames, or generic hostnames (for example, <code class="language-plaintext highlighter-rouge">localhost</code>).</p>
 </blockquote>
+
+<p>[8] From the manual page for <code class="language-plaintext highlighter-rouge">pbsnodes(8)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DESCRIPTION
+    The pbsnodes command is used to mark nodes down, free or offline. 
+    It can also be used to list nodes and their state.  Node information
+    is obtained by sending a request to the PBS job server.  Sets of 
+    nodes can be operated on at once by specifying a node property 
+    prefixed by a colon.
+    Nodes do not exist in a single state, but actually have a set 
+    of states.  For example, a node can be simultaneously "busy" and 
+    "offline".  The "free" state is the absence of all other states and 
+    so is never combined with other states.
+</code></pre></div></div>
 
 <hr />
 
