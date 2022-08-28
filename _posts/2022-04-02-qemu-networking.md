@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "QEMU Networking"
+title: "How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks"
 date: 2022-04-02 08:11:22 -0700 
 categories: howto virtualization rs232serial cli terminal shell console sysadmin server hardware networking
 ---
@@ -432,13 +432,22 @@ bridge name     bridge id               STP enabled     interfaces
 virbr0          8000.525400a7c2ab       yes             virbr0-nic
 ```
 
-NOTE:   
-Network bridging doesn't work with Wi-Fi:    
-[Configure Network Bridging - Red Hat Product Documentation (RHEL 7)](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bridging) (Retrieved on Apr 2, 2022):   
+NOTE:    
+I haven't tried network bridging with wireless interface. 
+
+As per [Configure Network Bridging - Red Hat Product Documentation (RHEL 7)](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bridging) (Retrieved on Apr 2, 2022), network bridging doesn't work with Wi-Fi in Ad-Hoc or Infrastructure modes:   
 > Note that a bridge cannot be established over Wi-Fi networks operating 
 > in Ad-Hoc or Infrastructure modes.  This is due to the IEEE 802.11 
 > standard that specifies the use of 3-address frames in Wi-Fi for the 
 > efficient use of airtime.
+
+To configure bridged networking with a wireless adapter on the host, use NAT:
+
+[How to use tap with a wireless adapter on the host](https://wiki.qemu.org/Documentation/Networking#How_to_use_tap_with_a_wireless_adapter_on_the_host)  
+
+[QEMU Documentation - Networking - NAT](https://wiki.qemu.org/Documentation/Networking/NAT)
+
+[[SOLVED] qemu vm tap networking with internet via host wifi](https://bbs.archlinux.org/viewtopic.php?id=207907)
 
 
 #### Create a New Bridge Connection 
@@ -981,6 +990,17 @@ virbr0          8000.525400a7c2ab       yes             virbr0-nic
 
 
 ### How To Launch a QEMU Instance in Bridge Network with Two NICs in Two Separate Networks via TAP Network Connections - aka Configure Host TAP Network Backends/Host TAP Interfaces
+
+**NOTE:**    
+You can use the same bridge on the host for connecting two guest NICs to it,
+in which case the both guest network connections get IP address assigned from
+the host's bridge subnet.  
+
+This example shows a different configuration, where the guest VM needs to 
+be connected to two different networks so one of two guest NICs is 
+connected to one bridge and the other guest NIC is connected to the other 
+bridge on the host side. 
+
 
 #### Two Bridges - Method 1
 
@@ -1962,73 +1982,58 @@ libvrtd server exporting the virtualization support.
 
 ---
 
-**References:**
+**References:**   
+
+(All references retrieved on Apr 2, 2022)   
 
 [What's the function of `virbr0` and `virbr0-nic`?](https://unix.stackexchange.com/questions/523245/whats-the-function-of-virbr0-and-virbr0-nic)   
-(Retrieved on Apr 2, 2022)   
 
 [[libvirt-users] virtual networking - virbr0-nic interface](https://listman.redhat.com/archives/libvirt-users/2012-September/msg00038.html)   
-(Retrieved on Apr 2, 2022)   
 
 [What is virtual bridge with -nic in the end of name](https://unix.stackexchange.com/questions/378264/what-is-virtual-bridge-with-nic-in-the-end-of-name/444863#444863)   
-(Retrieved on Apr 2, 2022)   
 
 [Bridged networking with qemu on Linux](https://code.lardcave.net/2019/07/20/1/)   
-(Retrieved on Apr, 2022)   
 
 [Network bridge - Arch Wiki](https://wiki.archlinux.org/title/Network_bridge)  
-(Retrieved on Apr 2, 2022)   
 
 [Bridge - The Linux Foundation Wiki](https://wiki.linuxfoundation.org/networking/bridge)   
-(Retrieved on Apr 2, 2022)   
 
 [Networking QEMU Virtual BSD Systems](http://bsdwiki.reedmedia.net/wiki/networking_qemu_virtual_bsd_systems.html)   
-(Retrieved on Apr 2, 2022)   
 
 [Configuring QEMU bridge helper after "access denied by acl file" error](https://blog.christophersmart.com/2016/08/31/configuring-qemu-bridge-helper-after-access-denied-by-acl-file-error/)    
-(Retrieved on Apr 2, 2022)   
 
 [Configuring Guest Networking - KVM](http://www.linux-kvm.org/page/Networking)   
-(Retrieved on Apr 2, 2022)   
 > Guest (VM) networking in kvm is the same as in qemu, so it is possible 
 > to refer to other documentation about networking in qemu.  This page will 
 > try to explain how to configure the most frequent types of networking needed. 
 
 [QEMU's new -nic command line option](https://www.qemu.org/2018/05/31/nic-parameter/)    
-(Retrieved on Apr 2, 2022)   
 
 [CentOS 8 add network bridge (br0) with nmcli command](https://www.cyberciti.biz/faq/centos-8-add-network-bridge-br0-with-nmcli-command/)   
-(Retrieved on Apr 2, 2022)   
 
 [How to add network bridge with nmcli (NetworkManager) on Linux](https://www.cyberciti.biz/faq/how-to-add-network-bridge-with-nmcli-networkmanager-on-linux/)   
-(Retrieved on Apr 2, 2022)   
 
-[Qemu bridge/tap adaper - Red Hat Customer Portal](https://access.redhat.com/discussions/5996181)    
-(Retrieved on Apr 2, 2022)   
+[Qemu bridge/tap adapter - Red Hat Customer Portal](https://access.redhat.com/discussions/5996181)    
 
 [Virtual networking in bridged mode](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/configuring-virtual-machine-network-connections_configuring-and-managing-virtualization#virtual-networking-bridged-mode_types-of-virtual-machine-network-connections)    
-(Retrieved on Apr 2, 2022)   
 
 [Configuring a network bridge using nmcli commands](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-network-bridge_configuring-and-managing-networking#configuring-a-network-bridge-using-nmcli-commands_configuring-a-network-bridge)   
-(Retrieved on Apr 2, 2022)   
 
 [Setting up Qemu with a tap interface](https://gist.github.com/extremecoders-re/e8fd8a67a515fee0c873dcafc81d811c)    
-(Retrieved on Apr 2, 2022)   
 
 [[SOLVED] KVM/QEMU - Ethernet will not bridge](https://bbs.archlinux.org/viewtopic.php?id=261207)    
-(Retrieved on Apr 2, 2022)   
 
 [Howto do QEMU full virtualization with bridged networking](https://ahelpme.com/linux/howto-do-qemu-full-virtualization-with-bridged-networking/)    
-(Retrieved on Apr 2, 2022)   
 
 [Network emulation - QEMU Documentation](https://qemu.readthedocs.io/en/latest/system/devices/net.html)   
-(Retrieved on Apr 2, 2022)   
 
 [Setting up TUN/TAP networking for QEMU VM's (and bonus wireguard)](https://stty.io/2019/05/13/qemu-vm-wireguard-vpn-tun-tap-networking/)   
-(Retrieved on Apr 2, 2022)   
 
 [Configuring Guest Networking - KVM Documentation](https://www.linux-kvm.org/page/Networking)   
-(Retrieved on Apr 2, 2022)   
+
+[Bridging two Qemu guests](https://www.kaizou.org/2018/06/qemu-bridge.html)  
+
+[[Qemu-discuss] Using multiple network interfaces on a guest](https://lists.gnu.org/archive/html/qemu-discuss/2014-06/msg00059.html)    
 
 ---
 

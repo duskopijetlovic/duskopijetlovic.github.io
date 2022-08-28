@@ -50,6 +50,64 @@ Reference:
 [Pass environment variable to sudo](https://stackoverflow.com/questions/40624957/pass-environment-variable-to-sudo)   
 (Retrieved on Mar 13, 2022)   
 
+---
+
+### Set the Window Title in xterm(1)
+
+From the man page for xterm(1) (OS: FreeBSD 13):  
+
+```
+[...]
+For example, to set the window title to "Hello world!", you could use
+one of these commands in a script:
+
+  printf '\033]2;Hello world!\033\' 
+  printf '\033]2;Hello world!\007'
+  printf '\033]2;%s\033\' "Hello world!" 
+  printf '\033]2;%s\007' "Hello world!"
+
+The printf command interprets the octal value "\033" for escape, and
+(since it was not given in the format) omits a trailing newline from
+the output.
+
+Some programs (such as screen(1)) set both window- and icon-titles at
+the same time, using a slightly different control sequence:
+
+  printf '\033]0;Hello world!\033\'
+  printf '\033]0;Hello world!\007'
+  printf '\033]0;%s\033\' "Hello world!"
+  printf '\033]0;%s\007' "Hello world!"
+
+The difference is the parameter "0" in each command.  Most window
+managers will honor either window title or icon title.  Some will make
+a distinction and allow you to set just the icon title.  You can tell
+xterm to ask for this with a different parameter in the control
+sequence:
+
+printf '\033]1;Hello world!\033\'      <- The most portable apporach, with the
+printf '\033]1;Hello world!\007'       <- parameter "1" - asks if the WM allows
+printf '\033]1;%s\033\' "Hello world!" <- WM allows setting only the icon title.
+printf '\033]1;%s\007' "Hello world!"  <- (Four different ways to do it.)
+```
+
+NOTE:  
+This can be useful even if you don't use some window 
+decorations (e.g.: no titlebars) in your window manager.
+For example, in my current setup with `twm(1)` where I enabled the `NoTitle` 
+variable in the `~/.twmrc`, I still find it useful to sometimes set the 
+window title for some xterm windows as that makes their title visible 
+in TWM's Icon Manager and that way helps with identifying which server 
+I'm working on.    
+
+
+### xterm(1)
+
+> Fonts should be fixed width and, if both normal and bold are specified, 
+> should have the same size.  If only a normal font is specified, it will 
+> be used for both normal and bold text (by doing overstriking).  
+> The -e option, if given, must appear at the end of the command line, 
+> otherwise the user's default shell will be started.  
+> Options that start with a plus sign (+) restore the default.
 
 ---
 

@@ -10,8 +10,9 @@ Shells:  csh, bash
 
 ---
 
-Specifically:  Customize CentOS/RHEL DVD ISO Image for Installation in Text 
-Mode via Serial Console **on IBM BladeCenter HS21 Servers** and Test It with QEMU   
+Specifically:  Customize CentOS/RHEL DVD ISO image for installation in Text 
+Mode via serial console [¹](#footnotes) **on IBM BladeCenter HS21 Servers**
+and test It with QEMU   
 
 ---
 
@@ -81,14 +82,14 @@ Complete the following steps to modify the **/boot/grub/grub.conf** file:
 
 1. Comment out the ```splashimage=...``` line by adding a ```#``` at the 
 beginning of this line.    
-2. Add the following line before the first ```title=...``` line:
+2. Add the following line before the first ```title ... ``` line:
 ```# This will allow you to only Monitor the OS boot via SOL```    
-3. Append the following text to the first ```title=...``` line:
+3. Append the following text to the first ```title ...``` line:
 ```SOL Monitor```   
-4. Append the following text to the ```kernel/...``` line of the 
-first ```title=...``` section:  
+4. Append the following text to the ```kernel /...``` line of the 
+first ```title ...``` section:  
 ```console=ttyS1,19200 console=tty1```    
-5. Add the following lines between the two ```title=...``` sections:    
+5. Add the following lines between after the above ```title ...``` section:    
 
 ```
 # This will allow you to Interact with the OS boot via SOL 
@@ -1687,6 +1688,17 @@ From another shell instance in the host, connect to the guest VM.
 ```
 $ ssh localhost -p 5555
 ```
+---
+
+### Footnotes
+
+[¹] Linux(R) Kernel Primer, The: A Top-Down Approach for x86
+and PowerPC Architectures by Claudia Salzberg Rodriguez, Gordon Fischer,
+Steven Smolski - Pearson Publishing - September 2005:  
+> A computer console is a device where the kernel (and other parts of 
+> a system) output messages.  It also has login capabilities.
+> Depending on the system, the console can be on the monitor or through
+> a serial port.
 
 ---
 
@@ -1724,26 +1736,21 @@ $ ssh localhost -p 5555
 
 **REFERENCES:**  
 
+Retrieved on Mar 12, 2022:   
+
 [Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration](https://www.privex.io/articles/using-serial-sol-config/)   
-(Retrieved on Mar 12, 2022)   
 
 [How to remote install CentOS/RHEL 7 using a rescue image like GRML?](https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml)  
-(Retrieved on Mar 12, 2022)  
 
 [Out-of-band management](https://en.wikipedia.org/wiki/Out-of-band_management)    
-(Retrieved on Mar 12, 2022)   
 
 [IBM BladeCenter](https://en.wikipedia.org/wiki/IBM_BladeCenter)     
-(Retrieved on Mar 12, 2022)    
 
 [IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM's out-of-band management implementation)](https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter)     
-(Retrieved on Mar 12, 2022)   
 
 [Baseboard Management Controller, a microcontroller on computer motherboards](https://en.wikipedia.org/wiki/Baseboard_Management_Controller)   
-(Retrieved on Mar 12, 2022)   
 
 [Intelligent Platform Management Interface (IPMI)](https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface)    
-(Retrieved on Mar 12, 2022)   
 
 **My comment:** HP iLO would be easier but I'm restricted by my environment 
 with (a legacy) IBM MM (Management Module). For example, the website in 
@@ -1751,19 +1758,14 @@ the link below shows that with the version of iLO from that website it's
 possible to mount CD-ROM to http; iLO shows which serial port is active 
 (COM1, COM2,...), etc.   
 [HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console](http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html)   
-(Retrieved on Mar 12, 2022)   
 
 [CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz](http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/)   
-(Retrieved on Mar 12, 2022)   
 
 [QEMU and serial ports on the guest OS](https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os)   
-(Retrieved on Mar 12, 2022)   
 
 [QEMU doesn't create a second serial port (Ubuntu x86-64 guest and host)](https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host)    
-(Retrieved on Mar 12, 2022)   
 
 [ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm](https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea)  
-(Retrieved on Mar 12, 2022)   
 > The problem is on the host side:
 > 
 > You should use Pseudo-terminals (-serial pty) instead of 
@@ -1778,73 +1780,50 @@ possible to mount CD-ROM to http; iLO shows which serial port is active
 
 
 [CentOS Installation without VGA Console](http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console)   
-(Retrieved on Mar 12, 2022)   
 
 [IBM BladeCenter - Serial Over LAN (SOL) Setup Guide](https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf)   
-(Retrieved on Mar 12, 2022)   
 
 [Connecting QEMU/KVM virtual machines via serial port](https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/)   
-(Retrieved on Mar 12, 2022)   
 
 [Headless VNC Install Disk](https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall)   
-(Retrieved on Mar 12, 2022)   
 
 [centos_bstick.sh](https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966)  
-(Retrieved on Mar 12, 2022)   
 
 [QEMU - Wikipedia](https://en.wikipedia.org/wiki/QEMU)  
-(Retrieved on Mar 12, 2022)   
 
 [How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?](https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to)   
-(Retrieved on Mar 12, 2022)    
 
 [How to pass Ctrl-C to the guest when running qemu with -nographic?](https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321)   
-(Retrieved on Mar 12, 2022)    
 
 [Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation -- CentOS Documentation](https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/)    
-(Retrieved on Mar 12, 2022)    
 
 [Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86)    
-(Retrieved on Mar 12, 2022)    
 
 [Making a QEMU disk image bootable with GRUB](https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html)   
-(Retrieved on Mar 12, 2022)     
 
 [CentOS7 – Serial Console And Flow Control](https://centosfaq.org/centos/centos7-serial-console-and-flow-control/)   
-(Retrieved on Mar 12, 2022)     
 
 [QEMU serial console](https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html)   
-(Retrieved on Mar 12, 2022)     
 
 [Creating a CentOS text-only CD / DVD](http://hintshop.ludvig.co.nz/show/centos-text-cd/)   
-(Retrieved on Mar 12, 2022)     
 
 [Make a custom CentOS-7 or RHEL-7 CD With kicktart File](https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559)   
-(Retrieved on Mar 12, 2022)     
 
 [During install of custom RHEL 6 ISO, mediacheck errors with "Unable to find the checksum in the image. This probably means the disc was created without adding the checksum."](https://access.redhat.com/solutions/655603)    
-(Retrieved on Mar 12, 2022)     
 
 [Working with ISO Images Red Hat Enterprise Linux 7 | Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)   
-(Retrieved on Mar 12, 2022)     
 
 [How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking](https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest)   
-(Retrieved on Mar 12, 2022)     
 
 [Archived | Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)   
-(Retrieved on Mar 12, 2022)     
 
 [#osdev - Operating System Development - IRC](https://libera.irclog.whitequark.org/osdev/2021-07-14)   
-(Retrieved on Mar 12, 2022)     
 
 [How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?](https://access.redhat.com/articles/7212)   
-(Retrieved on Mar 12, 2022)     
 
 [systemd for Administrators, Part XVI](http://0pointer.de/blog/projects/serial-console.html)   
-(Retrieved on Mar 12, 2022)     
 
 [Sample Kickstart Configuration file](https://peterpap.net/index.php/Sample_Kickstart_Configuration_file)   
-(Retrieved on Mar 12, 2022)     
 
 ---
 
