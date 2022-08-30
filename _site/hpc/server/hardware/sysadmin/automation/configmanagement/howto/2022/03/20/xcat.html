@@ -923,7 +923,9 @@ be a compute node you will be provisioning.</p>
  by BMC, which the MN (<code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>) can access.</li>
   <li><code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code> has RHEL 8 installed, and uses an IP address <code class="language-plaintext highlighter-rouge">192.168.80.220</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code> has access to internet.</li>
-  <li>For the <code class="language-plaintext highlighter-rouge">abacus101.mydomain.com</code> compute node: BMC in the chassis that hosts this blade server, <code class="language-plaintext highlighter-rouge">abacus101.mydomain.com</code> (and other 13 blades running compute nodes on them), has an IP address <code class="language-plaintext highlighter-rouge">192.168.80.125</code>.  <strong>[TODO]</strong> To change to IP address <code class="language-plaintext highlighter-rouge">192.168.80.135</code> because it was replaced on 2022-06-13?</li>
+  <li>
+    <p>For the <code class="language-plaintext highlighter-rouge">abacus101.mydomain.com</code> compute node: BMC in the chassis that hosts this blade server, <code class="language-plaintext highlighter-rouge">abacus101.mydomain.com</code> (and other 13 blades running compute nodes on them), has an IP address <code class="language-plaintext highlighter-rouge">192.168.80.135</code>.</p>
+  </li>
   <li>Prepare a full DVD for OS provision, and not a Live CD ISO.  <br />
 For this example, I use a <strong>customized</strong>
 CentOS-7-x86_64-Everything-2009.iso DVD.
@@ -931,7 +933,7 @@ CentOS-7-x86_64-Everything-2009.iso DVD.
 </ul>
 
 <p><strong>BMC</strong><br />
-MM1: 192.168.80.125    <strong>[TODO]</strong> To change to IP address <code class="language-plaintext highlighter-rouge">192.168.80.135</code> because it was replaced on 2022-06-13?  <br />
+MM1: 192.168.80.135 <br />
 MM2: empty</p>
 
 <p><strong>IBM BladeCenter Enclosure (Chassis)</strong> <br />
@@ -1084,20 +1086,16 @@ bmc:    The hostname of the BMC adapter.  &lt;-- Or the BMC's IP address
 ? (192.168.80.1) at 00:11:22:33:44:55 [ether] on eth1
 </code></pre></div></div>
 
-<p><strong>[TODO]</strong>  Will need to change it to <code class="language-plaintext highlighter-rouge">192.168.80.135</code> because the BMC
-was replaced on 2022-06-13.  –» <strong>Also</strong>, will need to change <code class="language-plaintext highlighter-rouge">.125</code> to
-<code class="language-plaintext highlighter-rouge">.135</code> whenever it’s mentioned in CLI output/outputs.</p>
-
 <p><strong>Note:</strong> If you don’t have network connection with this node, you can
 obtain its MAC address by logging in to the <strong>AMM</strong>/<strong>MM</strong> (<strong>BMC</strong>).
 From Prerequisites (assumptions) above, you already know that
-the BMC IP address is <code class="language-plaintext highlighter-rouge">192.168.80.125.</code>)</p>
+the BMC IP address is <code class="language-plaintext highlighter-rouge">192.168.80.135</code>.)</p>
 
 <h3 id="connecting-to-cli-on-mm-amm">Connecting to CLI on MM (AMM)</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># telnet 192.168.80.125
-Trying 192.168.80.125...
-Connected to 192.168.80.125.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># telnet 192.168.80.135
+Trying 192.168.80.135...
+Connected to 192.168.80.135.
 Escape character is '^]'.
 
 username: YOUR_BMC_USERID
@@ -1177,7 +1175,7 @@ BMC (MM) account; <code class="language-plaintext highlighter-rouge">bmcpassword
 --template x86_64-template \
 ip=192.168.80.1 \
 mac=00:11:22:33:44:55 \
-bmc=192.168.80.125 \
+bmc=192.168.80.135 \
 bmcusername=YOUR_BMC_USERID \
 bmcpassword=YOUR_BMC_PASSWORD 
 </code></pre></div></div>
@@ -1226,7 +1224,7 @@ replace the lines in the file that correspond to the node <code class="language-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus101
 Object name: abacus101
     arch=x86_64
-    bmc=192.168.80.125
+    bmc=192.168.80.135
     bmcpassword=YOUR_BMC_USERID
     bmcusername=YOUR_BMC_PASSWORD
     cons=ipmi
@@ -1458,17 +1456,17 @@ DESCRIPTION
 <p>Add username and password for <strong>MM</strong> (<strong>BMC</strong>) to the <code class="language-plaintext highlighter-rouge">mpa</code> table. <br />
 (This is the MM from <code class="language-plaintext highlighter-rouge">bmcusername</code> and <code class="language-plaintext highlighter-rouge">bmcpassword</code> in the above
 <code class="language-plaintext highlighter-rouge">lsdef abacus101 [...]</code> command.  The <code class="language-plaintext highlighter-rouge">mpa</code> attribute in the command
-below is that MM’s hostname, which in this case is: <code class="language-plaintext highlighter-rouge">xbcmm1</code>.)</p>
+below is that MM’s hostname, which in this case is: <code class="language-plaintext highlighter-rouge">xbcmm1n</code>.)</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
-mpa=xbcmm1 \
+mpa=xbcmm1n \
 mpa.username=YOUR_BMC_USERID \
 mpa.password=YOUR_BMC_PASSWORD
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mpa 
 #mpa,username,password,displayname,slots,urlpath,comments,disable
-"xbcmm1","YOUR_BMC_USERID","YOUR_BMC_PASSW0RD",,,,,
+"xbcmm1n","YOUR_BMC_USERID","YOUR_BMC_PASSW0RD",,,,,
 </code></pre></div></div>
 
 <p>Add the BMC (MM) node to the <code class="language-plaintext highlighter-rouge">mp</code> table.
@@ -1476,8 +1474,8 @@ As the <code class="language-plaintext highlighter-rouge">mp</code> table refers
 the table <code class="language-plaintext highlighter-rouge">mp</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
-node=xbcmm1 \
-mp.mpa=xbcmm1 \
+node=xbcmm1n \
+mp.mpa=xbcmm1n \
 </code></pre></div></div>
 
 <p>Similarly, add attributes of the newly added node (<code class="language-plaintext highlighter-rouge">abacus101</code>) to the
@@ -1486,20 +1484,20 @@ this number the same as the node name so in this case it’s <code class="langua
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># chtab \
 node=abacus101 \
-mp.mpa=xbcmm1 \
+mp.mpa=xbcmm1n \
 mp.id=1
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mp
 #node,mpa,id,nodetype,comments,disable
-"xbcmm1","xbcmm1",,,,
-"abacus101","xbcmm1","1",,,
+"xbcmm1n","xbcmm1n",,,,
+"abacus101","xbcmm1n","1",,,
 </code></pre></div></div>
 
 <p>The <code class="language-plaintext highlighter-rouge">mpa</code> attribute is now defined for node <code class="language-plaintext highlighter-rouge">abacus101</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus101 | grep mpa
-    mpa=xbcmm1
+    mpa=xbcmm1n
 </code></pre></div></div>
 
 <p><strong>Note:</strong> <br />
@@ -1508,7 +1506,7 @@ using the <code class="language-plaintext highlighter-rouge">-i comma-separated-
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus101 -i mpa
 Object name: abacus101
-    mpa=xbcmm1
+    mpa=xbcmm1n
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef abacus101
@@ -1521,7 +1519,7 @@ Object name: abacus101
     ip=192.168.80.14
     mac=00:21:5E:2C:0A:AC
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     netboot=xnba
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
@@ -1552,10 +1550,10 @@ passwd.password=YOUR_BMC_PASSWORD
 <p>Verify that your <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file contains entries for all of your
 management node interfaces.  Manually add any that are missing.</p>
 
-<p>Add <strong>MM</strong> (<strong>BMC</strong>) hostname (<code class="language-plaintext highlighter-rouge">xbcmm1</code>) and its IP address
+<p>Add <strong>MM</strong> (<strong>BMC</strong>) hostname (<code class="language-plaintext highlighter-rouge">xbcmm1n</code>) and its IP address
 to <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n "192.168.80.125 xbcmm1" &gt;&gt; /etc/hosts
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n "192.168.80.135 xbcmm1n" &gt;&gt; /etc/hosts
 </code></pre></div></div>
 
 <p>Check <code class="language-plaintext highlighter-rouge">abacus101</code> hardware control. <br />
@@ -1570,8 +1568,8 @@ abacus101: [xcatmn]: Error: Unsupported security level
 
 <p>To fix it, first check whether you can communicate with the MM (BMC):</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 snmpdest
-Error: Invalid nodes and/or groups in noderange: xbcmm1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpdest
+Error: Invalid nodes and/or groups in noderange: xbcmm1n
 </code></pre></div></div>
 
 <p>This particular MM (BMC) has not been added to xCAT database.
@@ -1581,8 +1579,8 @@ For now, xCAT has only one node:</p>
 abacus101
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef xbcmm1
-Error: [xcatmn]: Could not find an object named 'xbcmm1' of type 'node'.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef xbcmm1n
+Error: [xcatmn]: Could not find an object named 'xbcmm1n' of type 'node'.
 No object definitions have been found
 </code></pre></div></div>
 
@@ -1600,44 +1598,44 @@ and write output to xCAT database:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodels
 Server--SNYK123456E1AB
 abacus101
-xbcmm1
+xbcmm1n
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef xbcmm1
-Object name: xbcmm1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># lsdef xbcmm1n
+Object name: xbcmm1n
     groups=mm,all
     id=0
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
 </code></pre></div></div>
 
 <p>If a request for <code class="language-plaintext highlighter-rouge">snmpdest</code> from the MM (BMC) is empty as shown here:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 snmpdest
-xbcmm1: SP SNMP Destination 1: 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 
 </code></pre></div></div>
 
 <p>enable <code class="language-plaintext highlighter-rouge">snmpcfg</code> and <code class="language-plaintext highlighter-rouge">sshcfg</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 snmpcfg=enable sshcfg=enable
-xbcmm1: SNMP enable: OK
-xbcmm1: SSH enable: OK
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpcfg=enable sshcfg=enable
+xbcmm1n: SNMP enable: OK
+xbcmm1n: SSH enable: OK
 </code></pre></div></div>
 
 <p>After that, request for <code class="language-plaintext highlighter-rouge">snmpdest</code> gets answered:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 snmpdest
-xbcmm1: SP SNMP Destination 1: 0.0.0.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 0.0.0.0
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 snmpcfg
-xbcmm1: SNMP: enabled
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n snmpcfg
+xbcmm1n: SNMP: enabled
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 sshcfg 
-xbcmm1: SSH: enabled
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n sshcfg 
+xbcmm1n: SSH: enabled
 </code></pre></div></div>
 
 <p>While you are here, rename the <strong>MM</strong> (<strong>BMC</strong>) Server–SNYK123456E1AB 
@@ -1670,6 +1668,8 @@ management node interfaces.  Manually add any that are missing.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># printf %s\\n "192.168.80.127 xbcmm2" &gt;&gt; /etc/hosts
 </code></pre></div></div>
+
+<p>Back to continuing the node <code class="language-plaintext highlighter-rouge">abacus101</code> provisioning:</p>
 
 <p>Hardware control check for power management for node <code class="language-plaintext highlighter-rouge">abacus101</code>
 works now:</p>
@@ -1962,15 +1962,19 @@ node=abacus101 \
 nodehm.consoleenabled=1
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rvitals xbcmm1 all 
+<p>The MM (Management Module), a.k.a. BMC (Baseboard Management 
+Controller), hosting this compute node (<code class="language-plaintext highlighter-rouge">abacus101</code>) is named <code class="language-plaintext highlighter-rouge">xbcmm1n</code>.
+Its vitals and network settings are:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rvitals xbcmm1n all 
 [...]
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1 network
-xbcmm1: MM IP: 192.168.80.125
-xbcmm1: MM Hostname: xbcmm1
-xbcmm1: Gateway: 0.0.0.0
-xbcmm1: Subnet Mask: 255.255.255.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rspconfig xbcmm1n network
+xbcmm1n: MM IP: 192.168.80.135
+xbcmm1n: MM Hostname: xbcmm1n
+xbcmm1n: Gateway: 0.0.0.0
+xbcmm1n: Subnet Mask: 255.255.255.0
 </code></pre></div></div>
 
 <p>If needed, change the <code class="language-plaintext highlighter-rouge">forwarders</code> attribute in the <code class="language-plaintext highlighter-rouge">site</code> table.</p>
@@ -2073,7 +2077,7 @@ active
  Main PID: 12517 (goconserver)
    CGroup: /system.slice/goconserver.service
            |-12517 /usr/bin/goconserver
-           +-12530 ssh -t YOUR_BMC_USERNAME@xbcmm1 console -o -T blade[1]
+           +-1253 ssh -t YOUR_BMC_USERNAME@xbcmm1n console -o -T blade[1]
 
 Mar 20 15:42:08 xcatmn.mydomain.com systemd[1]: Started goconserver console daemon.
 </code></pre></div></div>
@@ -2084,6 +2088,9 @@ abacus101                        xcatmn.mydomain.com              connected
 </code></pre></div></div>
 
 <p>Connect to the newly provisioned node (compute node):</p>
+
+<p><strong>NOTE:</strong>  For the <code class="language-plaintext highlighter-rouge">rcons</code> to work, the node’s BIOS must be configured 
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. <sup><a href="#footnotes">10</a></sup></p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus101
 [Enter `^Ec?' for help]
@@ -2124,7 +2131,7 @@ nodes which are managed by the current xCAT <strong>MN</strong> (<strong>Managem
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xcatstat
 # Hostname:Status:Network-Interfaces:
 abacus101:1:enp4s0-1:enp6s0-2 :
-xbcmm1:1:127 :
+xbcmm1n:1:127 :
 xbcmm2:1:127 :
 </code></pre></div></div>
 
@@ -2209,17 +2216,15 @@ abacus101: /tmp/FlNrhJh5uy.dsh: line 62: /var/log/xcat/xcat.log: No such file or
 </code></pre></div></div>
 
 <p>you can remove them by adding <code class="language-plaintext highlighter-rouge">nomodeset</code> kernel boot line option as
-explained, for example, here:</p>
-
-<p><a href="https://www.dell.com/support/kbdoc/en-ca/000123893/manual-nomodeset-kernel-boot-line-option-for-linux-booting">Manual “nomodeset” Kernel Boot Line Option for Linux Booting</a></p>
+explained in Footnotes at the bottom of this page <sup><a href="#footnotes">11</a></sup>.</p>
 
 <p>See also:</p>
 
+<p><a href="https://www.dell.com/support/kbdoc/en-ca/000123893/manual-nomodeset-kernel-boot-line-option-for-linux-booting">Manual “nomodeset” Kernel Boot Line Option for Linux Booting</a></p>
+
 <p><a href="https://serverfault.com/questions/708400/radeon-dvi-errors-filling-logs">Radeon DVI errors filling logs</a></p>
 
-<p>To make it permanent, update GRUB as shown here (under section Set Up
-a Serial Terminal and Console (in CentOS 7/RHEL 7)): <br />
-<a href="/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a></p>
+<p>Back to continuing with the setup:</p>
 
 <p>Test ssh passwordless login to the node <code class="language-plaintext highlighter-rouge">abacus101</code>.</p>
 
@@ -2235,15 +2240,6 @@ abacus101
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># exit
 logout
 Connection to abacus101 closed.
-</code></pre></div></div>
-
-<p><strong>[TODO]</strong> Check if this is true:</p>
-
-<p>It seems you have to choose one or the other –&gt; between <code class="language-plaintext highlighter-rouge">rinstall</code> with
-<code class="language-plaintext highlighter-rouge">rcons</code> or with <code class="language-plaintext highlighter-rouge">xcatprobe osdeploy -n abacus101</code> and in the second terminal:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodeset abacus101 osimage=&lt;osimage&gt;
-# rpower abacus101 boot
 </code></pre></div></div>
 
 <hr />
@@ -2419,12 +2415,12 @@ rsa
 
 <p>Show the possible values for the specified setting.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># /opt/ibm/toolscenter/asu/asu64/showvalues 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># /opt/ibm/toolscenter/asu/asu64 showvalues 
 </code></pre></div></div>
 
 <p>Show the default value for the specified setting.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># /opt/ibm/toolscenter/asu/asu64/showdefault
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># /opt/ibm/toolscenter/asu/asu64 showdefault
 </code></pre></div></div>
 
 <p>Show the current value for one or all settings.</p>
@@ -2668,8 +2664,8 @@ id=2 \
 --template x86_64-template \
 ip=192.168.80.2 \
 mac=01:02:03:04:05:0e \
-bmc=192.168.80.125 \
-mpa=xbcmm1 \
+bmc=192.168.80.135 \
+mpa=xbcmm1n \
 getmac=blade \
 cons=blade \
 serialport=1 \
@@ -2689,7 +2685,7 @@ Object name: abacus102
     ip=192.168.80.2
     mac=01:02:03:04:05:0e
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     netboot=xnba
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
@@ -2700,7 +2696,7 @@ Object name: abacus102
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mpa
 #mpa,username,password,displayname,slots,urlpath,comments,disable
-"xbcmm1","YOUR_BMC_USERID","YOUR_BMC_PASSW0RD",,,,,
+"xbcmm1n","YOUR_BMC_USERID","YOUR_BMC_PASSW0RD",,,,,
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tabdump mp
@@ -2708,9 +2704,9 @@ Object name: abacus102
 "bcmgmt1","bcmgmt1","0",,,
 "bcmgmt2","bcmgmt2","0",,,
 [...]
-"xbcmm1","xbcmm1",,,,
-"abacus101","xbcmm1","1",,,
-"abacus102","xbcmm1",,,,
+"xbcmm1n","xbcmm1n",,,,
+"abacus101","xbcmm1n","1",,,
+"abacus102","xbcmm1n",,,,
 </code></pre></div></div>
 
 <p>Change <code class="language-plaintext highlighter-rouge">id</code> in <code class="language-plaintext highlighter-rouge">node=abacus102</code> row in the <code class="language-plaintext highlighter-rouge">mp</code> table setting with <code class="language-plaintext highlighter-rouge">id=2</code>:</p>
@@ -2725,9 +2721,9 @@ mp.id=2
 "bcmgmt1","bcmgmt1","0",,,
 "bcmgmt2","bcmgmt2","0",,,
 [...]
-"xbcmm1","xbcmm1",,,,
-"abacus101","xbcmm1","1",,,
-"abacus102","xbcmm1","2",,,
+"xbcmm1n","xbcmm1n",,,,
+"abacus101","xbcmm1n","1",,,
+"abacus102","xbcmm1n","2",,,
 </code></pre></div></div>
 
 <p>Check <code class="language-plaintext highlighter-rouge">abacus102</code> hardware control:</p>
@@ -2855,7 +2851,7 @@ set up nodes on that network.
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># makedns -n 
-Handling xbcmm1 in /etc/hosts.
+Handling xbcmm1n in /etc/hosts.
 Handling abacus102 in /etc/hosts.
 Handling localhost in /etc/hosts.
 Handling localhost in /etc/hosts.
@@ -3918,6 +3914,9 @@ Object name: abacus102
 
 <p>Log in to the compute node (<code class="language-plaintext highlighter-rouge">abacus102</code>):</p>
 
+<p><strong>NOTE:</strong>  For the <code class="language-plaintext highlighter-rouge">rcons</code> to work, the node’s BIOS must be configured
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. <sup><a href="#footnotes">10</a></sup></p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus102
 </code></pre></div></div>
 
@@ -4090,6 +4089,8 @@ the BMC.</li>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh root@192.168.80.220
 </code></pre></div></div>
 
+<h3 id="configure-mm-management-module---aka-bmc-baseboard-management-controller">Configure MM (Management Module) - a.k.a. BMC (Baseboard Management Controller)</h3>
+
 <p>Run the discovery on IP address of the xCAT MN (<code class="language-plaintext highlighter-rouge">192.168.80.220</code>) and list 
 all discovered MM (Management Node) <strong>service types</strong>.</p>
 
@@ -4126,7 +4127,7 @@ in the table <code class="language-plaintext highlighter-rouge">mpa</code>.  Fro
 </code></pre></div></div>
 
 <p>So, the <code class="language-plaintext highlighter-rouge">keycolname</code> is <code class="language-plaintext highlighter-rouge">mpa</code> with value being the name of the 
-node that you’ll give to this BMC (<code class="language-plaintext highlighter-rouge">xbcmm2</code>), while the 
+node that you’ll give to this BMC (<code class="language-plaintext highlighter-rouge">xbcmm1n</code>), while the 
 <code class="language-plaintext highlighter-rouge">tablename.colname=newvalue</code> are 
 <code class="language-plaintext highlighter-rouge">mpa.username=xadmin</code> and <code class="language-plaintext highlighter-rouge">mpa.password=YOUR_BMC_PASSWORD</code>.</p>
 
@@ -4211,7 +4212,7 @@ xbcmm1n: SSH enable: OK
 
 <p>The passwordless ssh login to the MM node works:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh xadmin@xbcmm2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh xadmin@xbcmm1n
 </code></pre></div></div>
 
 <p>Output (with BMC CLI prompt indicated with <code class="language-plaintext highlighter-rouge">system&gt;</code>):</p>
@@ -4220,6 +4221,8 @@ xbcmm1n: SSH enable: OK
 ---- snip ----
 system&gt;
 </code></pre></div></div>
+
+<h3 id="provision-new-node-compute-node">Provision New Node (Compute Node)</h3>
 
 <p>After you’ve setup the MM (Management Module) node, you are ready to 
 start provisioning a new compute node.</p>
@@ -4256,10 +4259,11 @@ BMC (MM) account; <code class="language-plaintext highlighter-rouge">bmcpassword
 definition template or an existing object, from which the new object 
 definition will be created.</p>
 
-<p><strong>Note:</strong>  Use the <code class="language-plaintext highlighter-rouge">MAC Address 1</code> you obtained above.</p>
+<p><strong>Note:</strong>  For the <code class="language-plaintext highlighter-rouge">mac</code> attribute, use the <code class="language-plaintext highlighter-rouge">MAC Address 1</code> you obtained above.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mkdef \
--t node abacus109 \
+-t node \
+abacus109 \
 --template x86_64-template \
 ip=192.168.80.9 \
 mac=00:11:22:33:44:55 \
@@ -4521,12 +4525,6 @@ image. The os image is defined in the <code class="language-plaintext highlighte
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodeset abacus109 osimage=centos7.9-x86_64-install-compute
 </code></pre></div></div>
 
-<p>The first terminal <strong>might</strong>  (it doesn’t always show this message) 
-update with the following:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:29 Use command rpower to reboot node abacus109
-</code></pre></div></div>
-
 <h3 id="fix-for-rpower-nodename-boot">Fix for <code class="language-plaintext highlighter-rouge">rpower &lt;nodename&gt; boot</code></h3>
 
 <p>Back in the second terminal, as per the message above, to reboot the 
@@ -4545,44 +4543,63 @@ the installation work; that is, to turn the node off and then on.
 (Alternitavely, you could first manually turn the node off: 
 <code class="language-plaintext highlighter-rouge">rpower abacus109 off</code>, and then on:  <code class="language-plaintext highlighter-rouge">rpower abacus109 on</code>.)</p>
 
-<p>Explanation for the options used in the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command below:  <br />
-<code class="language-plaintext highlighter-rouge">-m table.column==expectedstatus -m table.column=~expectedstatus</code>
-Use one or multiple <code class="language-plaintext highlighter-rouge">-m</code> flags to specify the node attributes and the
-expected status for the node installation monitoring and automatic
-retry mechanism. The operators <code class="language-plaintext highlighter-rouge">==</code>, <code class="language-plaintext highlighter-rouge">!=</code>, <code class="language-plaintext highlighter-rouge">=~</code> and <code class="language-plaintext highlighter-rouge">!~</code> are valid. 
-This flag <strong>must</strong> (<em>emphasis mine</em>) be used with <code class="language-plaintext highlighter-rouge">-t</code> flag.</p>
+<p>Explanation for the options used in the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command below
+(from the manpage for the <code class="language-plaintext highlighter-rouge">rpower(8)</code> command):</p>
 
-<p><code class="language-plaintext highlighter-rouge">-r retrycount</code>
+<ul>
+  <li>”<code class="language-plaintext highlighter-rouge">-r retrycount</code>
 specify the number of retries that the monitoring process will
 perform before declaring the failure. The default value is <code class="language-plaintext highlighter-rouge">3</code>.
 Setting the <code class="language-plaintext highlighter-rouge">retrycount</code> to <code class="language-plaintext highlighter-rouge">0</code> means only monitoring the os
 installation progress and will not re-initiate the installation if
 the node status has not been changed to the expected value after
-timeout. This flag <strong>must</strong> be used with <code class="language-plaintext highlighter-rouge">-m</code> flag.</p>
+timeout.  This flag <strong>must</strong> (<em>emphasis mine</em>) be used with <code class="language-plaintext highlighter-rouge">-m</code> flag.”</li>
+  <li>
+    <p>”<code class="language-plaintext highlighter-rouge">-m table.column==expectedstatus -m table.column=~expectedstatus</code>
+Use one or multiple <code class="language-plaintext highlighter-rouge">-m</code> flags to specify the node attributes and the
+expected status for the node installation monitoring and automatic
+retry mechanism.  The operators <code class="language-plaintext highlighter-rouge">==</code>, <code class="language-plaintext highlighter-rouge">!=</code>, <code class="language-plaintext highlighter-rouge">=~</code> and <code class="language-plaintext highlighter-rouge">!~</code> are valid. 
+This flag <strong>must</strong> (<em>emphasis mine</em>) be used with <code class="language-plaintext highlighter-rouge">-t</code> flag.”</p>
 
-<p><code class="language-plaintext highlighter-rouge">-t timeout</code>
+    <p><strong>Note:</strong>  While <code class="language-plaintext highlighter-rouge">powering-on</code> is not listed as one of valid values 
+of the <code class="language-plaintext highlighter-rouge">status</code> (<code class="language-plaintext highlighter-rouge">nodelist.status</code>) in the manpage for <code class="language-plaintext highlighter-rouge">node(7)</code> 
+or <code class="language-plaintext highlighter-rouge">nodelist(5)</code>, in my tests it worked more reliable than using 
+<code class="language-plaintext highlighter-rouge">-m nodelist.status==booting</code> or <code class="language-plaintext highlighter-rouge">-m nodelist.status==installing</code>.
+<sup><a href="#footnotes">9</a></sup></p>
+  </li>
+  <li>”<code class="language-plaintext highlighter-rouge">-t timeout</code>
 Specify the timeout, in minutes, to wait for the expectedstatus
-specified by <code class="language-plaintext highlighter-rouge">-m</code> flag. This is a <strong>required</strong> flag if the <code class="language-plaintext highlighter-rouge">-m</code> flag 
-is specified. <br />
-Power off, then on.</p>
+specified by <code class="language-plaintext highlighter-rouge">-m</code> flag. This is a <strong>required</strong> (<em>emphasis mine</em>) flag if 
+the <code class="language-plaintext highlighter-rouge">-m</code> flag is specified.  Power off, then on.”</li>
+</ul>
 
-<p>In the second terminal, run this command:</p>
+<p>In the second terminal, run the following command.
+(<strong>Note:</strong>  You need to use the <code class="language-plaintext highlighter-rouge">==</code> (double equal sign), 
+ a.k.a. <em>comparison operator</em> when testing for the expected status 
+ with the <code class="language-plaintext highlighter-rouge">-m</code> option.)</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rpower \
 abacus109 \
 boot \
 -r 0 \
--m nodelist.status==booting \
+-m nodelist.status==powering-on \
 -t 5
 </code></pre></div></div>
 
 <p>The first terminal updates with the following:</p>
 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:29 Use command rpower to reboot node abacus109
+</code></pre></div></div>
+
+<p>And then in less than ten seconds, the first terminal displays another line:</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abacus109] 19:37:36 Node status is changed to powering-on
 </code></pre></div></div>
 
 <p>Launch yet another separate shell session and in there (let’s call it 
-the third terminal), check and monitor provisioning process:</p>
+the third terminal), check and monitor provisioning process. (<strong>NOTE:</strong> 
+For the <code class="language-plaintext highlighter-rouge">rcons</code> to work, the node’s BIOS must be configured  for 
+SOL (Serial Over LAN), a.k.a. Text Mode Console. <sup><a href="#footnotes">10</a></sup>)</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus109
 </code></pre></div></div>
@@ -5320,7 +5337,10 @@ Object name: abacus109
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># updatenode abacus109 -F -V
 </code></pre></div></div>
 
-<p>Log in to the compute node (<code class="language-plaintext highlighter-rouge">abacus109</code>):</p>
+<p>Log in to the compute node (<code class="language-plaintext highlighter-rouge">abacus109</code>).</p>
+
+<p><strong>NOTE:</strong>  For the <code class="language-plaintext highlighter-rouge">rcons</code> to work, the node’s BIOS must be configured
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. <sup><a href="#footnotes">10</a></sup></p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus109
 </code></pre></div></div>
@@ -5893,6 +5913,143 @@ hostnames, or generic hostnames (for example, <code class="language-plaintext hi
     so is never combined with other states.
 </code></pre></div></div>
 
+<p>[9] From the manual page for <code class="language-plaintext highlighter-rouge">node(7)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    The current status of this node.  This attribute will be set by
+    xCAT software.  Valid values: defined, booting, netbooting,
+    booted, discovering, configuring, installing, alive, standingby,
+    powering-off, unreachable. If blank, defined is assumed. The
+    possible status change sequences are: For installation:
+    defined-&gt;[discovering]-&gt;[configuring]-&gt;[standingby]-&gt;installing-&gt;booting-&gt;[postbooting]-&gt;booted-&gt;[alive],
+    For diskless deployment:
+    defined-&gt;[discovering]-&gt;[configuring]-&gt;[standingby]-&gt;netbooting-&gt;[postbooting]-&gt;booted-&gt;[alive],
+    For booting:
+    [alive/unreachable]-&gt;booting-&gt;[postbooting]-&gt;booted-&gt;[alive],
+    For powering off: [alive]-&gt;powering-off-&gt;[unreachable], For
+    monitoring: alive-&gt;unreachable. Discovering and configuring are
+    for x Series discovery process. Alive and unreachable are set
+    only when there is a monitoring plug-in start monitor the node
+    status for xCAT. Note that the status values will not reflect the
+    real node status if you change the state of the node from outside
+    of xCAT (i.e. power off the node using HMC GUI).
+</code></pre></div></div>
+
+<p>However, when I used
+<code class="language-plaintext highlighter-rouge">-m nodelist.status==booting</code> or <code class="language-plaintext highlighter-rouge">-m nodelist.status==installing</code> 
+with <code class="language-plaintext highlighter-rouge">rpower boot</code>, the node would sometimes got stuck in powered off state, 
+and the <code class="language-plaintext highlighter-rouge">rcons &lt;nodename&gt;</code> would display:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>         DESTINATION BLADE IS IN POWER OFF STATE
+</code></pre></div></div>
+
+<p>As the output of the <code class="language-plaintext highlighter-rouge">xcatprobe osdeploy -n &lt;nodename&gt;</code> command in the first terminal; in this case, <code class="language-plaintext highlighter-rouge">xcatprobe osdeploy -n abacus109</code> (after <code class="language-plaintext highlighter-rouge">rpower abacus109 boot</code> in the second terminal) indicated</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>... Node status is changed to powering-on
+</code></pre></div></div>
+
+<p>search for <em>powering-on</em> returned:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grep -r -n 'powering-on' /opt/xcat/
+/opt/xcat/lib/perl/xCAT/GlobalDef.pm:52:$::STATUS_POWERING_ON  = "powering-on";
+/opt/xcat/lib/perl/xCAT_plugin/openbmc.pm:49:$::POWER_STATE_POWERING_ON  = "powering-on";
+/opt/xcat/probe/lib/perl/xCAT/GlobalDef.pm:52:$::STATUS_POWERING_ON  = "powering-on";
+/opt/xcat/probe/subcmds/osdeploy:1209:                } elsif ($status eq "powering-on") {
+</code></pre></div></div>
+
+<p>For example, looking into <code class="language-plaintext highlighter-rouge">GlobalDef.pm</code> revealed even more valid values 
+for <code class="language-plaintext highlighter-rouge">status</code> (<code class="language-plaintext highlighter-rouge">nodelist.status</code>).  One of them is <code class="language-plaintext highlighter-rouge">powering-on</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -n 43,63p /opt/xcat/lib/perl/xCAT/GlobalDef.pm
+# valid values for nodelist.status columns or other status
+$::STATUS_ACTIVE       = "alive";
+$::STATUS_INACTIVE     = "unreachable";
+$::STATUS_INSTALLING   = "installing";
+$::STATUS_INSTALLED    = "installed";
+$::STATUS_BOOTING      = "booting";
+$::STATUS_POSTBOOTING  = "postbooting";
+$::STATUS_NETBOOTING   = "netbooting";
+$::STATUS_BOOTED       = "booted";
+$::STATUS_POWERING_ON  = "powering-on";
+$::STATUS_POWERING_OFF = "powering-off";
+$::STATUS_DISCOVERING  = "discovering";
+$::STATUS_DISCOVERED   = "discovered";
+$::STATUS_CONFIGURING  = "configuring";
+$::STATUS_CONFIGURED   = "configured";
+$::STATUS_STANDING_BY  = "standingby";
+$::STATUS_SHELL        = "shell";
+$::STATUS_DEFINED      = "defined";
+$::STATUS_UNKNOWN      = "unknown";
+$::STATUS_FAILED       = "failed";
+$::STATUS_BMCREADY     = "bmcready";
+</code></pre></div></div>
+
+<p>[10] In this example, the blade server is <strong>IBM HS21</strong>, whose BIOS needs 
+to be setup with the following in order for SOL (Serial Over LAN) to work:</p>
+
+<ul>
+  <li>Serial Port A: Auto-configure</li>
+  <li>Serial Port B: Auto-configure</li>
+  <li>Remote Console Active: Enabled</li>
+  <li>Remote Console COM Port: COM 2</li>
+  <li>Remote Console Active After Boot: Enabled</li>
+  <li>Remote Console Flow Control: Hardware</li>
+</ul>
+
+<p>[11] The <code class="language-plaintext highlighter-rouge">nomodeset</code> fix for the <code class="language-plaintext highlighter-rouge">no | invalid EDID</code> messages in the console:</p>
+
+<p>For example, if the EDID issue is happening on a node named <code class="language-plaintext highlighter-rouge">abacus211</code>,
+to fix it run the the following commands on the xCAT MN (Management Node), 
+which in the examples on this page has an IP address <code class="language-plaintext highlighter-rouge">192.168.80.220</code>
+(hostname <code class="language-plaintext highlighter-rouge">xcatmn.mydomain.com</code>).  (<strong>Note:</strong> The OS on the compute 
+node <code class="language-plaintext highlighter-rouge">abacus214</code> is CentOS 7 so the grub version on it is grub2.)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># scp root@abacus211:/etc/default/grub /tmp/grubabacus211.ORIG
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grep -n CMDLINE /tmp/grubabacus211.ORIG
+7:GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -i.bkp 's/ttyS1,19200/ttyS1,19200 nomodeset/' /tmp/grubabacus211.ORIG
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff \
+--unified=0 \
+/tmp/grubabacus211.ORIG.bkp \
+/tmp/grubabacus211.ORIG
+--- /tmp/grubabacus211.ORIG.bkp 2022-03-20 20:59:04.966346023 -0700
++++ /tmp/grubabacus211.ORIG     2022-03-20 21:00:25.710970506 -0700
+@@ -7 +7 @@
+-GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
++GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 cp /etc/default/grub /tmp/grub.ORIG
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># scp /tmp/grubabacus211.ORIG root@abacus211:/etc/default/grub
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 cat /etc/default/grub
+abacus211: GRUB_TIMEOUT=5
+abacus211: GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+abacus211: GRUB_DEFAULT=saved
+abacus211: GRUB_DISABLE_SUBMENU=true
+abacus211: GRUB_TERMINAL="serial console"
+abacus211: GRUB_SERIAL_COMMAND="serial --unit=1 --speed=19200"
+abacus211: GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset"
+abacus211: GRUB_DISABLE_RECOVERY="true"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 grub2-mkconfig -o /boot/grub2/grub.cfg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 reboot
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rcons abacus211
+</code></pre></div></div>
+
 <hr />
 
 <p><strong>[TODO]</strong>   Do I need to mention this method (order)?:</p>
@@ -5947,8 +6104,6 @@ abacus105
 xbcmm1n
 </code></pre></div></div>
 
-<p><strong>[TODO]</strong>  Rename <code class="language-plaintext highlighter-rouge">xbcmm1n</code> to <code class="language-plaintext highlighter-rouge">xbcmm1</code>?</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># nodestat all
 [...]               &lt;-- The rest of the nodes are MM nodes (not CNs)
 abacus102: noping
@@ -5967,20 +6122,6 @@ From 192.168.80.220 icmp_seq=2 Destination Host Unreachable
 --- 192.168.80.6 ping statistics ---
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 999ms
 pipe 2
-</code></pre></div></div>
-
-<p><strong>[TODO]</strong>  Do I need to change/synchronize <code class="language-plaintext highlighter-rouge">192.168.80.135</code>
-            with other places on this page?</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ssh xadmin@192.168.80.135
-
-Hostname:              MM00123EE0C45C
-Static IP address:     192.168.80.135
-Burned-in MAC address: 01:23:45:67:89:AB
-DHCP:                  Disabled - Use static IP configuration.
-Last login: Mar 30 2022 16:18 from 192.168.80.220 (SSH)
-
-system&gt; 
 </code></pre></div></div>
 
 <p><strong>[TODO]</strong>  TEST JOBS   - Clean and Complete</p>
@@ -6385,214 +6526,781 @@ configuration, cabling and similar.</p>
           
       
           
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
             
             <div class="panel-body">
               <h4>Related Posts</h4>
               <ul>
             
                 <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html">How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html">How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/systemd/linux/howto/cli/terminal/shell/rhel/centos/sysadmin/2022/04/09/convert-sysvinit-to-systemd-service.html">Converting Traditional sysV Init Scripts to systemd Unit Files</a>
+                  
+                    (Categories: <a href="/category/systemd">systemd</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks</a>
                   
                     (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
                   
@@ -7037,6 +7745,73 @@ configuration, cabling and similar.</p>
           
       
     
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
         
           
       
@@ -7112,16 +7887,6 @@ configuration, cabling and similar.</p>
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
-                  
-                </li>
-          
-          
-        
       
     
         
@@ -7285,16 +8050,6 @@ configuration, cabling and similar.</p>
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
-                  
-                </li>
-          
-          
-        
       
     
         
@@ -7394,16 +8149,6 @@ configuration, cabling and similar.</p>
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
-                  
-                </li>
-          
-          
-        
       
     
         
@@ -9873,7 +10618,7 @@ configuration, cabling and similar.</p>
 
 <div class="PageNavigation">
   
-    <a class="prev" href="/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">&laquo; Occasionally Revisited Code and Shell Script Snippets</a>
+    <a class="prev" href="/zfs/freebsd/snapshot/backup/2022/03/19/freebsd-geli-encrypted-usb-external-hdd-zfs-freebsd.html">&laquo; How to Setup an External USB Hard Drive as a ZFS Backup Disk in FreeBSD</a>
   
   
     <a class="next" href="/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8 &raquo;</a>

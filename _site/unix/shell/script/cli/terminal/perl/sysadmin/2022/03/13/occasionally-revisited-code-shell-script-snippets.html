@@ -172,6 +172,65 @@ or with <code class="language-plaintext highlighter-rouge">sh</code>, or with <c
 
 <hr />
 
+<h3 id="set-the-window-title-in-xterm1">Set the Window Title in xterm(1)</h3>
+
+<p>From the man page for xterm(1) (OS: FreeBSD 13):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[...]
+For example, to set the window title to "Hello world!", you could use
+one of these commands in a script:
+
+  printf '\033]2;Hello world!\033\' 
+  printf '\033]2;Hello world!\007'
+  printf '\033]2;%s\033\' "Hello world!" 
+  printf '\033]2;%s\007' "Hello world!"
+
+The printf command interprets the octal value "\033" for escape, and
+(since it was not given in the format) omits a trailing newline from
+the output.
+
+Some programs (such as screen(1)) set both window- and icon-titles at
+the same time, using a slightly different control sequence:
+
+  printf '\033]0;Hello world!\033\'
+  printf '\033]0;Hello world!\007'
+  printf '\033]0;%s\033\' "Hello world!"
+  printf '\033]0;%s\007' "Hello world!"
+
+The difference is the parameter "0" in each command.  Most window
+managers will honor either window title or icon title.  Some will make
+a distinction and allow you to set just the icon title.  You can tell
+xterm to ask for this with a different parameter in the control
+sequence:
+
+printf '\033]1;Hello world!\033\'      &lt;- The most portable apporach, with the
+printf '\033]1;Hello world!\007'       &lt;- parameter "1" - asks if the WM allows
+printf '\033]1;%s\033\' "Hello world!" &lt;- WM allows setting only the icon title.
+printf '\033]1;%s\007' "Hello world!"  &lt;- (Four different ways to do it.)
+</code></pre></div></div>
+
+<p>NOTE:<br />
+This can be useful even if you don’t use some window 
+decorations (e.g.: no titlebars) in your window manager.
+For example, in my current setup with <code class="language-plaintext highlighter-rouge">twm(1)</code> where I enabled the <code class="language-plaintext highlighter-rouge">NoTitle</code> 
+variable in the <code class="language-plaintext highlighter-rouge">~/.twmrc</code>, I still find it useful to sometimes set the 
+window title for some xterm windows as that makes their title visible 
+in TWM’s Icon Manager and that way helps with identifying which server 
+I’m working on.</p>
+
+<h3 id="xterm1">xterm(1)</h3>
+
+<blockquote>
+  <p>Fonts should be fixed width and, if both normal and bold are specified, 
+should have the same size.  If only a normal font is specified, it will 
+be used for both normal and bold text (by doing overstriking).<br />
+The -e option, if given, must appear at the end of the command line, 
+otherwise the user’s default shell will be started.<br />
+Options that start with a plus sign (+) restore the default.</p>
+</blockquote>
+
+<hr />
+
 <h3 id="sed1">sed(1)</h3>
 
 <p>OS: CentOS Linux 7, Shell: bash</p>
@@ -407,10 +466,420 @@ certain content that uses conflicting syntax, such as
     
         
           
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
             
             <div class="panel-body">
               <h4>Related Posts</h4>
               <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html">How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html">How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
             
                 <li class="relatedPost">
                   <a href="http://localhost:4000/font/freebsd/unix/x11/xorg/dotfiles/2022/04/17/x-fonts.html">Fonts in X11 - aka Fonts in X (Xorg)</a>
@@ -486,6 +955,163 @@ certain content that uses conflicting syntax, such as
   
     
       
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/systemd/linux/howto/cli/terminal/shell/rhel/centos/sysadmin/2022/04/09/convert-sysvinit-to-systemd-service.html">Converting Traditional sysV Init Scripts to systemd Unit Files</a>
+                  
+                    (Categories: <a href="/category/systemd">systemd</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
   
     
       
@@ -656,7 +1282,7 @@ certain content that uses conflicting syntax, such as
           
             
                 <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks</a>
                   
                     (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
                   
@@ -932,16 +1558,73 @@ certain content that uses conflicting syntax, such as
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/hpc/server/hardware/sysadmin/automation/configmanagement/howto/2022/03/20/xcat.html">HPC with xCAT, PBS/TORQUE, Gaussian and WebMO</a>
-                  
-                    (Categories: <a href="/category/hpc">hpc</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/automation">automation</a>, <a href="/category/configmanagement">configmanagement</a>, <a href="/category/howto">howto</a>)
-                  
-                </li>
-          
-          
+      
+    
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
       
     
         
@@ -1166,16 +1849,6 @@ certain content that uses conflicting syntax, such as
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>)
-                  
-                </li>
-          
-          
-        
       
           
       
@@ -1382,169 +2055,6 @@ certain content that uses conflicting syntax, such as
   
     
       
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
         
           
       
@@ -2114,6 +2624,9 @@ certain content that uses conflicting syntax, such as
           
       
     
+  
+    
+      
         
           
       
@@ -2128,16 +2641,166 @@ certain content that uses conflicting syntax, such as
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/03/03/graphviz-servers-networking-diagram.html">How To Create Networking Diagrams with Graphviz and Kroki</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
-                  
-                </li>
-          
-          
+      
+    
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
       
     
         
@@ -3878,7 +4541,7 @@ certain content that uses conflicting syntax, such as
     <a class="prev" href="/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html">&laquo; Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU</a>
   
   
-    <a class="next" href="/hpc/server/hardware/sysadmin/automation/configmanagement/howto/2022/03/20/xcat.html">HPC with xCAT, PBS/TORQUE, Gaussian and WebMO &raquo;</a>
+    <a class="next" href="/zfs/freebsd/snapshot/backup/2022/03/19/freebsd-geli-encrypted-usb-external-hdd-zfs-freebsd.html">How to Setup an External USB Hard Drive as a ZFS Backup Disk in FreeBSD &raquo;</a>
   
 </div>
 

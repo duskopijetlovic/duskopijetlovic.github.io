@@ -83,8 +83,9 @@ tcp   LISTEN 0      4096      0.0.0.0:9000             0.0.0.0:*
 tcp   LISTEN 0      4096         [::]:9000                [::]:*
 ```
 
+To exit the console (to drop the connection), press ~ + Ctrl-D at 
+the ```debianvm1 login: ``` prompt.
 
-Press ~ + Ctrl-D at the ```debianvm1 login: ``` prompt.
 
 ```
 $ exit

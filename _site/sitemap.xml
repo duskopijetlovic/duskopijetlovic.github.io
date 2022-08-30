@@ -5,9 +5,244 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 24 Aug 2022 19:28:18 -0700</pubDate>
-    <lastBuildDate>Wed, 24 Aug 2022 19:28:18 -0700</lastBuildDate>
+    <pubDate>Mon, 29 Aug 2022 21:14:07 -0700</pubDate>
+    <lastBuildDate>Mon, 29 Aug 2022 21:14:07 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</title>
+        <description>&lt;p&gt;Host OS: FreeBSD 13, Shell: csh  &lt;br /&gt;
+Guest OS: Debian GNU/Linux, Shell: bash&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Prerequsites:&lt;/p&gt;
+
+&lt;p&gt;In Debian GNU/Linux VM guest (running inside bhyve):&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Docker installed&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker.service&lt;/code&gt; running&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;containerd.service&lt;/code&gt; running&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can follow instructions outlined here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/freebsd/docker/vm/virtualization/howto/diagram/2022/02/24/freebsd-docker-linux-kroki-diagrams.html&quot;&gt;How to Run Kroki on FreeBSD 13 with vm-bhyve and Debian GNU/Linux VM&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sudo vm list
+NAME       DATASTORE  LOADER  CPU  MEMORY  VNC  AUTOSTART  STATE
+debianvm1  default    grub    1    2048M   -    No         Stopped 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sudo vm start debianvm1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% sudo vm console debianvm1
+---- snip ----
+
+debianvm1 login: dusko
+Password:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo \
+docker run -d -p 9000:9000 -v \
+/var/run/docker.sock:/var/run/docker.sock -v \
+portainer_data:/data portainer/portainer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ss -an | grep 9000
+tcp   LISTEN 0      4096    0.0.0.0:9000             0.0.0.0:*
+tcp   LISTEN 0      4096    [::]:9000                [::]:*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo \
+docker \
+run -it --rm --name=&quot;draw&quot; \
+-p 8080:8080 -p 8443:8443 \
+jgraph/drawio
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;IP address of the guest VM (GNU/Linux Debian) is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.8.18&lt;/code&gt;.
+(The network interface name assigned by the OS is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enp0s5&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ip address show dev enp0s5 | grep -w inet 
+    inet 192.168.8.18/24 brd 192.168.8.255 scope global dynamic enp0s5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Use a Web browser on the FreeBSD host and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.8.19:8080/&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;References:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://jgraph.github.io/drawio/&quot;&gt;drawio&lt;/a&gt;
+(Source to app.diagrams.net, &lt;a href=&quot;https://www.diagrams.net/&quot;&gt;www.diagrams.net&lt;/a&gt;) 
+(Retrieved on Aug 28, 2022):&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;draw.io, this project, is a configurable diagramming/whiteboarding 
+visualization application. draw.io is owned and developed by JGraph Ltd, 
+a UK based software company.&lt;/p&gt;
+
+  &lt;p&gt;As well as running this project, we run a production-grade deployment 
+of the diagramming interface at https://app.diagrams.net.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Scope of the Project&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;draw.io is a diagramming or whiteboarding application, depending on 
+which theme is selected.  It is not an SVG editing app, the SVG export 
+is designed only for embedding in web pages, not for further editing 
+in other tools.&lt;/p&gt;
+
+  &lt;p&gt;The application is designed to be used largely as-is.  It’s possible to 
+alter the major parts of the interface, but if you’re looking for an 
+editor with very specific editing features, the project is likely not 
+a good base to use.&lt;/p&gt;
+
+  &lt;p&gt;That is to say, if you wanted to create/deploy a whiteboard or 
+diagramming application where the functionality in the main canvas is 
+as this project provides, it more likely to be a good base to use. 
+The default libraries, the menus, the toolbar, the default colours, 
+the storage location, these can all be changed.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;Running&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;One way to run diagrams.net is to fork this project, &lt;a href=&quot;https://help.github.com/categories/github-pages-basics/&quot;&gt;publish the master 
+branch to GitHub pages&lt;/a&gt; and the &lt;a href=&quot;https://jgraph.github.io/drawio/src/main/webapp/index.html&quot;&gt;pages sites&lt;/a&gt; will have the full editor 
+functionality (sans the integrations).&lt;/p&gt;
+
+  &lt;p&gt;Another way is to use &lt;a href=&quot;https://github.com/jgraph/docker-drawio&quot;&gt;the recommended Docker project&lt;/a&gt; or to download &lt;a href=&quot;https://get.diagrams.net/&quot;&gt;draw.io Desktop&lt;/a&gt;.&lt;/p&gt;
+
+  &lt;p&gt;The full packaged .war of the client and servlets is built when the 
+project is tagged and available on the &lt;a href=&quot;https://github.com/jgraph/draw.io/releases&quot;&gt;releases page&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Sun, 28 Aug 2022 11:27:04 -0700</pubDate>
+        <link>http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html</link>
+        <guid isPermaLink="true">http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html</guid>
+        
+        
+        <category>howto</category>
+        
+        <category>diagram</category>
+        
+        <category>java</category>
+        
+        <category>graph</category>
+        
+        <category>graphviz</category>
+        
+        <category>plaintext</category>
+        
+        <category>text</category>
+        
+        <category>tex</category>
+        
+        <category>latex</category>
+        
+        <category>visualization</category>
+        
+        <category>sysadmin</category>
+        
+        <category>documentation</category>
+        
+      </item>
+    
+      <item>
+        <title>How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</title>
+        <description>&lt;p&gt;OS: FreeBSD 13 &lt;br /&gt;
+Shell: csh&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% mkdir drawio
+% cd drawio
+% fetch https://github.com/jgraph/drawio/releases/download/v20.2.6/draw.war
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.9 -m http.server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Use a Web browser and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:8000&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, on this system I could also run it with 
+python 3.8. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.8 -m http.server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h2&gt;
+
+&lt;p&gt;[1] About Python versions on this system:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% pkg info --regex python 
+python38-3.8.13_2
+python39-3.9.13
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% command -v python; type python; whereis python; which python
+python: not found
+python:
+python: Command not found.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% command -v python3.8; type python3.8; whereis python3.8; which python3.8
+/usr/local/bin/python3.8
+python3.8 is /usr/local/bin/python3.8
+python3.8: /usr/local/bin/python3.8 /usr/local/man/man1/python3.8.1.gz
+/usr/local/bin/python3.8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% command -v python3.9; type python3.9; whereis python3.9; which python3.9
+/usr/local/bin/python3.9
+python3.9 is /usr/local/bin/python3.9
+python3.9: /usr/local/bin/python3.9 /usr/local/man/man1/python3.9.1.gz
+/usr/local/bin/python3.9
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ls -lh /usr/local/bin/python*
+-r-xr-xr-x  1 root  wheel   5.1K Jul  3 05:11 /usr/local/bin/python3.8
+-r-xr-xr-x  1 root  wheel   3.1K Jul  3 05:11 /usr/local/bin/python3.8-config
+-r-xr-xr-x  1 root  wheel   5.1K Jul  2 18:17 /usr/local/bin/python3.9
+-r-xr-xr-x  1 root  wheel   3.1K Jul  2 18:18 /usr/local/bin/python3.9-config
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+</description>
+        <pubDate>Sat, 27 Aug 2022 10:34:06 -0700</pubDate>
+        <link>http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html</link>
+        <guid isPermaLink="true">http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html</guid>
+        
+        
+        <category>howto</category>
+        
+        <category>diagram</category>
+        
+        <category>java</category>
+        
+        <category>graph</category>
+        
+        <category>graphviz</category>
+        
+        <category>plaintext</category>
+        
+        <category>text</category>
+        
+        <category>tex</category>
+        
+        <category>latex</category>
+        
+        <category>visualization</category>
+        
+        <category>sysadmin</category>
+        
+        <category>documentation</category>
+        
+      </item>
     
       <item>
         <title>Fonts in X11 - aka Fonts in X (Xorg)</title>
@@ -1839,6 +2074,48 @@ version 3, check out fvwmorg/fvwm3 on GitHub.
       </item>
     
       <item>
+        <title>Converting Traditional sysV Init Scripts to systemd Unit Files</title>
+        <description>&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;References:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;(All references retrieved on Apr 9, 2022)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://0pointer.de/blog/projects/systemd-for-admins-3.html&quot;&gt;How Do I Convert A SysV Init Script Into A systemd Service File? (systemd for Administrators, Part III)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.redhat.com/en/blog/converting-traditional-sysv-init-scripts-red-hat-enterprise-linux-7-systemd-unit-files&quot;&gt;Converting traditional sysV init scripts to Red Hat Enterprise Linux 7 systemd unit files&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.golinuxcloud.com/create-systemd-service-example/&quot;&gt;Create systemd service in Linux [Explained with Example]&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+</description>
+        <pubDate>Sat, 09 Apr 2022 09:03:31 -0700</pubDate>
+        <link>http://localhost:4000/systemd/linux/howto/cli/terminal/shell/rhel/centos/sysadmin/2022/04/09/convert-sysvinit-to-systemd-service.html</link>
+        <guid isPermaLink="true">http://localhost:4000/systemd/linux/howto/cli/terminal/shell/rhel/centos/sysadmin/2022/04/09/convert-sysvinit-to-systemd-service.html</guid>
+        
+        
+        <category>systemd</category>
+        
+        <category>linux</category>
+        
+        <category>howto</category>
+        
+        <category>cli</category>
+        
+        <category>terminal</category>
+        
+        <category>shell</category>
+        
+        <category>rhel</category>
+        
+        <category>centos</category>
+        
+        <category>sysadmin</category>
+        
+      </item>
+    
+      <item>
         <title>TWM - Tab Window Manager for the X Window System</title>
         <description>&lt;p&gt;OS: FreeBSD 13.0  &lt;br /&gt;
 Shell: csh/tcsh&lt;/p&gt;
@@ -2215,7 +2492,7 @@ XkbLatchModifiers(3)&lt;/p&gt;
       </item>
     
       <item>
-        <title>QEMU Networking</title>
+        <title>How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks</title>
         <description>&lt;hr /&gt;
 &lt;p&gt;Host OS: RHEL 8.5 - Shell: csh  &lt;br /&gt;
 Guest OS: CentOS Linux 7.9 - Shell: bash&lt;/p&gt;
@@ -2632,15 +2909,24 @@ bridge name     bridge id               STP enabled     interfaces
 virbr0          8000.525400a7c2ab       yes             virbr0-nic
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;NOTE: &lt;br /&gt;
-Network bridging doesn’t work with Wi-Fi:  &lt;br /&gt;
-&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bridging&quot;&gt;Configure Network Bridging - Red Hat Product Documentation (RHEL 7)&lt;/a&gt; (Retrieved on Apr 2, 2022):&lt;/p&gt;
+&lt;p&gt;NOTE:  &lt;br /&gt;
+I haven’t tried network bridging with wireless interface.&lt;/p&gt;
+
+&lt;p&gt;As per &lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bridging&quot;&gt;Configure Network Bridging - Red Hat Product Documentation (RHEL 7)&lt;/a&gt; (Retrieved on Apr 2, 2022), network bridging doesn’t work with Wi-Fi in Ad-Hoc or Infrastructure modes:&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;Note that a bridge cannot be established over Wi-Fi networks operating 
 in Ad-Hoc or Infrastructure modes.  This is due to the IEEE 802.11 
 standard that specifies the use of 3-address frames in Wi-Fi for the 
 efficient use of airtime.&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;To configure bridged networking with a wireless adapter on the host, use NAT:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.qemu.org/Documentation/Networking#How_to_use_tap_with_a_wireless_adapter_on_the_host&quot;&gt;How to use tap with a wireless adapter on the host&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.qemu.org/Documentation/Networking/NAT&quot;&gt;QEMU Documentation - Networking - NAT&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bbs.archlinux.org/viewtopic.php?id=207907&quot;&gt;[SOLVED] qemu vm tap networking with internet via host wifi&lt;/a&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;create-a-new-bridge-connection&quot;&gt;Create a New Bridge Connection&lt;/h4&gt;
 
@@ -3114,6 +3400,16 @@ virbr0          8000.525400a7c2ab       yes             virbr0-nic
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;how-to-launch-a-qemu-instance-in-bridge-network-with-two-nics-in-two-separate-networks-via-tap-network-connections---aka-configure-host-tap-network-backendshost-tap-interfaces&quot;&gt;How To Launch a QEMU Instance in Bridge Network with Two NICs in Two Separate Networks via TAP Network Connections - aka Configure Host TAP Network Backends/Host TAP Interfaces&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  &lt;br /&gt;
+You can use the same bridge on the host for connecting two guest NICs to it,
+in which case the both guest network connections get IP address assigned from
+the host’s bridge subnet.&lt;/p&gt;
+
+&lt;p&gt;This example shows a different configuration, where the guest VM needs to 
+be connected to two different networks so one of two guest NICs is 
+connected to one bridge and the other guest NIC is connected to the other 
+bridge on the host side.&lt;/p&gt;
 
 &lt;h4 id=&quot;two-bridges---method-1&quot;&gt;Two Bridges - Method 1&lt;/h4&gt;
 
@@ -4019,73 +4315,58 @@ together via a hub.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;References:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/523245/whats-the-function-of-virbr0-and-virbr0-nic&quot;&gt;What’s the function of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;virbr0&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;virbr0-nic&lt;/code&gt;?&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;(All references retrieved on Apr 2, 2022)&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://listman.redhat.com/archives/libvirt-users/2012-September/msg00038.html&quot;&gt;[libvirt-users] virtual networking - virbr0-nic interface&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/523245/whats-the-function-of-virbr0-and-virbr0-nic&quot;&gt;What’s the function of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;virbr0&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;virbr0-nic&lt;/code&gt;?&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/378264/what-is-virtual-bridge-with-nic-in-the-end-of-name/444863#444863&quot;&gt;What is virtual bridge with -nic in the end of name&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://listman.redhat.com/archives/libvirt-users/2012-September/msg00038.html&quot;&gt;[libvirt-users] virtual networking - virbr0-nic interface&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://code.lardcave.net/2019/07/20/1/&quot;&gt;Bridged networking with qemu on Linux&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/378264/what-is-virtual-bridge-with-nic-in-the-end-of-name/444863#444863&quot;&gt;What is virtual bridge with -nic in the end of name&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wiki.archlinux.org/title/Network_bridge&quot;&gt;Network bridge - Arch Wiki&lt;/a&gt;&lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://code.lardcave.net/2019/07/20/1/&quot;&gt;Bridged networking with qemu on Linux&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wiki.linuxfoundation.org/networking/bridge&quot;&gt;Bridge - The Linux Foundation Wiki&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wiki.archlinux.org/title/Network_bridge&quot;&gt;Network bridge - Arch Wiki&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://bsdwiki.reedmedia.net/wiki/networking_qemu_virtual_bsd_systems.html&quot;&gt;Networking QEMU Virtual BSD Systems&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wiki.linuxfoundation.org/networking/bridge&quot;&gt;Bridge - The Linux Foundation Wiki&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://blog.christophersmart.com/2016/08/31/configuring-qemu-bridge-helper-after-access-denied-by-acl-file-error/&quot;&gt;Configuring QEMU bridge helper after “access denied by acl file” error&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://bsdwiki.reedmedia.net/wiki/networking_qemu_virtual_bsd_systems.html&quot;&gt;Networking QEMU Virtual BSD Systems&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://www.linux-kvm.org/page/Networking&quot;&gt;Configuring Guest Networking - KVM&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.christophersmart.com/2016/08/31/configuring-qemu-bridge-helper-after-access-denied-by-acl-file-error/&quot;&gt;Configuring QEMU bridge helper after “access denied by acl file” error&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.linux-kvm.org/page/Networking&quot;&gt;Configuring Guest Networking - KVM&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;Guest (VM) networking in kvm is the same as in qemu, so it is possible 
 to refer to other documentation about networking in qemu.  This page will 
 try to explain how to configure the most frequent types of networking needed.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.qemu.org/2018/05/31/nic-parameter/&quot;&gt;QEMU’s new -nic command line option&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.qemu.org/2018/05/31/nic-parameter/&quot;&gt;QEMU’s new -nic command line option&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.cyberciti.biz/faq/centos-8-add-network-bridge-br0-with-nmcli-command/&quot;&gt;CentOS 8 add network bridge (br0) with nmcli command&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.cyberciti.biz/faq/centos-8-add-network-bridge-br0-with-nmcli-command/&quot;&gt;CentOS 8 add network bridge (br0) with nmcli command&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.cyberciti.biz/faq/how-to-add-network-bridge-with-nmcli-networkmanager-on-linux/&quot;&gt;How to add network bridge with nmcli (NetworkManager) on Linux&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.cyberciti.biz/faq/how-to-add-network-bridge-with-nmcli-networkmanager-on-linux/&quot;&gt;How to add network bridge with nmcli (NetworkManager) on Linux&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/discussions/5996181&quot;&gt;Qemu bridge/tap adaper - Red Hat Customer Portal&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/discussions/5996181&quot;&gt;Qemu bridge/tap adapter - Red Hat Customer Portal&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/configuring-virtual-machine-network-connections_configuring-and-managing-virtualization#virtual-networking-bridged-mode_types-of-virtual-machine-network-connections&quot;&gt;Virtual networking in bridged mode&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/configuring-virtual-machine-network-connections_configuring-and-managing-virtualization#virtual-networking-bridged-mode_types-of-virtual-machine-network-connections&quot;&gt;Virtual networking in bridged mode&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-network-bridge_configuring-and-managing-networking#configuring-a-network-bridge-using-nmcli-commands_configuring-a-network-bridge&quot;&gt;Configuring a network bridge using nmcli commands&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-network-bridge_configuring-and-managing-networking#configuring-a-network-bridge-using-nmcli-commands_configuring-a-network-bridge&quot;&gt;Configuring a network bridge using nmcli commands&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://gist.github.com/extremecoders-re/e8fd8a67a515fee0c873dcafc81d811c&quot;&gt;Setting up Qemu with a tap interface&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://gist.github.com/extremecoders-re/e8fd8a67a515fee0c873dcafc81d811c&quot;&gt;Setting up Qemu with a tap interface&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://bbs.archlinux.org/viewtopic.php?id=261207&quot;&gt;[SOLVED] KVM/QEMU - Ethernet will not bridge&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://bbs.archlinux.org/viewtopic.php?id=261207&quot;&gt;[SOLVED] KVM/QEMU - Ethernet will not bridge&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://ahelpme.com/linux/howto-do-qemu-full-virtualization-with-bridged-networking/&quot;&gt;Howto do QEMU full virtualization with bridged networking&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://ahelpme.com/linux/howto-do-qemu-full-virtualization-with-bridged-networking/&quot;&gt;Howto do QEMU full virtualization with bridged networking&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://qemu.readthedocs.io/en/latest/system/devices/net.html&quot;&gt;Network emulation - QEMU Documentation&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://qemu.readthedocs.io/en/latest/system/devices/net.html&quot;&gt;Network emulation - QEMU Documentation&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://stty.io/2019/05/13/qemu-vm-wireguard-vpn-tun-tap-networking/&quot;&gt;Setting up TUN/TAP networking for QEMU VM’s (and bonus wireguard)&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://stty.io/2019/05/13/qemu-vm-wireguard-vpn-tun-tap-networking/&quot;&gt;Setting up TUN/TAP networking for QEMU VM’s (and bonus wireguard)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.linux-kvm.org/page/Networking&quot;&gt;Configuring Guest Networking - KVM Documentation&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Apr 2, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.linux-kvm.org/page/Networking&quot;&gt;Configuring Guest Networking - KVM Documentation&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.kaizou.org/2018/06/qemu-bridge.html&quot;&gt;Bridging two Qemu guests&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://lists.gnu.org/archive/html/qemu-discuss/2014-06/msg00059.html&quot;&gt;[Qemu-discuss] Using multiple network interfaces on a guest&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -4994,7 +5275,9 @@ be a compute node you will be provisioning.&lt;/p&gt;
  by BMC, which the MN (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;) can access.&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt; has RHEL 8 installed, and uses an IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;.&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt; has access to internet.&lt;/li&gt;
-  &lt;li&gt;For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101.mydomain.com&lt;/code&gt; compute node: BMC in the chassis that hosts this blade server, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101.mydomain.com&lt;/code&gt; (and other 13 blades running compute nodes on them), has an IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.125&lt;/code&gt;.  &lt;strong&gt;[TODO]&lt;/strong&gt; To change to IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt; because it was replaced on 2022-06-13?&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101.mydomain.com&lt;/code&gt; compute node: BMC in the chassis that hosts this blade server, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101.mydomain.com&lt;/code&gt; (and other 13 blades running compute nodes on them), has an IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
   &lt;li&gt;Prepare a full DVD for OS provision, and not a Live CD ISO.  &lt;br /&gt;
 For this example, I use a &lt;strong&gt;customized&lt;/strong&gt;
 CentOS-7-x86_64-Everything-2009.iso DVD.
@@ -5002,7 +5285,7 @@ CentOS-7-x86_64-Everything-2009.iso DVD.
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;strong&gt;BMC&lt;/strong&gt;&lt;br /&gt;
-MM1: 192.168.80.125    &lt;strong&gt;[TODO]&lt;/strong&gt; To change to IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt; because it was replaced on 2022-06-13?  &lt;br /&gt;
+MM1: 192.168.80.135 &lt;br /&gt;
 MM2: empty&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;IBM BladeCenter Enclosure (Chassis)&lt;/strong&gt; &lt;br /&gt;
@@ -5155,20 +5438,16 @@ bmc:    The hostname of the BMC adapter.  &amp;lt;-- Or the BMC&apos;s IP addres
 ? (192.168.80.1) at 00:11:22:33:44:55 [ether] on eth1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt;  Will need to change it to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt; because the BMC
-was replaced on 2022-06-13.  –» &lt;strong&gt;Also&lt;/strong&gt;, will need to change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.125&lt;/code&gt; to
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.135&lt;/code&gt; whenever it’s mentioned in CLI output/outputs.&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; If you don’t have network connection with this node, you can
 obtain its MAC address by logging in to the &lt;strong&gt;AMM&lt;/strong&gt;/&lt;strong&gt;MM&lt;/strong&gt; (&lt;strong&gt;BMC&lt;/strong&gt;).
 From Prerequisites (assumptions) above, you already know that
-the BMC IP address is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.125.&lt;/code&gt;)&lt;/p&gt;
+the BMC IP address is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt;.)&lt;/p&gt;
 
 &lt;h3 id=&quot;connecting-to-cli-on-mm-amm&quot;&gt;Connecting to CLI on MM (AMM)&lt;/h3&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# telnet 192.168.80.125
-Trying 192.168.80.125...
-Connected to 192.168.80.125.
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# telnet 192.168.80.135
+Trying 192.168.80.135...
+Connected to 192.168.80.135.
 Escape character is &apos;^]&apos;.
 
 username: YOUR_BMC_USERID
@@ -5248,7 +5527,7 @@ BMC (MM) account; &lt;code class=&quot;language-plaintext highlighter-rouge&quot
 --template x86_64-template \
 ip=192.168.80.1 \
 mac=00:11:22:33:44:55 \
-bmc=192.168.80.125 \
+bmc=192.168.80.135 \
 bmcusername=YOUR_BMC_USERID \
 bmcpassword=YOUR_BMC_PASSWORD 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -5297,7 +5576,7 @@ replace the lines in the file that correspond to the node &lt;code class=&quot;l
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus101
 Object name: abacus101
     arch=x86_64
-    bmc=192.168.80.125
+    bmc=192.168.80.135
     bmcpassword=YOUR_BMC_USERID
     bmcusername=YOUR_BMC_PASSWORD
     cons=ipmi
@@ -5529,17 +5808,17 @@ DESCRIPTION
 &lt;p&gt;Add username and password for &lt;strong&gt;MM&lt;/strong&gt; (&lt;strong&gt;BMC&lt;/strong&gt;) to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; table. &lt;br /&gt;
 (This is the MM from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmcusername&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bmcpassword&lt;/code&gt; in the above
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lsdef abacus101 [...]&lt;/code&gt; command.  The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; attribute in the command
-below is that MM’s hostname, which in this case is: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1&lt;/code&gt;.)&lt;/p&gt;
+below is that MM’s hostname, which in this case is: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;.)&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
-mpa=xbcmm1 \
+mpa=xbcmm1n \
 mpa.username=YOUR_BMC_USERID \
 mpa.password=YOUR_BMC_PASSWORD
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mpa 
 #mpa,username,password,displayname,slots,urlpath,comments,disable
-&quot;xbcmm1&quot;,&quot;YOUR_BMC_USERID&quot;,&quot;YOUR_BMC_PASSW0RD&quot;,,,,,
+&quot;xbcmm1n&quot;,&quot;YOUR_BMC_USERID&quot;,&quot;YOUR_BMC_PASSW0RD&quot;,,,,,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Add the BMC (MM) node to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt; table.
@@ -5547,8 +5826,8 @@ As the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;
 the table &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
-node=xbcmm1 \
-mp.mpa=xbcmm1 \
+node=xbcmm1n \
+mp.mpa=xbcmm1n \
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Similarly, add attributes of the newly added node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt;) to the
@@ -5557,20 +5836,20 @@ this number the same as the node name so in this case it’s &lt;code class=&quo
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# chtab \
 node=abacus101 \
-mp.mpa=xbcmm1 \
+mp.mpa=xbcmm1n \
 mp.id=1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mp
 #node,mpa,id,nodetype,comments,disable
-&quot;xbcmm1&quot;,&quot;xbcmm1&quot;,,,,
-&quot;abacus101&quot;,&quot;xbcmm1&quot;,&quot;1&quot;,,,
+&quot;xbcmm1n&quot;,&quot;xbcmm1n&quot;,,,,
+&quot;abacus101&quot;,&quot;xbcmm1n&quot;,&quot;1&quot;,,,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; attribute is now defined for node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus101 | grep mpa
-    mpa=xbcmm1
+    mpa=xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;br /&gt;
@@ -5579,7 +5858,7 @@ using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-i 
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus101 -i mpa
 Object name: abacus101
-    mpa=xbcmm1
+    mpa=xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef abacus101
@@ -5592,7 +5871,7 @@ Object name: abacus101
     ip=192.168.80.14
     mac=00:21:5E:2C:0A:AC
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     netboot=xnba
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
@@ -5623,10 +5902,10 @@ passwd.password=YOUR_BMC_PASSWORD
 &lt;p&gt;Verify that your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file contains entries for all of your
 management node interfaces.  Manually add any that are missing.&lt;/p&gt;
 
-&lt;p&gt;Add &lt;strong&gt;MM&lt;/strong&gt; (&lt;strong&gt;BMC&lt;/strong&gt;) hostname (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1&lt;/code&gt;) and its IP address
+&lt;p&gt;Add &lt;strong&gt;MM&lt;/strong&gt; (&lt;strong&gt;BMC&lt;/strong&gt;) hostname (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;) and its IP address
 to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; file.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# printf %s\\n &quot;192.168.80.125 xbcmm1&quot; &amp;gt;&amp;gt; /etc/hosts
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# printf %s\\n &quot;192.168.80.135 xbcmm1n&quot; &amp;gt;&amp;gt; /etc/hosts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Check &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt; hardware control. &lt;br /&gt;
@@ -5641,8 +5920,8 @@ abacus101: [xcatmn]: Error: Unsupported security level
 
 &lt;p&gt;To fix it, first check whether you can communicate with the MM (BMC):&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 snmpdest
-Error: Invalid nodes and/or groups in noderange: xbcmm1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpdest
+Error: Invalid nodes and/or groups in noderange: xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;This particular MM (BMC) has not been added to xCAT database.
@@ -5652,8 +5931,8 @@ For now, xCAT has only one node:&lt;/p&gt;
 abacus101
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef xbcmm1
-Error: [xcatmn]: Could not find an object named &apos;xbcmm1&apos; of type &apos;node&apos;.
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef xbcmm1n
+Error: [xcatmn]: Could not find an object named &apos;xbcmm1n&apos; of type &apos;node&apos;.
 No object definitions have been found
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -5671,44 +5950,44 @@ and write output to xCAT database:&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodels
 Server--SNYK123456E1AB
 abacus101
-xbcmm1
+xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef xbcmm1
-Object name: xbcmm1
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# lsdef xbcmm1n
+Object name: xbcmm1n
     groups=mm,all
     id=0
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;If a request for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;snmpdest&lt;/code&gt; from the MM (BMC) is empty as shown here:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 snmpdest
-xbcmm1: SP SNMP Destination 1: 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;enable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;snmpcfg&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sshcfg&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 snmpcfg=enable sshcfg=enable
-xbcmm1: SNMP enable: OK
-xbcmm1: SSH enable: OK
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpcfg=enable sshcfg=enable
+xbcmm1n: SNMP enable: OK
+xbcmm1n: SSH enable: OK
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;After that, request for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;snmpdest&lt;/code&gt; gets answered:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 snmpdest
-xbcmm1: SP SNMP Destination 1: 0.0.0.0
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpdest
+xbcmm1n: SP SNMP Destination 1: 0.0.0.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 snmpcfg
-xbcmm1: SNMP: enabled
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n snmpcfg
+xbcmm1n: SNMP: enabled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 sshcfg 
-xbcmm1: SSH: enabled
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n sshcfg 
+xbcmm1n: SSH: enabled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;While you are here, rename the &lt;strong&gt;MM&lt;/strong&gt; (&lt;strong&gt;BMC&lt;/strong&gt;) Server–SNYK123456E1AB 
@@ -5741,6 +6020,8 @@ management node interfaces.  Manually add any that are missing.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# printf %s\\n &quot;192.168.80.127 xbcmm2&quot; &amp;gt;&amp;gt; /etc/hosts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Back to continuing the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt; provisioning:&lt;/p&gt;
 
 &lt;p&gt;Hardware control check for power management for node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt;
 works now:&lt;/p&gt;
@@ -6033,15 +6314,19 @@ node=abacus101 \
 nodehm.consoleenabled=1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rvitals xbcmm1 all 
+&lt;p&gt;The MM (Management Module), a.k.a. BMC (Baseboard Management 
+Controller), hosting this compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt;) is named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;.
+Its vitals and network settings are:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rvitals xbcmm1n all 
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1 network
-xbcmm1: MM IP: 192.168.80.125
-xbcmm1: MM Hostname: xbcmm1
-xbcmm1: Gateway: 0.0.0.0
-xbcmm1: Subnet Mask: 255.255.255.0
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rspconfig xbcmm1n network
+xbcmm1n: MM IP: 192.168.80.135
+xbcmm1n: MM Hostname: xbcmm1n
+xbcmm1n: Gateway: 0.0.0.0
+xbcmm1n: Subnet Mask: 255.255.255.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;If needed, change the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;forwarders&lt;/code&gt; attribute in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;site&lt;/code&gt; table.&lt;/p&gt;
@@ -6144,7 +6429,7 @@ active
  Main PID: 12517 (goconserver)
    CGroup: /system.slice/goconserver.service
            |-12517 /usr/bin/goconserver
-           +-12530 ssh -t YOUR_BMC_USERNAME@xbcmm1 console -o -T blade[1]
+           +-1253 ssh -t YOUR_BMC_USERNAME@xbcmm1n console -o -T blade[1]
 
 Mar 20 15:42:08 xcatmn.mydomain.com systemd[1]: Started goconserver console daemon.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -6155,6 +6440,9 @@ abacus101                        xcatmn.mydomain.com              connected
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Connect to the newly provisioned node (compute node):&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons&lt;/code&gt; to work, the node’s BIOS must be configured 
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;10&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus101
 [Enter `^Ec?&apos; for help]
@@ -6195,7 +6483,7 @@ nodes which are managed by the current xCAT &lt;strong&gt;MN&lt;/strong&gt; (&lt
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xcatstat
 # Hostname:Status:Network-Interfaces:
 abacus101:1:enp4s0-1:enp6s0-2 :
-xbcmm1:1:127 :
+xbcmm1n:1:127 :
 xbcmm2:1:127 :
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -6280,17 +6568,15 @@ abacus101: /tmp/FlNrhJh5uy.dsh: line 62: /var/log/xcat/xcat.log: No such file or
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;you can remove them by adding &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nomodeset&lt;/code&gt; kernel boot line option as
-explained, for example, here:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.dell.com/support/kbdoc/en-ca/000123893/manual-nomodeset-kernel-boot-line-option-for-linux-booting&quot;&gt;Manual “nomodeset” Kernel Boot Line Option for Linux Booting&lt;/a&gt;&lt;/p&gt;
+explained in Footnotes at the bottom of this page &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;11&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 
 &lt;p&gt;See also:&lt;/p&gt;
 
+&lt;p&gt;&lt;a href=&quot;https://www.dell.com/support/kbdoc/en-ca/000123893/manual-nomodeset-kernel-boot-line-option-for-linux-booting&quot;&gt;Manual “nomodeset” Kernel Boot Line Option for Linux Booting&lt;/a&gt;&lt;/p&gt;
+
 &lt;p&gt;&lt;a href=&quot;https://serverfault.com/questions/708400/radeon-dvi-errors-filling-logs&quot;&gt;Radeon DVI errors filling logs&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;To make it permanent, update GRUB as shown here (under section Set Up
-a Serial Terminal and Console (in CentOS 7/RHEL 7)): &lt;br /&gt;
-&lt;a href=&quot;/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html&quot;&gt;Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Back to continuing with the setup:&lt;/p&gt;
 
 &lt;p&gt;Test ssh passwordless login to the node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus101&lt;/code&gt;.&lt;/p&gt;
 
@@ -6306,15 +6592,6 @@ abacus101
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# exit
 logout
 Connection to abacus101 closed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt; Check if this is true:&lt;/p&gt;
-
-&lt;p&gt;It seems you have to choose one or the other –&amp;gt; between &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rinstall&lt;/code&gt; with
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons&lt;/code&gt; or with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatprobe osdeploy -n abacus101&lt;/code&gt; and in the second terminal:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodeset abacus101 osimage=&amp;lt;osimage&amp;gt;
-# rpower abacus101 boot
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;
@@ -6490,12 +6767,12 @@ rsa
 
 &lt;p&gt;Show the possible values for the specified setting.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# /opt/ibm/toolscenter/asu/asu64/showvalues 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# /opt/ibm/toolscenter/asu/asu64 showvalues 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Show the default value for the specified setting.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# /opt/ibm/toolscenter/asu/asu64/showdefault
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# /opt/ibm/toolscenter/asu/asu64 showdefault
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Show the current value for one or all settings.&lt;/p&gt;
@@ -6739,8 +7016,8 @@ id=2 \
 --template x86_64-template \
 ip=192.168.80.2 \
 mac=01:02:03:04:05:0e \
-bmc=192.168.80.125 \
-mpa=xbcmm1 \
+bmc=192.168.80.135 \
+mpa=xbcmm1n \
 getmac=blade \
 cons=blade \
 serialport=1 \
@@ -6760,7 +7037,7 @@ Object name: abacus102
     ip=192.168.80.2
     mac=01:02:03:04:05:0e
     mgt=blade
-    mpa=xbcmm1
+    mpa=xbcmm1n
     netboot=xnba
     postbootscripts=otherpkgs
     postscripts=syslog,remoteshell,syncfiles
@@ -6771,7 +7048,7 @@ Object name: abacus102
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mpa
 #mpa,username,password,displayname,slots,urlpath,comments,disable
-&quot;xbcmm1&quot;,&quot;YOUR_BMC_USERID&quot;,&quot;YOUR_BMC_PASSW0RD&quot;,,,,,
+&quot;xbcmm1n&quot;,&quot;YOUR_BMC_USERID&quot;,&quot;YOUR_BMC_PASSW0RD&quot;,,,,,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# tabdump mp
@@ -6779,9 +7056,9 @@ Object name: abacus102
 &quot;bcmgmt1&quot;,&quot;bcmgmt1&quot;,&quot;0&quot;,,,
 &quot;bcmgmt2&quot;,&quot;bcmgmt2&quot;,&quot;0&quot;,,,
 [...]
-&quot;xbcmm1&quot;,&quot;xbcmm1&quot;,,,,
-&quot;abacus101&quot;,&quot;xbcmm1&quot;,&quot;1&quot;,,,
-&quot;abacus102&quot;,&quot;xbcmm1&quot;,,,,
+&quot;xbcmm1n&quot;,&quot;xbcmm1n&quot;,,,,
+&quot;abacus101&quot;,&quot;xbcmm1n&quot;,&quot;1&quot;,,,
+&quot;abacus102&quot;,&quot;xbcmm1n&quot;,,,,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node=abacus102&lt;/code&gt; row in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mp&lt;/code&gt; table setting with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id=2&lt;/code&gt;:&lt;/p&gt;
@@ -6796,9 +7073,9 @@ mp.id=2
 &quot;bcmgmt1&quot;,&quot;bcmgmt1&quot;,&quot;0&quot;,,,
 &quot;bcmgmt2&quot;,&quot;bcmgmt2&quot;,&quot;0&quot;,,,
 [...]
-&quot;xbcmm1&quot;,&quot;xbcmm1&quot;,,,,
-&quot;abacus101&quot;,&quot;xbcmm1&quot;,&quot;1&quot;,,,
-&quot;abacus102&quot;,&quot;xbcmm1&quot;,&quot;2&quot;,,,
+&quot;xbcmm1n&quot;,&quot;xbcmm1n&quot;,,,,
+&quot;abacus101&quot;,&quot;xbcmm1n&quot;,&quot;1&quot;,,,
+&quot;abacus102&quot;,&quot;xbcmm1n&quot;,&quot;2&quot;,,,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Check &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus102&lt;/code&gt; hardware control:&lt;/p&gt;
@@ -6926,7 +7203,7 @@ set up nodes on that network.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# makedns -n 
-Handling xbcmm1 in /etc/hosts.
+Handling xbcmm1n in /etc/hosts.
 Handling abacus102 in /etc/hosts.
 Handling localhost in /etc/hosts.
 Handling localhost in /etc/hosts.
@@ -7989,6 +8266,9 @@ Object name: abacus102
 
 &lt;p&gt;Log in to the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus102&lt;/code&gt;):&lt;/p&gt;
 
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons&lt;/code&gt; to work, the node’s BIOS must be configured
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;10&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus102
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -8161,6 +8441,8 @@ the BMC.&lt;/li&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ssh root@192.168.80.220
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;h3 id=&quot;configure-mm-management-module---aka-bmc-baseboard-management-controller&quot;&gt;Configure MM (Management Module) - a.k.a. BMC (Baseboard Management Controller)&lt;/h3&gt;
+
 &lt;p&gt;Run the discovery on IP address of the xCAT MN (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;) and list 
 all discovered MM (Management Node) &lt;strong&gt;service types&lt;/strong&gt;.&lt;/p&gt;
 
@@ -8197,7 +8479,7 @@ in the table &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;So, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;keycolname&lt;/code&gt; is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa&lt;/code&gt; with value being the name of the 
-node that you’ll give to this BMC (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm2&lt;/code&gt;), while the 
+node that you’ll give to this BMC (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt;), while the 
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tablename.colname=newvalue&lt;/code&gt; are 
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa.username=xadmin&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mpa.password=YOUR_BMC_PASSWORD&lt;/code&gt;.&lt;/p&gt;
 
@@ -8282,7 +8564,7 @@ xbcmm1n: SSH enable: OK
 
 &lt;p&gt;The passwordless ssh login to the MM node works:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@xbcmm2
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Output (with BMC CLI prompt indicated with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;system&amp;gt;&lt;/code&gt;):&lt;/p&gt;
@@ -8291,6 +8573,8 @@ xbcmm1n: SSH enable: OK
 ---- snip ----
 system&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;provision-new-node-compute-node&quot;&gt;Provision New Node (Compute Node)&lt;/h3&gt;
 
 &lt;p&gt;After you’ve setup the MM (Management Module) node, you are ready to 
 start provisioning a new compute node.&lt;/p&gt;
@@ -8327,10 +8611,11 @@ BMC (MM) account; &lt;code class=&quot;language-plaintext highlighter-rouge&quot
 definition template or an existing object, from which the new object 
 definition will be created.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  Use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MAC Address 1&lt;/code&gt; you obtained above.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mac&lt;/code&gt; attribute, use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MAC Address 1&lt;/code&gt; you obtained above.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# mkdef \
--t node abacus109 \
+-t node \
+abacus109 \
 --template x86_64-template \
 ip=192.168.80.9 \
 mac=00:11:22:33:44:55 \
@@ -8592,12 +8877,6 @@ image. The os image is defined in the &lt;code class=&quot;language-plaintext hi
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodeset abacus109 osimage=centos7.9-x86_64-install-compute
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The first terminal &lt;strong&gt;might&lt;/strong&gt;  (it doesn’t always show this message) 
-update with the following:&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:29 Use command rpower to reboot node abacus109
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
 &lt;h3 id=&quot;fix-for-rpower-nodename-boot&quot;&gt;Fix for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower &amp;lt;nodename&amp;gt; boot&lt;/code&gt;&lt;/h3&gt;
 
 &lt;p&gt;Back in the second terminal, as per the message above, to reboot the 
@@ -8616,44 +8895,63 @@ the installation work; that is, to turn the node off and then on.
 (Alternitavely, you could first manually turn the node off: 
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 off&lt;/code&gt;, and then on:  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 on&lt;/code&gt;.)&lt;/p&gt;
 
-&lt;p&gt;Explanation for the options used in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command below:  &lt;br /&gt;
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m table.column==expectedstatus -m table.column=~expectedstatus&lt;/code&gt;
-Use one or multiple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flags to specify the node attributes and the
-expected status for the node installation monitoring and automatic
-retry mechanism. The operators &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;==&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!=&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=~&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!~&lt;/code&gt; are valid. 
-This flag &lt;strong&gt;must&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt; flag.&lt;/p&gt;
+&lt;p&gt;Explanation for the options used in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command below
+(from the manpage for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower(8)&lt;/code&gt; command):&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-r retrycount&lt;/code&gt;
+&lt;ul&gt;
+  &lt;li&gt;”&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-r retrycount&lt;/code&gt;
 specify the number of retries that the monitoring process will
 perform before declaring the failure. The default value is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt;.
 Setting the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;retrycount&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; means only monitoring the os
 installation progress and will not re-initiate the installation if
 the node status has not been changed to the expected value after
-timeout. This flag &lt;strong&gt;must&lt;/strong&gt; be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag.&lt;/p&gt;
+timeout.  This flag &lt;strong&gt;must&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag.”&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;”&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m table.column==expectedstatus -m table.column=~expectedstatus&lt;/code&gt;
+Use one or multiple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flags to specify the node attributes and the
+expected status for the node installation monitoring and automatic
+retry mechanism.  The operators &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;==&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!=&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=~&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;!~&lt;/code&gt; are valid. 
+This flag &lt;strong&gt;must&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) be used with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t&lt;/code&gt; flag.”&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t timeout&lt;/code&gt;
+    &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  While &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;powering-on&lt;/code&gt; is not listed as one of valid values 
+of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodelist.status&lt;/code&gt;) in the manpage for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node(7)&lt;/code&gt; 
+or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodelist(5)&lt;/code&gt;, in my tests it worked more reliable than using 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m nodelist.status==booting&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m nodelist.status==installing&lt;/code&gt;.
+&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;”&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-t timeout&lt;/code&gt;
 Specify the timeout, in minutes, to wait for the expectedstatus
-specified by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag. This is a &lt;strong&gt;required&lt;/strong&gt; flag if the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag 
-is specified. &lt;br /&gt;
-Power off, then on.&lt;/p&gt;
+specified by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag. This is a &lt;strong&gt;required&lt;/strong&gt; (&lt;em&gt;emphasis mine&lt;/em&gt;) flag if 
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; flag is specified.  Power off, then on.”&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;In the second terminal, run this command:&lt;/p&gt;
+&lt;p&gt;In the second terminal, run the following command.
+(&lt;strong&gt;Note:&lt;/strong&gt;  You need to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;==&lt;/code&gt; (double equal sign), 
+ a.k.a. &lt;em&gt;comparison operator&lt;/em&gt; when testing for the expected status 
+ with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt; option.)&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rpower \
 abacus109 \
 boot \
 -r 0 \
--m nodelist.status==booting \
+-m nodelist.status==powering-on \
 -t 5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The first terminal updates with the following:&lt;/p&gt;
 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:29 Use command rpower to reboot node abacus109
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And then in less than ten seconds, the first terminal displays another line:&lt;/p&gt;
+
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[abacus109] 19:37:36 Node status is changed to powering-on
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Launch yet another separate shell session and in there (let’s call it 
-the third terminal), check and monitor provisioning process:&lt;/p&gt;
+the third terminal), check and monitor provisioning process. (&lt;strong&gt;NOTE:&lt;/strong&gt; 
+For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons&lt;/code&gt; to work, the node’s BIOS must be configured  for 
+SOL (Serial Over LAN), a.k.a. Text Mode Console. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;10&lt;/a&gt;&lt;/sup&gt;)&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -9391,7 +9689,10 @@ Object name: abacus109
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# updatenode abacus109 -F -V
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Log in to the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;):&lt;/p&gt;
+&lt;p&gt;Log in to the compute node (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus109&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons&lt;/code&gt; to work, the node’s BIOS must be configured
+for SOL (Serial Over LAN), a.k.a. Text Mode Console. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;10&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus109
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -9964,6 +10265,143 @@ hostnames, or generic hostnames (for example, &lt;code class=&quot;language-plai
     so is never combined with other states.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;p&gt;[9] From the manual page for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;node(7)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    The current status of this node.  This attribute will be set by
+    xCAT software.  Valid values: defined, booting, netbooting,
+    booted, discovering, configuring, installing, alive, standingby,
+    powering-off, unreachable. If blank, defined is assumed. The
+    possible status change sequences are: For installation:
+    defined-&amp;gt;[discovering]-&amp;gt;[configuring]-&amp;gt;[standingby]-&amp;gt;installing-&amp;gt;booting-&amp;gt;[postbooting]-&amp;gt;booted-&amp;gt;[alive],
+    For diskless deployment:
+    defined-&amp;gt;[discovering]-&amp;gt;[configuring]-&amp;gt;[standingby]-&amp;gt;netbooting-&amp;gt;[postbooting]-&amp;gt;booted-&amp;gt;[alive],
+    For booting:
+    [alive/unreachable]-&amp;gt;booting-&amp;gt;[postbooting]-&amp;gt;booted-&amp;gt;[alive],
+    For powering off: [alive]-&amp;gt;powering-off-&amp;gt;[unreachable], For
+    monitoring: alive-&amp;gt;unreachable. Discovering and configuring are
+    for x Series discovery process. Alive and unreachable are set
+    only when there is a monitoring plug-in start monitor the node
+    status for xCAT. Note that the status values will not reflect the
+    real node status if you change the state of the node from outside
+    of xCAT (i.e. power off the node using HMC GUI).
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, when I used
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m nodelist.status==booting&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m nodelist.status==installing&lt;/code&gt; 
+with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower boot&lt;/code&gt;, the node would sometimes got stuck in powered off state, 
+and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcons &amp;lt;nodename&amp;gt;&lt;/code&gt; would display:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;         DESTINATION BLADE IS IN POWER OFF STATE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As the output of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatprobe osdeploy -n &amp;lt;nodename&amp;gt;&lt;/code&gt; command in the first terminal; in this case, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatprobe osdeploy -n abacus109&lt;/code&gt; (after &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpower abacus109 boot&lt;/code&gt; in the second terminal) indicated&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;... Node status is changed to powering-on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;search for &lt;em&gt;powering-on&lt;/em&gt; returned:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# grep -r -n &apos;powering-on&apos; /opt/xcat/
+/opt/xcat/lib/perl/xCAT/GlobalDef.pm:52:$::STATUS_POWERING_ON  = &quot;powering-on&quot;;
+/opt/xcat/lib/perl/xCAT_plugin/openbmc.pm:49:$::POWER_STATE_POWERING_ON  = &quot;powering-on&quot;;
+/opt/xcat/probe/lib/perl/xCAT/GlobalDef.pm:52:$::STATUS_POWERING_ON  = &quot;powering-on&quot;;
+/opt/xcat/probe/subcmds/osdeploy:1209:                } elsif ($status eq &quot;powering-on&quot;) {
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For example, looking into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GlobalDef.pm&lt;/code&gt; revealed even more valid values 
+for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nodelist.status&lt;/code&gt;).  One of them is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;powering-on&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -n 43,63p /opt/xcat/lib/perl/xCAT/GlobalDef.pm
+# valid values for nodelist.status columns or other status
+$::STATUS_ACTIVE       = &quot;alive&quot;;
+$::STATUS_INACTIVE     = &quot;unreachable&quot;;
+$::STATUS_INSTALLING   = &quot;installing&quot;;
+$::STATUS_INSTALLED    = &quot;installed&quot;;
+$::STATUS_BOOTING      = &quot;booting&quot;;
+$::STATUS_POSTBOOTING  = &quot;postbooting&quot;;
+$::STATUS_NETBOOTING   = &quot;netbooting&quot;;
+$::STATUS_BOOTED       = &quot;booted&quot;;
+$::STATUS_POWERING_ON  = &quot;powering-on&quot;;
+$::STATUS_POWERING_OFF = &quot;powering-off&quot;;
+$::STATUS_DISCOVERING  = &quot;discovering&quot;;
+$::STATUS_DISCOVERED   = &quot;discovered&quot;;
+$::STATUS_CONFIGURING  = &quot;configuring&quot;;
+$::STATUS_CONFIGURED   = &quot;configured&quot;;
+$::STATUS_STANDING_BY  = &quot;standingby&quot;;
+$::STATUS_SHELL        = &quot;shell&quot;;
+$::STATUS_DEFINED      = &quot;defined&quot;;
+$::STATUS_UNKNOWN      = &quot;unknown&quot;;
+$::STATUS_FAILED       = &quot;failed&quot;;
+$::STATUS_BMCREADY     = &quot;bmcready&quot;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[10] In this example, the blade server is &lt;strong&gt;IBM HS21&lt;/strong&gt;, whose BIOS needs 
+to be setup with the following in order for SOL (Serial Over LAN) to work:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Serial Port A: Auto-configure&lt;/li&gt;
+  &lt;li&gt;Serial Port B: Auto-configure&lt;/li&gt;
+  &lt;li&gt;Remote Console Active: Enabled&lt;/li&gt;
+  &lt;li&gt;Remote Console COM Port: COM 2&lt;/li&gt;
+  &lt;li&gt;Remote Console Active After Boot: Enabled&lt;/li&gt;
+  &lt;li&gt;Remote Console Flow Control: Hardware&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[11] The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nomodeset&lt;/code&gt; fix for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no | invalid EDID&lt;/code&gt; messages in the console:&lt;/p&gt;
+
+&lt;p&gt;For example, if the EDID issue is happening on a node named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus211&lt;/code&gt;,
+to fix it run the the following commands on the xCAT MN (Management Node), 
+which in the examples on this page has an IP address &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.220&lt;/code&gt;
+(hostname &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xcatmn.mydomain.com&lt;/code&gt;).  (&lt;strong&gt;Note:&lt;/strong&gt; The OS on the compute 
+node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus214&lt;/code&gt; is CentOS 7 so the grub version on it is grub2.)&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# scp root@abacus211:/etc/default/grub /tmp/grubabacus211.ORIG
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# grep -n CMDLINE /tmp/grubabacus211.ORIG
+7:GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -i.bkp &apos;s/ttyS1,19200/ttyS1,19200 nomodeset/&apos; /tmp/grubabacus211.ORIG
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# diff \
+--unified=0 \
+/tmp/grubabacus211.ORIG.bkp \
+/tmp/grubabacus211.ORIG
+--- /tmp/grubabacus211.ORIG.bkp 2022-03-20 20:59:04.966346023 -0700
++++ /tmp/grubabacus211.ORIG     2022-03-20 21:00:25.710970506 -0700
+@@ -7 +7 @@
+-GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
++GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 cp /etc/default/grub /tmp/grub.ORIG
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# scp /tmp/grubabacus211.ORIG root@abacus211:/etc/default/grub
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 cat /etc/default/grub
+abacus211: GRUB_TIMEOUT=5
+abacus211: GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;
+abacus211: GRUB_DEFAULT=saved
+abacus211: GRUB_DISABLE_SUBMENU=true
+abacus211: GRUB_TERMINAL=&quot;serial console&quot;
+abacus211: GRUB_SERIAL_COMMAND=&quot;serial --unit=1 --speed=19200&quot;
+abacus211: GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset&quot;
+abacus211: GRUB_DISABLE_RECOVERY=&quot;true&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 grub2-mkconfig -o /boot/grub2/grub.cfg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 reboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# rcons abacus211
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;hr /&gt;
 
 &lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt;   Do I need to mention this method (order)?:&lt;/p&gt;
@@ -10018,8 +10456,6 @@ abacus105
 xbcmm1n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt;  Rename &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1n&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xbcmm1&lt;/code&gt;?&lt;/p&gt;
-
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# nodestat all
 [...]               &amp;lt;-- The rest of the nodes are MM nodes (not CNs)
 abacus102: noping
@@ -10038,20 +10474,6 @@ From 192.168.80.220 icmp_seq=2 Destination Host Unreachable
 --- 192.168.80.6 ping statistics ---
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 999ms
 pipe 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt;  Do I need to change/synchronize &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.80.135&lt;/code&gt;
-            with other places on this page?&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ssh xadmin@192.168.80.135
-
-Hostname:              MM00123EE0C45C
-Static IP address:     192.168.80.135
-Burned-in MAC address: 01:23:45:67:89:AB
-DHCP:                  Disabled - Use static IP configuration.
-Last login: Mar 30 2022 16:18 from 192.168.80.220 (SSH)
-
-system&amp;gt; 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;[TODO]&lt;/strong&gt;  TEST JOBS   - Clean and Complete&lt;/p&gt;
@@ -10438,6 +10860,27 @@ configuration, cabling and similar.&lt;/p&gt;
       </item>
     
       <item>
+        <title>How to Setup an External USB Hard Drive as a ZFS Backup Disk in FreeBSD</title>
+        <description>&lt;p&gt;OSs: FreeBSD 13 &lt;br /&gt;
+Shell:  csh&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 19 Mar 2022 10:13:21 -0700</pubDate>
+        <link>http://localhost:4000/zfs/freebsd/snapshot/backup/2022/03/19/freebsd-geli-encrypted-usb-external-hdd-zfs-freebsd.html</link>
+        <guid isPermaLink="true">http://localhost:4000/zfs/freebsd/snapshot/backup/2022/03/19/freebsd-geli-encrypted-usb-external-hdd-zfs-freebsd.html</guid>
+        
+        
+        <category>zfs</category>
+        
+        <category>freebsd</category>
+        
+        <category>snapshot</category>
+        
+        <category>backup</category>
+        
+      </item>
+    
+      <item>
         <title>Occasionally Revisited Code and Shell Script Snippets</title>
         <description>&lt;h3 id=&quot;which-shell-im-in&quot;&gt;Which shell I’m in?&lt;/h3&gt;
 
@@ -10476,6 +10919,65 @@ or with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sh&lt
 
 &lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/40624957/pass-environment-variable-to-sudo&quot;&gt;Pass environment variable to sudo&lt;/a&gt; &lt;br /&gt;
 (Retrieved on Mar 13, 2022)&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;set-the-window-title-in-xterm1&quot;&gt;Set the Window Title in xterm(1)&lt;/h3&gt;
+
+&lt;p&gt;From the man page for xterm(1) (OS: FreeBSD 13):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[...]
+For example, to set the window title to &quot;Hello world!&quot;, you could use
+one of these commands in a script:
+
+  printf &apos;\033]2;Hello world!\033\&apos; 
+  printf &apos;\033]2;Hello world!\007&apos;
+  printf &apos;\033]2;%s\033\&apos; &quot;Hello world!&quot; 
+  printf &apos;\033]2;%s\007&apos; &quot;Hello world!&quot;
+
+The printf command interprets the octal value &quot;\033&quot; for escape, and
+(since it was not given in the format) omits a trailing newline from
+the output.
+
+Some programs (such as screen(1)) set both window- and icon-titles at
+the same time, using a slightly different control sequence:
+
+  printf &apos;\033]0;Hello world!\033\&apos;
+  printf &apos;\033]0;Hello world!\007&apos;
+  printf &apos;\033]0;%s\033\&apos; &quot;Hello world!&quot;
+  printf &apos;\033]0;%s\007&apos; &quot;Hello world!&quot;
+
+The difference is the parameter &quot;0&quot; in each command.  Most window
+managers will honor either window title or icon title.  Some will make
+a distinction and allow you to set just the icon title.  You can tell
+xterm to ask for this with a different parameter in the control
+sequence:
+
+printf &apos;\033]1;Hello world!\033\&apos;      &amp;lt;- The most portable apporach, with the
+printf &apos;\033]1;Hello world!\007&apos;       &amp;lt;- parameter &quot;1&quot; - asks if the WM allows
+printf &apos;\033]1;%s\033\&apos; &quot;Hello world!&quot; &amp;lt;- WM allows setting only the icon title.
+printf &apos;\033]1;%s\007&apos; &quot;Hello world!&quot;  &amp;lt;- (Four different ways to do it.)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;NOTE:&lt;br /&gt;
+This can be useful even if you don’t use some window 
+decorations (e.g.: no titlebars) in your window manager.
+For example, in my current setup with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;twm(1)&lt;/code&gt; where I enabled the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NoTitle&lt;/code&gt; 
+variable in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.twmrc&lt;/code&gt;, I still find it useful to sometimes set the 
+window title for some xterm windows as that makes their title visible 
+in TWM’s Icon Manager and that way helps with identifying which server 
+I’m working on.&lt;/p&gt;
+
+&lt;h3 id=&quot;xterm1&quot;&gt;xterm(1)&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Fonts should be fixed width and, if both normal and bold are specified, 
+should have the same size.  If only a normal font is specified, it will 
+be used for both normal and bold text (by doing overstriking).&lt;br /&gt;
+The -e option, if given, must appear at the end of the command line, 
+otherwise the user’s default shell will be started.&lt;br /&gt;
+Options that start with a plus sign (+) restore the default.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;hr /&gt;
 
@@ -10682,8 +11184,9 @@ Shells:  csh, bash&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;Specifically:  Customize CentOS/RHEL DVD ISO Image for Installation in Text 
-Mode via Serial Console &lt;strong&gt;on IBM BladeCenter HS21 Servers&lt;/strong&gt; and Test It with QEMU&lt;/p&gt;
+&lt;p&gt;Specifically:  Customize CentOS/RHEL DVD ISO image for installation in Text 
+Mode via serial console &lt;a href=&quot;#footnotes&quot;&gt;¹&lt;/a&gt; &lt;strong&gt;on IBM BladeCenter HS21 Servers&lt;/strong&gt;
+and test It with QEMU&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -10760,14 +11263,14 @@ enable a user to log in as the root user through the SOL console:&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;Comment out the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;splashimage=...&lt;/code&gt; line by adding a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&lt;/code&gt; at the 
 beginning of this line.&lt;/li&gt;
-  &lt;li&gt;Add the following line before the first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title=...&lt;/code&gt; line:
+  &lt;li&gt;Add the following line before the first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title ...&lt;/code&gt; line:
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;# This will allow you to only Monitor the OS boot via SOL&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Append the following text to the first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title=...&lt;/code&gt; line:
+  &lt;li&gt;Append the following text to the first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title ...&lt;/code&gt; line:
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SOL Monitor&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Append the following text to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kernel/...&lt;/code&gt; line of the 
-first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title=...&lt;/code&gt; section:&lt;br /&gt;
+  &lt;li&gt;Append the following text to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kernel /...&lt;/code&gt; line of the 
+first &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title ...&lt;/code&gt; section:&lt;br /&gt;
 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console=ttyS1,19200 console=tty1&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Add the following lines between the two &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title=...&lt;/code&gt; sections:&lt;/li&gt;
+  &lt;li&gt;Add the following lines between after the above &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title ...&lt;/code&gt; section:&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# This will allow you to Interact with the OS boot via SOL 
@@ -12230,6 +12733,19 @@ This worked when I configured DHCP in the guest VM.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ssh localhost -p 5555
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h3&gt;
+
+&lt;p&gt;[¹] Linux(R) Kernel Primer, The: A Top-Down Approach for x86
+and PowerPC Architectures by Claudia Salzberg Rodriguez, Gordon Fischer,
+Steven Smolski - Pearson Publishing - September 2005:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;A computer console is a device where the kernel (and other parts of 
+a system) output messages.  It also has login capabilities.
+Depending on the system, the console can be on the monitor or through
+a serial port.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;hr /&gt;
 
@@ -12269,46 +12785,36 @@ tty tty0 ttyS0 tty1 ttyS1&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;REFERENCES:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.privex.io/articles/using-serial-sol-config/&quot;&gt;Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;Retrieved on Mar 12, 2022:&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml&quot;&gt;How to remote install CentOS/RHEL 7 using a rescue image like GRML?&lt;/a&gt;&lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.privex.io/articles/using-serial-sol-config/&quot;&gt;Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Out-of-band_management&quot;&gt;Out-of-band management&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml&quot;&gt;How to remote install CentOS/RHEL 7 using a rescue image like GRML?&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/IBM_BladeCenter&quot;&gt;IBM BladeCenter&lt;/a&gt;   &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Out-of-band_management&quot;&gt;Out-of-band management&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter&quot;&gt;IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM’s out-of-band management implementation)&lt;/a&gt;   &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/IBM_BladeCenter&quot;&gt;IBM BladeCenter&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Baseboard_Management_Controller&quot;&gt;Baseboard Management Controller, a microcontroller on computer motherboards&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter&quot;&gt;IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM’s out-of-band management implementation)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface&quot;&gt;Intelligent Platform Management Interface (IPMI)&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Baseboard_Management_Controller&quot;&gt;Baseboard Management Controller, a microcontroller on computer motherboards&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface&quot;&gt;Intelligent Platform Management Interface (IPMI)&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;My comment:&lt;/strong&gt; HP iLO would be easier but I’m restricted by my environment 
 with (a legacy) IBM MM (Management Module). For example, the website in 
 the link below shows that with the version of iLO from that website it’s 
 possible to mount CD-ROM to http; iLO shows which serial port is active 
 (COM1, COM2,…), etc. &lt;br /&gt;
-&lt;a href=&quot;http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html&quot;&gt;HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;a href=&quot;http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html&quot;&gt;HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/&quot;&gt;CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/&quot;&gt;CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os&quot;&gt;QEMU and serial ports on the guest OS&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os&quot;&gt;QEMU and serial ports on the guest OS&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host&quot;&gt;QEMU doesn’t create a second serial port (Ubuntu x86-64 guest and host)&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host&quot;&gt;QEMU doesn’t create a second serial port (Ubuntu x86-64 guest and host)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea&quot;&gt;ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm&lt;/a&gt;&lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea&quot;&gt;ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;The problem is on the host side:&lt;/p&gt;
 
@@ -12323,74 +12829,65 @@ the guest (if you use -serial stdio, it is /dev/ttyS0 on the guest, the
 first pty is then /dev/ttyS1).&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console&quot;&gt;CentOS Installation without VGA Console&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console&quot;&gt;CentOS Installation without VGA Console&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf&quot;&gt;IBM BladeCenter - Serial Over LAN (SOL) Setup Guide&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf&quot;&gt;IBM BladeCenter - Serial Over LAN (SOL) Setup Guide&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/&quot;&gt;Connecting QEMU/KVM virtual machines via serial port&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/&quot;&gt;Connecting QEMU/KVM virtual machines via serial port&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall&quot;&gt;Headless VNC Install Disk&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall&quot;&gt;Headless VNC Install Disk&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966&quot;&gt;centos_bstick.sh&lt;/a&gt;&lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966&quot;&gt;centos_bstick.sh&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/QEMU&quot;&gt;QEMU - Wikipedia&lt;/a&gt;&lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/QEMU&quot;&gt;QEMU - Wikipedia&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to&quot;&gt;How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to&quot;&gt;How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321&quot;&gt;How to pass Ctrl-C to the guest when running qemu with -nographic?&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321&quot;&gt;How to pass Ctrl-C to the guest when running qemu with -nographic?&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/&quot;&gt;Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation – CentOS Documentation&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/&quot;&gt;Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation – CentOS Documentation&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86&quot;&gt;Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86&quot;&gt;Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html&quot;&gt;Making a QEMU disk image bootable with GRUB&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html&quot;&gt;Making a QEMU disk image bootable with GRUB&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://centosfaq.org/centos/centos7-serial-console-and-flow-control/&quot;&gt;CentOS7 – Serial Console And Flow Control&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://centosfaq.org/centos/centos7-serial-console-and-flow-control/&quot;&gt;CentOS7 – Serial Console And Flow Control&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html&quot;&gt;QEMU serial console&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html&quot;&gt;QEMU serial console&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://hintshop.ludvig.co.nz/show/centos-text-cd/&quot;&gt;Creating a CentOS text-only CD / DVD&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://hintshop.ludvig.co.nz/show/centos-text-cd/&quot;&gt;Creating a CentOS text-only CD / DVD&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559&quot;&gt;Make a custom CentOS-7 or RHEL-7 CD With kicktart File&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559&quot;&gt;Make a custom CentOS-7 or RHEL-7 CD With kicktart File&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/solutions/655603&quot;&gt;During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”&lt;/a&gt;  &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/solutions/655603&quot;&gt;During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images&quot;&gt;Working with ISO Images Red Hat Enterprise Linux 7 | Red Hat Customer Portal&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;[Working with ISO Images Red Hat Enterprise Linux 7&lt;/td&gt;
+      &lt;td&gt;Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest&quot;&gt;How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest&quot;&gt;How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://developer.ibm.com/tutorials/l-qemu-development/&quot;&gt;Archived | Using QEMU for cross-platform development&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;[Archived&lt;/td&gt;
+      &lt;td&gt;Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://libera.irclog.whitequark.org/osdev/2021-07-14&quot;&gt;#osdev - Operating System Development - IRC&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://libera.irclog.whitequark.org/osdev/2021-07-14&quot;&gt;#osdev - Operating System Development - IRC&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/articles/7212&quot;&gt;How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/articles/7212&quot;&gt;How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://0pointer.de/blog/projects/serial-console.html&quot;&gt;systemd for Administrators, Part XVI&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://0pointer.de/blog/projects/serial-console.html&quot;&gt;systemd for Administrators, Part XVI&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://peterpap.net/index.php/Sample_Kickstart_Configuration_file&quot;&gt;Sample Kickstart Configuration file&lt;/a&gt; &lt;br /&gt;
-(Retrieved on Mar 12, 2022)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://peterpap.net/index.php/Sample_Kickstart_Configuration_file&quot;&gt;Sample Kickstart Configuration file&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -16500,7 +16997,8 @@ tcp   LISTEN 0      4096      0.0.0.0:9000             0.0.0.0:*
 tcp   LISTEN 0      4096         [::]:9000                [::]:*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Press ~ + Ctrl-D at the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;debianvm1 login:&lt;/code&gt; prompt.&lt;/p&gt;
+&lt;p&gt;To exit the console (to drop the connection), press ~ + Ctrl-D at 
+the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;debianvm1 login:&lt;/code&gt; prompt.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ exit
 logout

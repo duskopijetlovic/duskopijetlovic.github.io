@@ -137,8 +137,9 @@ Shells:  csh, bash</p>
 
 <hr />
 
-<p>Specifically:  Customize CentOS/RHEL DVD ISO Image for Installation in Text 
-Mode via Serial Console <strong>on IBM BladeCenter HS21 Servers</strong> and Test It with QEMU</p>
+<p>Specifically:  Customize CentOS/RHEL DVD ISO image for installation in Text 
+Mode via serial console <a href="#footnotes">¹</a> <strong>on IBM BladeCenter HS21 Servers</strong>
+and test It with QEMU</p>
 
 <hr />
 
@@ -215,14 +216,14 @@ enable a user to log in as the root user through the SOL console:</p>
 <ol>
   <li>Comment out the <code class="language-plaintext highlighter-rouge">splashimage=...</code> line by adding a <code class="language-plaintext highlighter-rouge">#</code> at the 
 beginning of this line.</li>
-  <li>Add the following line before the first <code class="language-plaintext highlighter-rouge">title=...</code> line:
+  <li>Add the following line before the first <code class="language-plaintext highlighter-rouge">title ...</code> line:
 <code class="language-plaintext highlighter-rouge"># This will allow you to only Monitor the OS boot via SOL</code></li>
-  <li>Append the following text to the first <code class="language-plaintext highlighter-rouge">title=...</code> line:
+  <li>Append the following text to the first <code class="language-plaintext highlighter-rouge">title ...</code> line:
 <code class="language-plaintext highlighter-rouge">SOL Monitor</code></li>
-  <li>Append the following text to the <code class="language-plaintext highlighter-rouge">kernel/...</code> line of the 
-first <code class="language-plaintext highlighter-rouge">title=...</code> section:<br />
+  <li>Append the following text to the <code class="language-plaintext highlighter-rouge">kernel /...</code> line of the 
+first <code class="language-plaintext highlighter-rouge">title ...</code> section:<br />
 <code class="language-plaintext highlighter-rouge">console=ttyS1,19200 console=tty1</code></li>
-  <li>Add the following lines between the two <code class="language-plaintext highlighter-rouge">title=...</code> sections:</li>
+  <li>Add the following lines between after the above <code class="language-plaintext highlighter-rouge">title ...</code> section:</li>
 </ol>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># This will allow you to Interact with the OS boot via SOL 
@@ -1685,6 +1686,19 @@ This worked when I configured DHCP in the guest VM.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh localhost -p 5555
 </code></pre></div></div>
+<hr />
+
+<h3 id="footnotes">Footnotes</h3>
+
+<p>[¹] Linux(R) Kernel Primer, The: A Top-Down Approach for x86
+and PowerPC Architectures by Claudia Salzberg Rodriguez, Gordon Fischer,
+Steven Smolski - Pearson Publishing - September 2005:</p>
+<blockquote>
+  <p>A computer console is a device where the kernel (and other parts of 
+a system) output messages.  It also has login capabilities.
+Depending on the system, the console can be on the monitor or through
+a serial port.</p>
+</blockquote>
 
 <hr />
 
@@ -1724,46 +1738,36 @@ tty tty0 ttyS0 tty1 ttyS1</p>
 
 <p><strong>REFERENCES:</strong></p>
 
-<p><a href="https://www.privex.io/articles/using-serial-sol-config/">Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p>Retrieved on Mar 12, 2022:</p>
 
-<p><a href="https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml">How to remote install CentOS/RHEL 7 using a rescue image like GRML?</a><br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://www.privex.io/articles/using-serial-sol-config/">Using a Serial Console with Linux, GRUB, SysLinux + Understanding Serial Configuration</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/Out-of-band_management">Out-of-band management</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://unix.stackexchange.com/questions/164289/how-to-remote-install-centos-rhel-7-using-a-rescue-image-like-grml">How to remote install CentOS/RHEL 7 using a rescue image like GRML?</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/IBM_BladeCenter">IBM BladeCenter</a>   <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://en.wikipedia.org/wiki/Out-of-band_management">Out-of-band management</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter">IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM’s out-of-band management implementation)</a>   <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://en.wikipedia.org/wiki/IBM_BladeCenter">IBM BladeCenter</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/Baseboard_Management_Controller">Baseboard Management Controller, a microcontroller on computer motherboards</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://en.wikipedia.org/wiki/IBM_Remote_Supervisor_Adapter">IBM Remote Supervisor Adapter or Integrated Management Module (IMM; IBM’s out-of-band management implementation)</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface">Intelligent Platform Management Interface (IPMI)</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://en.wikipedia.org/wiki/Baseboard_Management_Controller">Baseboard Management Controller, a microcontroller on computer motherboards</a></p>
+
+<p><a href="https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface">Intelligent Platform Management Interface (IPMI)</a></p>
 
 <p><strong>My comment:</strong> HP iLO would be easier but I’m restricted by my environment 
 with (a legacy) IBM MM (Management Module). For example, the website in 
 the link below shows that with the version of iLO from that website it’s 
 possible to mount CD-ROM to http; iLO shows which serial port is active 
 (COM1, COM2,…), etc. <br />
-<a href="http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html">HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<a href="http://stivesso.blogspot.com/2015/09/hp-ilo-vsp-centos-7rhel-7installation.html">HP ILO VSP: CentOS 7/RHEL 7 Installation through Serial Console</a></p>
 
-<p><a href="http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/">CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="http://mirror.centos.org/centos/7.9.2009/os/x86_64/images/pxeboot/">CentOS Mirror - PXE Installer BOOT Images - initrd.img and vmlinuz</a></p>
 
-<p><a href="https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os">QEMU and serial ports on the guest OS</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://serverfault.com/questions/872238/qemu-and-serial-ports-on-the-guest-os">QEMU and serial ports on the guest OS</a></p>
 
-<p><a href="https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host">QEMU doesn’t create a second serial port (Ubuntu x86-64 guest and host)</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://stackoverflow.com/questions/52801787/qemu-doesnt-create-a-second-serial-port-ubuntu-x86-64-guest-and-host">QEMU doesn’t create a second serial port (Ubuntu x86-64 guest and host)</a></p>
 
-<p><a href="https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea">ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm</a><br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://unix.stackexchange.com/questions/78511/ttyo-ports-do-not-have-the-good-port-address-on-qemu-1-4-0-running-image-for-bea">ttyO ports do not have the good port address on QEMU 1.4.0 running image for beagleboard-xm</a></p>
 <blockquote>
   <p>The problem is on the host side:</p>
 
@@ -1778,74 +1782,65 @@ the guest (if you use -serial stdio, it is /dev/ttyS0 on the guest, the
 first pty is then /dev/ttyS1).</p>
 </blockquote>
 
-<p><a href="http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console">CentOS Installation without VGA Console</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="http://wandin.net/dotclear/index.php?post/2010/03/16/CentOS-Installation-without-VGA-Console">CentOS Installation without VGA Console</a></p>
 
-<p><a href="https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf">IBM BladeCenter - Serial Over LAN (SOL) Setup Guide</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://bladecenter.lenovofiles.com/help/topic/com.lenovo.bladecenter.advmgtmod.doc/kp1bd_pdf.pdf">IBM BladeCenter - Serial Over LAN (SOL) Setup Guide</a></p>
 
-<p><a href="https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/">Connecting QEMU/KVM virtual machines via serial port</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://bauermann.wordpress.com/2013/09/04/connecting-qemukvm-virtual-machines-via-serial-port/">Connecting QEMU/KVM virtual machines via serial port</a></p>
 
-<p><a href="https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall">Headless VNC Install Disk</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://wiki.centos.org/TipsAndTricks/VncHeadlessInstall">Headless VNC Install Disk</a></p>
 
-<p><a href="https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966">centos_bstick.sh</a><br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://gist.github.com/vkanevska/fd624f708cde7d7c172a576b10bc6966">centos_bstick.sh</a></p>
 
-<p><a href="https://en.wikipedia.org/wiki/QEMU">QEMU - Wikipedia</a><br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://en.wikipedia.org/wiki/QEMU">QEMU - Wikipedia</a></p>
 
-<p><a href="https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to">How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://stackoverflow.com/questions/49716931/how-to-run-qemu-with-nographic-and-monitor-but-still-be-able-to-send-ctrlc-to">How to run qemu with -nographic and -monitor but still be able to send Ctrl+C to the guest and quit with Ctrl+A X?</a></p>
 
-<p><a href="https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321">How to pass Ctrl-C to the guest when running qemu with -nographic?</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://unix.stackexchange.com/questions/167165/how-to-pass-ctrl-c-to-the-guest-when-running-qemu-with-nographic/436321#436321">How to pass Ctrl-C to the guest when running qemu with -nographic?</a></p>
 
-<p><a href="https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/">Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation – CentOS Documentation</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://docs.centos.org/en-US/centos/install-guide/Consoles_Logs_During_Install_x86/">Installation Guide - Installing Using Anaconda - Consoles and Logging During the Installation – CentOS Documentation</a></p>
 
-<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86">Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-consoles-logs-during-installation-x86">Red Hat Product Documentation - Red Hat Enterprise Linux - 7 - Installation Guide - Consoles and Logging During the Installation</a></p>
 
-<p><a href="https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html">Making a QEMU disk image bootable with GRUB</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://web.archive.org/web/20171014140837/http://nairobi-embedded.org/making_a_qemu_disk_image_bootable_with_grub.html">Making a QEMU disk image bootable with GRUB</a></p>
 
-<p><a href="https://centosfaq.org/centos/centos7-serial-console-and-flow-control/">CentOS7 – Serial Console And Flow Control</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://centosfaq.org/centos/centos7-serial-console-and-flow-control/">CentOS7 – Serial Console And Flow Control</a></p>
 
-<p><a href="https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html">QEMU serial console</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html">QEMU serial console</a></p>
 
-<p><a href="http://hintshop.ludvig.co.nz/show/centos-text-cd/">Creating a CentOS text-only CD / DVD</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="http://hintshop.ludvig.co.nz/show/centos-text-cd/">Creating a CentOS text-only CD / DVD</a></p>
 
-<p><a href="https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559">Make a custom CentOS-7 or RHEL-7 CD With kicktart File</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://www.facebook.com/notes/linux-only/make-a-custom-centos-7-or-rhel-7-cd-with-kicktart-file/1142994982390559">Make a custom CentOS-7 or RHEL-7 CD With kicktart File</a></p>
 
-<p><a href="https://access.redhat.com/solutions/655603">During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”</a>  <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://access.redhat.com/solutions/655603">During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”</a></p>
 
-<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images">Working with ISO Images Red Hat Enterprise Linux 7 | Red Hat Customer Portal</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<table>
+  <tbody>
+    <tr>
+      <td>[Working with ISO Images Red Hat Enterprise Linux 7</td>
+      <td>Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)</td>
+    </tr>
+  </tbody>
+</table>
 
-<p><a href="https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest">How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest">How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking</a></p>
 
-<p><a href="https://developer.ibm.com/tutorials/l-qemu-development/">Archived | Using QEMU for cross-platform development</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<table>
+  <tbody>
+    <tr>
+      <td>[Archived</td>
+      <td>Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)</td>
+    </tr>
+  </tbody>
+</table>
 
-<p><a href="https://libera.irclog.whitequark.org/osdev/2021-07-14">#osdev - Operating System Development - IRC</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://libera.irclog.whitequark.org/osdev/2021-07-14">#osdev - Operating System Development - IRC</a></p>
 
-<p><a href="https://access.redhat.com/articles/7212">How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://access.redhat.com/articles/7212">How does one set up a serial terminal and/or console in Red Hat Enterprise Linux?</a></p>
 
-<p><a href="http://0pointer.de/blog/projects/serial-console.html">systemd for Administrators, Part XVI</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="http://0pointer.de/blog/projects/serial-console.html">systemd for Administrators, Part XVI</a></p>
 
-<p><a href="https://peterpap.net/index.php/Sample_Kickstart_Configuration_file">Sample Kickstart Configuration file</a> <br />
-(Retrieved on Mar 12, 2022)</p>
+<p><a href="https://peterpap.net/index.php/Sample_Kickstart_Configuration_file">Sample Kickstart Configuration file</a></p>
 
 <hr />
 
@@ -1878,286 +1873,1051 @@ first pty is then /dev/ttyS1).</p>
       
         
           
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
             
             <div class="panel-body">
               <h4>Related Posts</h4>
               <ul>
             
                 <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">QEMU Networking</a>
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html">How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html">How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/systemd/linux/howto/cli/terminal/shell/rhel/centos/sysadmin/2022/04/09/convert-sysvinit-to-systemd-service.html">Converting Traditional sysV Init Scripts to systemd Unit Files</a>
+                  
+                    (Categories: <a href="/category/systemd">systemd</a>, <a href="/category/linux">linux</a>, <a href="/category/howto">howto</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/sysadmin">sysadmin</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/networking/2022/04/02/qemu-networking.html">How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks</a>
                   
                     (Categories: <a href="/category/howto">howto</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/rs232serial">rs232serial</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/networking">networking</a>)
                   
@@ -2732,16 +3492,97 @@ first pty is then /dev/ttyS1).</p>
           
       
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/unix/shell/script/cli/terminal/perl/sysadmin/2022/03/13/occasionally-revisited-code-shell-script-snippets.html">Occasionally Revisited Code and Shell Script Snippets</a>
-                  
-                    (Categories: <a href="/category/unix">unix</a>, <a href="/category/shell">shell</a>, <a href="/category/script">script</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/perl">perl</a>, <a href="/category/sysadmin">sysadmin</a>)
-                  
-                </li>
+      
           
+      
           
+      
+          
+      
+          
+      
+    
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
       
           
       
@@ -3090,16 +3931,6 @@ first pty is then /dev/ttyS1).</p>
       
         
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/bhyve/virtualization/xorg/x11/freebsd/2022/03/09/bhyve-connect-to-xorg-linux-guest.html">How to Connect to Xorg in Linux Guest from Bhyve</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/bhyve">bhyve</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/xorg">xorg</a>, <a href="/category/x11">x11</a>, <a href="/category/freebsd">freebsd</a>)
-                  
-                </li>
-          
-          
-        
       
           
       
@@ -3235,16 +4066,6 @@ first pty is then /dev/ttyS1).</p>
       
         
           
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/tutorial/ruby/git/github/2022/03/07/setting-up-github-pages-with-jekyll.html">Setting Up GitHub Pages Website with Jekyll</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/tutorial">tutorial</a>, <a href="/category/ruby">ruby</a>, <a href="/category/git">git</a>, <a href="/category/github">github</a>)
-                  
-                </li>
-          
-          
-        
       
           
       
