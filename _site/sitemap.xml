@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Aug 2022 16:42:33 -0700</pubDate>
-    <lastBuildDate>Wed, 31 Aug 2022 16:42:33 -0700</lastBuildDate>
+    <pubDate>Wed, 31 Aug 2022 17:19:38 -0700</pubDate>
+    <lastBuildDate>Wed, 31 Aug 2022 17:19:38 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -65,14 +65,15 @@ jgraph/drawio
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;IP address of the guest VM (GNU/Linux Debian) is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.8.18&lt;/code&gt;.
-(The network interface name assigned by the OS is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enp0s5&lt;/code&gt;.)&lt;/p&gt;
+The network interface name assigned by the OS is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enp0s5&lt;/code&gt;, and 
+when you run the following inside the guest, you get its IP address:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ip address show dev enp0s5 | grep -w inet 
     inet 192.168.8.18/24 brd 192.168.8.255 scope global dynamic enp0s5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Use a Web browser on the FreeBSD host and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.8.19:8080/&lt;/code&gt; 
-or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://192.168.8.19:8443/&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Use a Web browser on the FreeBSD host and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.8.18:8080/&lt;/code&gt; 
+or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://192.168.8.18:8443/&lt;/code&gt;.&lt;/p&gt;
 
 &lt;hr /&gt;
 

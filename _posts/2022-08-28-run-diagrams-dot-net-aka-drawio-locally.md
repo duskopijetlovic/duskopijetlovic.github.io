@@ -63,15 +63,16 @@ jgraph/drawio
 ```
 
 IP address of the guest VM (GNU/Linux Debian) is `192.168.8.18`.
-(The network interface name assigned by the OS is `enp0s5`.)  
+The network interface name assigned by the OS is `enp0s5`, and 
+when you run the following inside the guest, you get its IP address:
 
 ```
 $ ip address show dev enp0s5 | grep -w inet 
     inet 192.168.8.18/24 brd 192.168.8.255 scope global dynamic enp0s5
 ```
 
-Use a Web browser on the FreeBSD host and open `http://192.168.8.19:8080/` 
-or `https://192.168.8.19:8443/`.   
+Use a Web browser on the FreeBSD host and open `http://192.168.8.18:8080/` 
+or `https://192.168.8.18:8443/`.   
 
 ---
 
