@@ -70,7 +70,8 @@ $ ip address show dev enp0s5 | grep -w inet
     inet 192.168.8.18/24 brd 192.168.8.255 scope global dynamic enp0s5
 ```
 
-Use a Web browser on the FreeBSD host and open `http://192.168.8.19:8080/`
+Use a Web browser on the FreeBSD host and open `http://192.168.8.19:8080/` 
+or `https://192.168.8.19:8443/`.   
 
 ---
 

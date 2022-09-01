@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Aug 2022 21:14:07 -0700</pubDate>
-    <lastBuildDate>Mon, 29 Aug 2022 21:14:07 -0700</lastBuildDate>
+    <pubDate>Wed, 31 Aug 2022 16:42:33 -0700</pubDate>
+    <lastBuildDate>Wed, 31 Aug 2022 16:42:33 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -71,7 +71,8 @@ jgraph/drawio
     inet 192.168.8.18/24 brd 192.168.8.255 scope global dynamic enp0s5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Use a Web browser on the FreeBSD host and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.8.19:8080/&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Use a Web browser on the FreeBSD host and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.8.19:8080/&lt;/code&gt; 
+or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://192.168.8.19:8443/&lt;/code&gt;.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -156,20 +157,60 @@ Shell: csh&lt;/p&gt;
 
 &lt;hr /&gt;
 
+&lt;p&gt;From the draw.io project’s 
+&lt;a href=&quot;https://github.com/jgraph/drawio#readme&quot;&gt;Readme&lt;/a&gt; file:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The full packaged .war of the client and servlets is built when the 
+project is tagged and available on the &lt;a href=&quot;https://github.com/jgraph/draw.io/releases&quot;&gt;releases page&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As of Aug 27, 2022, the latest draw.io version is 20.2.6.&lt;/p&gt;
+
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% mkdir drawio
 % cd drawio
 % fetch https://github.com/jgraph/drawio/releases/download/v20.2.6/draw.war
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.9 -m http.server
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% file draw.war
+draw.war: Zip archive data, at least v1.0 to extract, compression method=store
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Use a Web browser and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:8000&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% unzip draw.war 
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% pwd
+/usr/home/dusko/drawio
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ifconfig
+---- snip ----
+ue0: flags=8843&amp;lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&amp;gt; metric 0 mtu 1500 
+  options=68009b&amp;lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,
+  LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6&amp;gt;
+---- snip ----
+        inet 192.168.1.9 netmask 0xffffff00 broadcast 192.168.1.255
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For example, to run it with python3 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http.server&lt;/code&gt; module on port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;8081&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.9 -m http.server 8081
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Use a Web browser and open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:8081&lt;/code&gt; or
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://127.0.0.1:8081/&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.168.1.9:8081/&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Alternatively, on this system I could also run it with 
 python 3.8. &lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.8 -m http.server
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.8 -m http.server 8081
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;   If you use python2, to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SimpleHTTPServer&lt;/code&gt; module, 
+you need to run this command:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python2 -m SimpleHTTPServer 8081
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;

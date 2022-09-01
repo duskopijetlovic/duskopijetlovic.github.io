@@ -10,6 +10,14 @@ Shell: csh
 
 ---
 
+From the draw.io project's 
+[Readme](https://github.com/jgraph/drawio#readme) file:
+
+
+> The full packaged .war of the client and servlets is built when the 
+> project is tagged and available on the [releases page](https://github.com/jgraph/draw.io/releases).  
+
+As of Aug 27, 2022, the latest draw.io version is 20.2.6.  
 
 ```
 % mkdir drawio
@@ -18,17 +26,54 @@ Shell: csh
 ```
 
 ```
-% python3.9 -m http.server
+% file draw.war
+draw.war: Zip archive data, at least v1.0 to extract, compression method=store
 ```
 
-Use a Web browser and open `http://localhost:8000`. 
+```
+% unzip draw.war 
+---- snip ----
+```
+
+
+```
+% pwd
+/usr/home/dusko/drawio
+```
+
+```
+% ifconfig
+---- snip ----
+ue0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500 
+  options=68009b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,
+  LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6>
+---- snip ----
+        inet 192.168.1.9 netmask 0xffffff00 broadcast 192.168.1.255
+```
+
+For example, to run it with python3 `http.server` module on port `8081`:
+
+```
+% python3.9 -m http.server 8081
+```
+
+Use a Web browser and open `http://localhost:8081` or
+`http://127.0.0.1:8081/` or `http://192.168.1.9:8081/`.  
+
 
 Alternatively, on this system I could also run it with 
 python 3.8. <sup>[1](#footnotes)</sup>
 
 
 ```
-% python3.8 -m http.server
+% python3.8 -m http.server 8081
+```
+
+**Note:**   If you use python2, to use `SimpleHTTPServer` module, 
+you need to run this command: 
+
+```
+% python2 -m SimpleHTTPServer 8081
 ```
 
 ---
