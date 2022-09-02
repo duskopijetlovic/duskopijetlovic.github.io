@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13" 
+title: "How To Run diagrams.net (aka draw.io or drawio) Locally with a Java war File on FreeBSD 13" 
 date: 2022-08-27 10:34:06 -0700 
 categories: howto diagram java graph graphviz plaintext text tex latex visualization sysadmin documentation
 ---

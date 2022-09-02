@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Aug 2022 17:19:38 -0700</pubDate>
-    <lastBuildDate>Wed, 31 Aug 2022 17:19:38 -0700</lastBuildDate>
+    <pubDate>Fri, 02 Sep 2022 09:44:03 -0700</pubDate>
+    <lastBuildDate>Fri, 02 Sep 2022 09:44:03 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -152,7 +152,7 @@ project is tagged and available on the &lt;a href=&quot;https://github.com/jgrap
       </item>
     
       <item>
-        <title>How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</title>
+        <title>How To Run diagrams.net (aka draw.io or drawio) Locally with a Java war File on FreeBSD 13</title>
         <description>&lt;p&gt;OS: FreeBSD 13 &lt;br /&gt;
 Shell: csh&lt;/p&gt;
 
@@ -10400,19 +10400,34 @@ node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus21
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# scp root@abacus211:/etc/default/grub /tmp/grubabacus211.ORIG
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# grep -n CMDLINE /tmp/grubabacus211.ORIG
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# cp -i /tmp/grubabacus211.ORIG /tmp/grubabacus211.NEW
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# grep -n CMDLINE /tmp/grubabacus211.NEW
 7:GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -i.bkp &apos;s/ttyS1,19200/ttyS1,19200 nomodeset/&apos; /tmp/grubabacus211.ORIG
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# grep -n &apos;ttyS1,19200&apos; /tmp/grubabacus211.NEW
+7:GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -n &apos;/ttyS1,19200/p&apos; /tmp/grubabacus211.NEW
+GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -n &apos;/ttyS1,19200/=&apos; /tmp/grubabacus211.NEW
+7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# sed -i.bkp &apos;s/ttyS1,19200/ttyS1,19200 nomodeset/&apos; /tmp/grubabacus211.NEW
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# diff \
 --unified=0 \
-/tmp/grubabacus211.ORIG.bkp \
-/tmp/grubabacus211.ORIG
---- /tmp/grubabacus211.ORIG.bkp 2022-03-20 20:59:04.966346023 -0700
-+++ /tmp/grubabacus211.ORIG     2022-03-20 21:00:25.710970506 -0700
+/tmp/grubabacus211.NEW.bkp \
+/tmp/grubabacus211.NEW
+--- /tmp/grubabacus211.NEW.bkp 2022-03-20 20:59:04.966346023 -0700
++++ /tmp/grubabacus211.NEW     2022-03-20 21:00:25.710970506 -0700
 @@ -7 +7 @@
 -GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200&quot;
 +GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset&quot;
@@ -10421,7 +10436,7 @@ node &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abacus21
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 cp /etc/default/grub /tmp/grub.ORIG
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# scp /tmp/grubabacus211.ORIG root@abacus211:/etc/default/grub
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# scp /tmp/grubabacus211.NEW root@abacus211:/etc/default/grub
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# xdsh abacus211 cat /etc/default/grub
@@ -10903,8 +10918,481 @@ configuration, cabling and similar.&lt;/p&gt;
     
       <item>
         <title>How to Setup an External USB Hard Drive as a ZFS Backup Disk in FreeBSD</title>
-        <description>&lt;p&gt;OSs: FreeBSD 13 &lt;br /&gt;
-Shell:  csh&lt;/p&gt;
+        <description>&lt;ul&gt;
+  &lt;li&gt;OS:  FreeBSD 13.0&lt;/li&gt;
+  &lt;li&gt;Shell:  csh&lt;/li&gt;
+  &lt;li&gt;External hard disk drive: WD (WesternDigital) Easystore 14TB USB 3.0 Desktop External Hard Drive, Model:  &lt;a href=&quot;https://www.bestbuy.ca/en-ca/product/wd-easystore-14tb-usb-3-0-desktop-external-hard-drive-wdbama0140hbk-nese-black-only-at-best-buy/14936770&quot;&gt;WDBAMA0140HBK-NESE&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Possibly, a variation of a model &lt;a href=&quot;https://www.westerndigital.com/products/portable-drives/wd-easystore-desktop-usb-3-0-hdd#WDBAMA0140HBK-NESN&quot;&gt;WDBAMA0140HBK-NESN&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ freebsd-version
+13.0-RELEASE-p7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Connect one end of the USB cable to your system and the other end to 
+the hard drive.&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dmseg&lt;/code&gt; to find the external drive’s device node name (in this 
+example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;da0&lt;/code&gt;) and use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gpart destroy&lt;/code&gt; to remove any old partition 
+table that might be on the drive.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ dmesg | grep -i easy | grep -i store
+ugen0.4: &amp;lt;Western Digital easystore 264D&amp;gt; at usbus0
+umass0: &amp;lt;Western Digital easystore 264D, class 0/0, rev 3.10/30.12, addr 3&amp;gt; on usbus0
+da0: &amp;lt;WD easystore 264D 3012&amp;gt; Fixed Direct Access SPC-4 SCSI device
+ugen0.4: &amp;lt;Western Digital easystore 264D&amp;gt; at usbus0
+umass0: &amp;lt;Western Digital easystore 264D, class 0/0, rev 3.10/30.12, addr 3&amp;gt; on usbus0
+da0: &amp;lt;WD easystore 264D 3012&amp;gt; Fixed Direct Access SPC-4 SCSI device
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo usbconfig show_ifdrv | grep umass0
+ugen0.4.0: umass0: &amp;lt;Western Digital easystore 264D, class 0/0, rev 3.10/30.12, addr 58&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo usbconfig dump_info | grep ugen0.4
+ugen0.4: &amp;lt;Western Digital easystore 264D&amp;gt; at usbus0, cfg=0 md=HOST spd=SUPER (5 Gbps) pwr=ON (2mA)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo usbconfig list | grep ugen0.4
+ugen0.4: &amp;lt;Western Digital easystore 264D&amp;gt; at usbus0, cfg=0 md=HOST spd=SUPER (5 Gbps) pwr=ON (2mA)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo camcontrol devlist
+---- snip ----
+&amp;lt;WD easystore 264D 3012&amp;gt;           at scbus7 target 0 lun 0 (da0,pass3)
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geom disk list
+---- snip ----
+Geom name: da0
+Providers:
+1. Name: da0
+   Mediasize: 14000519643136 (13T)
+   Sectorsize: 512
+   Stripesize: 4096
+   Stripeoffset: 0
+   Mode: r0w0e0
+   descr: WD easystore 264D
+   lunname: WD      easystore 264D  9MH60Y1K
+   lunid: 5000cca290d0d53f
+   ident: 394D48363059314B
+   rotationrate: 7200
+   fwsectors: 63
+   fwheads: 255
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart list | grep -w da0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart show | grep -w da0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ glabel list | grep da0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ glabel list da0
+glabel: Class &apos;LABEL&apos; does not have an instance named &apos;da0&apos;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is a brand new disk so &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gpart destroy&lt;/code&gt; complains:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo gpart destroy -F da0
+gpart: arg0 &apos;da0&apos;: Invalid argument
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Otherwise, if the disk was previously configured and had a partitioning 
+scheme on it:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo gpart destroy -F da0
+da0 destroyed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo gpart add -a 1m -l external -t freebsd-zfs &quot;da0&quot;
+gpart: No partitioning scheme found on geom da0. Create one first using &apos;gpart create&apos;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create the partition table with &lt;strong&gt;gpt&lt;/strong&gt; partitioning scheme (on disk &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;da0&lt;/code&gt;).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo gpart create -s gpt da0
+da0 created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart show da0
+=&amp;gt;         40  27344764848  da0  GPT  (13T)
+           40  27344764848       - free -  (13T)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart list da0 | wc -l
+      17
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart list da0
+Geom name: da0
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create a new ZFS partition with the GPT label &lt;strong&gt;external&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo gpart add -a 1m -l external -t freebsd-zfs &quot;da0&quot;
+da0p1 added
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart show da0
+=&amp;gt;         40  27344764848  da0  GPT  (13T)
+           40         2008       - free -  (1.0M)
+         2048  27344760832    1  freebsd-zfs  (13T)
+  27344762880         2008       - free -  (1.0M)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart list da0 | wc -l
+      34
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gpart list da0
+Geom name: da0
+---- snip ----
+scheme: GPT
+Providers:
+1. Name: da0p1
+   Mediasize: 14000517545984 (13T)
+   Sectorsize: 512
+   Stripesize: 4096
+---- snip ----
+   label: external
+---- snip -----
+   type: freebsd-zfs
+---- snip ----
+Consumers:
+1. Name: da0
+   Mediasize: 14000519643136 (13T)
+   Sectorsize: 512
+   Stripesize: 4096
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ls -lh /dev/gpt/external
+crw-r-----  1 root  operator  0x1dd Mar 19 15:53 /dev/gpt/external 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ date
+Sat 19 Mar 2022 15:53:28 PDT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo geli init -e AES-XTS -l 256 -s 4096 &quot;/dev/gpt/external&quot;
+Enter new passphrase:
+Reenter new passphrase:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Metadata backup for provider /dev/gpt/external can be found in 
+  /var/backups/gpt_external.eli
+and can be restored with the following command:
+
+        # geli restore /var/backups/gpt_external.eli /dev/gpt/external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geli status
+geli: Command &apos;status&apos; not available; try &apos;load&apos; first.
+
+$ geli load
+geli: cannot load geom_eli: Operation not permitted
+
+$ sudo geli status
+Password:
+geli: Command &apos;status&apos; not available; try &apos;load&apos; first.
+
+$ sudo geli load
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geli status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo geli attach /dev/gpt/external
+Enter passphrase:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geli status
+            Name  Status  Components
+gpt/external.eli  ACTIVE  gpt/external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create a new zpool in the geli partition called &lt;strong&gt;external&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool create external gpt/external.eli
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s possible to use the pool named &lt;strong&gt;external&lt;/strong&gt; as the destination for 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;zxfer&lt;/code&gt; directly; however, in this example create a new dataset inside 
+the pool, and name it after the source machine’s hostname.  This will 
+help identify backup data and allow multiple hosts to back up to the 
+same drive.  Since the source machine’s hostname in this example 
+is &lt;strong&gt;fbsd1&lt;/strong&gt;, the backup destination for zxfer will be &lt;strong&gt;backup/fbsd1&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ hostname
+fbsd1.mydomain.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Trim off any domain information from the printed name of the current host:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ hostname -s
+fbsd1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+zroot   928G   189G   739G        -         -     6%    20%  1.00x    ONLINE  -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool create external gpt/external.eli
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool list
+NAME       SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+external  12.7T   468K  12.7T        -         -     0%     0%  1.00x    ONLINE  -
+zroot      928G   189G   739G        -         -     6%    20%  1.00x    ONLINE  -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zfs list
+NAME                 USED  AVAIL     REFER  MOUNTPOINT
+external             372K  12.3T       96K  /external
+zroot                176G   723G       88K  /zroot
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zfs create external/fbsd1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zfs list
+NAME                 USED  AVAIL     REFER  MOUNTPOINT
+external             504K  12.3T       96K  /external
+external/fbsd1        96K  12.3T       96K  /external/fbsd1
+zroot                189G   710G       88K  /zroot
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool import
+no pools available to import
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;zpool export&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;geli detach&lt;/code&gt; to simulate the drive removal from 
+the system.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool export external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool export external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+zroot   928G   189G   739G        -         -     6%    20%  1.00x    ONLINE  -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool import
+   pool: external
+     id: 1234567890123456789
+  state: ONLINE
+ action: The pool can be imported using its name or numeric identifier.
+ config:
+
+        external            ONLINE
+          gpt/external.eli  ONLINE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo geli detach /dev/gpt/external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geli status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Disconnect the external drive from the system.&lt;/p&gt;
+
+&lt;p&gt;Connect one end of the USB cable to your system and the other end to 
+the hard drive.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo geli attach /dev/gpt/external
+Enter passphrase: 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ geli status
+            Name  Status  Components
+gpt/external.eli  ACTIVE  gpt/external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool import
+   pool: external
+     id: 1234567890123456789
+  state: ONLINE
+ action: The pool can be imported using its name or numeric identifier.
+ config:
+
+        external            ONLINE
+          gpt/external.eli  ONLINE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool import external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool list
+NAME       SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+external  12.7T   696K  12.7T        -         -     0%     0%  1.00x    ONLINE  -
+zroot      928G   189G   739G        -         -     6%    20%  1.00x    ONLINE  -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zfs list
+NAME                 USED  AVAIL     REFER  MOUNTPOINT
+external             588K  12.3T       96K  /external
+external/fbsd1        96K  12.3T       96K  /external/fbsd1
+zroot                189G   710G       88K  /zroot
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ls -alh /external/
+total 10
+drwxr-xr-x   3 root  wheel     3B Mar 19 15:59 .
+drwxr-xr-x  21 root  wheel    28B Mar 19 16:06 ..
+drwxr-xr-x   2 root  wheel     2B Mar 19 15:59 fbsd1
+
+$ ls -alh /external/fbsd1/
+total 1
+drwxr-xr-x  2 root  wheel     2B Mar 19 15:59 .
+drwxr-xr-x  3 root  wheel     3B Mar 19 15:59 ..
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zfs list -H | \
+cut -f1 | \
+awk &apos;/[[:space:]]/{printf(&quot;Error! Dataset name contains spaces: %s\n&quot;,$0)}&apos;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo pkg install zxfer 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ set exclude=&quot;com.sun:auto-snapshot&quot;
+$ set exclude=&quot;${exclude},com.sun:auto-snapshot:015m&quot;
+$ set exclude=&quot;${exclude},objsetid&quot;
+$ set exclude=&quot;${exclude},keyformat&quot;
+$ set exclude=&quot;${exclude},keylocation&quot;
+$ set exclude=&quot;${exclude},pbkdf2iters&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ printf %s\\n &quot;$exclude&quot;
+com.sun:auto-snapshot,com.sun:auto-snapshot:015m,objsetid,keyformat,keylocation,pbkdf2iters
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zxfer -dFkPv -I ${exclude} -R zroot external/fbsd1
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this example, it took around five minutes to complete.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ls -alh /external/fbsd1/
+total 34
+drwxr-xr-x  3 root  wheel     4B Mar 19 16:53 .
+drwxr-xr-x  3 root  wheel     3B Mar 19 15:59 ..
+-rw-r--r--  1 root  wheel    28K Mar 19 16:53 .zxfer_backup_info.zroot
+drwxr-xr-x  7 root  wheel     7B Mar 19 16:53 zroot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ls -alh /external/fbsd1/zroot/
+total 12
+drwxr-xr-x  7 root  wheel     7B Mar 19 16:53 .
+drwxr-xr-x  3 root  wheel     4B Mar 19 16:53 ..
+drwxr-xr-x  2 root  wheel     2B Mar 19 16:49 ROOT
+drwxr-xr-x  2 root  wheel     2B Mar 19 16:53 tmp
+drwxr-xr-x  5 root  wheel     5B Mar 19 16:53 usr
+drwxr-xr-x  7 root  wheel     7B Mar 19 16:53 var
+drwxr-xr-x  3 root  wheel     3B Mar 19 16:53 vm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zfs list
+NAME                                USED  AVAIL     REFER  MOUNTPOINT
+external                           37.7G  12.3T       96K  /external
+external/fbsd1                     37.7G  12.3T      136K  /external/fbsd1
+external/fbsd1/zroot               37.7G  12.3T      152K  /external/fbsd1/zroot
+---- snip ----
+zroot                               189G   710G       88K  /zroot
+zroot/ROOT                         58.5G   710G       88K  none
+---- snip ---
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ df -hT
+Filesystem                         Type       Size    Used   Avail Capacity  Mounted on
+zroot/ROOT/default                 zfs        763G     53G    710G     7%    /
+---- snip ----
+external                           zfs         12T     96K     12T     0%    /external
+external/fbsd1                     zfs         12T    136K     12T     0%    /external/fbsd1
+external/fbsd1/zroot               zfs         12T    152K     12T     0%    /external/fbsd1/zroot
+---- snip ----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ printf %s\\n Testing &amp;gt; /external/fbsd1/test
+/external/fbsd1/test: Permission denied.
+
+$ printf %s\\n Testing | sudo tee -a /external/fbsd1/test
+Testing
+
+$ ls -lh /external/fbsd1/test
+-rw-r--r--  1 root  wheel     8B Mar 19 17:13 /external/fbsd1/test
+
+$ date
+Sat 19 Mar 2022 17:13:10 PDT
+
+$ cat /external/fbsd1/test
+Testing
+
+$ sudo rm -i /external/fbsd1/test
+remove /external/fbsd1/test? y
+
+$ ls -lh /external/fbsd1/test
+ls: /external/fbsd1/test: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo zpool scrub external
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool status external
+  pool: external
+ state: ONLINE
+  scan: scrub in progress since Sat Mar 19 18:08:51 2022
+        37.7G scanned at 1.45G/s, 5.13G issued at 202M/s, 37.7G total
+        0B repaired, 13.60% done, 00:02:45 to go
+config:
+
+        NAME                STATE     READ WRITE CKSUM
+        external            ONLINE       0     0     0
+          gpt/external.eli  ONLINE       0     0     0
+
+errors: No known data errors
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool list
+NAME       SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+external  12.7T  37.7G  12.7T        -         -     0%     0%  1.00x    ONLINE  -
+zroot      928G   189G   739G        -         -     6%    20%  1.00x    ONLINE  -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ zpool status external
+  pool: external
+ state: ONLINE
+  scan: scrub repaired 0B in 00:03:13 with 0 errors on Sat Mar 19 18:12:04 2022
+config:
+
+        NAME                STATE     READ WRITE CKSUM
+        external            ONLINE       0     0     0
+          gpt/external.eli  ONLINE       0     0     0
+
+errors: No known data errors
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
 
 </description>
         <pubDate>Sat, 19 Mar 2022 10:13:21 -0700</pubDate>

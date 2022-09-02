@@ -6006,19 +6006,34 @@ node <code class="language-plaintext highlighter-rouge">abacus214</code> is Cent
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># scp root@abacus211:/etc/default/grub /tmp/grubabacus211.ORIG
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grep -n CMDLINE /tmp/grubabacus211.ORIG
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cp -i /tmp/grubabacus211.ORIG /tmp/grubabacus211.NEW
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grep -n CMDLINE /tmp/grubabacus211.NEW
 7:GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -i.bkp 's/ttyS1,19200/ttyS1,19200 nomodeset/' /tmp/grubabacus211.ORIG
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># grep -n 'ttyS1,19200' /tmp/grubabacus211.NEW
+7:GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -n '/ttyS1,19200/p' /tmp/grubabacus211.NEW
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -n '/ttyS1,19200/=' /tmp/grubabacus211.NEW
+7
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># sed -i.bkp 's/ttyS1,19200/ttyS1,19200 nomodeset/' /tmp/grubabacus211.NEW
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># diff \
 --unified=0 \
-/tmp/grubabacus211.ORIG.bkp \
-/tmp/grubabacus211.ORIG
---- /tmp/grubabacus211.ORIG.bkp 2022-03-20 20:59:04.966346023 -0700
-+++ /tmp/grubabacus211.ORIG     2022-03-20 21:00:25.710970506 -0700
+/tmp/grubabacus211.NEW.bkp \
+/tmp/grubabacus211.NEW
+--- /tmp/grubabacus211.NEW.bkp 2022-03-20 20:59:04.966346023 -0700
++++ /tmp/grubabacus211.NEW     2022-03-20 21:00:25.710970506 -0700
 @@ -7 +7 @@
 -GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200"
 +GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=xcatvg/root console=ttyS1,19200 nomodeset"
@@ -6027,7 +6042,7 @@ node <code class="language-plaintext highlighter-rouge">abacus214</code> is Cent
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 cp /etc/default/grub /tmp/grub.ORIG
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># scp /tmp/grubabacus211.ORIG root@abacus211:/etc/default/grub
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># scp /tmp/grubabacus211.NEW root@abacus211:/etc/default/grub
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># xdsh abacus211 cat /etc/default/grub
@@ -6737,7 +6752,7 @@ configuration, cabling and similar.</p>
           
             
                 <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html">How To Run diagrams.net (aka draw.io or drawio) Locally with a war File on FreeBSD 13</a>
+                  <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/27/run-diagrams-dot-net-aka-drawio-with-java-war-image.html">How To Run diagrams.net (aka draw.io or drawio) Locally with a Java war File on FreeBSD 13</a>
                   
                     (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
                   
