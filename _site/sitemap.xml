@@ -5,9 +5,277 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 11 Sep 2022 17:57:32 -0700</pubDate>
-    <lastBuildDate>Sun, 11 Sep 2022 17:57:32 -0700</lastBuildDate>
+    <pubDate>Tue, 04 Oct 2022 19:14:01 -0700</pubDate>
+    <lastBuildDate>Tue, 04 Oct 2022 19:14:01 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Using Graphviz Clusters</title>
+        <description>&lt;p&gt;Host OS: FreeBSD 13, Shell: csh&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% cat backupmap.dot
+/*
+   Command to create the graph (when splines = &quot;line&quot;;): 
+       dot -Tpng backupmap.dot -o backupmap.png
+
+   Command to create the graph (when splines = &quot;ortho&quot;; in the dot file): 
+       dot -Gsplines=none backupmap.dot | neato -n -Gsplines=ortho -Tpng -o backupmap.png
+   ---&amp;gt; https://stackoverflow.com/questions/7922960/block-diagram-layout-with-dot-graphviz
+
+   To view the graph:
+   Install image viewer and cataloguer; for example:
+       xv backupmap.png &amp;amp;
+   Or: 
+       feh backupmap.png &amp;amp;
+*/
+
+/*
+  From:
+    https://stackoverflow.com/questions/7586376/graphviz-subgraph-doesnt-get-visualized
+
+  From the graphiz documentation, section &quot;Subgraphs and Clusters&quot;:
+
+  The third role for subgraphs directly involves how the graph will be laid 
+  out by certain layout engines.  
+
+  From the graphviz documentation:
+    https://graphviz.org/docs/attrs/cluster/
+
+  If the name of the subgraph begins with &quot;cluster&quot;, Graphviz notes the 
+  subgraph as a special cluster subgraph. 
+
+  Alternatively, you can use
+    cluster=true;
+  within a cluster.
+*/
+
+digraph backupMap {
+  /* 
+     http://graphs.grevian.org/reference
+     Used to influence the &apos;spring&apos; used in the layout. 
+     Can be used to push nodes further apart, which is especially useful 
+     for twopi and sfdp layouts
+  */
+  K = 0.6;
+  
+  /*
+     Graphviz - FaqClusterEdge - How can I create edges between cluster boxes?
+     http://www.graphviz.org/content/FaqClusterEdge
+  */ 
+  compound = true; 
+
+  splines = &quot;line&quot;; // Force edges to be straight, no curves or angles
+  //splines = &quot;ortho&quot;; 
+  rankdir = &quot;LR&quot;;   // NOTE: rankdir can be used only once
+  //rankdir = &quot;TB&quot;;
+  graph [newrank = true]; 
+  // To get the list of fonts:  fc-list
+  node[fontname = &quot;Hermit-Bold&quot;, width = 1.5, height = 0.45, fontsize=9];
+  nodesep = 0.14;
+
+  /*  Subgraph Clusters
+  
+      Graphviz cluster alignment
+        https://stackoverflow.com/questions/67295008/graphviz-cluster-alignment
+  */
+
+  subgraph clusterMain
+  {
+    style = &quot;dashed&quot;; 
+    color = &quot;#625a5a&quot;;
+    //peripheries = 0;  // To remove border around the cluster
+
+    //label = &quot;MAIN CLUSTER&quot;;
+    //graph[rankdir = &quot;LR&quot;];
+    node [shape = box, style = filled, color = black, fillcolor = &quot;#91cf60&quot;];
+
+    node [group = vert];
+    a[group = g1, label = &quot;Servers&quot;];
+    nfsServer [group = g1, label = &quot;NFS Servers&quot;]; 
+    b[group = g1, label = &quot;Backup Destinations&quot;];
+
+    // Added minlen in order to push the three &quot;Backup Destination&quot; clusters further away
+    // NOTE:  This is the first  minlen; there&apos;s another one further below
+    a -&amp;gt; nfsServer [minlen = 2.7, style = invis]; 
+    nfsServer -&amp;gt; b [style = invis];
+  }
+
+  subgraph clusterA
+  {
+    color = &quot;#625a5a&quot;;
+    node [shape = box, style = filled, color = black, fillcolor = &quot;#fee08b&quot;];
+    peripheries = 0;  // To remove border around the cluster
+
+    a15[label = &quot;redwood&quot;];
+    a14[label = &quot;chestnut&quot;];
+    a13[label = &quot;neon&quot;];
+    a12[label = &quot;www&quot;];
+    a11[label = &quot;xenon&quot;];
+    a10[label = &quot;mail&quot;];
+    a9[label  = &quot;mailx&quot;];
+    a8[label  = &quot;groups&quot;];
+    a7[label  = &quot;titanium&quot;];
+    a6[label  = &quot;chemapps&quot;];
+    a5[label  = &quot;wapps&quot;];
+    a4[label  = &quot;www5&quot;];
+    a3[label  = &quot;abacus&quot;];
+    a2[label  = &quot;kvmhost3&quot;];
+    a1[label  = &quot;ost&quot;];
+  }
+
+  {rank = same a -&amp;gt; {a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15} [style = invis] };
+  {rank = same b -&amp;gt; {LenovoDS2200 dcds1821 zfs} [ style = invis ] };  
+
+
+  subgraph clusterBackupToLenovoSANds2200
+  {
+    //label = &quot;Backup Destination 1&quot;;
+    label = &quot;                    &quot;;
+
+    node [fillcolor = &quot;#F5F5F5&quot;, style = filled, shape = &quot;rectangle&quot;]; 
+
+    /*
+      Group these two nodes - to keep the edges straight.
+
+      From Graphviz documentation:  Attributes - group:
+
+        Name for a group of nodes, for bundling edges avoiding crossings.
+
+        If the end points of an edge belong to the same group, i.e., have the 
+        same group attribute, parameters are set to avoid crossings and keep 
+        the edges straight.
+    */
+    kvmhost2 [group = gLenovoSAN, height = 0.10];
+    LenovoDS2200 [group = gLenovoSAN, penwidth=5.0, shape = &quot;cylinder&quot;, label = &quot;Lenovo DS2200\n\nSAN Array&quot;]; 
+
+    kvmhost2 -&amp;gt; LenovoDS2200 [label = &quot;iSCSI&quot;]; 
+  }
+
+
+  {rank = same kvmhost2 -&amp;gt; legend [style = invis] };
+
+
+  subgraph clusterBackupToDcDs1821NAS
+  {
+    //label = &quot;Backup Destination 2&quot;;
+    label = &quot;                   &quot;;
+
+    node [fillcolor = &quot;#F5F5F5&quot;, style = filled, shape = &quot;rectangle&quot;];
+    dummy1821 [style = invis];
+    dcds1821 [penwidth = 5.0, shape = &quot;cylinder&quot;, label = &quot;dc-ds1821\n\nSynology NAS&quot;];
+
+    // To force the subgraph to be similar size to the other two Backup Destinations subgraphs
+    dummy1821 -&amp;gt; dcds1821 [style = invis]; 
+  }
+
+  subgraph clusterBackupToKrypton
+  {
+    //label = &quot;Backup Destination 3&quot;;
+    label = &quot;                    &quot;;
+
+    node [fillcolor=&quot;#F5F5F5&quot;, style=filled, shape=&quot;rectangle&quot;]; 
+
+    krypton [group = gKrypton, height = 0.10];
+    zfs [group = gKrypton, penwidth = 5.0, shape = &quot;cylinder&quot;, label = &quot;napp-it Appliance\nZFS\nOpenIndiana&quot;];
+
+    krypton -&amp;gt; zfs [label = &quot;iSCSI&quot;];
+  } 
+
+  subgraph clusterLegend
+  {
+    dLC [ style = invis ];
+    peripheries = 0;  // To remove border around the cluster
+
+    legend
+    [shape=none, margin=0, label=
+      &amp;lt;
+        &amp;lt;table border=&quot;0&quot; cellborder=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;4&quot;&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td colspan=&quot;2&quot;&amp;gt;Legend&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;red&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;Nightly rsync NFS&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;green&quot;&amp;gt;green&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;green&quot;&amp;gt;tar via NFS&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;blue&quot;&amp;gt;blue&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;blue&quot;&amp;gt;Nightly rsync&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;D&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;Databases&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;W&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;/web or /www or /var/www dir&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;H&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;/home dir&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;G&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;/global dir&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;E&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;/etc, /opt, /root, /usr, /var directories&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+        &amp;lt;/table&amp;gt;
+      &amp;gt;];
+
+      dLC -&amp;gt; legend [style = invis];
+  }
+
+  edge [fontsize=9.0];
+
+  a1:e  -&amp;gt; kvmhost2 [taillabel=&quot;D, W&quot;, color=&quot;green&quot;];                  // ost
+  a2:e  -&amp;gt; kvmhost2 [taillabel=&quot;E&quot;, color=&quot;red&quot;];                       // kvmhost3
+  a3:e  -&amp;gt; kvmhost2 [taillabel=&quot;G, H, E&quot;, color=&quot;red&quot;];                 // abacus 
+  a4:e  -&amp;gt; kvmhost2 [taillabel=&quot;D, W&quot;, color=&quot;green&quot;];                  // www5
+  a5:e  -&amp;gt; kvmhost2 [taillabel=&quot;D, W&quot;, color=&quot;red&quot;];                    // wapps
+  a6:e  -&amp;gt; kvmhost2 [taillabel=&quot;D, W&quot;, color=&quot;red&quot;];                    // chemapps
+  // Added minlen in order to push the three &quot;Backup Destination&quot; clusters further away
+  // NOTE:  This is the second minlen; the first one is around 200 lines above
+  a7:e  -&amp;gt; kvmhost2 [taillabel=&quot;E, W, H&quot;, minlen = 2.7, color=&quot;green&quot;]; // titanium 
+  a8:e  -&amp;gt; kvmhost2 [taillabel=&quot;H, D&quot;, color=&quot;red&quot;];                    // groups
+  a9:n  -&amp;gt; kvmhost2 [taillabel=&quot;H&quot;, color=&quot;red&quot;];                       // mailx
+  a9:e  -&amp;gt; zfs      [taillabel=&quot;H&quot;, color=&quot;blue&quot;];                      // mailx
+  a9    -&amp;gt; dcds1821 [taillabel=&quot;H, E&quot;, color=&quot;blue&quot;];                   // mailx
+  a10:e -&amp;gt; kvmhost2 [taillabel=&quot;H&quot;, color=&quot;red&quot;];                       // mail
+  a11:e -&amp;gt; kvmhost2 [taillabel=&quot;H, D, W&quot;, color=&quot;green&quot;];               // xenon 
+  a12:e -&amp;gt; kvmhost2 [taillabel=&quot;D, W&quot;, color=&quot;green&quot;];                  // www
+  a13:e -&amp;gt; zfs [taillabel=&quot;D, W&quot;, color=&quot;green&quot;];                       // neon
+  a14:e -&amp;gt; dcds1821 [taillabel=&quot;E&quot;, color=&quot;blue&quot;];                      // chestnut
+  a15:e -&amp;gt; dcds1821 [taillabel=&quot;E&quot;, color=&quot;blue&quot;];                      // redwood
+
+/*
+   Graphiz FAQ
+     https://graphviz.org/faq/#FaqGraphLabel
+   Q: How can I set a graph or cluster label without its propagating to all sub-clusters?
+   A: Set the label at the end of the graph (before the closing brace), 
+      after all its contents have been defined. (We admit it seems desirable 
+      to define some special syntax for non-inherited attribute settings.)
+*/
+  label = &quot;Backup Map\nUpdated on: Sep 24, 2022&quot;;
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% dot -Tpng backupmap.dot -o backupmap.png
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% xv backupmap.png
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/backupmap.png&quot; alt=&quot;Displaying a backup diagram png image created by Grapvhiz&quot; title=&quot;Displaying a backup diagram png image created by Grapvhiz&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 24 Sep 2022 09:13:07 -0700</pubDate>
+        <link>http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html</link>
+        <guid isPermaLink="true">http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html</guid>
+        
+        
+        <category>howto</category>
+        
+        <category>diagram</category>
+        
+        <category>graph</category>
+        
+        <category>graphviz</category>
+        
+        <category>plaintext</category>
+        
+        <category>text</category>
+        
+        <category>tex</category>
+        
+        <category>latex</category>
+        
+        <category>visualization</category>
+        
+        <category>sysadmin</category>
+        
+        <category>documentation</category>
+        
+      </item>
     
       <item>
         <title>How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</title>
@@ -1730,9 +1998,12 @@ python3.7: Command not found.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.8 -c &apos;print(u&quot;\u02B7&quot;)&apos;
+ʷ
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% python3.8 -c &apos;print(u&quot;\u02B7\n&quot;)&apos;
+ʷ
+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;

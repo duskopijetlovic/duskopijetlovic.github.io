@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/static/img/favicon.ico" />
-    <title>How To Create a Bootable FreeBSD ZFS Clone - Dusko Pijetlovic</title>
+    <title>Using Graphviz Clusters - Dusko Pijetlovic</title>
     <meta name="author" content="Dusko Pijetlovic" />
-    <meta name="description" content="How To Create a Bootable FreeBSD ZFS Clone" />
-    <meta name="keywords" content="How To Create a Bootable FreeBSD ZFS Clone, Dusko Pijetlovic, howto, diagram, graph, graphviz, plaintext, text, tex, latex, visualization, documentation" />
+    <meta name="description" content="Using Graphviz Clusters" />
+    <meta name="keywords" content="Using Graphviz Clusters, Dusko Pijetlovic, howto, diagram, graph, graphviz, plaintext, text, tex, latex, visualization, sysadmin, documentation" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <meta content="1749788565247320" property="fb:app_id">
     <meta content="Dusko Pijetlovic" property="og:site_name">
@@ -16,7 +16,7 @@
     
 
     
-      <meta content="How To Create a Bootable FreeBSD ZFS Clone" property="og:title">
+      <meta content="Using Graphviz Clusters" property="og:title">
       <meta content="article" property="og:type">
     
 
@@ -25,11 +25,11 @@
     
 
     
-      <meta content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html" property="og:url">
+      <meta content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html" property="og:url">
     
 
     
-      <meta content="2022-03-05T08:08:02-08:00" property="article:published_time">
+      <meta content="2022-09-24T09:13:07-07:00" property="article:published_time">
       <meta content="http://localhost:4000/about/" property="article:author">
     
 
@@ -50,11 +50,11 @@
     <meta name="twitter:creator" content="@github.io">
 
     
-      <meta name="twitter:title" content="How To Create a Bootable FreeBSD ZFS Clone">
+      <meta name="twitter:title" content="Using Graphviz Clusters">
     
 
     
-      <meta name="twitter:url" content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html">
+      <meta name="twitter:url" content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html">
     
 
     
@@ -121,233 +121,253 @@
       </div>
       <div class="col-sm-8 col-offset-1 main-layout">
         <header class="post-header">
-  <h1 class="post-title">How To Create a Bootable FreeBSD ZFS Clone</h1>
+  <h1 class="post-title">Using Graphviz Clusters</h1>
 </header>
 
-<span class="time">05 Mar 2022</span>
+<span class="time">24 Sep 2022</span>
 
   <span class="categories">
-    &raquo; <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/documentation">documentation</a>
+    &raquo; <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>
   </span>
 
 
 <div class="content">
-  <div class="post"><p>OS: FreeBSD 13 <br />
-Shell:  csh<br />
-Python version: 3.8.12</p>
+  <div class="post"><p>Host OS: FreeBSD 13, Shell: csh</p>
 
-<hr />
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat backupmap.dot
+/*
+   Command to create the graph (when splines = "line";): 
+       dot -Tpng backupmap.dot -o backupmap.png
 
-<p><strong>[TODO]</strong>  Complete this page</p>
+   Command to create the graph (when splines = "ortho"; in the dot file): 
+       dot -Gsplines=none backupmap.dot | neato -n -Gsplines=ortho -Tpng -o backupmap.png
+   ---&gt; https://stackoverflow.com/questions/7922960/block-diagram-layout-with-dot-graphviz
 
-<hr />
+   To view the graph:
+   Install image viewer and cataloguer; for example:
+       xv backupmap.png &amp;
+   Or: 
+       feh backupmap.png &amp;
+*/
 
-<p><strong>Note:</strong> <br />
-In code excerpts and examples, the long lines are folded and then 
-indented to make sure they fit the page.</p>
+/*
+  From:
+    https://stackoverflow.com/questions/7586376/graphviz-subgraph-doesnt-get-visualized
 
-<hr />
+  From the graphiz documentation, section "Subgraphs and Clusters":
 
-<p>Code for a mind map in <a href="https://github.com/plantuml/plantuml/">PlantUML</a>:</p>
+  The third role for subgraphs directly involves how the graph will be laid 
+  out by certain layout engines.  
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat zfsbootable.txt
-@startmindmap
+  From the graphviz documentation:
+    https://graphviz.org/docs/attrs/cluster/
 
-title Create a Bootable FreeBSD ZFS Machine Clone\n
+  If the name of the subgraph begins with "cluster", Graphviz notes the 
+  subgraph as a special cluster subgraph. 
 
-' Based on
-' https://ideashortcut.com/tutorial-convert-you-notes-into-a-wbs-and-gantt-charts-with-plantuml/
-'   and
-' https://forums.freebsd.org/threads/cloning-a-zfs-boot-disk-on-a-usb-drive.79687/
-'   and
-' https://github.com/mattjhayes/PlantUML-Examples/blob/master/docs/Diagram-Types/diagram-types.md
+  Alternatively, you can use
+    cluster=true;
+  within a cluster.
+*/
 
-scale 0.85
+digraph backupMap {
+  /* 
+     http://graphs.grevian.org/reference
+     Used to influence the 'spring' used in the layout. 
+     Can be used to push nodes further apart, which is especially useful 
+     for twopi and sfdp layouts
+  */
+  K = 0.6;
+  
+  /*
+     Graphviz - FaqClusterEdge - How can I create edges between cluster boxes?
+     http://www.graphviz.org/content/FaqClusterEdge
+  */ 
+  compound = true; 
 
-skinparam ArrowColor DarkGrey
+  splines = "line"; // Force edges to be straight, no curves or angles
+  //splines = "ortho"; 
+  rankdir = "LR";   // NOTE: rankdir can be used only once
+  //rankdir = "TB";
+  graph [newrank = true]; 
+  // To get the list of fonts:  fc-list
+  node[fontname = "Hermit-Bold", width = 1.5, height = 0.45, fontsize=9];
+  nodesep = 0.14;
 
-&lt;style&gt;
-mindmapDiagram {
-  node {
-    Padding 15
-    Margin 15
-    BackGroundColor YellowGreen
-    FontColor DarkSlateGrey
-    LineColor White
-    LineThickness 1.0
-    MaximumWidth 320
+  /*  Subgraph Clusters
+  
+      Graphviz cluster alignment
+        https://stackoverflow.com/questions/67295008/graphviz-cluster-alignment
+  */
+
+  subgraph clusterMain
+  {
+    style = "dashed"; 
+    color = "#625a5a";
+    //peripheries = 0;  // To remove border around the cluster
+
+    //label = "MAIN CLUSTER";
+    //graph[rankdir = "LR"];
+    node [shape = box, style = filled, color = black, fillcolor = "#91cf60"];
+
+    node [group = vert];
+    a[group = g1, label = "Servers"];
+    nfsServer [group = g1, label = "NFS Servers"]; 
+    b[group = g1, label = "Backup Destinations"];
+
+    // Added minlen in order to push the three "Backup Destination" clusters further away
+    // NOTE:  This is the first  minlen; there's another one further below
+    a -&gt; nfsServer [minlen = 2.7, style = invis]; 
+    nfsServer -&gt; b [style = invis];
   }
-  rootNode {
-    Padding 15
-    Margin 15
-    BackGroundColor YellowGreen
-    FontColor DarkSlateGrey
-    FontSize 18
-    LineColor White
-    LineThickness 1.0
+
+  subgraph clusterA
+  {
+    color = "#625a5a";
+    node [shape = box, style = filled, color = black, fillcolor = "#fee08b"];
+    peripheries = 0;  // To remove border around the cluster
+
+    a15[label = "redwood"];
+    a14[label = "chestnut"];
+    a13[label = "neon"];
+    a12[label = "www"];
+    a11[label = "xenon"];
+    a10[label = "mail"];
+    a9[label  = "mailx"];
+    a8[label  = "groups"];
+    a7[label  = "titanium"];
+    a6[label  = "chemapps"];
+    a5[label  = "wapps"];
+    a4[label  = "www5"];
+    a3[label  = "abacus"];
+    a2[label  = "kvmhost3"];
+    a1[label  = "ost"];
   }
-  leafNode {
-    Padding 15
-    Margin 15
-    BackGroundColor LightGray
-    FontColor DarkSlateGrey
-    FontSize 15
-    LineColor ForestGreen
-    LineThickness 2.0
+
+  {rank = same a -&gt; {a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15} [style = invis] };
+  {rank = same b -&gt; {LenovoDS2200 dcds1821 zfs} [ style = invis ] };  
+
+
+  subgraph clusterBackupToLenovoSANds2200
+  {
+    //label = "Backup Destination 1";
+    label = "                    ";
+
+    node [fillcolor = "#F5F5F5", style = filled, shape = "rectangle"]; 
+
+    /*
+      Group these two nodes - to keep the edges straight.
+
+      From Graphviz documentation:  Attributes - group:
+
+        Name for a group of nodes, for bundling edges avoiding crossings.
+
+        If the end points of an edge belong to the same group, i.e., have the 
+        same group attribute, parameters are set to avoid crossings and keep 
+        the edges straight.
+    */
+    kvmhost2 [group = gLenovoSAN, height = 0.10];
+    LenovoDS2200 [group = gLenovoSAN, penwidth=5.0, shape = "cylinder", label = "Lenovo DS2200\n\nSAN Array"]; 
+
+    kvmhost2 -&gt; LenovoDS2200 [label = "iSCSI"]; 
   }
-  ' Styles to apply to tasks based on status:
-  ' in progress (i)
-  .i {
-    BackgroundColor SkyBlue
+
+
+  {rank = same kvmhost2 -&gt; legend [style = invis] };
+
+
+  subgraph clusterBackupToDcDs1821NAS
+  {
+    //label = "Backup Destination 2";
+    label = "                   ";
+
+    node [fillcolor = "#F5F5F5", style = filled, shape = "rectangle"];
+    dummy1821 [style = invis];
+    dcds1821 [penwidth = 5.0, shape = "cylinder", label = "dc-ds1821\n\nSynology NAS"];
+
+    // To force the subgraph to be similar size to the other two Backup Destinations subgraphs
+    dummy1821 -&gt; dcds1821 [style = invis]; 
   }
-  ' completed (c)
-  .c {
-    BackgroundColor LightSlateGray
-    FontStyle italic
-    FontColor DarkGray
+
+  subgraph clusterBackupToKrypton
+  {
+    //label = "Backup Destination 3";
+    label = "                    ";
+
+    node [fillcolor="#F5F5F5", style=filled, shape="rectangle"]; 
+
+    krypton [group = gKrypton, height = 0.10];
+    zfs [group = gKrypton, penwidth = 5.0, shape = "cylinder", label = "napp-it Appliance\nZFS\nOpenIndiana"];
+
+    krypton -&gt; zfs [label = "iSCSI"];
+  } 
+
+  subgraph clusterLegend
+  {
+    dLC [ style = invis ];
+    peripheries = 0;  // To remove border around the cluster
+
+    legend
+    [shape=none, margin=0, label=
+      &lt;
+        &lt;table border="0" cellborder="1" cellspacing="0" cellpadding="4"&gt;
+          &lt;tr&gt;&lt;td colspan="2"&gt;Legend&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;font color="red"&gt;red&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;font color="red"&gt;Nightly rsync NFS&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;font color="green"&gt;green&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;font color="green"&gt;tar via NFS&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;font color="blue"&gt;blue&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;font color="blue"&gt;Nightly rsync&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;Databases&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;W&lt;/td&gt;&lt;td&gt;/web or /www or /var/www dir&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;H&lt;/td&gt;&lt;td&gt;/home dir&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;G&lt;/td&gt;&lt;td&gt;/global dir&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;E&lt;/td&gt;&lt;td&gt;/etc, /opt, /root, /usr, /var directories&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;
+      &gt;];
+
+      dLC -&gt; legend [style = invis];
   }
-  ' urgent (u)
-  .u {
-    BackgroundColor OrangeRed
-    FontStyle bold
-  }
-  ' delegated (d)
-  .d {
-    BackgroundColor Gold
-  }
+
+  edge [fontsize=9.0];
+
+  a1:e  -&gt; kvmhost2 [taillabel="D, W", color="green"];                  // ost
+  a2:e  -&gt; kvmhost2 [taillabel="E", color="red"];                       // kvmhost3
+  a3:e  -&gt; kvmhost2 [taillabel="G, H, E", color="red"];                 // abacus 
+  a4:e  -&gt; kvmhost2 [taillabel="D, W", color="green"];                  // www5
+  a5:e  -&gt; kvmhost2 [taillabel="D, W", color="red"];                    // wapps
+  a6:e  -&gt; kvmhost2 [taillabel="D, W", color="red"];                    // chemapps
+  // Added minlen in order to push the three "Backup Destination" clusters further away
+  // NOTE:  This is the second minlen; the first one is around 200 lines above
+  a7:e  -&gt; kvmhost2 [taillabel="E, W, H", minlen = 2.7, color="green"]; // titanium 
+  a8:e  -&gt; kvmhost2 [taillabel="H, D", color="red"];                    // groups
+  a9:n  -&gt; kvmhost2 [taillabel="H", color="red"];                       // mailx
+  a9:e  -&gt; zfs      [taillabel="H", color="blue"];                      // mailx
+  a9    -&gt; dcds1821 [taillabel="H, E", color="blue"];                   // mailx
+  a10:e -&gt; kvmhost2 [taillabel="H", color="red"];                       // mail
+  a11:e -&gt; kvmhost2 [taillabel="H, D, W", color="green"];               // xenon 
+  a12:e -&gt; kvmhost2 [taillabel="D, W", color="green"];                  // www
+  a13:e -&gt; zfs [taillabel="D, W", color="green"];                       // neon
+  a14:e -&gt; dcds1821 [taillabel="E", color="blue"];                      // chestnut
+  a15:e -&gt; dcds1821 [taillabel="E", color="blue"];                      // redwood
+
+/*
+   Graphiz FAQ
+     https://graphviz.org/faq/#FaqGraphLabel
+   Q: How can I set a graph or cluster label without its propagating to all sub-clusters?
+   A: Set the label at the end of the graph (before the closing brace), 
+      after all its contents have been defined. (We admit it seems desirable 
+      to define some special syntax for non-inherited attribute settings.)
+*/
+  label = "Backup Map\nUpdated on: Sep 24, 2022";
+
 }
-&lt;/style&gt;
-
-' Legend colours need to be updated manually :-(
-legend
-|&lt;back:LightGray&gt;&lt;b&gt;Not Started.&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:SkyBlue&gt;&lt;b&gt;In Progress.&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:LightSlateGrey&gt;&lt;i&gt;Completed     .&lt;/i&gt;&lt;/back&gt;|
-|&lt;back:OrangeRed&gt;&lt;b&gt;Urgent        .&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:Gold&gt;&lt;b&gt;Delegated   .&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:YellowGreen&gt;&lt;b&gt;Branch        .&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:LightGray&gt;&lt;b&gt;[*] The same name as before not required but convenient, unless you have bootfs set in /boot/loader.conf.&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:LightGray&gt;&lt;b&gt;[**] If you are creating the same pool and the rest as subsets of that, you need to force the zfs receive in order to tell it to overwrite your existing pool.&lt;/b&gt;&lt;/back&gt;|
-|&lt;back:LightGray&gt;&lt;b&gt;[***] On newer installs, this is zroot/ROOT/default or similar.&lt;/b&gt;&lt;/back&gt;|
-endlegend
-
-* Full\nsystem\nrestore\nto a\nfresh\ndrive
-** Root on ZFS install
-** Cloning
-** gpart(8)
-** dd(1)
-** Bare metal backup/restore
-** ZFS snapshots
-*** zfs send
-**** on trusted: nc(1)
-**** on untrusted: ssh(1)
-*** zfs receive
-*** beadm/bectl
-**** Boot pool name: zroot
-**** Boot BE parent\ndataset name: ROOT
-**** Boot datasets:\nROOT/tmp,\nROOT/var/tmp,\nROOT/default
-**** **/usr** and **/var** filesystems have\n**canmount** property set to **off**
-***** /usr and /var are placed \non the / dataset the\nzroot/ROOT/default BE
-** Full\nsystem\nrestore\nto a\nfresh\ndrive
-*** Capture the root pool properties\n zpool get all rpool &lt;&lt;c&gt;&gt;
-*** GPT layout &lt;&lt;i&gt;&gt;
-**** Manually create GPT
-*** Boot loader &lt;&lt;u&gt;&gt;
-**** Write the boot loader
-*** Sufficient size on destinaiton
-*** Boot off the\nFreeBSD Live CD/USB
-**** Get networking up\nand running
-**** Create the new zpool [*]
-**** zfs receive the backup [**]
-**** Use zpool(1) to set bootfs\nproperty properly [***]
-**** Reboot
-**** Use gptzfsboot(8)\nto install bootcode
-**** Reboot
-@endmindmap
 </code></pre></div></div>
 
-<p>Send a POST request using <a href="https://httpie.org/">HTTPie</a>, <a href="https://docs.kroki.io/kroki/setup/http-clients/">HTTP Clients - Kroki documentation</a> to generate the mind map image.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% http \
- http://localhost:8000/ \
- diagram_type='plantuml' \
- output_format='png' \
- diagram_source='@zfsbootable.txt' \
- &gt; zfsbootable.png
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% dot -Tpng backupmap.dot -o backupmap.png
 </code></pre></div></div>
 
-<p><img src="/assets/img/zfsbootable.png" alt="Displaying a png image of a mind map created with PlantUML invoked via Kroki" title="Displaying a png image of a mind map created with PlantUML invoked via Kroki" /></p>
-
-<p>Alternatively, you can display the image in a web browser.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat \
- zfsbootable.txt | \
- python3.8 -c \
- "import sys; import base64; import zlib; \
- print(base64.urlsafe_b64encode(zlib.\
- compress(sys.stdin.read().encode('utf-8'), 9)).decode('ascii'))"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv backupmap.png
 </code></pre></div></div>
 
-<p>Output:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eNq9V11v2zYUfdev4FtTobLaDl2zIDA6J01QIG2COEGxzXugRFriQpEaP5I6a__7zqVkx-mSod3DjNggLy_PPbxfZN74wF3olB
----- snip ----
-</code></pre></div></div>
-
-<p>Copy and paste the output to your web browser:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8000/plantuml/svg/eNq9V11v2zYUfdev4FtTobLaDl2zIDA6J01QIG2COEGxzXugRFriQpEaP5I6a_
----- snip ----
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat bootable_os_zfs_activity_diagram.txt
-@startuml
-' Based on https://waddles.org/2009/11/17/replicating-zfs-root-disks/
-' and
-' https://github.com/mattjhayes/PlantUML-Examples/blob/master/docs/Diagram-Types/diagram-types.md
-
-skinparam shadowing false
-
-title Create a Bootable FreeBSD ZFS Clone\n- Activity Diagram -\n
-
-start
-:Verify status;
-:Create recursive ZFS root pool (rpool) snapshot;
-:Insert and label new disks;
-:Create partition tables;
-:Create new zpool;
-:Replicate pool's dataset;
-:Replicate remaining datasets;
-:Set mountpoints;
-:Set bootfs property;
-:Export the new pool;
-:Install boot blocks to both disks;
-
-:Target System
-Transfer disks and boot failsafe;
-
-:Import zpool as rpool;
-:Export the zpool;
-
-:Boot to single user mode;
-:Unconfigure the system;
-:Reconfigure the system;
-: Cleanup;
-
-stop
-@enduml
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% http \ 
- http://localhost:8000/ \
- diagram_type='plantuml' \
- output_format='png' \
- diagram_source='@bootable_os_zfs_activity_diagram.txt' \
- &gt; bootable_os_zfs_activity_diagram.png
-</code></pre></div></div>
-
-<p><img src="/assets/img/bootable_os_zfs_activity_diagram.png" alt="Displaying a png image of an activity diagram created with PlantUML invoked via Kroki" title="Displaying a png image of an activity diagram created with PlantUML invoked via Kroki" /></p>
-
+<p><img src="/assets/img/backupmap.png" alt="Displaying a backup diagram png image created by Grapvhiz" title="Displaying a backup diagram png image created by Grapvhiz" /></p>
 </div>
   <div class="share-page">
   <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
@@ -357,7 +377,7 @@ stop
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
   <!-- Facebook -->
-  <div class="fb-share-button" data-href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/freebsd-create-bootable-zfs-clone.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+  <div class="fb-share-button" data-href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
 </div>
 
 <div id="fb-root"></div>
@@ -377,41 +397,7 @@ stop
       
         
           
-            
-            <div class="panel-body">
-              <h4>Related Posts</h4>
-              <ul>
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html">Using Graphviz Clusters</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
-                  
-                </li>
-          
-          
-        
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -454,52 +440,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -542,26 +488,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -586,6 +512,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -608,8 +560,84 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -636,6 +664,10 @@ stop
       
         
           
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
             
                 <li class="relatedPost">
                   <a href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html">How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</a>
@@ -665,52 +697,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -753,52 +745,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -841,26 +793,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -885,8 +817,132 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -942,52 +998,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1030,52 +1046,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1118,26 +1094,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -1162,8 +1118,132 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -1209,52 +1289,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1297,8 +1337,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -1347,8 +1439,12 @@ stop
       
           
       
+          
+      
     
         
+          
+      
           
       
           
@@ -1401,52 +1497,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1489,6 +1545,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -1511,8 +1593,36 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -1558,52 +1668,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1646,8 +1716,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -1703,52 +1825,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1791,52 +1873,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -1879,6 +1921,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -1901,8 +1969,84 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -1948,26 +2092,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -1992,8 +2116,36 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -2046,161 +2198,6 @@ stop
       
           
       
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -2228,26 +2225,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -2272,8 +2249,118 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/hpc/server/hardware/sysadmin/automation/configmanagement/howto/2022/03/20/xcat.html">HPC with xCAT, PBS/TORQUE, Gaussian and WebMO</a>
+                  
+                    (Categories: <a href="/category/hpc">hpc</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/automation">automation</a>, <a href="/category/configmanagement">configmanagement</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -2319,52 +2406,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -2407,30 +2454,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -2476,52 +2505,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -2564,52 +2553,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -2652,8 +2601,36 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -2699,52 +2676,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -2787,55 +2724,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -2878,6 +2772,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -2900,8 +2820,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -2947,52 +2919,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3035,52 +2967,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3123,8 +3015,12 @@ stop
       
           
       
+          
+      
     
         
+          
+      
           
       
           
@@ -3170,52 +3066,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3258,26 +3114,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -3302,52 +3138,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3393,52 +3189,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3481,52 +3237,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3569,55 +3285,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -3660,52 +3333,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3748,96 +3381,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3883,52 +3432,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -3971,52 +3480,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -4059,29 +3528,6 @@ stop
       
           
       
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -4106,8 +3552,84 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -4153,52 +3675,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -4241,52 +3723,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -4329,6 +3771,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -4351,8 +3819,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -4398,52 +3918,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -4486,55 +3966,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -4577,55 +4014,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -4668,26 +4062,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -4712,8 +4086,84 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -4759,8 +4209,180 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -4806,26 +4428,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -4850,52 +4452,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -4941,26 +4503,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -4985,8 +4527,204 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5032,26 +4770,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -5076,8 +4794,84 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5123,26 +4917,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -5167,30 +4941,36 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5236,52 +5016,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -5324,8 +5064,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5371,30 +5163,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
           
       
           
@@ -5440,6 +5214,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -5462,8 +5262,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5509,6 +5361,32 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -5531,8 +5409,12 @@ stop
       
           
       
+          
+      
     
         
+          
+      
           
       
           
@@ -5578,26 +5460,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -5622,8 +5484,36 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5669,26 +5559,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -5713,8 +5583,60 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5760,52 +5682,12 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
           
       
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
           
       
           
@@ -5848,26 +5730,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -5892,8 +5754,36 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -5939,30 +5829,36 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -6008,26 +5904,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -6052,8 +5928,12 @@ stop
       
           
       
+          
+      
     
         
+          
+      
           
       
           
@@ -6099,26 +5979,6 @@ stop
       
           
       
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
           
       
     
@@ -6143,6 +6003,59 @@ stop
       
           
       
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
     
         
           
@@ -6165,8 +6078,627 @@ stop
       
           
       
+          
+      
     
         
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
           
       
           
@@ -6196,10 +6728,8 @@ stop
 
 <div class="PageNavigation">
   
-    <a class="prev" href="/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/04/graphviz-and-koki-server-wiring-diagram.html">&laquo; How To Create Server Wiring Diagrams with Graphviz and Kroki</a>
+    <a class="prev" href="/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/08/28/run-diagrams-dot-net-aka-drawio-locally.html">&laquo; How To Run diagrams.net (aka draw.io or drawio) Locally with Docker on FreeBSD 13 with vm-bhyve and Debian GNU/Linux</a>
   
-  
-    <a class="next" href="/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/05/tex-latex-inkscape-svg-creating-diagrams.html">Writing Documentation and Creating Diagrams with LuaLaTeX and Inkscape &raquo;</a>
   
 </div>
 
@@ -6208,8 +6738,8 @@ stop
   <script type="text/javascript">
     /* <![CDATA[ */
     var disqus_shortname = "";
-    var disqus_identifier = "http://localhost:4000_How To Create a Bootable FreeBSD ZFS Clone";
-    var disqus_title = "How To Create a Bootable FreeBSD ZFS Clone";
+    var disqus_identifier = "http://localhost:4000_Using Graphviz Clusters";
+    var disqus_title = "Using Graphviz Clusters";
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
