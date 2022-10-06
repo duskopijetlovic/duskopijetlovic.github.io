@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 04 Oct 2022 19:14:01 -0700</pubDate>
-    <lastBuildDate>Tue, 04 Oct 2022 19:14:01 -0700</lastBuildDate>
+    <pubDate>Wed, 05 Oct 2022 09:33:14 -0700</pubDate>
+    <lastBuildDate>Wed, 05 Oct 2022 09:33:14 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -191,7 +191,7 @@ digraph backupMap {
       &amp;lt;
         &amp;lt;table border=&quot;0&quot; cellborder=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;4&quot;&amp;gt;
           &amp;lt;tr&amp;gt;&amp;lt;td colspan=&quot;2&quot;&amp;gt;Legend&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
-          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;red&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;Nightly rsync NFS&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+          &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;red&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;red&quot;&amp;gt;Nightly rsync via NFS&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
           &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;green&quot;&amp;gt;green&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;green&quot;&amp;gt;tar via NFS&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
           &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;blue&quot;&amp;gt;blue&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;font color=&quot;blue&quot;&amp;gt;Nightly rsync&amp;lt;/font&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
           &amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;D&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;Databases&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;

@@ -186,7 +186,7 @@ digraph backupMap {
       <
         <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
           <tr><td colspan="2">Legend</td></tr>
-          <tr><td><font color="red">red</font></td><td><font color="red">Nightly rsync NFS</font></td></tr>
+          <tr><td><font color="red">red</font></td><td><font color="red">Nightly rsync via NFS</font></td></tr>
           <tr><td><font color="green">green</font></td><td><font color="green">tar via NFS</font></td></tr>
           <tr><td><font color="blue">blue</font></td><td><font color="blue">Nightly rsync</font></td></tr>
           <tr><td>D</td><td>Databases</td></tr>
