@@ -245,3 +245,6 @@ digraph backupMap {
 ```
 
 ![Displaying a backup diagram png image created by Grapvhiz](/assets/img/backupmap.png "Displaying a backup diagram png image created by Grapvhiz")
+
+**Note:** To see the image in full size in a web browser, right-click on it and select "Open Image in New Tab".
+

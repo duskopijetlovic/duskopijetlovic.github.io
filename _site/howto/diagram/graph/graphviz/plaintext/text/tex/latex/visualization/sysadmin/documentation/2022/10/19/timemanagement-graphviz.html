@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/static/img/favicon.ico" />
-    <title>How To Create Networking Diagrams with Graphviz and Kroki - Dusko Pijetlovic</title>
+    <title>Time Management with Graphviz - Dusko Pijetlovic</title>
     <meta name="author" content="Dusko Pijetlovic" />
-    <meta name="description" content="How To Create Networking Diagrams with Graphviz and Kroki" />
-    <meta name="keywords" content="How To Create Networking Diagrams with Graphviz and Kroki, Dusko Pijetlovic, howto, diagram, java, graph, graphviz, plaintext, text, tex, latex, visualization, sysadmin, documentation" />
+    <meta name="description" content="Time Management with Graphviz" />
+    <meta name="keywords" content="Time Management with Graphviz, Dusko Pijetlovic, howto, diagram, graph, graphviz, plaintext, text, tex, latex, visualization, sysadmin, documentation" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     <meta content="1749788565247320" property="fb:app_id">
     <meta content="Dusko Pijetlovic" property="og:site_name">
@@ -16,7 +16,7 @@
     
 
     
-      <meta content="How To Create Networking Diagrams with Graphviz and Kroki" property="og:title">
+      <meta content="Time Management with Graphviz" property="og:title">
       <meta content="article" property="og:type">
     
 
@@ -25,11 +25,11 @@
     
 
     
-      <meta content="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/03/03/graphviz-servers-networking-diagram.html" property="og:url">
+      <meta content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html" property="og:url">
     
 
     
-      <meta content="2022-03-03T20:17:02-08:00" property="article:published_time">
+      <meta content="2022-10-19T08:03:09-07:00" property="article:published_time">
       <meta content="http://localhost:4000/about/" property="article:author">
     
 
@@ -50,11 +50,11 @@
     <meta name="twitter:creator" content="@github.io">
 
     
-      <meta name="twitter:title" content="How To Create Networking Diagrams with Graphviz and Kroki">
+      <meta name="twitter:title" content="Time Management with Graphviz">
     
 
     
-      <meta name="twitter:url" content="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/03/03/graphviz-servers-networking-diagram.html">
+      <meta name="twitter:url" content="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html">
     
 
     
@@ -121,177 +121,176 @@
       </div>
       <div class="col-sm-8 col-offset-1 main-layout">
         <header class="post-header">
-  <h1 class="post-title">How To Create Networking Diagrams with Graphviz and Kroki</h1>
+  <h1 class="post-title">Time Management with Graphviz</h1>
 </header>
 
-<span class="time">03 Mar 2022</span>
+<span class="time">19 Oct 2022</span>
 
   <span class="categories">
-    &raquo; <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/java">java</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>
+    &raquo; <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>
   </span>
 
 
 <div class="content">
-  <div class="post"><p>OS: FreeBSD 13 <br />
-Shell:  csh</p>
+  <div class="post"><p>OS: FreeBSD 13, Shell: csh</p>
 
-<hr />
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat timegraph.gv
+/*
+  Colours:
+    green = done
+    orange = in progress
+    red = not started
+ */ 
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat graph.dot
-graph networkdiagram {
+digraph timegraph
+{
 
   /*
-     Colours for the lines relate to the line speed
-     green is for 100 Mbit (100 Mb/s) (IBM Management)
-     blue is for Gigabit (1 Gb/s)
-     red is for 10 Gigabit (10 Gb/s)
+    Graphviz - FaqClusterEdge - How can I create edges between cluster
+  boxes? http://www.graphviz.org/content/FaqClusterEdge
   */
+  compound = true; 
 
-  imagepath="/usr/home/dusko/scratch/graphviz_network/images"
+  graph [newrank = true]; 
+  node [fontsize=10, shape = box];
+  splines = "line"; // Force edges to be straight, no curves or angles
 
-  label="\nCompute Cluster Network Diagram";
-
-  node [shape="none", fontname="arial", fontsize=10, labelloc="b", color="#ffffff"];
-  splines="compound";
-
-  fw [label="Edge firewall", image="firewall.png"];
-  panel [label="Patch panel", image="patchPanel24Port.png"];
-  sw1 [label="Cisco switch", image="gigabitSwitch.png"];
-  sw2 [label="Compute cluster switch", image="gigabitSwitch.png"];
-  srv1 [label="WebMO and cluster storage", image="rackmountServer1U.png"];
-  srv2 [label="Compute nodes 101-114", image="serverBlades.png"];
-  srv3 [label="Compute nodes 201-214", image="serverBlades.png"];
-  srv4 [label="Compute management node", image="rackmountServer1U.png"];
-  cloud [label="Internet", image="cloud.png"];
-
-  cloud -- fw [color="red"];
-  fw -- panel [color="red"];
-  sw1 -- panel [color="red"];
-  panel -- srv4 [color="blue"];
-
+  subgraph clusterToday 
   {
-    rank="same";
-    srv1; srv2; srv3; srv4;
+    label = "Today";
+    style = "filled";
+    color = "#91cf60";
+
+    "Inspect HP server fans";
   }
 
-  srv1 -- sw1 [color="blue"];
-  srv1 -- sw2 [color="blue"];
-  srv1 -- sw2 [color="green"];
-  srv2 -- sw2 [color="blue"];
-  srv2 -- sw2 [color="green"];
-  srv3 -- sw2 [color="blue"];
-  srv3 -- sw2 [color="green"];
-  srv4 -- sw2 [color="blue"];
+  subgraph clusterTomorrow
+  {
+    label = "Tomorrow";
+
+    //{ rank = same; "Email backupmap" ; }
+  }
+
+  subgraph clusterWeek1
+  {
+    label = "1st Week of Oct";
+  }
+
+  subgraph clusterWeek2
+  {
+    label = "2nd Week of Oct";
+  }
+
+  subgraph clusterWeek3
+  {
+    label = "3rd Week of Oct";
+
+    CVM [label = "Clone groups2 VM"]; 
+    SVM [label = "Stop KVM VM", color = "red"];
+    EXVM [label = "Export KVM VM", color = "red"];
+
+    /*
+      Group these three nodes - to keep the edges straight.
+
+      From Graphviz documentation:  Attributes - group:
+        Name for a group of nodes, for bundling edges avoiding crossings.
+        If the end points of an edge belong to the same group, i.e., have the 
+        same group attribute, parameters are set to avoid crossings and keep 
+        the edges straight.
+    */
+    CVRT [group = gConvert, label = "Convert QCOW2 to VMDK image", color = "red"];
+    CNO [group = gConvert, label = "Reqeust a new org in VMware Cloud Director", color = "orange"];
+    IMPIMG [group = gConvert, label = "Import VMDK image in VMware Cloud Director", color = "red"];
+  
+    CVM -&gt; SVM -&gt; EXVM -&gt; CVRT; 
+    CVM -&gt; CNO;
+    CNO -&gt; IMPIMG;
+
+    CVRT -&gt; IMPIMG;
+  }
+
+  subgraph clusterWeek4
+  {
+    label = "4th Week of Oct";
+    "Install SSL certs";
+    "Email reviews to Jill";
+  }
+
+  subgraph clusterWeek5
+  {
+    label = "5th Week of Oct";
+    "Install git";   
+  }
+
+  subgraph clusterFuture
+  {
+    label = "Future";
+
+    "Clone NE1032T switch\n
+     Install Nagios\n
+     Configure an automation system\n
+     Backup QCOW2 images for all VMs";
+  }
+
+  label = "Updated on Oct 19, 2022";
 }
 </code></pre></div></div>
 
-<p>To generate the diagram with <a href="https://graphviz.org/">Graphviz</a>:</p>
+<p>Command to generate diagram:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% dot -Tpng graph.dot -o graph.png
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dot -Tpng timemgraph.gv -o timemgraph.png 
 </code></pre></div></div>
 
-<p>To generate the diagram with PlantUML via a self-managed instance of <a href="https://kroki.io/">Kroki</a> (<a href="http://www.duskopijetlovic.com/freebsd/howto/diagram/java/2022/02/26/freebsd-java-kroki-diagrams.html">How to Run Kroki on FreeBSD 13 with Java</a> or <a href="http://www.duskopijetlovic.com/freebsd/docker/vm/virtualization/howto/diagram/2022/02/25/freebsd-docker-linux-kroki-diagrams.html">How to Run Kroki on FreeBSD 13 with vm-bhyve and Debian GNU/Linux VM</a>):</p>
+<p>Command to view the graph:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% cat \
- graph.dot | \
- http \
- http://localhost:8000/plantuml/png \
- Content-Type:text/plain &gt; \
- graph.png
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ xv timegraph.png
 </code></pre></div></div>
 
-<p><strong>NOTE:</strong> <br />
-Supported output formats in PlantUML:  png, svg, jpeg, base64, txt or utxt.</p>
+<p>Command to generate diagram with the <code class="language-plaintext highlighter-rouge">make(1)</code> tool.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv graph.png
+<p>First create the Makefile file.</p>
+
+<p><strong>Note:</strong>  Each of the lines with target in the Makefile must be
+           preceded by a tab (in this case, lines with <code class="language-plaintext highlighter-rouge">dot</code>, <code class="language-plaintext highlighter-rouge">rm</code>,
+           and <code class="language-plaintext highlighter-rouge">xv</code> commands).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat Makefile
+timegraph.png timegraph.pdf: timegraph.gv
+	dot -Tpng timegraph.gv -o timegraph.png
+	dot -Tpdf timegraph.gv -o timegraph.pdf
+	xv timegraph.png
+clean:
+	rm -i *png *pdf
 </code></pre></div></div>
 
-<p><img src="/assets/img/graphviz-network-diagram.png" alt="Displaying a png image of a network diagram created by Graphviz" title="Displaying a png image of a network diagram created by Graphviz" /></p>
+<p>Use the make(1):</p>
 
-<p><strong>NOTE:</strong>  <br />
-Online Graphviz tools</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make
+</code></pre></div></div>
 
-<ul>
-  <li>For realtime collaboration: <a href="http://graphvizrepl.com">http://graphvizrepl.com</a>
-    <ul>
-      <li>Repository with the code for graphvizrepl.com:  <a href="https://github.com/caseywatts/graphviz-repl">https://github.com/caseywatts/graphviz-repl</a></li>
-    </ul>
+<p>When you want to delete generated PDF and PNG files:</p>
 
-    <blockquote>
-      <p>Graphviz-REPL gives you a two-pane interface for quickly creating and 
-iterating through graphviz diagrams. You type DOT syntax on the left, 
-and the image will appear on the right after just a moment.</p>
-    </blockquote>
-  </li>
-</ul>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make clean
+</code></pre></div></div>
 
-<hr />
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xv timegraph.png
+</code></pre></div></div>
 
-<p><strong>References:</strong></p>
+<p><img src="/assets/img/timegraph.png" alt="Displaying a time management diagram png image created by Grapvhiz" title="Displaying a time management diagram png image created by Grapvhiz" /></p>
 
-<ul>
-  <li>
-    <p><a href="https://mikegriffin.ie/blog/20110308-a-graphviz-tutorial">How to create a network diagram with Graphviz - A graphviz tutorial</a> <br />
-(Retrieved on Mar 3, 2022)</p>
+<p><strong>Note:</strong> To see the image in full size in a web browser, right-click on it and select “Open Image in New Tab”.</p>
 
-    <ul>
-      <li><a href="https://github.com/mgriffin/graphviz_network">Repository with the code Mike Griffin used in his graphviz tutorial blog post above</a><br />
-(Retrieved on Mar 3, 2022)</li>
-    </ul>
-  </li>
-  <li>
-    <p><a href="https://mamchenkov.net/wordpress/2015/08/20/graphviz-dot-erds-network-diagrams/">Using Graphviz dot for ERDs, network diagrams and more</a><br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://kontrolissues.net/2017/02/05/auto-network-diagram-with-graphviz/">Auto Network Diagram with Graphviz</a><br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://crashedmind.github.io/PlantUMLHitchhikersGuide/NetworkUsersMachines/NetworkUsersMachines.html">The Hitchhiker’s Guide to PlantUML - Create a Diagram of a Typical Network</a><br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://medium.com/powerof2/graphviz-for-network-visualization-9f45693d69d8">Graphviz for Network Visualization (Draw network diagrams from config files)</a><br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://www.graphviz.org/doc/info/shapes.html">Graphviz - Node Shapes</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://renenyffenegger.ch/notes/tools/Graphviz/examples/index">Graphviz (dot) examples</a>  <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://renenyffenegger.ch/notes/development/databases/SQL/data-types/">Plotting the hierarchy of SQL data types with graphviz/dot</a>  <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://renenyffenegger.ch/notes/tools/Graphviz/examples/organization-chart">Graphviz example: organization chart</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://stackoverflow.com/questions/7374108/graphviz-node-placement-and-rankdir/">GraphViz Node Placement and Rankdir</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://renenyffenegger.ch/notes/tools/Graphviz/examples/edge-crossing">Graphviz (dot) examples: crossing of edges - How crosssing of edges can be eliminated</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://stackoverflow.com/questions/9238672/how-does-a-script-optimally-layout-a-pure-hierarchical-graphviz-dot-graph">How does a script optimally layout a pure hierarchical graphviz/dot graph?</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="https://mikemol.github.io/jekyll/update/nodes/edges/labels/layout/graphviz/dot/2018/01/13/graphviz-technique-nodes-as-edge-labels.html">Nodes as Labels</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-  <li>
-    <p><a href="http://www.cisco.com/web/about/ac50/ac47/2.html">The Cisco network topology icons</a> <br />
-(Retrieved on Mar 3, 2022)</p>
-  </li>
-</ul>
+<h2 id="references">References</h2>
+
+<p><a href="https://zwischenzugs.com/2017/12/18/project-management-as-code-with-graphviz/">Project Management as Code with Graphviz</a></p>
+
+<p><a href="https://news.ycombinator.com/item?id=15950325">HackerNews Discussion</a></p>
+
+<p><a href="https://github.com/ianmiell/pm-as-code">Graphviz Source Code</a></p>
+
+<p><a href="http://www.graphviz.org/documentation/TSE93.pdf">A Technique for Drawing Directed Graphs</a></p>
+
+<p>Manpages for: make(1), style.Makefile(5) (on FreeBSD)</p>
 
 </div>
   <div class="share-page">
@@ -302,7 +301,7 @@ and the image will appear on the right after just a moment.</p>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
   <!-- Facebook -->
-  <div class="fb-share-button" data-href="http://localhost:4000/howto/diagram/java/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/03/03/graphviz-servers-networking-diagram.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+  <div class="fb-share-button" data-href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
 </div>
 
 <div id="fb-root"></div>
@@ -322,21 +321,29 @@ and the image will appear on the right after just a moment.</p>
       
         
           
-            
-            <div class="panel-body">
-              <h4>Related Posts</h4>
-              <ul>
-            
-                <li class="relatedPost">
-                  <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html">Time Management with Graphviz</a>
-                  
-                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/diagram">diagram</a>, <a href="/category/graph">graph</a>, <a href="/category/graphviz">graphviz</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/visualization">visualization</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/documentation">documentation</a>)
-                  
-                </li>
-          
-          
-        
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -383,38 +390,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -461,38 +438,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -539,6 +486,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -565,8 +534,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -591,12 +558,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -625,6 +588,10 @@ and the image will appear on the right after just a moment.</p>
       
         
           
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
             
                 <li class="relatedPost">
                   <a href="http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html">Using Graphviz Clusters</a>
@@ -656,38 +623,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -734,38 +671,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -812,38 +719,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -890,12 +767,80 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -955,38 +900,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1033,38 +948,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1111,38 +996,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1189,6 +1044,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -1215,12 +1092,56 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -1280,38 +1201,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1358,38 +1249,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1436,38 +1297,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1514,6 +1345,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -1540,12 +1393,56 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -1595,38 +1492,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1673,6 +1540,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -1699,12 +1588,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -1757,12 +1642,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -1819,38 +1700,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -1897,6 +1748,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -1923,8 +1796,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -1949,12 +1820,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -2004,38 +1871,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2082,6 +1919,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -2108,12 +1967,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -2173,38 +2028,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2251,38 +2076,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2329,38 +2124,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2407,12 +2172,80 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -2462,38 +2295,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2540,12 +2343,213 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/rhel/centos/linux/networking/howto/2022/03/27/rhel8-centos8-linux-setup-static-ip-address.html">Configure IP Addressing with NetworkManager (nmcli) in RHEL 8/CentOS 8</a>
+                  
+                    (Categories: <a href="/category/rhel">rhel</a>, <a href="/category/centos">centos</a>, <a href="/category/linux">linux</a>, <a href="/category/networking">networking</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+  
+    
+      
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -2595,38 +2599,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2673,64 +2647,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2780,38 +2698,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -2858,41 +2746,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
-    
-  
-    
-      
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
     
         
-          
-      
           
       
           
@@ -2939,8 +2794,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -2965,64 +2818,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3072,38 +2869,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3150,38 +2917,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3228,6 +2965,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -3254,6 +3013,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -3280,12 +3061,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -3335,38 +3112,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3413,6 +3160,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -3439,12 +3208,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -3494,38 +3259,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3572,12 +3307,32 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -3627,38 +3382,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3705,38 +3430,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3783,6 +3478,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -3809,6 +3526,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -3835,12 +3574,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -3890,38 +3625,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -3968,38 +3673,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4046,6 +3721,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4072,6 +3769,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4098,12 +3817,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -4153,38 +3868,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4231,38 +3916,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4309,6 +3964,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4335,6 +4012,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4361,12 +4060,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -4416,38 +4111,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4494,38 +4159,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4572,38 +4207,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4650,6 +4255,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4676,12 +4303,56 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -4731,38 +4402,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4809,38 +4450,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -4887,6 +4498,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -4913,12 +4546,32 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -4968,8 +4621,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -4994,12 +4645,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -5049,38 +4696,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5127,38 +4744,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5205,38 +4792,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5283,12 +4840,80 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -5338,38 +4963,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5416,6 +5011,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -5442,12 +5059,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -5497,6 +5110,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -5523,38 +5158,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5604,38 +5209,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5682,6 +5257,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -5708,12 +5305,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -5763,12 +5356,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -5818,38 +5407,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -5896,6 +5455,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -5922,12 +5503,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -5977,6 +5554,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -6003,38 +5602,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6084,6 +5653,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -6110,38 +5701,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6191,38 +5752,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6269,12 +5800,32 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -6324,38 +5875,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6402,6 +5923,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -6428,12 +5971,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -6483,8 +6022,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -6509,12 +6046,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -6564,8 +6097,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -6590,12 +6121,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -6645,8 +6172,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -6671,12 +6196,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -6726,6 +6247,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -6752,38 +6295,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6833,6 +6346,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -6859,38 +6394,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -6940,38 +6445,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -7018,38 +6493,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -7096,12 +6541,56 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -7151,8 +6640,6 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
@@ -7177,12 +6664,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
           
       
           
@@ -7232,6 +6715,28 @@ and the image will appear on the right after just a moment.</p>
       
           
       
+    
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
           
       
     
@@ -7258,38 +6763,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -7339,38 +6814,8 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-          
-      
-    
-        
-          
-      
           
       
           
@@ -7417,12 +6862,32 @@ and the image will appear on the right after just a moment.</p>
       
           
       
-          
-      
     
         
           
       
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+    
+        
           
       
           
@@ -7454,10 +6919,8 @@ and the image will appear on the right after just a moment.</p>
 
 <div class="PageNavigation">
   
-    <a class="prev" href="/howto/diagram/java/graph/graphviz/plaintext/text/plantuml/visualization/2022/03/02/plantsuml-kroki-textual-description-diagrams.html">&laquo; Additional Examples of Diagrams Created from Textual Descriptions with PlantUML</a>
+    <a class="prev" href="/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html">&laquo; Using Graphviz Clusters</a>
   
-  
-    <a class="next" href="/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/documentation/2022/03/04/graphviz-and-koki-server-wiring-diagram.html">How To Create Server Wiring Diagrams with Graphviz and Kroki &raquo;</a>
   
 </div>
 
@@ -7466,8 +6929,8 @@ and the image will appear on the right after just a moment.</p>
   <script type="text/javascript">
     /* <![CDATA[ */
     var disqus_shortname = "";
-    var disqus_identifier = "http://localhost:4000_How To Create Networking Diagrams with Graphviz and Kroki";
-    var disqus_title = "How To Create Networking Diagrams with Graphviz and Kroki";
+    var disqus_identifier = "http://localhost:4000_Time Management with Graphviz";
+    var disqus_title = "Time Management with Graphviz";
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

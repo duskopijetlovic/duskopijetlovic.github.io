@@ -5,9 +5,201 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 05 Oct 2022 09:33:14 -0700</pubDate>
-    <lastBuildDate>Wed, 05 Oct 2022 09:33:14 -0700</lastBuildDate>
+    <pubDate>Wed, 19 Oct 2022 14:20:18 -0700</pubDate>
+    <lastBuildDate>Wed, 19 Oct 2022 14:20:18 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Time Management with Graphviz</title>
+        <description>&lt;p&gt;OS: FreeBSD 13, Shell: csh&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cat timegraph.gv
+/*
+  Colours:
+    green = done
+    orange = in progress
+    red = not started
+ */ 
+
+digraph timegraph
+{
+
+  /*
+    Graphviz - FaqClusterEdge - How can I create edges between cluster
+  boxes? http://www.graphviz.org/content/FaqClusterEdge
+  */
+  compound = true; 
+
+  graph [newrank = true]; 
+  node [fontsize=10, shape = box];
+  splines = &quot;line&quot;; // Force edges to be straight, no curves or angles
+
+  subgraph clusterToday 
+  {
+    label = &quot;Today&quot;;
+    style = &quot;filled&quot;;
+    color = &quot;#91cf60&quot;;
+
+    &quot;Inspect HP server fans&quot;;
+  }
+
+  subgraph clusterTomorrow
+  {
+    label = &quot;Tomorrow&quot;;
+
+    //{ rank = same; &quot;Email backupmap&quot; ; }
+  }
+
+  subgraph clusterWeek1
+  {
+    label = &quot;1st Week of Oct&quot;;
+  }
+
+  subgraph clusterWeek2
+  {
+    label = &quot;2nd Week of Oct&quot;;
+  }
+
+  subgraph clusterWeek3
+  {
+    label = &quot;3rd Week of Oct&quot;;
+
+    CVM [label = &quot;Clone groups2 VM&quot;]; 
+    SVM [label = &quot;Stop KVM VM&quot;, color = &quot;red&quot;];
+    EXVM [label = &quot;Export KVM VM&quot;, color = &quot;red&quot;];
+
+    /*
+      Group these three nodes - to keep the edges straight.
+
+      From Graphviz documentation:  Attributes - group:
+        Name for a group of nodes, for bundling edges avoiding crossings.
+        If the end points of an edge belong to the same group, i.e., have the 
+        same group attribute, parameters are set to avoid crossings and keep 
+        the edges straight.
+    */
+    CVRT [group = gConvert, label = &quot;Convert QCOW2 to VMDK image&quot;, color = &quot;red&quot;];
+    CNO [group = gConvert, label = &quot;Reqeust a new org in VMware Cloud Director&quot;, color = &quot;orange&quot;];
+    IMPIMG [group = gConvert, label = &quot;Import VMDK image in VMware Cloud Director&quot;, color = &quot;red&quot;];
+  
+    CVM -&amp;gt; SVM -&amp;gt; EXVM -&amp;gt; CVRT; 
+    CVM -&amp;gt; CNO;
+    CNO -&amp;gt; IMPIMG;
+
+    CVRT -&amp;gt; IMPIMG;
+  }
+
+  subgraph clusterWeek4
+  {
+    label = &quot;4th Week of Oct&quot;;
+    &quot;Install SSL certs&quot;;
+    &quot;Email reviews to Jill&quot;;
+  }
+
+  subgraph clusterWeek5
+  {
+    label = &quot;5th Week of Oct&quot;;
+    &quot;Install git&quot;;   
+  }
+
+  subgraph clusterFuture
+  {
+    label = &quot;Future&quot;;
+
+    &quot;Clone NE1032T switch\n
+     Install Nagios\n
+     Configure an automation system\n
+     Backup QCOW2 images for all VMs&quot;;
+  }
+
+  label = &quot;Updated on Oct 19, 2022&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Command to generate diagram:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ dot -Tpng timemgraph.gv -o timemgraph.png 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Command to view the graph:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ xv timegraph.png
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Command to generate diagram with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;make(1)&lt;/code&gt; tool.&lt;/p&gt;
+
+&lt;p&gt;First create the Makefile file.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;  Each of the lines with target in the Makefile must be
+           preceded by a tab (in this case, lines with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dot&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rm&lt;/code&gt;,
+           and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;xv&lt;/code&gt; commands).&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cat Makefile
+timegraph.png timegraph.pdf: timegraph.gv
+	dot -Tpng timegraph.gv -o timegraph.png
+	dot -Tpdf timegraph.gv -o timegraph.pdf
+	xv timegraph.png
+clean:
+	rm -i *png *pdf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Use the make(1):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ make
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When you want to delete generated PDF and PNG files:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ make clean
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% xv timegraph.png
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/timegraph.png&quot; alt=&quot;Displaying a time management diagram png image created by Grapvhiz&quot; title=&quot;Displaying a time management diagram png image created by Grapvhiz&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To see the image in full size in a web browser, right-click on it and select “Open Image in New Tab”.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://zwischenzugs.com/2017/12/18/project-management-as-code-with-graphviz/&quot;&gt;Project Management as Code with Graphviz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://news.ycombinator.com/item?id=15950325&quot;&gt;HackerNews Discussion&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ianmiell/pm-as-code&quot;&gt;Graphviz Source Code&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.graphviz.org/documentation/TSE93.pdf&quot;&gt;A Technique for Drawing Directed Graphs&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Manpages for: make(1), style.Makefile(5) (on FreeBSD)&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 19 Oct 2022 08:03:09 -0700</pubDate>
+        <link>http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html</link>
+        <guid isPermaLink="true">http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/10/19/timemanagement-graphviz.html</guid>
+        
+        
+        <category>howto</category>
+        
+        <category>diagram</category>
+        
+        <category>graph</category>
+        
+        <category>graphviz</category>
+        
+        <category>plaintext</category>
+        
+        <category>text</category>
+        
+        <category>tex</category>
+        
+        <category>latex</category>
+        
+        <category>visualization</category>
+        
+        <category>sysadmin</category>
+        
+        <category>documentation</category>
+        
+      </item>
     
       <item>
         <title>Using Graphviz Clusters</title>
@@ -247,6 +439,9 @@ digraph backupMap {
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/img/backupmap.png&quot; alt=&quot;Displaying a backup diagram png image created by Grapvhiz&quot; title=&quot;Displaying a backup diagram png image created by Grapvhiz&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; To see the image in full size in a web browser, right-click on it and select “Open Image in New Tab”.&lt;/p&gt;
+
 </description>
         <pubDate>Sat, 24 Sep 2022 09:13:07 -0700</pubDate>
         <link>http://localhost:4000/howto/diagram/graph/graphviz/plaintext/text/tex/latex/visualization/sysadmin/documentation/2022/09/24/graphviz-clusters.html</link>
