@@ -91,6 +91,25 @@ Wait a couple of minutes for DNS check to complete.
 % git push
 ```
 
+### Running Jekyll on a Local System
+
+```
+% bundle exec jekyll serve
+```
+
+Server address: http://127.0.0.1:4000/ so to access the website, in your 
+Web browser:
+
+```
+http://localhost:4000/
+```
+
+or 
+
+```
+http://127.0.0.1:4000/
+```
+
 ---
 
 **References:**   

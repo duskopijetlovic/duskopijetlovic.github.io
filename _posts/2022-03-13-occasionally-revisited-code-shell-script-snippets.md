@@ -268,7 +268,7 @@ A: You can post internal links by using the following:
 {% endraw %}
 
 
-**NOTE:**  How to actually display these code examples (with curly braces}?   
+**NOTE:**  How to actually display these code examples (with curly braces)?   
 A:  Use raw and endraw tags (see below).   
 
 [Jekyll Docs - Tags Filters](https://jekyllrb.com/docs/liquid/tags/):   

@@ -618,6 +618,78 @@ Line four/
 
 <hr />
 
+<h3 id="sed---quoting-and-special-characters-in-cshtcsh-shell">sed - Quoting and Special Characters in csh/tcsh Shell</h3>
+
+<p>On FreeBSD 13, with <code class="language-plaintext highlighter-rouge">csh</code> shell:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ps $$
+ PID TT  STAT    TIME COMMAND
+6578  4  Ss   0:00.22 -tcsh (tcsh)
+ 
+$ printf %s\\n "$SHELL"
+/bin/tcsh
+
+$ diff /bin/csh /bin/tcsh
+</code></pre></div></div>
+
+<p>Let’s say you need to change <em>sendmail</em> settings so that submitted mail is 
+forwarded to the host <em>test.host.domain</em> for delivery, or for relaying
+outward.  (In this example, it was needed to suppress MX lookups, which
+is done by surrounding the hostname with square brackets.  Unless you
+suppress it, the MSA will look up MX records for <em>test.host.domain</em>
+and, if found, will deliver to the MX records found.)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tail -1 /etc/mail/freebsd.submit.mc
+FEATURE(`msp', `[127.0.0.1]')dnl
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo sed -i.bkp -e 's/^FEATURE.*dnl$/FEATURE(`msp'"'"', `[test.host.domain]'"'"')dnl/' /etc/mail/freebsd.submit.mc
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff --unified=0 /etc/mail/freebsd.submit.mc.bkp /etc/mail/freebsd.submit.mc
+--- /etc/mail/freebsd.submit.mc.bkp       2022-02-27 10:40:35.269642000 -0700
++++ /etc/mail/freebsd.submit.mc      2022-02-27 10:41:03.051256000 -0700
+@@ -26 +26 @@
+-FEATURE(`msp', `[127.0.0.1]')dnl
++FEATURE(`msp', `[test.host.domain]')dnl
+</code></pre></div></div>
+
+<p>Explanation: <br />
+<code class="language-plaintext highlighter-rouge">s/^FEATURE.*dnl</code> - Find a line beginning with <strong>FEATURE</strong> and ending with <strong>dnl</strong> <br />
+and replace it with this line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FEATURE(`msp', `[test.host.domain]')dnl
+</code></pre></div></div>
+
+<p>In <em>csh</em>/<em>tcsh</em>, single and double quote marks quote each other:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo '"'
+"
+ 
+$ echo "'"
+'
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "'" '"'
+' "
+</code></pre></div></div>
+
+<p>So, quoting walk-through looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> To quote double quote marks: +   +                     +   +
+                              |   |                     |   |
+                              V   V                     V   V
+'s/^FEATURE.*dnl$/FEATURE(`msp'"'"', `[test.host.domain]'"'"')dnl/'
+^                              ^  ^                      ^ ^      ^ 
+|                              |  |                      | |      |
+| To quote single quote marks: +  +                      + +      |
+|                                                                 |
+|                                                                 |
++-------  Everything is inside these single quoute marks  --------+
+</code></pre></div></div>
+
+<hr />
+
 <p><strong>References:</strong> <br />
 <a href="https://unix.stackexchange.com/questions/547274/use-sed-or-awk-command-to-replace-a-word-with-another-word-which-is-stored-in-va">use sed or awk command to replace a word with another word which is stored in variable</a></p>
 </div>

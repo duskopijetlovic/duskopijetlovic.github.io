@@ -1811,11 +1811,11 @@ possible to mount CD-ROM to http; iLO shows which serial port is active
 
 [During install of custom RHEL 6 ISO, mediacheck errors with "Unable to find the checksum in the image. This probably means the disc was created without adding the checksum."](https://access.redhat.com/solutions/655603)    
 
-[Working with ISO Images Red Hat Enterprise Linux 7 | Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)   
+[Working with ISO Images Red Hat Enterprise Linux 7 - Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)   
 
 [How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking](https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest)   
 
-[Archived | Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)   
+[Archived - Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)   
 
 [#osdev - Operating System Development - IRC](https://libera.irclog.whitequark.org/osdev/2021-07-14)   
 

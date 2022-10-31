@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 19 Oct 2022 14:20:18 -0700</pubDate>
-    <lastBuildDate>Wed, 19 Oct 2022 14:20:18 -0700</lastBuildDate>
+    <pubDate>Mon, 31 Oct 2022 12:30:52 -0700</pubDate>
+    <lastBuildDate>Mon, 31 Oct 2022 12:30:52 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -12912,7 +12912,7 @@ A: You can post internal links by using the following:&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU](/howto/virtualization/rs232serial/cli/terminal/shell/console/sysadmin/server/hardware/2022/03/12/centos-rhel-dvd-iso-customization-testing-with-qemu.html)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  How to actually display these code examples (with curly braces}? &lt;br /&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;  How to actually display these code examples (with curly braces)? &lt;br /&gt;
 A:  Use raw and endraw tags (see below).&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/docs/liquid/tags/&quot;&gt;Jekyll Docs - Tags Filters&lt;/a&gt;: &lt;br /&gt;
@@ -14657,25 +14657,11 @@ first pty is then /dev/ttyS1).&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://access.redhat.com/solutions/655603&quot;&gt;During install of custom RHEL 6 ISO, mediacheck errors with “Unable to find the checksum in the image. This probably means the disc was created without adding the checksum.”&lt;/a&gt;&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;[Working with ISO Images Red Hat Enterprise Linux 7&lt;/td&gt;
-      &lt;td&gt;Red Hat Customer Portal](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/anaconda_customization_guide/sect-iso-images&quot;&gt;Working with ISO Images Red Hat Enterprise Linux 7 - Red Hat Customer Portal&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://wiki.qemu.org/Documentation/Networking#How_to_get_SSH_access_to_a_guest&quot;&gt;How to get SSH access to a guest - Network HOWTOs - QEMU Documentation - Networking&lt;/a&gt;&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;[Archived&lt;/td&gt;
-      &lt;td&gt;Using QEMU for cross-platform development](https://developer.ibm.com/tutorials/l-qemu-development/)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.ibm.com/tutorials/l-qemu-development/&quot;&gt;Archived - Using QEMU for cross-platform development&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://libera.irclog.whitequark.org/osdev/2021-07-14&quot;&gt;#osdev - Operating System Development - IRC&lt;/a&gt;&lt;/p&gt;
 
@@ -14921,6 +14907,22 @@ Click ‘Save’&lt;/p&gt;
 % git add .
 % git commit -a
 % git push
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;running-jekyll-on-a-local-system&quot;&gt;Running Jekyll on a Local System&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% bundle exec jekyll serve
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Server address: http://127.0.0.1:4000/ so to access the website, in your 
+Web browser:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://localhost:4000/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://127.0.0.1:4000/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;
@@ -18136,6 +18138,78 @@ Line one/
 Line two/
 Line 3
 Line four/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;sed---quoting-and-special-characters-in-cshtcsh-shell&quot;&gt;sed - Quoting and Special Characters in csh/tcsh Shell&lt;/h3&gt;
+
+&lt;p&gt;On FreeBSD 13, with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csh&lt;/code&gt; shell:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ps $$
+ PID TT  STAT    TIME COMMAND
+6578  4  Ss   0:00.22 -tcsh (tcsh)
+ 
+$ printf %s\\n &quot;$SHELL&quot;
+/bin/tcsh
+
+$ diff /bin/csh /bin/tcsh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s say you need to change &lt;em&gt;sendmail&lt;/em&gt; settings so that submitted mail is 
+forwarded to the host &lt;em&gt;test.host.domain&lt;/em&gt; for delivery, or for relaying
+outward.  (In this example, it was needed to suppress MX lookups, which
+is done by surrounding the hostname with square brackets.  Unless you
+suppress it, the MSA will look up MX records for &lt;em&gt;test.host.domain&lt;/em&gt;
+and, if found, will deliver to the MX records found.)&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ tail -1 /etc/mail/freebsd.submit.mc
+FEATURE(`msp&apos;, `[127.0.0.1]&apos;)dnl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo sed -i.bkp -e &apos;s/^FEATURE.*dnl$/FEATURE(`msp&apos;&quot;&apos;&quot;&apos;, `[test.host.domain]&apos;&quot;&apos;&quot;&apos;)dnl/&apos; /etc/mail/freebsd.submit.mc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ diff --unified=0 /etc/mail/freebsd.submit.mc.bkp /etc/mail/freebsd.submit.mc
+--- /etc/mail/freebsd.submit.mc.bkp       2022-02-27 10:40:35.269642000 -0700
++++ /etc/mail/freebsd.submit.mc      2022-02-27 10:41:03.051256000 -0700
+@@ -26 +26 @@
+-FEATURE(`msp&apos;, `[127.0.0.1]&apos;)dnl
++FEATURE(`msp&apos;, `[test.host.domain]&apos;)dnl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Explanation: &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s/^FEATURE.*dnl&lt;/code&gt; - Find a line beginning with &lt;strong&gt;FEATURE&lt;/strong&gt; and ending with &lt;strong&gt;dnl&lt;/strong&gt; &lt;br /&gt;
+and replace it with this line:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FEATURE(`msp&apos;, `[test.host.domain]&apos;)dnl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In &lt;em&gt;csh&lt;/em&gt;/&lt;em&gt;tcsh&lt;/em&gt;, single and double quote marks quote each other:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ echo &apos;&quot;&apos;
+&quot;
+ 
+$ echo &quot;&apos;&quot;
+&apos;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ echo &quot;&apos;&quot; &apos;&quot;&apos;
+&apos; &quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, quoting walk-through looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; To quote double quote marks: +   +                     +   +
+                              |   |                     |   |
+                              V   V                     V   V
+&apos;s/^FEATURE.*dnl$/FEATURE(`msp&apos;&quot;&apos;&quot;&apos;, `[test.host.domain]&apos;&quot;&apos;&quot;&apos;)dnl/&apos;
+^                              ^  ^                      ^ ^      ^ 
+|                              |  |                      | |      |
+| To quote single quote marks: +  +                      + +      |
+|                                                                 |
+|                                                                 |
++-------  Everything is inside these single quoute marks  --------+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;

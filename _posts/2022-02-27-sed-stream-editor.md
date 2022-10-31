@@ -577,6 +577,88 @@ Line four/
 
 ---
 
+### sed - Quoting and Special Characters in csh/tcsh Shell
+
+On FreeBSD 13, with `csh` shell:
+
+```
+$ ps $$
+ PID TT  STAT    TIME COMMAND
+6578  4  Ss   0:00.22 -tcsh (tcsh)
+ 
+$ printf %s\\n "$SHELL"
+/bin/tcsh
+
+$ diff /bin/csh /bin/tcsh
+```
+
+
+Let's say you need to change *sendmail* settings so that submitted mail is 
+forwarded to the host *test.host.domain* for delivery, or for relaying
+outward.  (In this example, it was needed to suppress MX lookups, which
+is done by surrounding the hostname with square brackets.  Unless you
+suppress it, the MSA will look up MX records for *test.host.domain*
+and, if found, will deliver to the MX records found.) 
+
+```
+$ tail -1 /etc/mail/freebsd.submit.mc
+FEATURE(`msp', `[127.0.0.1]')dnl
+```
+
+```
+$ sudo sed -i.bkp -e 's/^FEATURE.*dnl$/FEATURE(`msp'"'"', `[test.host.domain]'"'"')dnl/' /etc/mail/freebsd.submit.mc
+```
+
+```
+$ diff --unified=0 /etc/mail/freebsd.submit.mc.bkp /etc/mail/freebsd.submit.mc
+--- /etc/mail/freebsd.submit.mc.bkp       2022-02-27 10:40:35.269642000 -0700
++++ /etc/mail/freebsd.submit.mc      2022-02-27 10:41:03.051256000 -0700
+@@ -26 +26 @@
+-FEATURE(`msp', `[127.0.0.1]')dnl
++FEATURE(`msp', `[test.host.domain]')dnl
+```
+
+Explanation:   
+`s/^FEATURE.*dnl` - Find a line beginning with **FEATURE** and ending with **dnl**   
+and replace it with this line:
+
+```
+FEATURE(`msp', `[test.host.domain]')dnl
+```
+
+In *csh*/*tcsh*, single and double quote marks quote each other:
+
+```
+$ echo '"'
+"
+ 
+$ echo "'"
+'
+```
+
+```
+$ echo "'" '"'
+' "
+```
+
+
+So, quoting walk-through looks like this:
+
+```
+ To quote double quote marks: +   +                     +   +
+                              |   |                     |   |
+                              V   V                     V   V
+'s/^FEATURE.*dnl$/FEATURE(`msp'"'"', `[test.host.domain]'"'"')dnl/'
+^                              ^  ^                      ^ ^      ^ 
+|                              |  |                      | |      |
+| To quote single quote marks: +  +                      + +      |
+|                                                                 |
+|                                                                 |
++-------  Everything is inside these single quoute marks  --------+
+```
+
+
+---
 
 **References:**   
 [use sed or awk command to replace a word with another word which is stored in variable](https://unix.stackexchange.com/questions/547274/use-sed-or-awk-command-to-replace-a-word-with-another-word-which-is-stored-in-va)   
