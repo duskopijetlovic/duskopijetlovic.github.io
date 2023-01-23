@@ -2,7 +2,7 @@
 layout: post
 title: "Customize CentOS/RHEL DVD ISO for Installation in Text Mode via Serial Console and Test the Image with QEMU"
 date: 2022-03-12 09:01:47 -0700 
-categories: howto virtualization rs232serial cli terminal shell console sysadmin server hardware
+categories: howto virtualization rs232serial cli terminal shell console sysadmin server hardware vm qemu kvm linux unix 
 ---
 
 OSs: RHEL 7, CentOS 7    

@@ -299,7 +299,18 @@ A:  Use raw and endraw tags (see below).
 [Jekyll Documentation - Linking to posts](https://jekyllrb.com/docs/liquid/tags/#linking-to-posts)   
 (Retrieved on Mar 13, 2022)   
 
-[jekyll markdown internal links](https://stackoverflow.com/questions/4629675/jekyll-markdown-internal-links)    
+[Jekyll markdown internal links](https://stackoverflow.com/questions/4629675/jekyll-markdown-internal-links)    
 (Retrieved on Mar 13, 2022)   
 
 ---
+
+### How to Join Multiple PDF Pages into One PDF Document with Ghostscript
+
+```
+$ gs -q \
+ -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf \
+ page01.pdf page02.pdf page03.pdf page04.pdf page05.pdf
+```
+
+---
+

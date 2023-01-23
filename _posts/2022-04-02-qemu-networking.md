@@ -2,7 +2,7 @@
 layout: post
 title: "How To Setup Two Separate Bridges for a QEMU Guest with Two NICs Connected to Two Different Networks"
 date: 2022-04-02 08:11:22 -0700 
-categories: howto virtualization rs232serial cli terminal shell console sysadmin server hardware networking
+categories: howto virtualization rs232serial cli terminal shell console sysadmin server hardware networking vm qemu kvm linux unix sysadmin networking 
 ---
 
 ---
