@@ -58,6 +58,76 @@ Setup requirements in this configuration:
 
 ---
 
+### Why This Approach Instead of Usual with SMART_HOST and RELAY_MAILER_ARGS? 
+
+I tried this method and it worked but I couldn't make it work for local mail:
+
+I configured *sendmail* with SMTPS (SMTP over SSL)/Implicit TLS submission
+port 465 by using *stunnel* on my local machine (a local port; in my case,
+`127.0.0.1:1465` to my smart host provider, `your.isp.net:465`) with
+`SMART_HOST` and `RELAY_MAILER_ARGS` with `TCP $h 1465` in *submit.mc*
+(*/etc/mail/freebsd.submit.mc* on FreeBSD) configuration file for MSP
+(Mail Submission Program, which is a command-line *sendmail* that functions
+as a Mail Submission Agent (MTA):
+
+```
+define(`SMART_HOST', `[127.0.0.1]')dnl
+```
+
+```
+define(`RELAY_MAILER_ARGS', `TCP $h 465')dnl 
+```
+
+With *stunnel.conf*:
+
+```
+[smtps]
+accept=127.0.0.1:1465
+connect=your.isp.net:465
+```
+
+> The `A=` delivery agent equate is usually declared like `A=TCP $h`.
+> The value in `$h` is the value returned by the `parse` rule set 0's `$@`
+> operator and is usually the name of the host to which *sendmail* should connect. 
+> During delivery the *sendmail* program expands this hostname into a possible
+> list of MX records. (Unless (V8.8 and later) the `F=0` delivery agent flag
+> is set (`F=0 (zero)`) or unless the hostname is surrounded by square brackets.)
+> 
+> The host (as `$h`) is usually the only argument given to `TCP` but `TCP`
+> can accept two arguments, like this:
+> 
+> ```
+> A=TCP hostlist port
+> ```
+> 
+> The `port` is usually omitted and so defaults to 25.  However, a port number
+> can be included to force *sendmail* to connect on a different port.
+
+
+The *submit.mc* (*/etc/mail/freebsd.submit.mc*) also had:
+
+```
+LOCAL_RULE_0
+R$* <@ $=w . $=m> $*    $#local $: $1      @my.local.domain
+
+LOCAL_NET_CONFIG
+R $* < @ $+ .$m. > $*   $#local $@ $2.$m $: $1 < @ $2.$m > $3
+```
+
+This configuration worked for nonlocal mail but it didn't work for local
+delivery because messages for local users were relayed via smart host.
+I made it work for local mail in this setup with masquerading but it was
+making a round trip: local mail was delivered but to the smart host, which
+is not ideal (e.g. no need for cron mails to go outside.)
+
+**NOTE:**   
+When I configured my workstation's  *sendmail* as a client to a different
+smart host with STARTTLS port 587 (that is, with a different smart host
+server that listens to port 587 for STARTTLS), it worked fine for both
+local and nonlocal mail.
+
+---
+
 ## TL;DR Version
 
 For **detailed** instructions (**non tl;dr** version), refer to the
@@ -4039,6 +4109,9 @@ Equivalent to:
 [sendmail as relay client over port 465 with SSL - comp.mail.sendmail - *sendmail* news group](https://groups.google.com/g/comp.mail.sendmail/c/Gy6QBfMd3l4)
 
 
+[Sendmail smtps support - comp.mail.sendmail - *sendmail* news group](https://groups.google.com/g/comp.mail.sendmail/c/hIqbWpw1ugc/m/uBg2v3kwAwAJ)
+
+
 [Configure sendmail as a client for SMTPs - Fedora Project Wiki](https://fedoraproject.org/wiki/Configure_sendmail_as_a_client_for_SMTPs)
 
 
@@ -5704,4 +5777,5 @@ From [RFC 821 - Simple Mail Transfer Protocol (SMTP)](https://datatracker.ietf.o
 ```
 
 ---
+
 
