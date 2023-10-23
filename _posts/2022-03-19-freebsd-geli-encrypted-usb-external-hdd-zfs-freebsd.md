@@ -114,7 +114,7 @@ be snapshotted.
 ```
 
 
-Use `zfs get com.sun:autosnapshot` to see its status for all ZFS 
+Use `zfs get com.sun:auto-snapshot` to see its status for all ZFS 
 filesystems. 
 
 ```
@@ -160,7 +160,7 @@ Next, turn on snapshotting for the rest of the pool:
 $ sudo zfs set com.sun:auto-snapshot=true zroot
 ```
 
-Now the `com.sun:autosnapshot` property for all ZFS filesystems looks like this:
+Now the `com.sun:auto-snapshot` property for all ZFS filesystems looks like this:
 
 ```
 $ zfs get -r com.sun:auto-snapshot zroot
