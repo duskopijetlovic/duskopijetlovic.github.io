@@ -36,9 +36,6 @@ collections:
   project:
     output: true
     permalink: /project/:path/
-  notes:
-    permalink: /notes/:path
-    output: true
 
 social:
 #   - icon: fa-facebook
@@ -59,8 +56,6 @@ share:
 urls:
     - text: About
       url: /about/
-    - text: Notes
-      url: /notes/index.html
     - text: XML Feed
       url: /feed.xml
     - text: Categories 

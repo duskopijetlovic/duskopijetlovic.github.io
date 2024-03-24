@@ -1,0 +1,18 @@
+---
+title: My Notes
+layout: default
+---
+
+# My Digital Notes
+
+<ul>
+  {% for note in site.notes %}
+    <li>
+       <h3>
+          <a href="{{ note.url | relative_url }}">
+             {{ note.title }}
+          </a>
+       </h3>
+    </li>
+  {% endfor %}
+</ul>
