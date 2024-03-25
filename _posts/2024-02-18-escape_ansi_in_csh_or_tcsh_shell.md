@@ -4474,18 +4474,18 @@ Linux console controls
     SUB (0x1A, ^Z)
             interrupt escape sequences (abort escape sequences);
 
-******** <<== My highliting  <-----------+
-    ESC (0x1B, ^[)                       |
-            starts an escape sequence;   | 
-******** <<== My highliting              |  ESC (0x1B, ^[)
-                                         |       and
-    DEL (0x7F)                           |  CSI (0x9B)
-            is ignored;                  |       are
-                                         |    EQUIVALENT   
-******** <<== My highliting              |       
-    CSI (0x9B)                           |    
-            is equivalent to ESC [.      | 
-******** <<== My highliting  <-----------+
+******** <<== My highliting 
+    ESC (0x1B, ^[)
+            starts an escape sequence;
+******** <<== My highliting
+
+    DEL (0x7F)
+            is ignored;
+
+******** <<== My highliting
+    CSI (0x9B)
+            is equivalent to ESC [.
+******** <<== My highliting 
 
 ---- snip ----
 
