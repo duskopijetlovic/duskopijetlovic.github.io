@@ -795,22 +795,26 @@ $ sudo jexec burgundy /bin/sh
 ## References   
 (Retrieved on Mar 28, 2024)   
 
-* [Chapter 17. Jails and Containers - FreeBSD Handbook](https://docs.freebsd.org/en/books/handbook/jails/)
-
-* [Unadulterated Jails, the Simple Way](https://wiki.freebsd.org/VladimirKrstulja/Guides/Jails)
-
-* [Starting with FreeBSD jails](https://rubenerd.com/starting-with-freebsd-jails/)
-
-* [Using freebsd-update to upgrade jails](https://rubenerd.com/using-freebsd-update-to-upgrade-jails/)
-
-* [ping: sendto: Can't assign requested address in Jail - FreeBSD Forums](https://forums.freebsd.org/threads/ping-sendto-cant-assign-requested-address-in-jail.2019/)
-
-* [FreeBSD Experiment 1: Jails](https://www.benburwell.com/posts/freebsd-jails/)
-
-* [Jails on FreeBSD](https://ogris.de//howtos/freebsd-jails.html)
-
-* [FreeBSD Jail Quick Setup with Networking](https://www.shaka.today/freebsd-jail-quick-setup-with-networking-2022/) 
-
+[Chapter 17. Jails and Containers - FreeBSD Handbook](https://docs.freebsd.org/en/books/handbook/jails/) |
+[Unadulterated Jails, the Simple Way](https://wiki.freebsd.org/VladimirKrstulja/Guides/Jails) |
+[Jails - FreeBSD Wiki](https://wiki.freebsd.org/Jails) |
+[Starting with FreeBSD jails](https://rubenerd.com/starting-with-freebsd-jails/) |
+[Jails on FreeBSD are easy without ezjail](https://blog.frankleonhardt.com/2019/jails-on-freebsd-are-easy-without-ezjail/) |
+[Using freebsd-update to upgrade jails](https://rubenerd.com/using-freebsd-update-to-upgrade-jails/) |
+[ping: sendto: Can't assign requested address in Jail - FreeBSD Forums](https://forums.freebsd.org/threads/ping-sendto-cant-assign-requested-address-in-jail.2019/) |
+[jupdate.sh - Jail update shell script by Felix J. Ogris - Run freebsd-update, portsnap, and portmaster on the host system and inside each running jail](https://ogris.de//howtos/jupdate.sh) |
+[FreeBSD Experiment 1: Jails](https://www.benburwell.com/posts/freebsd-jails/) |
+[Jails on FreeBSD](https://ogris.de//howtos/freebsd-jails.html) |
+[Creating Comfy FreeBSD Jails Using Standard Tools - Posted on Jan 17, 2021](https://web.archive.org/web/20210125235815/https://kettunen.io/post/standard-freebsd-jails/) |
+[Creating Comfy FreeBSD Jails Using Standard Tools - Discussion on Hacker News](https://news.ycombinator.com/item?id=25813800) |
+[SysAdvent- Day 14 - FreeBSD Jails - Posted on Dec 14, 2010](https://sysadvent.blogspot.com/2010/12/day-14-freebsd-jails.html) |
+[FreeBSD Jail Quick Setup with Networking](https://www.shaka.today/freebsd-jail-quick-setup-with-networking-2022/) |
+[Networking FreeBSD Jails](https://blog.frankleonhardt.com/2020/networking-freebsd-jails/) |
+[FreeBSD Jail with Single IP](http://kbeezie.com/freebsd-jail-single-ip/) |
+[FreeBSD Jails And Networking](https://etherealwake.com/2021/08/freebsd-jail-networking/) |
+[Re: chflags(7) in a hardening and security context, <https://forums.freebsd.org/posts/633105>](https://forums.freebsd.org/threads/my-freebsd-hardening-script.89523/page-2#post-633105) |
+[Build yourself a little FreeBSD jail services box](https://rubenerd.com/build-yourself-a-freebsd-vpn-box/) |
+[BSDInstall - FreeBSD Wiki](https://wiki.freebsd.org/BSDInstall)
 
 FreeBSD Manual Pages - Manpages for:   
 [jail.conf(5)](https://www.freebsd.org/cgi/man.cgi?query=jail.conf&sektion=5),
@@ -820,7 +824,7 @@ FreeBSD Manual Pages - Manpages for:
 [rc(8)](https://man.freebsd.org/cgi/man.cgi?query=rc&sektion=8),
 [service(8)](https://man.freebsd.org/cgi/man.cgi?query=service&sektion=8),
 [ifconfig(8)](https://man.freebsd.org/cgi/man.cgi?query=ifconfig&sektion=8),
-[netstat(1)](https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1),
+k[netstat(1)](https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1),
 [resolv.conf(5)](https://man.freebsd.org/cgi/man.cgi?query=resolv.conf&sektion=5),
 [pf(4)](https://man.freebsd.org/cgi/man.cgi?query=pf&sektion=4),
 [pf.conf(5)](https://man.freebsd.org/cgi/man.cgi?query=pf.conf&sektion=5)
