@@ -796,6 +796,7 @@ $ sudo jexec burgundy /bin/sh
 (Retrieved on Mar 28, 2024)   
 
 [Chapter 17. Jails and Containers - FreeBSD Handbook](https://docs.freebsd.org/en/books/handbook/jails/) |
+[Jails: Confining the omnipotent root. - Poul-Henning Kamp -  Robert N. M. Watson  - The FreeBSD Project (PDF)](http://phk.freebsd.dk/pubs/sane2000-jail.pdf) |
 [Unadulterated Jails, the Simple Way](https://wiki.freebsd.org/VladimirKrstulja/Guides/Jails) |
 [Jails - FreeBSD Wiki](https://wiki.freebsd.org/Jails) |
 [Starting with FreeBSD jails](https://rubenerd.com/starting-with-freebsd-jails/) |
@@ -803,7 +804,7 @@ $ sudo jexec burgundy /bin/sh
 [Using freebsd-update to upgrade jails](https://rubenerd.com/using-freebsd-update-to-upgrade-jails/) |
 [ping: sendto: Can't assign requested address in Jail - FreeBSD Forums](https://forums.freebsd.org/threads/ping-sendto-cant-assign-requested-address-in-jail.2019/) |
 [jupdate.sh - Jail update shell script by Felix J. Ogris - Run freebsd-update, portsnap, and portmaster on the host system and inside each running jail](https://ogris.de//howtos/jupdate.sh) |
-[FreeBSD Experiment 1: Jails](https://www.benburwell.com/posts/freebsd-jails/) |
+[FreeBSD Experiment 1: Jails](https://www.benburwell.com/posts/freebsd-jails/) | 
 [Jails on FreeBSD](https://ogris.de//howtos/freebsd-jails.html) |
 [Creating Comfy FreeBSD Jails Using Standard Tools - Posted on Jan 17, 2021](https://web.archive.org/web/20210125235815/https://kettunen.io/post/standard-freebsd-jails/) |
 [Creating Comfy FreeBSD Jails Using Standard Tools - Discussion on Hacker News](https://news.ycombinator.com/item?id=25813800) |
@@ -814,7 +815,13 @@ $ sudo jexec burgundy /bin/sh
 [FreeBSD Jails And Networking](https://etherealwake.com/2021/08/freebsd-jail-networking/) |
 [Re: chflags(7) in a hardening and security context, <https://forums.freebsd.org/posts/633105>](https://forums.freebsd.org/threads/my-freebsd-hardening-script.89523/page-2#post-633105) |
 [Build yourself a little FreeBSD jail services box](https://rubenerd.com/build-yourself-a-freebsd-vpn-box/) |
-[BSDInstall - FreeBSD Wiki](https://wiki.freebsd.org/BSDInstall)
+[BSDInstall - FreeBSD Wiki](https://wiki.freebsd.org/BSDInstall) |
+[FreeBSD Jails](https://srobb.net/freebsdjail.html) |
+[Multiple FreeBSD Jails with nullfs (on FreeBSD-9.2](https://srobb.net/nullfsjail.html) |
+[Learning Notes on FreeBSD Jails](https://genneko.github.io/playing-with-bsd/system/learning-notes-on-jails/) |
+[Creating Comfy FreeBSD Jails Using Standard Tools](https://web.archive.org/web/20210125235815/https://kettunen.io/post/standard-freebsd-jails/) |
+[Using FreeBSD's pkg(1) with an 'offline' jail](https://brokenco.de/2021/02/02/freebsd-pkg-with-an-offline-jail.html) |
+[FreeBSD jails and vnet from scratch (this guide is for vnet jails)](https://www.amoradi.org/20210908201936.html)
 
 FreeBSD Manual Pages - Manpages for:   
 [jail.conf(5)](https://www.freebsd.org/cgi/man.cgi?query=jail.conf&sektion=5),
@@ -828,7 +835,6 @@ k[netstat(1)](https://man.freebsd.org/cgi/man.cgi?query=netstat&sektion=1),
 [resolv.conf(5)](https://man.freebsd.org/cgi/man.cgi?query=resolv.conf&sektion=5),
 [pf(4)](https://man.freebsd.org/cgi/man.cgi?query=pf&sektion=4),
 [pf.conf(5)](https://man.freebsd.org/cgi/man.cgi?query=pf.conf&sektion=5)
-
 
 ----
 

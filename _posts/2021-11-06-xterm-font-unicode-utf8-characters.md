@@ -2,7 +2,7 @@
 layout: post
 title: "How To List All Fonts That Contain a Particular UTF-8/Unicode Character" 
 date: 2021-11-06 21:03:22 -0700 
-categories: xterm font unicode utf-8 unix x11 fontconfig locale
+categories: xterm font unicode utf8 unix x11 fontconfig locale
 ---
 
 **tl;dr:**   
