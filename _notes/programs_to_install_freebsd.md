@@ -1,6 +1,6 @@
 ---
 layout: default    ## If you don't want to display the page as "plain"
-title: "Programs to Install on a New Machine (FreeBSD) - DRAFT"
+title: "Programs to Install on a New Machine (FreeBSD)"
 ---
 
 ```
