@@ -1,6 +1,6 @@
 ---
 layout: default    ## If you don't want to display the page as "plain"
-title: "Programs to Install on a New Machine (FreeBSD) - DRAFT"
+title: "Programs to Install on a New FreeBSD Machine"
 ---
 
 ## Packages Available in FreeBSD 
@@ -17,6 +17,8 @@ setzer         LaTeX editor written in Python with Gtk
 
 ipe            Extensible vector graphics editor with LaTeX support
 
+mutt           Small but powerful text based program for read/writing e-mail
+
 rox-filer      Simple and easy to use graphical file manager
 catseye-fm     Clear, fast, powerful file browser using gtk+2.0
 
@@ -24,7 +26,7 @@ kitty          Cross-platform, fast, featureful, GPU-based terminal emulator
 ```
 
 
-## Manual Download or Manual Installations 
+## Manual Downloads or Manual Installations 
 
 ```
 GraTeX         Visual graph creator for LaTeX (PGF & TikZ)    [2] 
@@ -34,7 +36,6 @@ GraTeX         Visual graph creator for LaTeX (PGF & TikZ)    [2]
 $ fetch https://sourceforge.net/projects/gratex/files/GraTeX.jar
 $ java -jar gratex.jar  
 ```
-
 
 ----
 

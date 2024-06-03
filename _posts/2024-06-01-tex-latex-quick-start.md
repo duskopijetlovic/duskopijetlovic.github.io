@@ -53,7 +53,6 @@ To change the colour of the background and the colour of the text (foreground):
 $ xdvi -bg white -fg black helloworld.dvi
 ```
 
-
 Alternatively, you can use **pdfTeX**, which is capable of generating typeset PDF output in place of DVI.
 pdfTeX has other capabilities, most notably in the area of fine typographic detail (for example, its support for optimising line breaks), but its greatest impact to date has been in the area of PDF output. [<sup>[1](#footnotes)</sup>] [<sup>[2](#footnotes)</sup>]
 
@@ -145,11 +144,12 @@ and
 
 # TeX/LaTeX Document Structure
 
-Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/LaTeX/Document_Structure):
+Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/LaTeX/Document_Structure) and [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/info/impatient/book.pdf).
 
 * Preamble
   * Document Classes
   * Packages
+* Groups
 * Environments
 * The Document Environment
   * Top Matter
@@ -234,15 +234,14 @@ You can pass *several options* to a package, each *separated by a comma*.
 \usepackage[option1,option2,option3]{''package_name''}
 ```
 
-
 #### Recommended Packages - References
 
-[The nag package warns you for incorrect LaTeX usage - howtotex.com -- Archived from the original on Aug 8, 2016](https://web.archive.org/web/20160808221527/http://www.howtotex.com/packages/the-nag-package-warns-you-for-incorrect-latex-usage/)
+From [The nag package warns you for incorrect LaTeX usage - howtotex.com -- Archived from the original on Aug 8, 2016](https://web.archive.org/web/20160808221527/http://www.howtotex.com/packages/the-nag-package-warns-you-for-incorrect-latex-usage/):
 
 * [https://www.ctan.org/pkg/nag](https://www.ctan.org/pkg/nag)
 * [https://www.ctan.org/pkg/l2tabu](https://www.ctan.org/pkg/l2tabu)
 
-[Nine essential LaTeX packages everyone should use - howtotex.com -- Archived from the original on Aug 15, 2016](https://web.archive.org/web/20160815072957/http://www.howtotex.com/packages/9-essential-latex-packages-everyone-should-use)
+From [Nine essential LaTeX packages everyone should use - howtotex.com -- Archived from the original on Aug 15, 2016](https://web.archive.org/web/20160815072957/http://www.howtotex.com/packages/9-essential-latex-packages-everyone-should-use):
 
 * [https://ctan.org/pkg/amsmath](https://ctan.org/pkg/amsmath)
 * [https://ctan.org/pkg/geometry](https://ctan.org/pkg/geometry)
@@ -259,12 +258,30 @@ A few exceptions exist, such as the *cleveref* package.
 *cleveref* should be loaded after hyperref.
 More exceptions are listed in this post on TeX.SE: [Which packages should be loaded after hyperref instead of before?](https://tex.stackexchange.com/questions/1863/which-packages-should-be-loaded-after-hyperref-instead-of-before)
 
-[Four effortless LaTeX packages you should use](https://brushingupscience.com/2016/02/13/four-effortless-latex-packages-you-should-use/)
+From [Four effortless LaTeX packages you should use](https://brushingupscience.com/2016/02/13/four-effortless-latex-packages-you-should-use/):
 
 * [https://ctan.org/pkg/mathpazo](https://ctan.org/pkg/mathpazo)
 * [https://ctan.org/pkg/microtype](https://ctan.org/pkg/microtype)
 * [https://ctan.org/pkg/caption](https://ctan.org/pkg/caption)
 * [https://ctan.org/pkg/sectsty](https://ctan.org/pkg/sectsty)
+
+----
+
+## Groups
+
+From [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/info/impatient/book.pdf):
+> A *group* consists of material enclosed in matching left and right braces (**{** and **}**).
+> By placing a command within a group, you can limit its effects to the material within the group.
+> For instance, the ```\bf``` command tells TeX to set something in **boldface** type.
+> If you were to put ```\bf``` into your input file and do nothing else to counteract it, everything in your document following the ```\bf``` would be set in boldface.
+> By enclosing ```\bf``` in a group, you limit its effect to the group.
+> For example, if you type:
+> 
+> ```We have {\bf a few boldface words} in this sentence.```
+>
+> you'll get:
+>
+> We have **a few boldface words** in this sentence.
 
 ----
 
@@ -721,16 +738,41 @@ $ zathura latex-template.pdf
 An image showing my typical minimal LaTeX template file
 
 
-### Supressing Page Numbering
+### Tips and Tricks
+
+#### Supressing Page Numbering
 
 Use ```\pagenumbering{gobble}```.
 
 
-### Unnumbered Headings 
+#### Unnumbered Headings 
 
 To get an unnumbered heading which does not go into the TOC (Table of Contents), follow the command name with an asterisk (*) before the opening curly brace.
 
 ```\section*{Section Title}```
+
+----
+
+## Sample File with Some Interesting TeX and LaTeX Examples 
+
+You can download the sample file here:   
+[tex-latex-extras.tex]({{ site.url }}/assets/txt/tex-latex-extras.tex)  
+[tex-latex-extras.pdf]({{ site.url }}/assets/txt/tex-latex-extras.pdf)  
+
+```
+$ lualatex tex-latex-extras.tex
+. . . 
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+. . . 
+```
+
+```
+$ lualatex tex-latex-extras.tex
+```
+
+```
+$ zathura tex-latex-extras.pdf 
+```
 
 ----
 
@@ -895,6 +937,25 @@ Here are the categories and possible values.
 
 **size** tiny, scriptsize, footnotesize, small, normalsize, large, Large, LARGE, huge, HUGE: ```\tiny```, ```\scriptsize```, ```\footnotesize```, ```\small```, ```\normalsize```, ```\large```, ```\Large```, ```\LARGE```, ```\huge```, ```\HUGE```    
 
+
+## LaTeX2e Fonts
+
+From [LaTeX2e font selection. LaTeX Project Team, March 2024](http://mirrors.ctan.org/macros/latex/base/fntguide.pdf):
+> 1.1 LaTeX2e fonts
+> 
+> The most important difference between LaTeX 2.09 and LaTeX2e is the way that
+fonts are selected.
+> In LaTeX 2.09, the Computer Modern fonts were built into the LaTeX format, and so customizing LaTeX to use other fonts was a major effort.
+> 
+> In LaTeX2e, very few fonts are built into the format, and there are commands to load new text and math fonts.
+> Packages such as *times* or *latexsym* allow authors to access these fonts.
+> This document describes how to write similar font-loading packages.
+> 
+> The LaTeX2e font selection system was first released as the 'New Font Selection Scheme' (NFSS) in 1989, and then in release 2 in 1993.
+> LaTeX2e includes NFSS release 2 as standard.
+
+
+## Font and Typefaces - References
 
 [LaTeX and its fancy fonts](https://vladar.bearblog.dev/latex-and-its-fancy-fonts/)
 
@@ -1180,20 +1241,14 @@ From [LaTeX Basics - Wikibooks - 4.2 Ancillary files](https://en.wikibooks.org/w
 > In addition, *latexmk* can be configured to generate other necessary files.
 > For example, from an updated figure file it can automatically generate a file in encapsulated postscript or another suitable format for reading by LaTeX.
 
-[17] From [TeX for the Impatient - a book (of around 350 pages) on TeX, Plain TeX and Eplain -- CTAN](https://ctan.org/pkg/impatient)   
-Chapter 2: Using TeX - Turning input into ink - Programs and files you need
+[17] From [TeX for the Impatient - a book (of around 350 pages) on TeX, Plain TeX and Eplain -- CTAN -- Chapter 2: Using TeX - Turning input into ink - Programs and files you need](https://ctan.org/pkg/impatient): 
+> In order to produce a TeX document, you'll need to run the TeX program
+and several related programs as well.
+> You'll also need supporting files for TeX and possibly for these other programs.
+> In this book we can tell you about TeX but we can't tell you about the other programs and the supporting files except in very general terms because they depend on your local TeX environment.
+> The people who provide you with TeX should be able to supply you with what we call local information.
+> The local information tells you how to start up TeX, how to use the related programs, and how to gain access to the supporting files.
 
-```
-In order to produce a TeX document, you'll need to run the TeX program
-and several related programs as well. You'll also need supporting files for
-TeX and possibly for these other programs. In this book we can tell
-you about TeX, but we can't tell you about the other programs and
-the supporting files except in very general terms because they depend
-on your local TeX environment. The people who provide you with TeX 
-should be able to supply you with what we call local information. The
-local information tells you how to start up TeX, how to use the related
-programs, and how to gain access to the supporting files.
-```
 
 [18] From [LaTeX-Mk homepage](https://latex-mk.sourceforge.net/):
 > LaTeX-Mk is a complete system for simplifying the management of small to large sized LaTeX documents.
@@ -1209,7 +1264,31 @@ programs, and how to gain access to the supporting files.
 
 ----
 
-## References:
+## Documents Collection
+
+[https://ctan.org/pkg/tex-nutshell](https://ctan.org/pkg/tex-nutshell)  
+[http://mirrors.ctan.org/info/tex-nutshell/tex-nutshell.pdf](http://mirrors.ctan.org/info/tex-nutshell/tex-nutshell.pdf)  
+[http://csweb.ucc.ie/~dongen/LAF/Basics.pdf](http://csweb.ucc.ie/~dongen/LAF/Basics.pdf)  
+[http://csweb.ucc.ie/~dongen/LAF/Commands.pdf](http://csweb.ucc.ie/~dongen/LAF/Commands.pdf)   
+[https://ctan.org/pkg/impatient](https://ctan.org/pkg/impatient)   
+[http://mirrors.ctan.org/info/impatient/book.pdf](http://mirrors.ctan.org/info/impatient/book.pdf)   
+[http://latex.silmaril.ie/veryshortguide/](http://latex.silmaril.ie/veryshortguide/)   
+[http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf](http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf)   
+[http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide.pdf](http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide.pdf)   
+[http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide-A4-imposed.pdf](http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide-A4-imposed.pdf)   
+[https://ctan.org/pkg/fntguide](https://ctan.org/pkg/fntguide)   
+[https://tug.org/TUGboat/Articles/tb14-2/tb39rahtz-nfss.pdf](https://tug.org/TUGboat/Articles/tb14-2/tb39rahtz-nfss.pdf)   
+[https://tug.org/pracjourn/2006-1/schmidt/schmidt.pdf](https://tug.org/pracjourn/2006-1/schmidt/schmidt.pdf)   
+[https://ctan.org/pkg/latex-essential](https://ctan.org/pkg/latex-essential)   
+[http://mirrors.ctan.org/info/latex-essential/ess2e.pdf](http://mirrors.ctan.org/info/latex-essential/ess2e.pdf)   
+[https://ctan.org/pkg/fontsmpl](https://ctan.org/pkg/fontsmpl)   
+[http://mirrors.ctan.org/macros/latex/required/tools/fontsmpl.pdf](http://mirrors.ctan.org/macros/latex/required/tools/fontsmpl.pdf)   
+[https://www.ctan.org/tex-archive/info/fontsampler/](https://www.ctan.org/tex-archive/info/fontsampler/)   
+[https://mirrors.ctan.org/info/fontsampler/sampler.pdf](https://mirrors.ctan.org/info/fontsampler/sampler.pdf)   
+
+----
+
+## References
 (Retrieved on Jun 1, 2024)   
 
 * ["Hello, World!" program - Wikipedia](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program)

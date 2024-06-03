@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\usepackage{iftex}
+  \ifXeTeX
+    \usepackage{fontspec}
+  \else
+    \usepackage{luatextra}
+  \fi
+\defaultfontfeatures{Ligatures=TeX}
+\usepackage{polyglossia}
+
+% Preamble - the area between \documentclass{...} and \begin{document}
+\usepackage{lipsum}
+% Preamble - the area between \documentclass{...} and \begin{document}
+
+% Document Body - the area between \begin{document} and \end{document}
+\begin{document}
+
+The lipsum command automatically generates the specified number of paragraphs of text that is commonly used for examples.
+
+\section{Text for the first section}
+  \lipsum[1]
+\subsection{Text for a subsection of the first section}
+  Text for a subsection of the first section.
+\subsection{Another subsection of the first section}
+  Text for another subsection of the first section.
+
+\section{The second section}
+  Text for the second section.
+\subsection{Title of the first subsection of the second section}
+\lipsum[2]
+
+\end{document}
+% Document Body - the area between \begin{document} and \end{document}
