@@ -152,7 +152,7 @@ Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/
 * Groups
 * Environments
 * The Document Environment
-  * Top Matter
+  * Top Matter (aka Front Matter)
   * Abstract
   * Sectioning (Sectioning Commands)
     * Section Numbering
@@ -208,7 +208,14 @@ Example: an input file for a LaTeX document could start with the line
 
 which instructs LaTeX to typeset the document as an article with a base font size of 11 points, and to produce a layout suitable for double sided printing on A4 paper. 
 
-Here's [a comprehensive list of document classes](https://ctan.org/topic/class). 
+Here's [a comprehensive list of document classes](https://ctan.org/topic/class).
+
+
+#### Code Snippets for Standard Classes
+
+* [Article](https://texblog.org/code-snippets/standard-classes/#article)
+* [Report](https://texblog.org/code-snippets/standard-classes/#report)
+* [Book](https://texblog.org/code-snippets/standard-classes/#book)
 
 ----
 
@@ -311,11 +318,11 @@ A useful side-effect of marking the end of the document text is that you can sto
 
 ### The Document Environment
 
-#### Top Matter
+#### Top Matter (aka Front Matter)
 
 At the beginning of most documents there will be information about the document itself, such as the title and date, and also information about the authors, such as name, address, email etc.
-All of this type of information within LaTeX is collectively referred to as top matter.
-Although never explicitly specified (there is no *\topmatter* command) you are likely to encounter the term within LaTeX documentation. 
+All of this type of information within LaTeX is collectively referred to as *top matter* (aka *front matter*).
+Although never explicitly specified (there is no *\topmatter* or *\frontmatter* command) you are likely to encounter the term within LaTeX documentation. 
 
 A simple example:
 
@@ -330,7 +337,7 @@ A simple example:
 \end{document}
 ```
 
-You always finish the top matter with the \maketitle command, which tells LaTeX that it's complete and it can typeset the title according to the information you have provided and the class (style) you are using.
+You always finish the top matter (front matter) with the \maketitle command, which tells LaTeX that it's complete and it can typeset the title according to the information you have provided and the class (style) you are using.
 If you omit ```\maketitle```, the title will not be typeset. 
 
 Using this approach, you can only create a title with a fixed layout.
@@ -340,7 +347,7 @@ If you want to create your title freely, see the [Title Creation](https://en.m.w
 #### Abstract
 
 As most research papers have an abstract, there are predefined commands for telling LaTeX which part of the content makes up the abstract.
-This should appear in its logical order, therefore, after the top matter, but before the main sections of the body.
+This should appear in its logical order, therefore, after the top matter (front matter), but before the main sections of the body.
 This command is available for the document classes article and report, but not book.
 
 ```
@@ -742,7 +749,7 @@ An image showing my typical minimal LaTeX template file
 
 #### Supressing Page Numbering
 
-Use ```\pagenumbering{gobble}```.
+Use ```\pagenumbering{gobble}``` in the preamble of your LaTeX document.
 
 
 #### Unnumbered Headings 
@@ -970,7 +977,13 @@ fonts are selected.
 [Palatino and Source Sans Pro, the only fonts a scientist needs](https://brushingupscience.com/2018/06/14/palatino-and-source-sans-pro-the-only-fonts-a-scientist-needs/)
 
 
-NOTE: If you want to use the Palatino font, you need to use these two packages: *fontenc* (with option *T1*) and *textcomp*.
+NOTE: If you want to use the Palatino font, you also need to use the following two packages: *fontenc* (with option *T1*) and *textcomp* in the preamble of your LaTeX document.
+
+```
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{palatino}
+```
  
 References:   
 
@@ -1079,6 +1092,10 @@ Creating a LaTeX Minimal (Minimum) Example - aka Minimal Working Example (MWE): 
 ----
 
 # Tools
+
+[LaTeX.js.org - JavaScript LaTeX to HTML5 Translator](https://latex.js.org/)
+
+[LaTeX.js.org - Playground](https://latex.js.org/playground.html) 
 
 [TeXtidote - Spelling, grammar and style checking on LaTeX documents](https://sylvainhalle.github.io/textidote/)
 
@@ -1266,12 +1283,16 @@ and several related programs as well.
 
 ## Documents Collection
 
-[https://ctan.org/pkg/tex-nutshell](https://ctan.org/pkg/tex-nutshell)  
-[http://mirrors.ctan.org/info/tex-nutshell/tex-nutshell.pdf](http://mirrors.ctan.org/info/tex-nutshell/tex-nutshell.pdf)  
+[TeX-nutshell - A short document about TeX principles -- https://ctan.org/pkg/tex-nutshell](https://ctan.org/pkg/tex-nutshell)   
+[TeX-nutshell - A short document about TeX principles - The Document Itself](http://mirrors.ctan.org/info/tex-nutshell/tex-nutshell.pdf)  
+[A Simplified Introduction to LaTeX - https://ctan.org/pkg/simplified-latex](https://ctan.org/pkg/simplified-latex)    
+[A Simplified Introduction to LaTeX - The Document Itself](http://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf)   
 [http://csweb.ucc.ie/~dongen/LAF/Basics.pdf](http://csweb.ucc.ie/~dongen/LAF/Basics.pdf)  
 [http://csweb.ucc.ie/~dongen/LAF/Commands.pdf](http://csweb.ucc.ie/~dongen/LAF/Commands.pdf)   
 [https://ctan.org/pkg/impatient](https://ctan.org/pkg/impatient)   
 [http://mirrors.ctan.org/info/impatient/book.pdf](http://mirrors.ctan.org/info/impatient/book.pdf)   
+[gentle – A Gentle Introduction to TeX](https://ctan.org/pkg/gentle)   
+[gentle – A Gentle Introduction to TeX - The Document Itself](https://mirrors.ctan.org/info/gentle/gentle.pdf)    
 [http://latex.silmaril.ie/veryshortguide/](http://latex.silmaril.ie/veryshortguide/)   
 [http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf](http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf)   
 [http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide.pdf](http://mirrors.ctan.org/info/latex-veryshortguide/veryshortguide.pdf)   
@@ -1304,6 +1325,13 @@ and several related programs as well.
 * [Hello world - Rosetta Code](https://rosettacode.org/wiki/Hello_world/Text)
 
 * [GitHub – leachim6/hello-world: Hello world in every computer language](https://github.com/leachim6/hello-world)
+
+* [Arbitrary LaTeX reference](https://latex.knobs-dials.com/)
+> Many problems in LaTeX require some research so I started to record my findings.
+> Some of this is overly simplified, never investigated past my own needs, some things are unverified, some quite possible wrong.
+> Lately I haven't needed TeX much so I don't work on this page much - feel free to mail me any suggestions, corrections, and such.
+> Please wait until the page is loaded; expansion will not work before it is.
+> You can expand all sections when you want to search or print.
 
 * [Unsung Heroes of IT / Part One: Brian Kernighan. TheUnsungHeroesOfIT.com. Archived from the original on Mar 26 2016](https://web.archive.org/web/20160326193543/http://theunsungheroesofit.com/helloworld/)
 
@@ -1346,6 +1374,20 @@ and several related programs as well.
 * [LuaTeX](https://www.luatex.org/)
 
 * [LuaTeX - Wikipedia](https://en.wikipedia.org/wiki/LuaTeX)
+
+* [LaTeX Cookbook](https://github.com/alexpovel/latex-cookbook)
+> Download PDF: [https://github.com/alexpovel/latex-cookbook/releases/latest/download/cookbook.pdf](https://github.com/alexpovel/latex-cookbook/releases/latest/download/cookbook.pdf)
+>
+> This repo contains a LaTeX document, usable as a cookbook (different "recipes" to achieve various things in LaTeX) as well as as a template.
+> The resulting PDF covers LaTeX-specific topics and instructions on compiling the LaTeX source.
+> 
+> A comprehensive LaTeX template with examples for theses, books and more, employing the 'latest and greatest' (UTF8, glossaries, fonts, ...).
+> The PDF artifact is built using CI/CD, with a Python testing framework.
+> 
+> There is a by former coworkers of the author, at the research institute this template originated from as well.
+> Active development is still happening there:
+>
+> [LaTeX template of the Institute of Engineering Thermodynamics (M21) for theses - Based on the Cookbook by Alex Povel](https://collaborating.tuhh.de/m21/public/theses/itt-latex-template)
 
 * [Comprehensive list of LaTeX document classes](https://ctan.org/topic/class)
 
@@ -1392,6 +1434,10 @@ and several related programs as well.
 * [The Computer Science of TeX and LaTeX; based on CS 594, fall 2004, University of Tennessee - Victor Eijkhout, Texas Advanced Computing Center, The University of Texas at Austin - 2012](https://bitbucket.org/VictorEijkhout/tex-latex-science-book/raw/2353026a66c47870f9d7a99e09e79a8af3f9fd20/TeXLaTeXcourse.pdf)
 
 * [TeX by Topic, A TeXnician's Reference - Victor Eijkhout - Document Revision 1.5, 2019](https://github.com/VictorEijkhout/tex-by-topic/raw/main/TeXbyTopic.pdf)
+
+* [Getting to Grips with LaTeX](https://www.andy-roberts.net/latex/)
+
+* [LaTeX for authors, LaTeX Project Team](https://www.latex-project.org/help/documentation/usrguide.pdf)
 
 ----
 
