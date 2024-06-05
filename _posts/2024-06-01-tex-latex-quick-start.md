@@ -165,6 +165,15 @@ Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/
 * Special pages
   * Bibliography
 
+The following image (based on [A Simplified Introduction to LaTeX - Harvey J. Greenberg and Dan Luecking](https://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf) shows a structure of a LaTeX document. 
+
+You can also download this image as a cropped PDF from here:
+[latex-doc-structure.pdf]({{ site.url }}/assets/txt/latex-doc-structure.pdf) [<sup>[12](#footnotes)</sup>] 
+
+![The structure of a LaTeX document](/assets/img/latex-doc-structure.png "The structure of a LaTeX document")
+
+An image showing the structure of a LaTeX document
+
 ----
 
 ## Preamble - aka The Setup (of the Document/Layout)
@@ -294,7 +303,7 @@ From [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/
 
 ## Environments
 
-Areas between ```\begin{...}``` and ```\end{...}``` pairs are called **environments**.  [<sup>[12](#footnotes)</sup>] [<sup>[13](#footnotes)</sup>] [<sup>[14](#footnotes)</sup>]
+Areas between ```\begin{...}``` and ```\end{...}``` pairs are called **environments**.  [<sup>[13](#footnotes)</sup>] [<sup>[14](#footnotes)</sup>] [<sup>[15](#footnotes)</sup>]
 
 ----
 
@@ -551,7 +560,7 @@ Well, and here begins my lovely article.
 ```
 
 
-NOTE: When you have a TOC (Table Of Contents) in your document, you need to invoke  LaTeX **two times** so unless you are using [```latexmk(1)``` Perl script](https://www.cantab.net/users/johncollins/latexmk/index.html), or [*LaTeX-Mk* (*make*-based build system for LaTeX projects)](https://latex-mk.sourceforge.net/), or the ```make(1)``` program, you need to run the ```pdflatex(1)``` command (or  the```latex``` command, or the ```lualatex``` command) **two times** in order to get a correct table of contents. [<sup>[15](#footnotes)</sup>] [<sup>[16](#footnotes)</sup>] [<sup>[17](#footnotes)</sup>]
+NOTE: When you have a TOC (Table Of Contents) in your document, you need to invoke  LaTeX **two times** so unless you are using [```latexmk(1)``` Perl script](https://www.cantab.net/users/johncollins/latexmk/index.html), or [*LaTeX-Mk* (*make*-based build system for LaTeX projects)](https://latex-mk.sourceforge.net/), or the ```make(1)``` program, you need to run the ```pdflatex(1)``` command (or  the```latex``` command, or the ```lualatex``` command) **two times** in order to get a correct table of contents. [<sup>[16](#footnotes)</sup>] [<sup>[17](#footnotes)</sup>] [<sup>[18](#footnotes)</sup>]
 
 ```
 $ pdflatex small.tex
@@ -654,10 +663,10 @@ $ zathura latexonepage.pdf
 
 ## My Typical Minimal Document Template (Boilerplate) 
 
-Based on [*Beginners' LaTeX* (now called the *Formatting Information* document) - CTAN](https://www.ctan.org/tex-archive/info/beginlatex/),
-[LaTeX cheat sheet - Winston Chang](http://wch.github.io/latexsheet/latexsheet.pdf),
-and on
-[Formatting Information - https://latex.silmaril.ie/formattinginformation](https://latex.silmaril.ie/formattinginformation).
+Based on:
+* [*Beginners' LaTeX* (now called the *Formatting Information* document) - CTAN](https://www.ctan.org/tex-archive/info/beginlatex/),
+* [LaTeX cheat sheet - Winston Chang](http://wch.github.io/latexsheet/latexsheet.pdf),
+* [Formatting Information - https://latex.silmaril.ie/formattinginformation](https://latex.silmaril.ie/formattinginformation).
 
 ```
 $ cat latex-template.tex
@@ -808,7 +817,7 @@ $ make
 
 Author: Dan McMahill ([dmcmahill](https://github.com/dmcmahill))
 
-**LaTeX-Mk**: Collection of makefile and scripts for LaTeX documents [<sup>[18](#footnotes)</sup>] [<sup>[19](#footnotes)</sup>]
+**LaTeX-Mk**: Collection of makefile and scripts for LaTeX documents [<sup>[19](#footnotes)</sup>] [<sup>[20](#footnotes)</sup>]
 
 ```
 $ sudo pkg install latex-mk
@@ -968,6 +977,8 @@ fonts are selected.
 
 [Fonts and TeX - TUG (TeX User Group)](https://tug.org/fonts/)
 
+[My favourite fonts to use with LaTeX (part 1)](https://www.lfe.pt/latex/fonts/typography/2022/11/21/latex-fonts-part1.html)
+
 [The LaTeX Font Catalogue - TUG](https://tug.org/FontCatalogue/) 
 
 [Comprehensive LATEX Symbols List, Scott Pakin](https://mirror.ctan.org/info/symbols/comprehensive/symbols-letter.pdf)
@@ -975,7 +986,6 @@ fonts are selected.
 [The Comprehensive LaTeX Symbol List - Symbols accessible from LaTeX - CTAN](https://www.ctan.org/tex-archive/info/symbols/comprehensive)
 
 [Palatino and Source Sans Pro, the only fonts a scientist needs](https://brushingupscience.com/2018/06/14/palatino-and-source-sans-pro-the-only-fonts-a-scientist-needs/)
-
 
 NOTE: If you want to use the Palatino font, you also need to use the following two packages: *fontenc* (with option *T1*) and *textcomp* in the preamble of your LaTeX document.
 
@@ -1008,11 +1018,26 @@ fonts.
 > \usepackage{textcomp}
 > ```
 
+Also See:
+
+* [The TeX Gyre (TG) Collection of Fonts - GUST (Grupa Użytkowników Systemu TeX ) Web Presence](https://www.gust.org.pl/projects/e-foundry/tex-gyre/)
+> **Pagella**
+> 
+> The package ([download](https://www.gust.org.pl/projects/e-foundry/tex-gyre/pagella/index_html)) contains the most recent version of the TeX Gyre Pagella family of fonts in the PostScript Type 1 and OpenType formats.
+> TeX Gyre Pagella is based on the URW Palladio L kindly released by URW++ Design and Development Inc. under GFL (independently of the GPL release accompanying Ghostscript).
+> The Vietnamese glyphs were added by Han The Thanh.
+> 
+> TeX Gyre **Pagella** can be used as a **replacement** for the renowned **Palatino** font (designed by Hermann Zapf in the 1940's for the Stempel type foundry; an interesting lifestory of Hermann Zapf can be found at: [http://www.linotype.com/1494/theschoolyears.html -- Archived from the original May 12, 2007](https://web.archive.org/web/20070512201725/http://www.linotype.com/1494/theschoolyears.html)
+> 
+> (Please note that with the release of this family the QuasiPalatino fonts became obsolete.)
+
 * [Using fonts installed in local texlive (including Palatino) - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/202767/using-fonts-installed-in-local-texlive)
 
 ----
 
 # My Choice of Engine: LuaTeX (LuaLaTeX)
+
+**Reason**: Because of **Unicode support**.
 
 From [TeX - Wikipedia](https://en.wikipedia.org/wiki/TeX):
 > ... LuaTeX, a **Unicode-aware** *extension* to TeX that includes a Lua runtime with extensive hooks into the underlying TeX routines and algorithms.
@@ -1204,9 +1229,49 @@ LATEX was originally written by Leslie Lamport.
 > A package might or might not work with any given format and/or engine; for example, many are designed specifically for LaTeX, but there are plenty of others, too.
 > The CTAN sites provide access to the vast majority of packages in the TeX world; CTAN is generally the source used by the distributions. 
 
-[12] Reference: [Learn LaTeX.org - Lesson 3 -- LaTeX document structure - What you've got](https://www.learnlatex.org/en/lesson-03#what-youve-got)
+[12] Here are the steps explaining how I created the image showing the structure of a LaTeX document.
 
-[13] Reference: [Five minute guide to LaTeX (PDF) - How To LaTeX (howtolatex.com) -- Archived from the original on May 5, 2016](https://web.archive.org/web/20160505212246/http://www.howtotex.com/download/FiveMinuteGuideToLaTeX.pdf)
+You can download the source LaTeX file for this image here: 
+[latex-doc-structure.tex]({{ site.url }}/assets/txt/latex-doc-structure.tex)
+
+Then, run the following commands.  
+
+```
+$ latex latex-doc-structure.tex 
+$ dvipng latex-doc-structure.dvi
+
+$ ls | tail -1
+latex-doc-structure1.png
+
+$ mv latex-doc-structure1.png latex-doc-structure.png 
+```
+
+```
+$ dvips latex-doc-structure.dvi
+```
+
+```
+$ gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox -f latex-doc-structure.ps
+%%BoundingBox: 110 506 487 705
+%%HiResBoundingBox: 110.861997 506.825985 486.881985 704.249979
+```
+
+```
+$ gs \
+? -q \
+? -sDEVICE=pdfwrite \
+? -o latex-doc-structure.pdf \
+? -c "[/CropBox [110 506 487 705] /PAGES pdfmark" \
+? -f latex-doc-structure.ps
+```
+
+```
+$ zathura latex-doc-structure.pdf
+```
+
+[13] Reference: [Learn LaTeX.org - Lesson 3 -- LaTeX document structure - What you've got](https://www.learnlatex.org/en/lesson-03#what-youve-got)
+
+[14] Reference: [Five minute guide to LaTeX (PDF) - How To LaTeX (howtolatex.com) -- Archived from the original on May 5, 2016](https://web.archive.org/web/20160505212246/http://www.howtotex.com/download/FiveMinuteGuideToLaTeX.pdf)
 > 1.1.2 Environments
 > 
 > Environments contain special content, such as math, figures, tables, etc.
@@ -1214,12 +1279,12 @@ LATEX was originally written by Leslie Lamport.
 > 
 > The ```document``` environment is most important: all content within this environment will be **printed**.
 
-[14] Reference: [Formatting information - A beginner's introduction to typesetting with LaTeX](https://mirrors.ctan.org/info/beginlatex/beginlatex.pdf)
+[15] Reference: [Formatting information - A beginner's introduction to typesetting with LaTeX](https://mirrors.ctan.org/info/beginlatex/beginlatex.pdf)
 > This **\begin ... \end** pair of commands is an example of a common LaTeX structure called an ***environment***.
 > Environments enclose text which is to be handled in a particular way.
 > All environments start with ```\begin{...}``` and end with ```\end{...}``` (putting the name of the environment in the curly braces).
 
-[15] The *TOC (Table Of Contents)* is an example of a **cross-reference**.
+[16] The *TOC (Table Of Contents)* is an example of a **cross-reference**.
 (Cross-references are references to anything that is numbered; for example, sections, figures, formulas, tables, and special segments of text.)  
 
 Since they are not updated on the first LaTeX invocation, when you use cross-references in your document, you need to run LaTeX **two times** to get a correct table of contents.
@@ -1240,7 +1305,7 @@ From [LaTeX Basics - Wikibooks - 4.2 Ancillary files](https://en.wikibooks.org/w
 > So to have an up-to-date table of contents, you need to compile the document twice.
 > There is no need to re-compile if no section moved. 
 
-[16] From the man page for ```latexmk(1)``` (on FreeBSD 14: */usr/local/share/texmf-dist/doc/support/latexmk*):
+[17] From the man page for ```latexmk(1)``` (on FreeBSD 14: */usr/local/share/texmf-dist/doc/support/latexmk*):
 > A very annoying complication handled very reliably by *latexmk*, is that LaTeX is a multiple pass system.
 > On each run, LaTeX reads in information generated on a previous run, for things like cross referencing and indexing.
 > In the simplest cases, a second run of LaTeX suffices, and often the log file contains a message about the need for another pass.
@@ -1258,7 +1323,7 @@ From [LaTeX Basics - Wikibooks - 4.2 Ancillary files](https://en.wikibooks.org/w
 > In addition, *latexmk* can be configured to generate other necessary files.
 > For example, from an updated figure file it can automatically generate a file in encapsulated postscript or another suitable format for reading by LaTeX.
 
-[17] From [TeX for the Impatient - a book (of around 350 pages) on TeX, Plain TeX and Eplain -- CTAN -- Chapter 2: Using TeX - Turning input into ink - Programs and files you need](https://ctan.org/pkg/impatient): 
+[18] From [TeX for the Impatient - a book (of around 350 pages) on TeX, Plain TeX and Eplain -- CTAN -- Chapter 2: Using TeX - Turning input into ink - Programs and files you need](https://ctan.org/pkg/impatient): 
 > In order to produce a TeX document, you'll need to run the TeX program
 and several related programs as well.
 > You'll also need supporting files for TeX and possibly for these other programs.
@@ -1266,14 +1331,13 @@ and several related programs as well.
 > The people who provide you with TeX should be able to supply you with what we call local information.
 > The local information tells you how to start up TeX, how to use the related programs, and how to gain access to the supporting files.
 
-
-[18] From [LaTeX-Mk homepage](https://latex-mk.sourceforge.net/):
+[19] From [LaTeX-Mk homepage](https://latex-mk.sourceforge.net/):
 > LaTeX-Mk is a complete system for simplifying the management of small to large sized LaTeX documents.
 > LaTeX-Mk uses the standard *make* program for doing most of the work.
 > Users simply create a makefile which many times is as simple as one line that specifies the document name and a single include line that loads all of the LaTeX-Mk rules.
 > LaTeX-Mk has been used for many years on projects ranging in scale from a single page business letter to a published book. 
 
-[19] From the *latex-mk* package description on FreeBSD 14 (```$ pkg rquery '%e' latex-mk```):
+[20] From the *latex-mk* package description on FreeBSD 14 (```$ pkg rquery '%e' latex-mk```):
 > LaTeX-Mk is a tool for managing small to large sized LaTeX projects.
 > The typical LaTeX-Mk input file is simply a series of variable definitions in a Makefile for the project.
 > After creating a simple Makefile the user can easily perform all required steps to do such tasks as: preview the document, print the document, or produce a PDF file.
@@ -1332,6 +1396,18 @@ and several related programs as well.
 > Lately I haven't needed TeX much so I don't work on this page much - feel free to mail me any suggestions, corrections, and such.
 > Please wait until the page is loaded; expansion will not work before it is.
 > You can expand all sections when you want to search or print.
+
+* [LaTeX Resources - HowToTeX.com -- Archived from original on Apr 4, 2016](https://web.archive.org/web/20160404010339/http://latex.howtotex.com/) 
+
+* [Text Processing using LaTeX - CUED (University of Cambridge, Department of Engineering) - Computing Help - LaTeX](http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/)
+> [TeX ('Introduction to TeX - a.k.a. Plain TeX') (Archived from the original on Oct 22, 2015)](https://web.archive.org/web/20151022042027/http://www.ucs.cam.ac.uk/docs/leaflets/u36/) is a powerful text processing language and is the required format for some periodicals now.
+> TeX has many macros to which you can eventually add your own.
+> LaTeX is a macro package which sits on top of TeX and provides all the structuring facilities to help with writing large documents.
+> Automated chapter and section macros are provided, together with cross referencing and bibliography macros.
+> LaTeX tends to take over the style decisions, but all the benefits of plain TeX are still present when it comes to doing maths.
+> The [Why LaTeX?](http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/latex_advocacy.html) page discusses LaTeX's strengths/weaknesses.
+
+* [Introduction to TeX (Plain TeX) -- Archived from the original on Oct 22, 2015)](https://web.archive.org/web/20151022042027/http://www.ucs.cam.ac.uk/docs/leaflets/u36/)
 
 * [Unsung Heroes of IT / Part One: Brian Kernighan. TheUnsungHeroesOfIT.com. Archived from the original on Mar 26 2016](https://web.archive.org/web/20160326193543/http://theunsungheroesofit.com/helloworld/)
 
@@ -1452,4 +1528,5 @@ and several related programs as well.
 * [Travels in TeX Land: Final Layout of a Book (The PracTeX Journal, 2006)](https://tug.org/pracjourn/2006-3/walden/) 
 
 ----
+
 
