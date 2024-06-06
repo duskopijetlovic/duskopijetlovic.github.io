@@ -12,6 +12,8 @@ X Window Manager: FVWM
 DVI Viewer: xdvi (```$ sudo pkg install tex-xdvik```)   
 PDF Viewers: zathura, mupdf (```$ sudo pkg install zathura zathura-pdf-poppler zathura-ps mupdf```)  	
 
+----
+
 # Hello World in TeX
 
 ```
@@ -21,14 +23,12 @@ Hello, World!
 \bye
 ```
 
-
 Running TeX on this file (for example, by typing ```tex helloworld.tex```) creates an output file called *helloworld.dvi*, representing the content of the page in a **d**e**v**ice **i**ndependent format (**DVI**).
 A DVI file could then be either viewed on screen or converted to a suitable format for printing.
 
 ```
 $ tex helloworld.tex
 ```
-
 
 If your system doesn't have a program for viewing .dvi files, you can install 
 **xdvi** program (DVI Previewer for the X Window System):
@@ -97,7 +97,7 @@ $ zathura helloworld.pdf
 
 ----
 
-# What is LaTeX? (Simplified) Answer: LaTeX = TeX + Macros
+# What is LaTeX? Answer (Simplified): LaTeX = TeX + Macros
 
 * A TeX macro package [<sup>[7](#footnotes)</sup>]
 * A document processing system [<sup>[7](#footnotes)</sup>]
@@ -153,17 +153,21 @@ Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/
 * Environments
 * The Document Environment
   * Top Matter (aka Front Matter)
-  * Abstract
+    * Table Of Contents (TOC)
+    * Abstract
   * Sectioning (Sectioning Commands)
     * Section Numbering
     * Section Number Style
   * Ordinary Paragraphs
-  * Table of Contents
-    * Depth
+  * Back Matter (aka End Matter or Special Pages)
+    * Bibliography
+    * Appendix or Appendices
+    * Index
+    * Acronyms
+    * Nomenclature
+    * Glossary
 * Book Structure
   * Page Order
-* Special pages
-  * Bibliography
 
 The following image (based on [A Simplified Introduction to LaTeX - Harvey J. Greenberg and Dan Luecking](https://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf) shows a structure of a LaTeX document. 
 
@@ -176,7 +180,7 @@ An image showing the structure of a LaTeX document
 
 ----
 
-## Preamble - aka The Setup (of the Document/Layout)
+## Preamble - Layout (or The Setup) of the Document
 
 Every input file must contain the commands
 
@@ -248,6 +252,39 @@ You can pass *several options* to a package, each *separated by a comma*.
 
 ```
 \usepackage[option1,option2,option3]{''package_name''}
+```
+
+
+### Recommended Packages 
+
+#### From 'A Simplified Introduction to LaTeX' 
+
+From [A Simplified Introduction to LaTeX - Harvey J. Greenberg and Dan Luecking](https://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf).
+
+> You will find other packages useful, depending upon your technical area.
+> Here are some packages that give you special symbols: *chemsym*, *qsymbols*,
+*wasysym*, and *xypic*.
+> Also, the *algorithm* package enables an environment to write source code with standard language elements, and there are others with similar properties or for particular programming languages (*viz.*, *c-pascal* and *listings*).
+> The *graphtex* package specializes in all sorts of graphs, including those commonly found in automata theory.
+
+From the preamble in that document:
+
+```
+\usepackage{amsmath}           % formerly amstex
+\usepackage{amssymb}           % ams symbols (\mathbb fonts)
+\usepackage{amscd}             % draws commutative diagrams
+\usepackage{bm}                % bold math fonts (\mathbm)
+\usepackage{graphicx,pst-all}  % graphics
+\usepackage{hyphenat}          % enables control over hyphenation
+\usepackage{fancyvrb,moreverb} % verbatim
+\usepackage{float}             % enable float [H] option
+\usepackage[T1]{fontenc}       % ...to write \textbf{\textsc{..}}
+\usepackage{ifthen}            % ifthenelse {condition}{true}{false}
+\usepackage{makeidx}           % index
+\usepackage{multirow}          % like multicolumn
+\usepackage{mathrsfs}          % more math symbols (viz., \mathscr)
+\usepackage{theorem}           % enables more control over newtheorem
+\usepackage{url}               % \url{...}
 ```
 
 #### Recommended Packages - References
@@ -324,8 +361,6 @@ A useful side-effect of marking the end of the document text is that you can sto
 \end{document}
 ...
 ```
-
-### The Document Environment
 
 #### Top Matter (aka Front Matter)
 
@@ -441,16 +476,9 @@ turnover at divisional headquarters}
 
 ----
 
-
 #### Ordinary Paragraphs
 
 ----
-
-#### Table of Contents
-##### Depth
-
-----
-
 
 # Sample LaTeX Documents
 
@@ -558,7 +586,6 @@ Well, and here begins my lovely article.
 
 \end{document}
 ```
-
 
 NOTE: When you have a TOC (Table Of Contents) in your document, you need to invoke  LaTeX **two times** so unless you are using [```latexmk(1)``` Perl script](https://www.cantab.net/users/johncollins/latexmk/index.html), or [*LaTeX-Mk* (*make*-based build system for LaTeX projects)](https://latex-mk.sourceforge.net/), or the ```make(1)``` program, you need to run the ```pdflatex(1)``` command (or  the```latex``` command, or the ```lualatex``` command) **two times** in order to get a correct table of contents. [<sup>[16](#footnotes)</sup>] [<sup>[17](#footnotes)</sup>] [<sup>[18](#footnotes)</sup>]
 
@@ -754,6 +781,8 @@ $ zathura latex-template.pdf
 An image showing my typical minimal LaTeX template file
 
 
+----
+
 ### Tips and Tricks
 
 #### Supressing Page Numbering
@@ -789,6 +818,70 @@ $ lualatex tex-latex-extras.tex
 ```
 $ zathura tex-latex-extras.pdf 
 ```
+
+----
+
+## Customization
+
+### Commands *\newcommand* and *\renewcommand*
+
+The ```\newcommand``` and ```\renewcommand``` commands enable you to define your own commands and change parameter values of existing commands.
+
+#### Your Own Abbreviations and Commands
+
+> The command that gives us the ability to make our own has the following
+form: ```\newcommand{\name}[n]{whatever }```, where *n* is the number of arguments, and *whatever* is whatever you want the command to do.
+> Here are two examples simply to abbreviate commands with long names:
+
+```
+\newcommand{\ul}{\underline}
+\newcommand{\mc}{\multicolumn}
+```
+
+> The first lets us write ```\ul{something}``` to underline something.
+> The second lets us write ```\mc{3}{c}{stuff}``` to enter a multicolumn, in either a tabular or an array environment, spanning 3 columns and centered.
+>
+> The latex compiler will not let you use a name that is already being used.
+> For example, if you specify ```\newcommand{\fbox}```..., you will get a fatal error message since there is already a ```\fbox``` command.
+> 
+> A related use is when the command requires some lines of code.
+> Consider the following example:
+>
+> ```
+> \newcommand{\Box}{\mbox{\begin{picture}(0,0)
+>                           \put( 2,0){\framebox(7,7)}
+>                          \end{picture} }}
+> ```
+> 
+> (```\mbox``` is used to ensure text mode).
+> Now ```\Box``` ⇒ □ and, having defined the ```\Box``` command, you can use it in other new commands.
+> 
+> For example, if in the preamble you specified: ```\newcommand{\chkbox}{$\Box^\surd\;$}```
+> Then, \chkbox ⇒ ☑
+> 
+> . . . 
+> 
+> The preamble can become very long as we add your commands so it is useful to put them in a separate file, say *mydefs.tex* (note the *.tex* suffix).
+> Then, we use the ```\input``` command to have the latex compiler read it wherever it is placed.
+> In particular, the preamble of this document contains the command:
+>
+> ```\input{mydefs}```
+> 
+> (The suffix *.tex* is assumed.)
+> Different source files could simply input this same file so duplication of work is avoided.
+
+
+----
+
+#### Your Own Names, Titles and Numbers
+
+#### Your Own Environments
+
+#### Your Own Margins and Spacing
+
+#### Your Own Output Control
+
+#### Your Own Bibliography
 
 ----
 
@@ -944,9 +1037,15 @@ This text is set in medium weight.
 ```
 
 Here are the categories and possible values.   
-**family** roman, sans serif, typewriter type: ```\rmfamily```, ```\sffamily```, ```\ttfamily```.   
+**family** roman, sans serif, typewriter type (monospaced): ```\rmfamily```, ```\sffamily```, ```\ttfamily```.   
 **series** medium and bold: ```\mdseries```, ```\bfseries```.  
 **shape** upright, italic, slanted, and small caps: ```\upshape```, ```\itshape```, ```\slshape```, ```\scshape```.  
+
+
+Basically:
+* roman: Computer Modern Roman
+* sans serif: Computer Modern Sans Serif
+* typewriter (monospaced): Computer Modern Typewriter
 
 
 ## Font Size 
@@ -970,6 +1069,129 @@ fonts are selected.
 > The LaTeX2e font selection system was first released as the 'New Font Selection Scheme' (NFSS) in 1989, and then in release 2 in 1993.
 > LaTeX2e includes NFSS release 2 as standard.
 
+----
+
+## Changing Fonts 
+
+Default font: the **Computer Modern** fonts (part of what makes TeX recognizable).
+
+When TeX starts up it has sixteen fonts available. 
+A complete list of the sixteen fonts is given in Appendix F of **The TeXbook** ([Donald E. Knuth, Addison-Wesley, Reading,Massachusetts, 1984, ISBN 0-201-13488-9 -- Archived from original on Aug 11, 2023](https://web.archive.org/web/20230811015407/https://www.cs.stanford.edu/~knuth/abcde.html#texbk)).
+
+More details: [A Gentle Introduction to Tex (A Manual for Self-study) by Michael Doob, Department of Mathematics, The University of Manitoba](https://mirrors.ctan.org/info/gentle/gentle.pdf)    
+
+There is a minimum set of alternative fonts that are available beside Computer Modern.
+The related collection of macro packages is often referred to as the "PSNFSS collection".
+It supports the use of the popular typefaces Times, Helvetica, Palatino and Charter (and a few others), and it supports math fonts that suit Times and Palatino.
+The related documentation (Using common Postscript fonts with LaTeX - Walter Schmidt) is available in every LaTeX distribution as a PDF file named *psnfss2e.pdf*, usually in the directory doc/latex/psnfss (on FreeBSD: /usr/local/share/texmf-dist/doc/latex/psnfss/psnfss2e.pdf). 
+
+Most contemporary TeX distributions come with (almost) all free text and math fonts that are available from CTAN.
+
+More details: [Font selection in LaTeX: The most frequently asked questions An article to the PracTeX Journal by Walter Schmidt](http://www.tug.org/pracjourn/2006-1/schmidt/)
+
+Since 1993, the package **PSNFSS** (the 'PostScript New Font Selecting System') is included in LaTeX2e release 2 as standard. In this package, you choose from 'Base 35' fonts, thirty-five fonts that any Level 2 PostScript printer (and GhostScript) has.
+
+There are various packages that change one or more of the font families, some part of the PSNFSS, some not, and there are some that are now obsolete. 
+
+
+### Using Fonts that are Intrinsic in a Basic LaTeX Installation
+
+For these fonts, you don't need to add anything the preamble.
+
+The following shows examples of how to use all of LaTeX intrinsic font styles.
+
+```
+This is \textbf{boldface}.
+This is \textit{italic}.
+This is \textrm{roman}.
+This is \textsc{small caps}.
+This is \textsf{sans serif}.
+This is \textsl{slanted}.
+This is \texttt{typewriter}.
+```
+
+More fonts are available in LaTeX packages.
+Also, you can install additional fonts manually or with your operating system's package manager. 
+
+
+### Using Fonts Included with TeX/LaTeX Distributions
+
+For example, you want to use the Palatino font.
+
+Add the following in the preamble of your LaTeX document:
+
+```
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{palatino}
+```
+
+### Using Fonts Installed by Package Manager
+
+For example, you want to install *Atkinson Hyperlegible* font and use it in your LaTeX document.
+
+To install it on FreeBSD with its package manager:
+
+```
+$ sudo pkg install atkinson-hyperlegible
+```
+
+```
+$ fc-list | grep -i Atkinson | wc -l
+       8
+ 
+$ fc-list | grep -i Atkinson
+/usr/local/share/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-Bold-102.otf: Atkinson Hyperlegible:style=Bold
+. . . 
+```
+
+```
+$ otfinfo --info /usr/local/share/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-Bold-102.otf
+Family:              Atkinson Hyperlegible
+Subfamily:           Bold
+Full name:           AtkinsonHyperlegible-Bold
+PostScript name:     AtkinsonHyperlegible-Bold
+. . . 
+Description:         Atkinson Hyperlegible is a neo-grotesque typeface created by Applied Design Works for Braille Institute of America, Inc. It has been developed specifically to increase legibility for readers with low vision, and to improve character recognition. 
+Designer:            Elliott Scott, Megan Eiswerth, Linus Boman, Theodore Petrosky
+Designer URL:        http://helloapplied.com
+. . . 
+Vendor URL:          https://www.BrailleInstitute.org/
+. . . 
+```
+
+```
+$ luaotfload-tool --update
+```
+
+Add the following in the preamble of your LaTeX document:
+
+```
+\usepackage{fontspec}
+\setmainfont{Atkinson Hyperlegible}
+```
+
+----
+
+## Commands/Environments for Text Font Appearance
+
+```
+textbf textit textrm textsc textsf texttt
+tiny scriptsize footnotesize small normalsize large
+Large LARGE huge Huge underline verb verbatim
+```
+
+## Commands to Control Fonts in Math Mode
+
+```
+left boldmath (set in text mode)
+cal displaystyle mathbf mathcal
+mathit mathnormal mathrm mathsf
+mathtt mbox overbrace overline
+right textstyle underbrace underline
+```
+
+----
 
 ## Font and Typefaces - References
 
@@ -1038,6 +1260,8 @@ Also See:
 # My Choice of Engine: LuaTeX (LuaLaTeX)
 
 **Reason**: Because of **Unicode support**.
+
+NOTE: As LuaLaTeX allocates as much memory as it happens to need, it can be slow. 
 
 From [TeX - Wikipedia](https://en.wikipedia.org/wiki/TeX):
 > ... LuaTeX, a **Unicode-aware** *extension* to TeX that includes a Lua runtime with extensive hooks into the underlying TeX routines and algorithms.
@@ -1258,11 +1482,11 @@ $ gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=bbox -f latex-doc-structure.ps
 
 ```
 $ gs \
-? -q \
-? -sDEVICE=pdfwrite \
-? -o latex-doc-structure.pdf \
-? -c "[/CropBox [110 506 487 705] /PAGES pdfmark" \
-? -f latex-doc-structure.ps
+ -q \
+ -sDEVICE=pdfwrite \
+ -o latex-doc-structure.pdf \
+ -c "[/CropBox [110 506 487 705] /PAGES pdfmark" \
+ -f latex-doc-structure.ps
 ```
 
 ```
@@ -1345,6 +1569,16 @@ and several related programs as well.
 
 ----
 
+## Most Frequently Referred Documents for this Page
+
+[A Simplified Introduction to LaTeX - Harvey J. Greenberg and Dan Luecking](https://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf) 
+
+[LaTeX Cookbook (A Modern LaTeX Cookbook)](https://github.com/alexpovel/latex-cookbook/releases/latest/download/cookbook.pdf)
+
+[Arbitrary LaTeX reference](https://latex.knobs-dials.com/)
+
+----
+
 ## Documents Collection
 
 [TeX-nutshell - A short document about TeX principles -- https://ctan.org/pkg/tex-nutshell](https://ctan.org/pkg/tex-nutshell)   
@@ -1355,7 +1589,7 @@ and several related programs as well.
 [http://csweb.ucc.ie/~dongen/LAF/Commands.pdf](http://csweb.ucc.ie/~dongen/LAF/Commands.pdf)   
 [https://ctan.org/pkg/impatient](https://ctan.org/pkg/impatient)   
 [http://mirrors.ctan.org/info/impatient/book.pdf](http://mirrors.ctan.org/info/impatient/book.pdf)   
-[gentle – A Gentle Introduction to TeX](https://ctan.org/pkg/gentle)   
+[gentle - A Gentle Introduction to Tex (A Manual for Self-study) by Michael Doob, Department of Mathematics, The University of Manitoba](https://ctan.org/pkg/gentle)    
 [gentle – A Gentle Introduction to TeX - The Document Itself](https://mirrors.ctan.org/info/gentle/gentle.pdf)    
 [http://latex.silmaril.ie/veryshortguide/](http://latex.silmaril.ie/veryshortguide/)   
 [http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf](http://latex.silmaril.ie/veryshortguide/veryshortguide.pdf)   
@@ -1451,7 +1685,7 @@ and several related programs as well.
 
 * [LuaTeX - Wikipedia](https://en.wikipedia.org/wiki/LuaTeX)
 
-* [LaTeX Cookbook](https://github.com/alexpovel/latex-cookbook)
+* [LaTeX Cookbook (A Modern LaTeX Cookbok)](https://github.com/alexpovel/latex-cookbook)
 > Download PDF: [https://github.com/alexpovel/latex-cookbook/releases/latest/download/cookbook.pdf](https://github.com/alexpovel/latex-cookbook/releases/latest/download/cookbook.pdf)
 >
 > This repo contains a LaTeX document, usable as a cookbook (different "recipes" to achieve various things in LaTeX) as well as as a template.
@@ -1528,5 +1762,4 @@ and several related programs as well.
 * [Travels in TeX Land: Final Layout of a Book (The PracTeX Journal, 2006)](https://tug.org/pracjourn/2006-3/walden/) 
 
 ----
-
 
