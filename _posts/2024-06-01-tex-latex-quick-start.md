@@ -35,7 +35,7 @@ If your system doesn't have a program for viewing .dvi files, you can install
 
 ```
 $ pkg search xdvi
-tex-xdvik-22.87.06_3           DVI Previewer(kpathsearch) for X
+tex-xdvik-22.87.06_3           DVI Previewer (kpathsearch) for X
 ```
  
 ```
@@ -146,9 +146,10 @@ and
 
 Based on [LaTeX/Document Structure - Wikibooks](https://en.m.wikibooks.org/wiki/LaTeX/Document_Structure) and [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/info/impatient/book.pdf).
 
+* Commands
 * Preamble
-  * Document Classes
-  * Packages
+* Classes (Document Classes)
+* Packages
 * Groups
 * Environments
 * The Document Environment
@@ -178,11 +179,22 @@ You can also download this image as a cropped PDF from here:
 
 An image showing the structure of a LaTeX document
 
+## Commands
+
+Every input file must contain the **commands**.
+
+From [An Introduction to LaTeX - UNSW Mathematics Society](https://www.unswmathsoc.org/files/resources/misc/LaTeX_Guide_2019.pdf):
+> Commands are what you use to access the features in LaTeX.
+> Every command is preceeded by the backslash symbol: ```\command```.
+> Some commands may require you to provide arguments; for example, bold font requires you to provide the text you wish to bold as an argument: ```\textbf{bold text here}```.
+> Each command is different, and the number of arguments required depends on which command you are currently using.
+
 ----
 
-## Preamble - Layout (or The Setup) of the Document
 
-Every input file must contain the commands
+## Preamble
+
+A.k.a. the layout (or the setup) of the document.
 
 ```
 \documentclass{...}
@@ -193,10 +205,11 @@ Every input file must contain the commands
 ```
 
 The area between ```\documentclass{...}``` and ```\begin{document}``` is called the **preamble**.
-It normally contains commands that affect the entire document.
+The preamble consists of all of the packages, commands and any other functionality you want to include. 
+
 Major or permanent modifications should go in a *.sty* file and be invoked with a ```\usepackage``` command. 
 
-### Document Classes
+## Classes (Document Classes)
 
 When processing an input file, LaTeX needs to know which layout standard to use.
 Layouts standards are contained within 'class files' which have *.cls* as their filename extension.
@@ -232,7 +245,7 @@ Here's [a comprehensive list of document classes](https://ctan.org/topic/class).
 
 ----
 
-### Packages 
+## Packages 
 
 While writing your document, you will probably find that there are some areas where basic LaTeX cannot solve your problem.
 If you want to include graphics, coloured text or source code from a file into your document, you need to enhance the capabilities of LaTeX.
@@ -255,9 +268,9 @@ You can pass *several options* to a package, each *separated by a comma*.
 ```
 
 
-### Recommended Packages 
+## Recommended Packages 
 
-#### From 'A Simplified Introduction to LaTeX' 
+### From 'A Simplified Introduction to LaTeX' 
 
 From [A Simplified Introduction to LaTeX - Harvey J. Greenberg and Dan Luecking](https://mirrors.ctan.org/info/simplified-latex/simplified-intro.pdf).
 
@@ -287,7 +300,7 @@ From the preamble in that document:
 \usepackage{url}               % \url{...}
 ```
 
-#### Recommended Packages - References
+### Recommended Packages - References
 
 From [The nag package warns you for incorrect LaTeX usage - howtotex.com -- Archived from the original on Aug 8, 2016](https://web.archive.org/web/20160808221527/http://www.howtotex.com/packages/the-nag-package-warns-you-for-incorrect-latex-usage/):
 
@@ -323,7 +336,7 @@ From [Four effortless LaTeX packages you should use](https://brushingupscience.c
 ## Groups
 
 From [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/info/impatient/book.pdf):
-> A *group* consists of material enclosed in matching left and right braces (**{** and **}**).
+> A *group* consists of material enclosed in matching left and right **braces** (**{** and **}**).
 > By placing a command within a group, you can limit its effects to the material within the group.
 > For instance, the ```\bf``` command tells TeX to set something in **boldface** type.
 > If you were to put ```\bf``` into your input file and do nothing else to counteract it, everything in your document following the ```\bf``` would be set in boldface.
@@ -342,10 +355,23 @@ From [Free edition of the book "TeX for the Impatient"](http://mirrors.ctan.org/
 
 Areas between ```\begin{...}``` and ```\end{...}``` pairs are called **environments**.  [<sup>[13](#footnotes)</sup>] [<sup>[14](#footnotes)</sup>] [<sup>[15](#footnotes)</sup>]
 
+Environments typically take the form:
+
+```
+\begin{environmentname}[optional parameters]{mandatory parameters}
+**--text--**
+\end{environmentname}
+```
+
+In other words, the *begin/end* structure distinguishes the syntax of environments from commands. Note that some environments don't have required parameters.
+For the subtle distinction between commands in environments, refer to this SE discussion:  [Why does LaTeX make a distinction between commands and environments?](https://tex.stackexchange.com/questions/8373/why-does-latex-make-a-distinction-between-commands-and-environments)
+
+
 ----
 
 ## The Document Environment 
-## aka Actual Document (Body of the Text or Document Body)
+
+A.k.a. Actual Document (Document Body or Main Body of the Text) 
  
 After the preamble, the text of your document is enclosed between two commands which identify the beginning and end of the actual document:
 
@@ -1255,6 +1281,14 @@ Also See:
 
 * [Using fonts installed in local texlive (including Palatino) - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/202767/using-fonts-installed-in-local-texlive)
 
+* [Introduction to variable fonts on the web](https://web.dev/articles/variable-fonts)
+> The terms font and typeface are often used interchangeably by developers.
+> However, there is a difference: A typeface is the underlying visual design that can exist in many different typesetting technologies, and a font is one of these implementations, in a digital file format.
+> In other words, a typeface is what you *see*, and the font is what you *use*.
+> 
+> Another concept that is often overlooked is the distinction between a style, and a family.
+> A style is a single and specific typeface, such as Bold Italic, and a family is the complete set of styles.
+
 ----
 
 # My Choice of Engine: LuaTeX (LuaLaTeX)
@@ -1344,7 +1378,15 @@ Creating a LaTeX Minimal (Minimum) Example - aka Minimal Working Example (MWE): 
 
 [LaTeX.js.org - JavaScript LaTeX to HTML5 Translator](https://latex.js.org/)
 
+[The source of LaTeX.js on GitHub](https://github.com/michael-brade/LaTeX.js)
+
 [LaTeX.js.org - Playground](https://latex.js.org/playground.html) 
+> LaTeX.js Showcase
+> 
+> made with ♥ by Michael Brade
+> 
+> This document will show most of the features of LaTeX.js while at the same time being a gentle *introduction to LaTeX*.
+> In the appendix, the API as well as the format of custom macro definitions in JavaScript will be explained.
 
 [TeXtidote - Spelling, grammar and style checking on LaTeX documents](https://sylvainhalle.github.io/textidote/)
 
@@ -1367,7 +1409,6 @@ Creating a LaTeX Minimal (Minimum) Example - aka Minimal Working Example (MWE): 
 [What are other good resources on-line for information about TeX, LaTeX and friends?](https://tex.stackexchange.com/questions/162/what-are-other-good-resources-on-line-for-information-about-tex-latex-and-frien)
 
 ----
-
 
 # Footnotes
 
@@ -1647,6 +1688,24 @@ and several related programs as well.
 
 * [What are TeX and its friends? - CTAN (The Comprehensive TeX Archive Network)](https://www.ctan.org/tex)
 
+* [An Introduction to LaTeX - UNSW Mathematics Society](https://www.unswmathsoc.org/files/resources/misc/LaTeX_Guide_2019.pdf) 
+
+* [What is LaTeX and why do linguists love it?](https://allthingslinguistic.com/post/50042310246/what-is-latex-and-why-do-linguists-love-it)
+> I've made a sample document with a few demos of things that linguists do in LaTeX, which you can download [here as .tex](https://www.dropbox.com/s/s94vt5p8coe8gpj/Linguist%20LaTeX%20demo.tex) (input) and> [here as .pdf](https://www.dropbox.com/s/qj5d2b0ckcgosm8/Linguist%20LaTeX%20demo.pdf) (output).
+> 
+NOTE: If you want to avoid Dropbox prompting you to register or login before downloading them, you can also download the *.tex* and the *.pdf* files here: 
+[LinguistLaTeXdemo.tex]({{ site.url }}/assets/txt/LinguistLaTeXdemo.tex) and 
+[LinguistLaTeXdemo.pdf]({{ site.url }}/assets/txt/LinguistLaTeXdemo.pdf)
+> 
+> . . . 
+> 
+> **Why do linguists use LaTeX?**
+>
+> You may have noticed that it's easier to take notes about linguistics by hand than it is on a computer, because there are so many symbols and diagrams that are used in linguistics that are really difficult to make in a word processor.
+>
+> But because LaTeX is free, open-source, and highly customizable, many wonderful people have written packages for anyone to use that let you type linguistics symbols (IPA and semantics), draw trees, and make automatically formatted and numbered example sentences.
+> (See a [sample document here](https://www.dropbox.com/s/qj5d2b0ckcgosm8/Linguist%20LaTeX%20demo.pdf).)
+
 * [LaTeX (Guide to LaTeX) - Wikibooks](https://en.wikibooks.org/wiki/LaTeX)
 
 * [Getting started with TeX, LaTeX, and friends](https://tug.org/begin.html)
@@ -1737,6 +1796,8 @@ and several related programs as well.
 
 * [General LaTeX Cheat Sheet - latexsheet.pdf](http://mirror.ctan.org/info/latexcheat/latexcheat/latexsheet.pdf)
 
+* [latex-refsheet - LaTeX Reference Sheet for a thesis with KOMA-Script](http://mirrors.ctan.org/info/latex-refsheet/LaTeX_RefSheet.pdf)
+
 * [Andrew Roberts - tutorials on his website](http://www.andy-roberts.net/misc/latex/)
 
 * [TeX for the Impatient - a book (of around 350 pages) on TeX, Plain TeX and Eplain -- CTAN](https://ctan.org/pkg/impatient)
@@ -1748,6 +1809,8 @@ and several related programs as well.
 * [Getting to Grips with LaTeX](https://www.andy-roberts.net/latex/)
 
 * [LaTeX for authors, LaTeX Project Team](https://www.latex-project.org/help/documentation/usrguide.pdf)
+
+* [Why does LaTeX make a distinction between commands and environments?](https://tex.stackexchange.com/questions/8373/why-does-latex-make-a-distinction-between-commands-and-environments)
 
 ----
 
