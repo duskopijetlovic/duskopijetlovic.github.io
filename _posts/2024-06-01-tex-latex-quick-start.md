@@ -8,9 +8,10 @@ categories: tex latex pdf x11 xorg tutorial howto sysadmin technicalwriting
 ---
 
 OS: FreeBSD 14   
+Shell: csh    
 X Window Manager: FVWM  
-DVI Viewer: xdvi (```$ sudo pkg install tex-xdvik```)   
-PDF Viewers: zathura, mupdf (```$ sudo pkg install zathura zathura-pdf-poppler zathura-ps mupdf```)  	
+DVI Viewer: xdvi
+PDF Viewers: zathura, mupdf
 
 ----
 
@@ -306,6 +307,30 @@ From [The nag package warns you for incorrect LaTeX usage - howtotex.com -- Arch
 
 * [https://www.ctan.org/pkg/nag](https://www.ctan.org/pkg/nag)
 * [https://www.ctan.org/pkg/l2tabu](https://www.ctan.org/pkg/l2tabu)
+> l2tabu - Obsolete packages and commands
+> 
+> The "sins" of LaTeX users, and how to correct them.
+> The document provides a list of obsolete packages and commands.
+> 
+> This original is in German.
+> Translated version in English: <https://www.ctan.org/pkg/l2tabu-english>
+
+It also comes with TeX Live so you can access it by entering the following command in your OS.
+
+``` 
+$ texdoc l2tabuen
+``` 
+
+In FreeBSD, your PDF viewer opens this file: ```/usr/local/share/texmf-dist/doc/latex/l2tabu-english/l2tabuen.pdf```. 
+
+> **An essential guide to LaTeX2e usage** - Obsolete commands and packages   
+> by Mark Trettin   
+> English translation by Jürgen Fenn   
+> June 17, 2007   
+> 
+> Abstract    
+> This is the English version 1.8.5.7 of l2tabu, focusing on obsolete commands and packages, and demonstrating the most severe mistakes most LaTeX users are prone to make.
+> You should read this guide if you want to improve on your LaTeX code.
 
 From [Nine essential LaTeX packages everyone should use - howtotex.com -- Archived from the original on Aug 15, 2016](https://web.archive.org/web/20160815072957/http://www.howtotex.com/packages/9-essential-latex-packages-everyone-should-use):
 
@@ -684,7 +709,7 @@ Note that **numbering** of the sections and subsections is done **automatically*
 
 ## Optional: All-in-One Preamble
 
-All-in-one preamble that takes care of LuaLaTeX and XeLaTeX (based on [The Not-So Short Guide to LaTeX2e (Version 6.4, Mar 9, 2021) - Figure 2.1: All in one preamble that takes care of LuaLaTeX and XeLaTeX, page 24](https://mirrors.ctan.org/info/lshort/english/lshort.pdf)):
+All-in-one preamble that takes care of LuaLaTeX and XeLaTeX (based on [The Not-So Short Guide to LaTeX2e (Version 6.4, Mar 9, 2021) - Figure 2.1: All-in-one preamble that takes care of LuaLaTeX and XeLaTeX, page 24](https://mirrors.ctan.org/info/lshort/english/lshort.pdf)):
 
 ```
 \usepackage{iftex}
@@ -882,7 +907,7 @@ form: ```\newcommand{\name}[n]{whatever }```, where *n* is the number of argumen
 > (```\mbox``` is used to ensure text mode).
 > Now ```\Box``` ⇒ □ and, having defined the ```\Box``` command, you can use it in other new commands.
 > 
-> For example, if in the preamble you specified: ```\newcommand{\chkbox}{$\Box^\surd\;$}```
+> For example, if in the document preamble you specified: ```\newcommand{\chkbox}{$\Box^\surd\;$}```
 > Then, \chkbox ⇒ ☑
 > 
 > . . . 
@@ -1026,14 +1051,14 @@ Latexmk is also available at [CTAN](https://ctan.org/) at [https://ctan.org/pkg/
 
   NOTE 1: ShareLaTeX and Overleaf have been merged in to one Overleaf v2 and Overleaf v1 had retired on January 8th, 2019.
 
-  NOTE 2: It's Open Source, so you can install it on your own server [https://github.com/overleaf/overleaf](https://github.com/overleaf/overleaf).
+  NOTE 2: It's Open Source, so you can install it on your own server:    
+  [https://github.com/overleaf/overleaf](https://github.com/overleaf/overleaf)
 
 * [LaTeX previewer](http://www.tlhiv.org/ltxpreview/)
 
 * [Papeeria - Online LaTeX editor -- LaTeX and Markdown online Collaborative, free and reliable](https://papeeria.com/)
 
 * [LaTeXOnlineEditor (XO) -- Your browser-based writing & formatting program to create PDFs](https://latexonlineeditor.net/)
-
 
 
 # Editors - References
@@ -1056,14 +1081,14 @@ LaTeX handles its fonts as combination of three parameters.
 These individual switches can be used inside a group, or as an environment:
 
 ```
-{\ttfamily This is typewriter text}
+{\ttfamily This is typewriter (monospaced) text}
 \begin{mdseries}
 This text is set in medium weight.
 \end{mdseries}
 ```
 
 Here are the categories and possible values.   
-**family** roman, sans serif, typewriter type (monospaced): ```\rmfamily```, ```\sffamily```, ```\ttfamily```.   
+**family** roman, sans serif, typewriter (monospaced) type: ```\rmfamily```, ```\sffamily```, ```\ttfamily```.   
 **series** medium and bold: ```\mdseries```, ```\bfseries```.  
 **shape** upright, italic, slanted, and small caps: ```\upshape```, ```\itshape```, ```\slshape```, ```\scshape```.  
 
@@ -1097,9 +1122,14 @@ fonts are selected.
 
 ----
 
-## Changing Fonts 
+## Changing the Default Document Fonts
+
+a.k.a. **Changing Fonts**
 
 Default font: the **Computer Modern** fonts (part of what makes TeX recognizable).
+
+From [Font typefaces - Overleaf (previously ShareLaTeX)](https://www.overleaf.com/learn/latex/Font_typefaces)
+> By default, LaTeX typesets documents using the *Computer Modern* typeface family but you can use LaTeX packages to use different fonts according to your needs or preferences. 
 
 When TeX starts up it has sixteen fonts available. 
 A complete list of the sixteen fonts is given in Appendix F of **The TeXbook** ([Donald E. Knuth, Addison-Wesley, Reading,Massachusetts, 1984, ISBN 0-201-13488-9 -- Archived from original on Aug 11, 2023](https://web.archive.org/web/20230811015407/https://www.cs.stanford.edu/~knuth/abcde.html#texbk)).
@@ -1140,11 +1170,13 @@ More fonts are available in LaTeX packages.
 Also, you can install additional fonts manually or with your operating system's package manager. 
 
 
-### Using Fonts Included with TeX/LaTeX Distributions
+### Changing Default Font to Fonts Included with TeX/LaTeX Distributions
 
-For example, you want to use the Palatino font.
+For these fonts, you need to add a package name in the document preamble.
 
-Add the following in the preamble of your LaTeX document:
+For example, by adding \usepackage{tgbonum} to the document preamble, LaTeX will use the TEX Gyre Bonum font family to typeset your document: 
+
+For example, if you want to use the *Palatino* font, by adding the following in the preamble, LaTeX will use the *Palatino* font family to typeset your LaTeX document.
 
 ```
 \usepackage[T1]{fontenc}
@@ -1152,7 +1184,7 @@ Add the following in the preamble of your LaTeX document:
 \usepackage{palatino}
 ```
 
-### Using Fonts Installed by Package Manager
+### Changing Default Font to One Installed by OS Package Manager
 
 For example, you want to install *Atkinson Hyperlegible* font and use it in your LaTeX document.
 
@@ -1187,6 +1219,14 @@ Vendor URL:          https://www.BrailleInstitute.org/
 ```
 
 ```
+$ fc-match "Atkinson Hyperlegible"
+Atkinson-Hyperlegible-Regular-102.otf: "Atkinson Hyperlegible" "Regular"
+ 
+$ fc-match AtkinsonHyperlegible
+Atkinson-Hyperlegible-Regular-102.otf: "Atkinson Hyperlegible" "Regular"
+```
+
+```
 $ luaotfload-tool --update
 ```
 
@@ -1196,6 +1236,37 @@ Add the following in the preamble of your LaTeX document:
 \usepackage{fontspec}
 \setmainfont{Atkinson Hyperlegible}
 ```
+
+### Changing Fonts for a Specific Element in the Document
+
+Based on [Font typefaces - Overleaf (previously ShareLaTeX)](https://www.overleaf.com/learn/latex/Font_typefaces):
+
+```
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{tgbonum}
+
+\begin{document}
+This document is a sample document to 
+test font families and font typefaces.
+
+{\fontfamily{qcr}\selectfont
+This text uses a different font typeface
+}
+\end{document}
+```
+
+> The command ```\fontfamily{qcr}\selectfont``` will set the *TeX gyre cursor* font typeface, whose fontcode is ```qcr```, for the text inside the braces. A lot more LaTeX font typefaces are available, see the reference guide.
+
+The popular LaTeX font typefaces are originated from four families:
+* *Computer Modern* (default in standard LaTeX classes): CM Roman, CM Sans Serif, CM Typewriter (monospaced)
+* *Latin Modern*: LM Roman, LM Sans Serif, LM Typewriter, LM Dunhill
+* *Post Script Fonts*: Times, Utopia/Fourier, Palatino, Bookman, Helvetica, Courier
+* *TeX Gyre*
+
+The command ```\fontfamily{qcr}\selectfont``` will set the *TeX gyre cursor* font typeface, whose **fontcode** is **qcr**, for the text inside the braces.
+A lot more LaTeX font typefaces are available, see the [reference guide](https://www.overleaf.com/learn/latex/Font_typefaces#Reference_guide). 
+This reference guide lists Roman, Sans Serif and Typewriter (monospaced) typefaces in a table containing four columns: *Font*, *Font Package Name*, *Fontcode (Font Code)*, *Example*.
 
 ----
 
@@ -1232,6 +1303,10 @@ right textstyle underbrace underline
 [Comprehensive LATEX Symbols List, Scott Pakin](https://mirror.ctan.org/info/symbols/comprehensive/symbols-letter.pdf)
 
 [The Comprehensive LaTeX Symbol List - Symbols accessible from LaTeX - CTAN](https://www.ctan.org/tex-archive/info/symbols/comprehensive)
+
+[Font typefaces - Overleaf (previously ShareLaTeX)](https://www.overleaf.com/learn/latex/Font_typefaces)
+
+[Reference guide - Roman, Sans Serif and Typewriter (Monospaced) typefaces -- aka Fontcodes (font codes) - Overleaf](https://www.overleaf.com/learn/latex/Font_typefaces#Reference_guide)
 
 [Palatino and Source Sans Pro, the only fonts a scientist needs](https://brushingupscience.com/2018/06/14/palatino-and-source-sans-pro-the-only-fonts-a-scientist-needs/)
 
@@ -1318,7 +1393,6 @@ From *A guide to LuaLaTeX, Manuel Pégourié-Gonnard (mpg@elzevir.fr), May 5, 20
 > Long version: It is the designated successor of pdfTeX and includes all of its core features: direct generation of PDF files with support for advanced PDF features and micro-typographic enhancements to TeX typographic algorithms.
 
 ----
-
 
 # Repositories
 
@@ -1607,6 +1681,72 @@ and several related programs as well.
 > The typical LaTeX-Mk input file is simply a series of variable definitions in a Makefile for the project.
 > After creating a simple Makefile the user can easily perform all required steps to do such tasks as: preview the document, print the document, or produce a PDF file.
 > LaTeX-Mk will keep track of files that have changed and how to run the various programs that are needed to produce the output.
+
+----
+
+## Texdoc - Tool to Find and View Documents in TeX Live
+
+For short help, in your OS enter the following command.
+
+```
+$ texdoc --help
+```
+
+For full manual
+
+```
+$ texdoc texdoc
+```
+
+In FreeBSD, your PDF viewer opens this file: ```/usr/local/share/texmf-dist/doc/support/texdoc/texdoc.pdf```.
+ 
+```
+$ ls /usr/local/share/texmf-dist/doc/support/texdoc/
+COPYING         README.md       texdoc.pdf
+NEWS            texdoc-doc.cls  texdoc.tex
+```
+
+Excerpts from ```/usr/local/share/texmf-dist/doc/support/texdoc/README.md```:
+
+# Texdoc - Find and view documentation in TeX Live
+
+[![CI](https://github.com/TeX-Live/texdoc/actions/workflows/ci.yml/badge.svg)](https://github.com/TeX-Live/texdoc/actions/workflows/ci.yml)
+[![CTAN](https://img.shields.io/ctan/v/texdoc?color=FC02FF&label=CTAN&style=flat)](https://www.ctan.org/pkg/texdoc)
+
+## General Information
+
+* Website: <https://www.tug.org/texdoc/>
+* Repository: <https://github.com/TeX-Live/texdoc/>
+* Mailing list: <texdoc@tug.org>
+
+## Using Texdoc
+
+Texdoc is part of the TeX Live distribution. Generally, you don't have to install it yourself.
+
+. . . 
+
+
+Here, `$TEXDOC` means the path to the texdoc dev sources you cloned (or downloaded), and `$TEXMFHOME` denotes your personal TEXMF tree (you can get its location with `kpsewhich --var-value TEXMFHOME`).
+
+* **The command.** Symlink or copy `$TEXDOC/script` as `$TEXMFHOME/scripts/texdoc`.
+* **The configuration file.** Symlink or copy `$TEXDOC/texdoc.cnf` as `$TEXMFHOME/texdoc/texdoc-dist.cnf` (notice the `-dist` part). It will completely override the other configuration files except `$TEXMFHOME/texdoc/texdoc.cnf` which you can still use for you personal settings.
+
+You can make sure that the right files are used by running `texdoc --files`: the first line contains the full path to the version of used `texdoclib.tlu`, and the rest lists the configuration files in use.
+
+## Files in This Repository
+
+- `doc/` contains the documentation,
+- `script/` contains the source code,
+- `spec/` is a directory for testing scripts, and
+- `texdoc.cnf` is the default configuration file.
+
+. . . 
+
+
+## Further Information
+
+More specific information, such as the TODO list of this project and some information for distributors, can be found in the Wiki of our GitHub repository.
+Please visit:  <https://github.com/TeX-Live/texdoc/wiki>
 
 ----
 

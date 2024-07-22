@@ -1,9 +1,9 @@
 ---
 layout: default    ## If you don't want to display the page as "plain"
-title: "Programs to Install on a New FreeBSD Machine"
+title: "Programs and Fonts to Install on a New FreeBSD Machine"
 ---
 
-## Packages Available in FreeBSD 
+## Packages Available in FreeBSD Packages Collection  
 
 ```
 texlive-base   TeX Live Typesetting System, base binaries
@@ -19,14 +19,59 @@ ipe            Extensible vector graphics editor with LaTeX support
 
 mutt           Small but powerful text based program for read/writing e-mail
 
-rox-filer      Simple and easy to use graphical file manager
-catseye-fm     Clear, fast, powerful file browser using gtk+2.0
+whatmask       Convert between common subnet mask notations
+
+qtfm           Small, lightweight file manager based on pure Qt
+(rox-filer     Simple and easy to use graphical file manager)
+(catseye-fm    Clear, fast, powerful file browser using gtk+2.0)
+
+xed            Small but powerful text editor for GTK (for X or X11/Xorg)
 
 kitty          Cross-platform, fast, featureful, GPU-based terminal emulator
+xdu            Graphically display the output of "du" in an X window
+xdiskusage     Show where disk space is taken up
 ```
+
+----
 
 
 ## Manual Downloads or Manual Installations 
+
+### BackupFS
+
+[TODO] - Continue 
+2023_03_05_1900_freebsd_lenovo_x280_installed_backupfs_by_compiling_from_source_and_with_boost_cpp_libraries.txt
+
+
+```
+$ sudo pkg install boost-all
+$ sudo pkg install boost_build
+$ sudo pkg install gcc 
+$ sudo pkg install gccmakedep 
+$ sudo pkg install cmake
+```
+
+```
+$ mkdir ~/backupf
+$ cd ~/backupfs
+```
+
+```
+$ fetch https://github.com/hariguchi/backupfs/archive/refs/heads/master.zip
+
+$ mv master.zip backupfs.zip
+
+$ unzip backupfs.zip
+. . . 
+```
+
+```
+$ mv backupfs-master backupfs
+
+$ cd backupfs
+```
+
+### GraTeX
 
 ```
 GraTeX         Visual graph creator for LaTeX (PGF & TikZ)    [2] 
@@ -35,6 +80,27 @@ GraTeX         Visual graph creator for LaTeX (PGF & TikZ)    [2]
 ```
 $ fetch https://sourceforge.net/projects/gratex/files/GraTeX.jar
 $ java -jar gratex.jar  
+```
+
+----
+
+## Fonts 
+
+
+### Fonts Not Available in FreeBSD Packages Collection  
+
+
+#### 0xProto
+
+```
+$ fc-match 0xProto
+0xProto-Regular.otf: "0xProto" "Regular"
+ 
+$ xterm -fa 0xProto -fs 14 &
+```
+
+```
+$ mutt -F /mnt/usbflashdrive/mydotfiles/mutt-imap-ubc-chemistry/.muttrc.chem.ubc.ca.imap
 ```
 
 ----
