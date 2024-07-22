@@ -11,7 +11,7 @@ categories: howto
 
 
 ```
-$ ssh dusko@kvmhost1.chem.ubc.ca
+$ ssh dusko@example.com
 ```
 
 ```
@@ -238,14 +238,14 @@ Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
 refresh]:
 ```
 
-[TODO]  2024_01_16_1630_kvmhost1_epidote_vm_changed_hostname_to_epidote_chem_ubc_ca.txt
+[TODO]  2024_01_16_1630_
 
 
 ## RHEL subscription-manager -- Client Registration via Red Hat Satellite (RHS)
 
 ```
 $ hostname
-epidote.chem.ubc.ca
+example.com
 ```
 
 ### Installing katello-ca-consumer
@@ -255,7 +255,7 @@ epidote.chem.ubc.ca
 $ sudo \
  yum \
  install --nogpgcheck \
- http://satellite6.it.ubc.ca/pub/katello-ca-consumer-latest.noarch.rpm
+ http://satellite6.example.com/pub/katello-ca-consumer-latest.noarch.rpm
 ```
 
 ### Registering the Client
@@ -264,7 +264,8 @@ $ sudo \
 Once katello-ca-consumer is installed, proceed with the registration:
 
 ```
-$ sudo subscription-manager register --org=UBCITServices --activationkey=<ACTIVATION_KEY_NAME>
+$ sudo subscription-manager register --org=YourOrgName --activationkey=<ACTIVATION_KEY_NAME>
+
 ```
 
 ```
@@ -281,11 +282,12 @@ Example for registering a Red Hat Enterprise Linux 9 system:
 ```
 $ sudo \
  subscription-manager register \
- --org=UBCITServices \
- --activationkey=RHEL9
+ --org=YourOrgName \
+ --activationkey=YourActivationKey
 
 The system has been registered with ID: 0404e570-5090-4232-9568-9b99723e6efb
-The registered system name is: epidote.chem.ubc.ca
+The system has been registered with ID: 0404e570-...........................
+The registered system name is: example.com
 ```
 
 ```
@@ -361,29 +363,3 @@ NOTES
 ---
 
 ## References
-
-* [https://confluence.it.ubc.ca](https://confluence.it.ubc.ca)
-> Welcome to the UBC IT Confluence site.
-> Please login with your CWL, if you have not been issued one, please contact your supervisor.
-> 
-> Once logged in, if you require access to a specific space, [navigate to that space via the Space Directory](https://confluence.it.ubc.ca/spacedirectory/view.action).
-> 
-> Then, contact the Space Admins (found in the Space Overview section of the Space Tools located on the bottom left) to gain access to the desired space.
-> 
-> Thank-you, 
-> 
-> UBC IT
-
-* [UBC IT Confluence - Log in](https://confluence.it.ubc.ca/login.action?os_destination=%2F)
-
-
-IT Services - Systems [Public] > Services > Patch Management > Red Hat Satellite 6 (RHS6) > RHS6 - How To
-
-
-    RHS6 - How To - Checking Client Repository Usage
-    RHS6 - How To - Client Migration
-    RHS6 - How To - Client Registration
-    RHS6 - How To - Content Management for Organization Administrator
-    RHS6 - How To - Installing the Latest katello-ca-consumer Package
-    RHS6 - How To - Verifying Registration Status
----
