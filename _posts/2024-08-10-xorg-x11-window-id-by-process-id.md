@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "How to Find an X11 Window ID (WID) by a Process ID (PID)"
-date: 2024-08-10 22:29:12 -0700 
+date: 2024-08-10 19:29:12 -0700 
 categories:  x11 xorg xterm cli terminal shell howto sysadmin unix 
 ---
 
