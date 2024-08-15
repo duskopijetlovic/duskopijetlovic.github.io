@@ -6,30 +6,43 @@ title: "Programs and Fonts to Install on a New FreeBSD Machine"
 ## Packages Available in FreeBSD Packages Collection  
 
 ```
-texlive-base   TeX Live Typesetting System, base binaries
-texlive-docs   TeX Live, documentation
-texlive-texmf  TeX Live, macro packages and fonts
-texlive-tlmgr  TeX Live, manager modules    [1] 
-latex-mk       Collection of makefile and scripts for LaTeX documents
-txt2tags       Convert simply formatted text into markup (e.g., LaTeX, HTML)
-lyx            Document processor interfaced with LaTeX (nearly WYSIWYG)
-setzer         LaTeX editor written in Python with Gtk
+texlive-base     TeX Live Typesetting System, base binaries
+texlive-docs     TeX Live, documentation
+texlive-texmf    TeX Live, macro packages and fonts
+texlive-tlmgr    TeX Live, manager modules    [1] 
+latex-mk         Collection of makefile and scripts for LaTeX documents
+txt2tags         Convert simply formatted text into markup (e.g., LaTeX, HTML)
+lyx              Document processor interfaced with LaTeX (nearly WYSIWYG)
+setzer           LaTeX editor written in Python with Gtk
 
-ipe            Extensible vector graphics editor with LaTeX support
+ipe              Extensible vector graphics editor with LaTeX support
 
-mutt           Small but powerful text based program for read/writing e-mail
+uniutils         Unicode Description Utilities
+uni              Query the Unicode database from the commandline
+uchardet         Universal charset detection library
+gucharmap        Unicode/ISO10646 character map and font viewer
+ftfy             Fix some problems with Unicode text after the fact
 
-whatmask       Convert between common subnet mask notations
+keepassxc        KeePass Cross-platform Community Edition
 
-qtfm           Small, lightweight file manager based on pure Qt
-(rox-filer     Simple and easy to use graphical file manager)
-(catseye-fm    Clear, fast, powerful file browser using gtk+2.0)
+firefox          Web browser based on the browser portion of Mozilla
+thunderbird      Standalone mail and news that stands above
+mutt             Small but powerful text based program for read/writing e-mail
 
-xed            Small but powerful text editor for GTK (for X or X11/Xorg)
+td-system-tools  Printing basic system information and system maintenance
 
-kitty          Cross-platform, fast, featureful, GPU-based terminal emulator
-xdu            Graphically display the output of "du" in an X window
-xdiskusage     Show where disk space is taken up
+whatmask         Convert between common subnet mask notations
+subnetcalc       IPv4/IPv6 Subnet Calculator
+
+qtfm             Small, lightweight file manager based on pure Qt
+(rox-filer       Simple and easy to use graphical file manager)
+(catseye-fm      Clear, fast, powerful file browser using gtk+2.0)
+
+xed              Small but powerful text editor for GTK (for X or X11/Xorg)
+
+kitty            Cross-platform, fast, featureful, GPU-based terminal emulator
+xdu              Graphically display the output of "du" in an X window
+xdiskusage       Show where disk space is taken up
 ```
 
 ----

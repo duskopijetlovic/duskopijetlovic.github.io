@@ -16,7 +16,7 @@ $ bundle exec jekyll serve
 ^C
 
 ---- snip ----
-    hundres of lines
+    hundreds of lines
 ---- snip ----
 
 /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.1/bin/jekyll: warning: Exception in finalizer #<Proc:0x00000009f1164fe0 /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.1/gems/rb-kqueue-0.2.7/lib/rb-kqueue/watcher/file.rb:45 (lambda)>
