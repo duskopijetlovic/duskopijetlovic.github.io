@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Encodings, UTF-8 and Unicode Notes [DRAFT]"
+title: "Encodings, UTF-8 and Unicode Notes"
 date: 2024-08-12 14:23:13 -0700 
 categories:  unicode utf8 x11 xorg xterm cli terminal shell howto sysadmin
              unix typography font html
