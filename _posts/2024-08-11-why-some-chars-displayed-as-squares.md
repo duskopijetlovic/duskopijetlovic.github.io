@@ -633,6 +633,28 @@ Explanation:
 * `uni` [<sup>[3](#footnotes)</sup>]
 * `ftfy` [<sup>[4](#footnotes)</sup>]
 
+* [Unicode font utilities - Russell W. Cottrell](https://www.russellcottrell.com/greek/utilities/unicode_font_utilities.zip)
+> Includes:
+> * *The Unicode Range Viewer*
+> Displays 16×16 blocks of Unicode characters, with both hex and decimal codes.
+> You choose the Unicode range and the font, bold or italic.
+> It is useful for finding characters and exploring the ranges and apperance of different fonts.
+> It also works as a universal virtual keyboard; go to any code page and click a character to create text, then convert it to HTML or JavaScript code if desired.
+> You can find a code block by entering a Unicode character, or selecting a block from the list.
+> If you choose a font, only the characters in that font are displayed.
+> 
+> * *The Surrogate Pair Calculator etc.*
+> Calculates the surrogate pairs for high-bit supplemental plane values, the scalar value for a surrogate pair, or both for a supplemental plane character.
+> Also includes the algorithms and sample code for converting to and from surrogate pairs.
+> 
+> * *The Polytonic Greek Virtual Keyboard*
+> Allows you to type Unicode Greek characters via the keyboard.
+> Also converts text to either HTML or JavaScript code characters.
+>
+> * *The Greek Number Converter*
+Converts numbers to the alphabetic Greek format.
+> The only converter of its type that I know of.
+
 ```
 % man -k unicode | wc -l
       51

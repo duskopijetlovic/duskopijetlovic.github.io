@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Encodings and Unicode Notes [DRAFT]"
+title: "Encodings, UTF-8 and Unicode Notes [DRAFT]"
 date: 2024-08-12 14:23:13 -0700 
-categories:  unicode utf8 x11 xorg xterm cli terminal shell howto sysadmin unix 
-             typography font html
+categories:  unicode utf8 x11 xorg xterm cli terminal shell howto sysadmin
+             unix typography font html
 ---
 
 ## Programs from `uniutils` Package 
@@ -93,7 +93,20 @@ and vice versa:
 
 ----
 
-## For Now Without a Good Title -- TODO: Fix It
+## Unicode Escape Formats
+
+From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresentations.html):
+> The following are ASCII representations of Unicode characters known to be used in various contexts.
+> In a few cases we also include unusual representations of integers since integers are sometimes converted to characters. 
+
+----
+
+## My Selection of Tools and References
+
+* [uni.pl - Perl script from leahneukirchen (Leah Neukirchen) - List Unicode symbols matching pattern](https://leahneukirchen.org/dotfiles/bin/uni)
+
+
+###  Perl, `uni.pl`, `xxd`, `iconv`, `hexdump` (`hd`), `od`, `printf`
 
 ```
 % ./uni.pl crossbones
@@ -192,20 +205,134 @@ Source:
 ☠
 ```
 
+* [Unicode font utilities - Russell W. Cottrell - unicode_font_utilities.zip](https://www.russellcottrell.com/greek/utilities/unicode_font_utilities.zip)
+> The zip file includes four utilities: *The Unicode Range Viewer*, *The Surrogate Pair Calculator etc.*, *The Polytonic Greek Virtual Keyboard* and  *The Greek Number Converter*.
+
+* [Unicode browser (Unicode table for you)](https://www.ftrain.com/unicode)
+> Source code: It's all on one page (HTML/CSS/JavaScript) and under the GPL/MIT license.
+
+* [Perl Unicode Cookbook: The Standard Preamble](https://www.perl.com/pub/2012/04/perlunicook-standard-preamble.html/)
+> Apr 2, 2012 by Tom Christiansen
+>
+> Editor's note:
+> Perl guru Tom Christiansen created and maintains a list of 44 recipes for working with Unicode in Perl 5.
+> This is the first recipe in the series.
+
 ----
 
-## Unicode Escape Formats
+```
+% perl -E 'my $x = "\N{SKULL AND CROSSBONES}"; say $x' | xxd
+Wide character in say at -e line 1.
+00000000: e298 a00a                                ....
+```
 
-From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresentations.html):
-> The following are ASCII representations of Unicode characters known to be used in various contexts.
-> In a few cases we also include unusual representations of integers since integers are sometimes converted to characters. 
+```
+% perl -E 'my $x = "\N{SKULL AND CROSSBONES}"; say $x' | hexdump -C
+Wide character in say at -e line 1.
+00000000  e2 98 a0 0a                                       |....|
+00000004
+```
+
+To avoid `Wide character in say` warning: 
+
+```
+% perl -E 'use open qw(:std :encoding(UTF-8)); my $x = "\N{SKULL AND CROSSBONES}"; say $x'
+☠
+```
+
+Or:
+
+```
+% perl -E 'binmode(STDOUT, ":encoding(UTF-8)"); my $x = "\N{SKULL AND CROSSBONES}"; say $x'
+☠
+```
+
+Or:
+
+```
+% perl -CS -E 'my $x = "\N{SKULL AND CROSSBONES}"; say $x'
+☠
+```
+
+References:
+
+[How to get rid of `Wide character in print at`?](https://stackoverflow.com/questions/47940662/how-to-get-rid-of-wide-character-in-print-at)
+> The `use utf8` means Perl expects your source code to be UTF-8.
+> 
+> The `open` pragma can change the encoding of the standard filehandles:
+>
+> `use open qw( :std :encoding(UTF-8) );`
+> 
+> And, whatever is going to deal with your output needs to expect UTF-8 too.
+> If you want to see it correctly in your terminal, then you need to set up that correctly (but that's nothing to do with Perl).
+
+[Use of 'use utf8;' gives me 'Wide character in print'](https://stackoverflow.com/questions/15210532/use-of-use-utf8-gives-me-wide-character-in-print)
+> You can use this
+> 
+> `perl -CS filename`
+> 
+> It will also terminates that error.
+> 
+> Reference (abridged):
+> 
+> ```
+> The -C flag controls some of the Perl Unicode features.
+> 
+> As of 5.8.1, the -C can be followed either by a number or a list of option letters.
+> The letters, their numeric values, and effects are as follows; listing the letters is equal to summing the numbers.
+> 
+>     I     1   STDIN is assumed to be in UTF-8
+>     O     2   STDOUT will be in UTF-8
+>     E     4   STDERR will be in UTF-8
+>     S     7   I + O + E
+> ```
+>
+> [ . . . ]
+> 
+> If you're not just running a one-liner, see here: 
+> 
+> [perlunicook - Cookbookish examples of handling Unicode in Perl - ℞ 15: Declare STD{IN,OUT,ERR} to be utf8](https://perldoc.perl.org/perlunicook#%E2%84%9E-15:-Declare-STD%7BIN,OUT,ERR%7D-to-be-utf8)
+
+
+### Python
+
+```
+% python3 -c 'print(u"\u2620")' 
+☠
+```
+
+```
+% python3 -c 'print(u"\u2620")' | od -ac
+0000000   e2  98  a0  nl                                                
+           ☠  **  **  \n                                                
+0000004
+ 
+% python3 -c 'print(u"\u2620")' | od -ab
+0000000   e2  98  a0  nl                                                
+          342 230 240 012                                                
+0000004
+```
+
+[Unicode HOWTO - Python Documentation](https://docs.python.org/3/howto/unicode.html)
+
+```
+% printf '\342\230\240'
+☠% 
+```
+
+### `vim` 
+
+```
+vim: ga  # OR :as(cii)
+```
 
 ----
 
 ## References
 (Retrieved on Aug 12, 2024)
 
-* [The End-of-Line Story -- RFC Editor (2004)](https://www.rfc-editor.org/old/EOLstory.txt)
+* [What is the difference between UTF-8 and Unicode?](https://web.archive.org/web/20150815071315/https://rrn.dk/the-difference-between-utf-8-and-unicode)
+> **UTF-8 is an encoding - Unicode is a character set**.
 
 * [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresentations.html)
 
@@ -227,6 +354,8 @@ From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresent
 * [UTF-8 Sampler](https://kermitproject.org/utf8.html)
 
 * [UTF-8 Tool](https://www.cogsci.ed.ac.uk/~richard/utf-8.html)
+
+* [uni.pl - Perl script from leahneukirchen (Leah Neukirchen) - List Unicode symbols matching pattern](https://leahneukirchen.org/dotfiles/bin/uni)
 
 * [decodeunicode.org](https://decodeunicode.org/)
 > Unicode 11.0.0 encodes exactly 137,374 typographical characters.
@@ -302,20 +431,45 @@ From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresent
 > Enter a code or character and see the Unicode name.
 > Use START-STOP to show a range.
 
-
 * [What are useful Perl one-liners for working with UTF-8? - UTF-8 and Unicode FAQ](https://www.cl.cam.ac.uk/~mgk25/unicode.html#perl)
 
-* [The Unicode Range Viewer](https://www.russellcottrell.com/greek/utilities/UnicodeRanges.htm)
+* [Use of 'use utf8;' gives me 'Wide character in print'](https://stackoverflow.com/questions/15210532/use-of-use-utf8-gives-me-wide-character-in-print)
+
+* [How to get rid of `Wide character in print at`?](https://stackoverflow.com/questions/47940662/how-to-get-rid-of-wide-character-in-print-at)
+
+* [Perl Unicode Cookbook: The Standard Preamble](https://www.perl.com/pub/2012/04/perlunicook-standard-preamble.html/)
+> Apr 2, 2012 by Tom Christiansen
+>
+> Editor's note:
+> Perl guru Tom Christiansen created and maintains a list of 44 recipes for working with Unicode in Perl 5.
+> This is the first recipe in the series.
+
+* [perlunicook - Cookbookish examples of handling Unicode in Perl](https://perldoc.perl.org/perlunicook)
+
+* [Unicode HOWTO - Python Documentation](https://docs.python.org/3/howto/unicode.html)
+
+* [Unicode font utilities - Russell W. Cottrell - unicode_font_utilities.zip](https://www.russellcottrell.com/greek/utilities/unicode_font_utilities.zip)
+> The zip file includes four utilities:
+> * [The Unicode Range Viewer](https://www.russellcottrell.com/greek/utilities/UnicodeRanges.htm)
 > The Unicode Range Viewer displays 16x16 blocks of Unicode characters with their hex and decimal values.
 > Navigate through the code charts by using the arrows, going to the code value of a character, or selecting a block.
 > Optionally, enter the name of a font, without modifiers (such as Liberation Serif, without Regular, Bold, Italic, etc.).
 > Only the characters in that font will be displayed.
 > Click a character to enter it into the textarea below, like a virtual keyboard.
-
-* [The Surrogate Pair Calculator etc.](https://www.russellcottrell.com/greek/utilities/SurrogatePairCalculator.htm)
+>
+> * [The Surrogate Pair Calculator etc.](https://www.russellcottrell.com/greek/utilities/SurrogatePairCalculator.htm)
 > A surrogate pair is defined by the Unicode Standard as "a representation for a single abstract character that consists of a sequence of two 16-bit code units, where the first value of the pair is a high-surrogate code unit and the second value is a low-surrogate code unit."
 > Since **Unicode** is a **21-bit** standard, surrogate pairs are needed by applications that use **UTF-16**, such as **JavaScript**, to display characters whose code points are *greater than 16-bit*.
 > (UTF-8, the most popular HTML encoding, uses a more flexible method of representing high-bit characters and does not use surrogate pairs.)
+>
+> * *The Polytonic Greek Virtual Keyboard*
+> Allows you to type Unicode Greek characters via the keyboard.
+> Also converts text to either HTML or JavaScript code characters.
+>
+> * *The Greek Number Converter*
+> Converts numbers to the alphabetic Greek format.
+
+* [Some technical information about Unicode on the web - Russell W. Cottrell](https://www.russellcottrell.com/greek/technical.htm)
 
 * [Unicode Visualizer](https://unicode.link/)
 > Unicode Visualizer is a website with information from the Unicode Character Database.
@@ -356,9 +510,6 @@ From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresent
 > [ . . . ]
 > Unicode fonts in modern formats such as OpenType can in theory cover multiple languages by including multiple glyphs per character, though very few actually cover more than one language's forms of the unified Han characters.
 
-* [What is the difference between UTF-8 and Unicode?](https://web.archive.org/web/20150815071315/https://rrn.dk/the-difference-between-utf-8-and-unicode)
-> **UTF-8 is an encoding - Unicode is a character set**.
-
 * [Unicode spaces](https://www.jkorpela.fi/chars/spaces.html)
 > This document lists the various space characters in [Unicode](https://www.jkorpela.fi/chars.html#10646).
 > For a description, consult chapter [6 Writing Systems and Punctuation](http://www.unicode.org/versions/latest/ch06.pdf) and block description [General Punctuation](http://www.unicode.org/charts/PDF/U2000.pdf) in the Unicode standard.
@@ -371,6 +522,8 @@ From [Unicode Escape Formats](https://www.billposer.org/Software/ListOfRepresent
 * [Unicode Character Recognition](https://shapecatcher.com/index.html)
 
 * [SYMBL - Symbols, Emojis, Hieroglyphs, Scripts, Alphabets, and the entire Unicode](https://symbl.cc/)
+
+* [The End-of-Line Story -- RFC Editor (2004)](https://www.rfc-editor.org/old/EOLstory.txt)
 
 ----
 
