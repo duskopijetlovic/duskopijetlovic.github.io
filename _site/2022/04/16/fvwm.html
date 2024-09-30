@@ -109,6 +109,8 @@
             
               <li><a class="about" href="/about/">About</a></li>
             
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
               <li><a class="about" href="/feed.xml">XML Feed</a></li>
             
               <li><a class="about" href="/category/categories">Categories</a></li>
@@ -234,6 +236,57 @@ $ rm -i fvwm-guide-icons.tar.bz2
 
 <hr />
 
+<h2 id="my-customizations">My Customizations</h2>
+
+<h3 id="install-blippo-bold-font">Install Blippo Bold Font</h3>
+
+<ul>
+  <li>Install Blippo Bold font: 
+<a href="https://freefonts.co/fonts/blippo-bold">Blippo Bold font</a></li>
+</ul>
+
+<p>Installation log:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2024_04_29_1100_freebsd_work_desktop_installed_blippo_font.txt
+</code></pre></div></div>
+
+<h3 id="clocks-and-xload---from-dotxinitrc">Clocks and Xload - From dot.xinitrc</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wc -l ~/.xinitrc
+     196 /home/dusko/.xinitrc
+</code></pre></div></div>
+
+<p>Without comments and without blank lines:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sed '/^[[:space:]]*$/d' ~/.xinitrc | grep -v \^# | wc -l
+      20
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sed '/^[[:space:]]*$/d' ~/.xinitrc | grep -v \^#
+xrdb load $HOME/.Xresources
+xset b off
+for m in `ls /usr/local/share/fonts/`; do
+    if [ -d "/usr/local/share/fonts/$m" ]; then
+        xset fp+ "/usr/local/share/fonts/$m"
+     fi
+done
+for m in `ls /usr/home/dusko/.fonts/`; do
+    if [ -d "/usr/home/dusko/.fonts/$m" ]; then
+        xset fp+ "/usr/home/dusko/.fonts/$m"
+    fi
+done
+exec /usr/local/bin/xclock -digital -strftime "Vancouver: %a - %b %e, %Y - %l:%M:%S %p (%H:%M:%S)" -face mono:size=10 -bg "#002020" -fg "#aaaaaa" -update 1 -geometry -0-0 &amp;
+exec env TZ=Europe/Belgrade xclock -digital -strftime "Belgrade: %a %d %b %H:%M" -face mono:size=10 -bg "#002020" -fg "gold" -geometry -452-0 &amp;
+exec env TZ=UTC /usr/local/bin/xclock -digital -strftime 'UTC: %a %d %b %H:%M' -face mono:size=10 -bg '#002020' -fg '#f6eabe' -geometry -680-0 &amp;
+exec env TZ=GMT /usr/local/bin/xclock -digital -strftime 'GMT: %a %d %b %H:%M' -face mono:size=10 -bg '#002020' -fg '#f6eabe' -geometry -868-0 &amp;
+exec xload -bg steelblue -fg '#001013' -nolabel -geometry 224x33-1056-0 &amp;
+/usr/local/bin/xterm -bg black -fg white -geometry 80x24+0+0 &amp;
+/usr/local/bin/xterm -bg white -fg black -geometry 80x24+1440+0 &amp;
+fvwm &gt; /tmp/fvwmlog 2&gt;&amp;1
+</code></pre></div></div>
+
+<hr />
+
 <h2 id="footnotes">Footnotes</h2>
 
 <p>[1] From <code class="language-plaintext highlighter-rouge">pkg info --regex --full fvwm</code>:</p>
@@ -268,6 +321,42 @@ This site is an archive of documentation for Fvwm version 2.6.x, which is
 the current frozen release. For information about the development of Fvwm 
 version 3, check out fvwmorg/fvwm3 on GitHub.
 </code></pre></div></div>
+
+<hr />
+
+<h2 id="references">References</h2>
+<p>(Retrieved on Apr 16, 2022)</p>
+
+<ul>
+  <li><a href="https://fvwmforums.org/t/pems-stuff/134">PEM’s stuff - FVWM Forums – FVWM Themes - Config Archive</a></li>
+  <li>
+    <p><a href="https://fvwmforums.org/t/pems-stuff/134/221?page=12">PEM’s stuff - FVWM Forums – FVWM Themes - Config Archive - mail.plx script doesn’t work for POP3S</a></p>
+
+    <p><a href="http://pemarchandet.free.fr/fvwm/002/Artic_clean.jpg">Screenshot 1</a> <br />
+<a href="http://pemarchandet.free.fr/fvwm/002/Artic_messy.jpg">Screenshot 2</a> <br />
+<a href="http://pemarchandet.free.fr/fvwm/001/fvwm.tbz2">Config files</a></p>
+  </li>
+  <li><a href="https://forums.gentoo.org/viewtopic.php?t=80517">The F? Virtual Window Manager - Gentoo Discussion Forums - Part 1 of 2</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic-t-225192-postdays-0-postorder-asc-start-0.html">The F? Virtual Window Manager - Gentoo Discussion Forums - Part 2 of 2</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic-p-1998087.html?sid=308ace18fd90eb093e4b6475a63622b6">The F? Virtual Window Manager - Gentoo Discussion Forums - Part 2 of 2 - Page 13 of 30</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic-t-225192-start-300-postdays-0-postorder-asc-highlight-.html">The F? Virtual Window Manager (part 2) - Gentoo Discsussion Forums</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic-t-189895-start-475.html">[FVWM] Configuration - Gentoo French Forums</a></li>
+  <li><a href="https://forum.ubuntu-fr.org/viewtopic.php?id=97234">Autres environnements et personnalisations d’Ubuntu &gt; Fvwm - Page 1 of 2</a></li>
+  <li><a href="https://forum.ubuntu-fr.org/viewtopic.php?id=97234&amp;p=2">Autres environnements et personnalisations d’Ubuntu &gt; Fvwm - Page 2 of 2</a></li>
+  <li><a href="https://web.archive.org/web/20090121184348/www.quebecos.com/modules/wiwimod/index.php?page=Fvwm+:+Guide+du+d%E9butant">Wiki - Fvwm : Guide du débutant sur QuebecOS</a></li>
+  <li><a href="https://web.archive.org/web/20070317081535/http://www.quebecos.com/modules/wiwimod/index.php?page=Les+fonctions&amp;back=Fvwm+:+Guide+du+d%E9butant">Les fonctions</a></li>
+  <li><a href="https://web.archive.org/web/20070317082004/http://www.quebecos.com/modules/wiwimod/index.php?page=Raccourcis+(Bindings)&amp;back=Fvwm+:+Guide+du+d%E9butant">Raccourcis (Bindings)</a></li>
+  <li><a href="https://web.archive.org/web/20070317081455/http://www.quebecos.com/modules/wiwimod/index.php?page=Les+menus&amp;back=Fvwm+:+Guide+du+d%E9butant">Les menus</a></li>
+  <li><a href="https://web.archive.org/web/20070317081516/http://www.quebecos.com/modules/wiwimod/index.php?page=Les+modules&amp;back=Fvwm+:+Guide+du+d%E9butant">Les modules</a></li>
+  <li><a href="https://web.archive.org/web/20070317081508/http://www.quebecos.com/modules/wiwimod/index.php?page=Conclusion&amp;back=Fvwm+:+Guide+du+d%E9butant">Conclusion</a></li>
+  <li><a href="https://web.archive.org/web/20070319053034/http://www.quebecos.com/modules/wiwimod/index.php?page=Notions+avanc%E9es+:+fonctions&amp;back=Fvwm+:+Guide+du+d%E9butant">Notions avancées : fonctions</a></li>
+  <li><a href="https://web.archive.org/web/20070319053044/http://www.quebecos.com/modules/wiwimod/index.php?page=Notions+avanc%E9es+:+FvwmButtons&amp;back=Fvwm+:+Guide+du+d%E9butant">Notions avancées : FvwmButtons</a></li>
+  <li><a href="https://web.archive.org/web/20070319052039/http://www.quebecos.com/modules/wiwimod/index.php?page=Autres+ressources&amp;back=Fvwm+:+Guide+du+d%E9butant">Autres ressources</a></li>
+  <li><a href="https://fvwmforums.org/t/a-way-to-read-messages-to-tty-within-fvwm/4388">A way to read messages to TTY within fvwm - FVWM Forums - Configuration - General Questions</a></li>
+  <li><a href="https://fvwmforums.org/t/fvwm-title-bar/149/">FVWM title bar - FVWM Forums - Configuration - General Questions</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic.php?t=80517l">The F? Virtual Window Manager - Page 1 of 67 - Gentoo Discussion Forums</a></li>
+  <li><a href="https://forums.gentoo.org/viewtopic-p-1998087.html?sid=308ace18fd90eb093e4b6475a63622b6">The F? Virtual Window Manager (part 2) - Page 13 of 30 - Gentoo Discussion Forums</a></li>
+</ul>
 
 <hr />
 
@@ -341,6 +430,642 @@ version 3, check out fvwmorg/fvwm3 on GitHub.
     
         
     
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
   
     
       
@@ -537,43 +1262,6 @@ version 3, check out fvwmorg/fvwm3 on GitHub.
   
     
       
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-  
-    
-      
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
         
     
         

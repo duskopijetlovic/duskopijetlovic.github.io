@@ -1,0 +1,66 @@
+\documentclass[12pt]{article}
+
+% Preamble - the area between \documentclass{...} and \begin{document}
+\usepackage[T1]{fontenc}  % When you use the Palatino font, you need to use 
+\usepackage{textcomp}     % packages fontenc (with option T1) and textcomp
+\usepackage{palatino}
+\pagenumbering{gobble}    % Supressing page numbers
+
+% Preamble - the area between \documentclass{...} and \begin{document
+
+% Document Body - the area between \begin{document} and \end{document}
+\begin{document}
+
+\begin{figure}[ht]
+{\small
+\[ \begin{array}{|l|l} \cline{1-1}
+     \begin{array}{l}
+        \verb|% This is myfile.tex| \\
+        \verb|% |\mbox{\textit{notes to yourself can go here}}
+      \end{array}
+                           & \left\} \begin{array}{l} \\
+                                  \mbox{Anything following \% is ignored} \\
+                                  \mbox{ (used for {comments}).}
+                                \end{array}\right.
+ \\
+     \begin{array}{l}
+         \verb|\documentclass[|options\verb|]{|style\verb|}| \\
+           \mbox{ \it optional specifications} \\
+           \mbox{ --- e.g., declaring use of packages } \\
+     \end{array}
+                                       & \left\} \begin{array}{l}
+                                            \mathit{Preamble}\index{preamble} \\
+                                      \mbox{(blank lines do not matter)} \\
+                                           \end{array}\right.
+ \\ \\
+    \begin{array}{l}
+       \verb|\begin{document}| \\ {\vdots} \\
+       \verb|\end{document}| \\
+    \end{array}
+                                  & \left\} \begin{array}{l}
+                                        \mathit{Body}\index{body} \\
+                                        \mbox{This is the document \it{environment}.}
+
+\vspace{.06in} \\
+                                      \end{array} \right.
+\\                                &  \begin{array}{l}
+                                        \mbox{All that follows is ignored}\\
+                                        \mbox{(could be used for comments).}
+                                      \end{array}
+
+\\ \cline{1-1}
+   \end{array}
+\]
+} % end small
+\vspace{-.2in}
+
+\begin{center}
+The Structure of a \LaTeX\ Document
+\end{center}
+
+\end{figure}
+
+
+\end{document}
+% ----
+% Document Body - the area between \begin{document} and \end{document}

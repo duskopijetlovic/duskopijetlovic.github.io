@@ -1,6 +1,6 @@
 ---
-layout: default
-title: "FEC - Frequently Executed Commands [DRAFT]"
+layout: page
+title: "FEC - Frequently Executed Commands [WIP]"
 ---
 
 ```

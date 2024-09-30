@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Graphics in LaTeX with TikZ [DRAFT]"
+title: "Graphics in LaTeX with TikZ [WIP]"
 date: 2024-06-14 22:17:44 -0700 
 categories: tex latex graphics diagram graph pdf 
             documentation  writing technicalwriting svg vector image png design 

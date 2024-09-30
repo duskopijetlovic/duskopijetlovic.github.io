@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "My GTD Workflow [DRAFT]"
+title: "My GTD Workflow [WIP]"
 date: 2023-09-17 11:32:16 +0000
 categories: gtd productivity howto reference timemanagement lifemanagement
             selfmanagement 

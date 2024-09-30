@@ -1,11 +1,29 @@
 ---
 layout: post
-title: "ANSI Escape Sequence - Terminals, Shells, Consoles"
+title: "ANSI Escape Sequence - Terminals, Shells, Consoles [WIP]"
 date: 2024-02-18 18:34:23 -0700 
 categories: ansi ascii cli terminal shell plaintext text ansi
             ascii cli terminal shell console plaintext text 
             it computing history sysadmin rs232serial console 
 ---
+
+# TODO
+
+* Add about **readline** vs **libedit** vs **editline**
+
+REFERENCES:
+
+* BSD licenced readline alternative   
+https://forums.freebsd.org/threads/bsd-licenced-readline-alternative.68310/
+
+* The secret weapon of Bash power users (opensource.net)   
+https://news.ycombinator.com/item?id=39799767
+
+* The secret weapon of Bash power users - OpenSource.net   
+https://opensource.net/the-secret-weapon-of-bash-power-users/
+
+---
+
 
 [Escape sequence - Terminal and Printers Handbook Glossary](https://vt100.net/docs/tp83/glossary.html):
 
@@ -4474,7 +4492,7 @@ Linux console controls
     SUB (0x1A, ^Z)
             interrupt escape sequences (abort escape sequences);
 
-******** <<== My highliting 
+******** <<== My highliting
     ESC (0x1B, ^[)
             starts an escape sequence;
 ******** <<== My highliting
@@ -4485,7 +4503,7 @@ Linux console controls
 ******** <<== My highliting
     CSI (0x9B)
             is equivalent to ESC [.
-******** <<== My highliting 
+******** <<== My highliting
 
 ---- snip ----
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "TeX and LaTeX Package Management [DRAFT]"
+title: "TeX and LaTeX Package Management [WIP]"
 date: 2024-06-09 20:15:14 -0700 
 categories: tex latex
 ---

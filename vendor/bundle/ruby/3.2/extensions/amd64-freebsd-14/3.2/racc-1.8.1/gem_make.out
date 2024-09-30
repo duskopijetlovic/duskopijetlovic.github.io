@@ -1,0 +1,18 @@
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/racc-1.8.1/ext/racc/cparse
+/usr/local/bin/ruby32 extconf.rb
+creating Makefile
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-jwjbay sitelibdir\=./.gem.20240929-93249-jwjbay clean
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-jwjbay sitelibdir\=./.gem.20240929-93249-jwjbay
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-jwjbay sitelibdir\=./.gem.20240929-93249-jwjbay install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20240929-93249-jwjbay/racc
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-jwjbay sitelibdir\=./.gem.20240929-93249-jwjbay clean

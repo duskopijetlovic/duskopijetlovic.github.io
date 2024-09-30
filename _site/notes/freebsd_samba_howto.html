@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>FreeBSD - Samba Howto - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="FreeBSD - Samba Howto" />
+    <meta name="keywords" content="FreeBSD - Samba Howto, Dusko Pijetlovic, " />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="FreeBSD - Samba Howto" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/notes/freebsd_samba_howto" property="og:url">
+    
+
+    
+      <meta content="2024-09-29T17:10:56-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="FreeBSD - Samba Howto">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/notes/freebsd_samba_howto">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">FreeBSD - Samba Howto</h1>
+</header>
+
+<span class="time"></span>
+
+  <span class="categories">
+    &raquo; 
+  </span>
+
+
+<div class="content">
+  <div class="post"><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kldstat | grep smb
+13    1 0xffffffff8302e000     3250 ichsmb.ko
+14    1 0xffffffff83032000     2178 smbus.ko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo kldload smbfs
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kldstat | grep smb
+13    1 0xffffffff8302e000     3250 ichsmb.ko
+14    1 0xffffffff83032000     2178 smbus.ko
+26    1 0xffffffff83062000    18638 smbfs.ko
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ smbclient --list boxon --user=dusko
+Password for [WORKGROUP\dusko]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        D$              Disk      Default share
+        data$           Disk      
+---- snip ----
+        group-shared$   Disk      
+---- snip ----
+        SYSVOL          Disk      Logon server share 
+        User Data$      Disk      
+SMB1 disabled -- no workgroup available
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ smbclient '//boxon/group-shared$' --user=dusko
+Password for [WORKGROUP\dusko]:
+Try "help" to get a list of possible commands.
+smb: \&gt; 
+smb: \&gt; dir
+  .                                   D        0  Mon Mar 25 11:40:27 2024
+  ..                                  D        0  Mon Mar 25 11:40:27 2024
+---- snip ----
+  Documentation                       D        0  Mon Apr 24 20:03:10 2023
+  Group Specific Items                D        0  Tue Sep 27 14:20:29 2022
+---- snip ----
+
+                1464838655 blocks of size 4096. 722254649 blocks available
+smb: \&gt; 
+</code></pre></div></div>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/notes/freebsd_samba_howto" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+  
+    
+      
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+  
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/notes/fec-frequently-executed-commands">&laquo; FEC - Frequently Executed Commands [WIP]</a>
+  
+  
+    <a class="next" href="/notes/jekyll_gem_wrong_number_of_args_fix">Fix for Wrong number of arguments in Jekyll &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_FreeBSD - Samba Howto";
+    var disqus_title = "FreeBSD - Samba Howto";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

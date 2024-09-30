@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Beginner's Introduction to Perl [DRAFT]"
+title: "Beginner's Introduction to Perl [WIP]"
 date: 2024-07-24 10:58:25 -0700 
 categories: perl programming tutorial cli terminal shell script it computing
             unix sysadmin learning

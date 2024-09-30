@@ -1,0 +1,375 @@
+\documentclass[12pt]{article}
+
+% Preamble - the area between \documentclass{...} and \begin{document}
+\usepackage[T1]{fontenc}  % When you use the Palatino font, you need to use 
+\usepackage{textcomp}     % packages fontenc (with option T1) and textcomp
+\usepackage{palatino}
+\usepackage{url}
+\usepackage{fullpage}     % Use 1 inch margins
+
+\pagenumbering{gobble}    % Supressing page numbers
+
+% Preamble - the area between \documentclass{...} and \begin{document
+
+% Document Body - the area between \begin{document} and \end{document}
+\begin{document}
+
+\section*{Some Interesting \TeX\ and \LaTeX\ Extras} 
+
+This excerpt was modified from `A Simplified Introduction to \LaTeX\, which you can download from \url{https://ctan.org/pkg/simplified-latex}:
+
+\begin{figure}[ht]
+{\small
+\[ \begin{array}{|l|l} \cline{1-1}
+     \begin{array}{l}
+        \verb|% This is myfile.tex| \\
+        \verb|% |\mbox{\textit{notes to yourself can go here}}
+      \end{array}
+                           & \left\} \begin{array}{l} \\
+                                  \mbox{Anything following \% is ignored} \\
+                                  \mbox{ (used for {comments}).}
+                                \end{array}\right.
+ \\
+     \begin{array}{l}
+         \verb|\documentclass[|options\verb|]{|style\verb|}| \\
+           \mbox{ \it optional specifications} \\
+           \mbox{ --- e.g., declaring use of packages } \\
+     \end{array}
+                                       & \left\} \begin{array}{l}
+                                            \mathit{Preamble}\index{preamble} \\
+                                      \mbox{(blank lines do not matter)} \\
+                                           \end{array}\right.
+ \\ \\
+    \begin{array}{l}
+       \verb|\begin{document}| \\ {\vdots} \\
+       \verb|\end{document}| \\
+    \end{array}
+                                  & \left\} \begin{array}{l}
+                                        \mathit{Body}\index{body} \\
+                                        \mbox{This is the document \it{envi
+ronment}.}
+\vspace{.06in} \\
+                                      \end{array} \right.
+\\                                &  \begin{array}{l}
+                                        \mbox{All that follows is ignored}\\
+                                        \mbox{(could be used for comments).}
+                                      \end{array}
+
+\\ \cline{1-1}
+   \end{array}
+\]
+} % end small
+\vspace{-.2in}
+\caption{The Structure of a \LaTeX\ Document. \label{fig:document}}
+\end{figure}
+
+
+\subsection*{More information}
+
+The following examples were taken or modified from `TeX for the Impatient', which you can download from \url{https://ctan.org/pkg/impatient}.
+
+
+\subsection*{Examples}
+
+Showing \verb|{\char}| command: {\char65}
+
+Some math: $ 2+2=5 $
+
+\par 
+
+{\fontfamily{phv}\selectfont
+Helvetica looks like this}.
+{\fontencoding{OT1}\fontfamily{bch}\selectfont
+Charter looks like this}.
+
+\par
+
+\noindent Here's an example of some words in a ruled box, just as Lewis Carroll wrote them:
+
+\bigskip
+
+% Put 8pt of space between the text and the surrounding rules.
+\hbox{\vrule\vbox{\hrule
+\hbox spread 8pt{\hfil\vbox spread 8pt{\vfil
+\hbox{Who would not give all else for twop}%
+\hbox{ennyworth only of Beautiful Soup?}%
+\vfil}\hfil}
+\hrule}\vrule}%
+
+\bigskip
+
+{\hfil\hbox to 3in{\leaders\hbox{ * }\hfil}\hfil}
+
+\bigskip
+
+\baselineskip = 11pt \lineskiplimit = 1pt
+\lineskip = 2pt plus .5pt
+Sometimes you'll need to typeset a paragraph that has
+tall material, such as a mathematical formula, embedded
+within it. An example of such a formula is $n \choose k$.
+Note the extra space above and below this line as
+compared with the other lines.
+(If the formula didn't project below the line,
+we'd only get extra space above the line.)
+
+\bigskip
+
+\centerline{$\Downarrow$}\kern 3pt      % a vertical kern
+\centerline{$\Longrightarrow$\kern 6pt  % a horizontal kern
+{\bf Heed my warning!}\kern 6pt         % another horizontal kern
+$\Longleftarrow$}
+\kern 3pt                               % another vertical kern
+\centerline{$\Uparrow$}
+
+% A small font and close interline spacing make this work
+\smallskip\font\sixrm=cmr6 \sixrm \baselineskip=7pt
+\dimen0=\fontdimen3\font \dimen2=\fontdimen4\font
+\fontdimen3\font=1.8pt \fontdimen4\font=.9pt
+\noindent \hfuzz=.1pt
+\parshape 30 0pt 120pt 1pt 118pt 2pt 116pt 4pt 112pt 6pt
+108pt 9pt 102pt 12pt 96pt 15pt 90pt 19pt 84pt 23pt 77pt
+27pt 68pt 30.5pt 60pt 35pt 52pt 39pt 45pt 43pt 36pt 48pt
+27pt 51.5pt 21pt 53pt 16.75pt 53pt 16.75pt 53pt 16.75pt 53pt
+16.75pt 53pt 16.75pt 53pt 16.75pt 53pt 16.75pt 53pt 16.75pt
+53pt 14.6pt 48pt 24pt 45pt 30.67pt 36.5pt 51pt 23pt 76.3pt
+The wines of France and California may be the best known,
+but they are not the only fine wines. Spanish wines are
+often underestimated, and quite old ones may be available at
+reasonable prices. For Spanish wines the vintage is not so
+critical, but the climate of the Bordeaux region varies
+greatly from year to year. Some vintages are not as good as
+others, so these years ought to be s\kern -.1pt p\kern -.1pt
+e\kern -.1pt c\hfil ially n\kern .1pt o\kern .1pt
+t\kern .1pt e\kern .1pt d\hfil: 1962, 1964, 1966. 1958,
+1959, 1960, 1961, 1964, 1966 are also good California
+vintages. Good luck finding them!
+\fontdimen3\font=\dimen0 \fontdimen4\font=\dimen2
+
+\bigskip
+
+\vbox to 1pc{\hrule width 6pc           % Top of box.
+\hbox{1} \vskip 1pc\hbox to 2pc{\hfil 2}
+% The \vss absorbs the extra distance produced by \vskip.
+\vss \hbox to 3pc{\hfil 3}
+\hrule width 6pc}                       % Bottom of box.
+
+\bigskip
+
+\def\a{\hbox to 1pc{\hfil 2}\vfil}
+\vbox to 4pc{\hbox{1} \vfil \a
+\vfilneg \hbox to 2pc{\hfil 3}}
+
+\bigskip
+
+\hbox{ugly suburban sprawl}
+\hbox to 2in{ugly \hfil suburban \hfil sprawl}
+\hbox spread 1in {ugly \hfil suburban \hfil sprawl}
+% Without \hfil in the two preceding lines,
+% you'd get `underfull hbox'es.
+
+\bigskip
+
+\hbox{\hsize = 10pc \raggedright\parindent = 1em
+\vtop{In this example, we see how to use vboxes to
+produce the effect of double columns. Each vbox
+contains two paragraphs, typeset according to \TeX's
+usual rules except that it's ragged right.\par
+This isn't really the best way to get true double
+columns because the columns}
+\hskip 2pc
+\vtop{\noindent
+aren't balanced and we haven't done anything to choose
+the column break automatically or even to fix up the
+last line of the first column.\par
+However, the technique of putting running text into a
+vbox is very useful for placing that text where you
+want it on the page.}}
+
+\bigskip
+
+\emph{Manipulating boxes}
+
+\hbox{\hsize = 1in \raggedright\parindent = 0pt
+\vtop to .75in{\hrule This box is .75in deep. \vfil\hrule}
+\qquad
+\vtop{\hrule This box is at its natural depth. \vfil\hrule}
+\qquad
+\vtop spread .2in{\hrule This box is .2in deeper than
+its natural depth.\vfil\hrule}}
+
+\bigskip
+
+\emph{Retrieving the contents of a box register}
+
+\setbox0 = \hbox{mushroom}
+\setbox1 = \vbox{\copy0\box0\box0}
+\box1
+
+\bigskip
+
+\setbox0 = \hbox{good }
+Have a \copy0 \box0 \box0 day!
+
+\bigskip
+
+% \ht 〈register〉 [ 〈dimen〉 parameter ]
+% \dp 〈register〉 [ 〈dimen〉 parameter ]
+% \wd 〈register〉 [ 〈dimen〉 parameter ]
+% These parameters refer to the height, depth, and width respectively of
+% box register 〈register〉. You can use them to find out the dimensions of
+% a box. You can also change the dimensions of a box, but it’s a tricky
+% business; if you want to be adventurous you can learn all about it from
+% pages 388–389 of The TeXbook.
+\setbox0 = \vtop{\hbox{a}\hbox{beige}\hbox{bunny}}%
+The box has width \the\wd0, height \the\ht0,
+and depth \the\dp0.
+
+\hrule\smallskip
+\hrule width 2in \smallskip
+\hrule width 3in height 2pt \smallskip
+\hrule width 3in depth 2pt
+
+% Here you can see how the baseline relates to the
+% height and depth of an \hrule.
+\leftline{
+\vbox{\hrule width .6in height 5pt depth 0pt}
+\vbox{\hrule width .6in height 0pt depth 8pt}
+\vbox{\hrule width .6in height 5pt depth 8pt}
+\vbox{\hbox{ baseline}\kern 3pt \hrule width .6in}
+}
+
+\hbox to 3in{\vrule \rightarrowfill \ 3 in
+\leftarrowfill\vrule}
+
+{\hsize=1in \parindent=0pt
+\valign{#\strut&#\strut&#\strut&#\strut\cr
+\noalign{\vrule width 2pt\quad}
+bernaise&curry&hoisin&hollandaise\cr
+\noalign{\vrule width 2pt\quad}
+ketchup&marinara&mayonnaise&mustard\cr
+\noalign{\vrule width 2pt\quad}
+rarebit&tartar\cr
+\noalign{\vrule width 2pt\quad}}}
+
+$$\hbox to 1in{\downbracefill} \quad
+\hbox to 1in{\upbracefill}$$
+
+$$\cdots \Big\arrowvert \cdots \Big\Arrowvert \cdots
+\Big\lmoustache \cdots \Big\rmoustache \cdots
+\Big\bracevert \cdots$$
+
+\bigskip
+
+\font\tentt = cmtt10
+\font\bigttfont = cmtt10 scaled \magstep2
+\font\eleventtfont = cmtt10 at 11pt
+First we use {\tentt regular CM typewriter}.
+Then we use {\eleventtfont eleven-point CM typewriter}.
+Finally we use {\bigttfont big CM typewriter}.
+
+\bigskip
+
+Here's a line printed normally.\par
+\dimen0=\fontdimen2\font
+\fontdimen2\font=3\fontdimen2\font % triple word spacing
+\noindent Here’s a really spaced-out line.
+\fontdimen2\font=\dimen0
+
+\bigskip
+
+\romannumeral 24
+
+\bigskip
+
+\time 1 
+\day 10
+\month 4
+\year 1054
+\today
+
+\bigskip
+
+This book was produced with the \fmtname\ format.
+
+\bigskip
+
+[{\tt \meaning\eject}] [\meaning\tenrm] [\meaning Y]
+
+the control sequence {\tt \string\bigbreak}
+
+\font\myfive=cmr5 [\fontname\myfive]
+
+\bigskip
+
+\def\a{One \vbox\bgroup}
+% You couldn't use { instead of \bgroup here because
+% TeX would not recognize the end of the macro
+\def\enda#1{{#1\egroup} two}
+% This one is a little tricky, since the \egroup actually
+% matches a left brace and the following right brace
+% matches the \bgroup. But it works!
+\a \enda{\hrule width 1in}
+
+\bigskip
+
+\long\def\aa#1{\par\hrule\smallskip#1\par\smallskip\hrule}
+\aa{This is the first line.\par
+This is the second line.}
+% without \long, TeX would complain
+
+\bigskip
+
+\mathchardef\alphachar = "010B % As in plain TeX.
+$\alphachar$
+
+\bigskip
+
+\def\first{abc}
+\if\first true\else false\fi;
+% ‘‘c’’ is left over from the expansion of \first.
+% It lands in the unexecuted ‘‘true’’ part.
+\if a\first\ true\else false\fi;
+% Here ‘‘bc’’ is left over from the expansion of \first
+\if \hbox\relax true\else false\fi
+% Unexpandable control sequences test equal with ''if''
+
+\dimen0 = 2.5in
+\hbox to \dimen0{$\Leftarrow$\hfil$\Rightarrow$}
+
+\skip2 = 2in
+$\Rightarrow$\hskip \skip2 $\Leftarrow$
+
+\bigskip
+
+\hbox{\vrule
+  \vbox{\hrule \vskip 3pt
+    \hbox{\hskip 3pt
+      \vbox{\hsize = .7in \raggedright
+        \noindent Help! Let me out of here!}%
+    \hskip 3pt}%
+  \vskip 3pt \hrule}%
+\vrule}
+
+\end{document}
+% ----
+% Document Body - the area between \begin{document} and \end{document}
+% ----
+% To compile, run lualatex two times:
+%   lualatex tex-latex-extras.tex 
+%   lualatex tex-latex-extras.tex 
+% ----
+% Q: Why?
+% A: Because of the following LaTeX warning, which shows after first run: 
+%      Rerun to get cross-references right.
+%    or:
+%      No file extras.aux.
+% ----
+% To view:
+%   zathura tex-latex-extras.pdf
+% or:
+%   mupdf tex-latex-extras.pdf
+% ----
+% To clean up (remove) all nonessential files,
+% including aux, dep, dvi, postscript and pdf files:
+%   latexmk -C
+% ----

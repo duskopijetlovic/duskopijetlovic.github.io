@@ -1,0 +1,15 @@
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/json-2.7.2/ext/json
+/usr/local/bin/ruby32 extconf.rb
+creating Makefile
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-9okhn6 sitelibdir\=./.gem.20240929-93249-9okhn6 clean
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-9okhn6 sitelibdir\=./.gem.20240929-93249-9okhn6
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-9okhn6 sitelibdir\=./.gem.20240929-93249-9okhn6 install
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240929-93249-9okhn6 sitelibdir\=./.gem.20240929-93249-9okhn6 clean

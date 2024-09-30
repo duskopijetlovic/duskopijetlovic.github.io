@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>ed(1) Notes [WIP] - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="ed(1) Notes [WIP]" />
+    <meta name="keywords" content="ed(1) Notes [WIP], Dusko Pijetlovic, " />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="ed(1) Notes [WIP]" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/notes/ed-notes" property="og:url">
+    
+
+    
+      <meta content="2024-09-29T17:10:56-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="ed(1) Notes [WIP]">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/notes/ed-notes">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">ed(1) Notes [WIP]</h1>
+    <hr />
+  </header>
+  <div class="post-content">
+    <p>Abbreviations:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CM: command mode
+IM: input mode, a.k.a. edit mode
+LN: line number
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>H       # Toggle verbose error messages on and off
+P       # Toggle command prompt on and off 
+h       # Help
+/re/    # Search for 're' (Press / for the next match)
+g/re/p  # Print all lines with 're' in them 
+a       # Append
+i       # Insert
+.       #   = The period represents the current address =
+.       # Stop editing - when in input (edit) mode
+.       # Print the content of the current LN (address number) - when in CM 
+.=      # Print the current LN (address)
+,=      # Print how many lines the buffer has
+n       # Print the current LN
+p       # Print the content of the current line
+,p      # Print the content of the whole buffer 
+,np     # Print the content of the whole buffer with LNs
+,n      # Print the content of the whole buffer with LNs
+5p      # Print the content of LN 5
+l       # Put a $ symbol at the end of each line
+,l      # View the spaces at the end of each line in the whole buffer
+,ln     # View the spaces at the end of each line in the whole buffer, with LNs
+w       # Save 
+q       # Quit
+wq      # First save and then quit
+z       # Scroll from the next address to as far as the terminal allows
+        #   = To scroll to the next page, press  z  again =
+11z3    # Print line 11 and the three addresses after line 11
+11z3n   # Print line 11 and the three addresses after line 11, with LNs
+1       # Go to the first line, aka top of the buffer 
+5       # Go to LN 5 (Replace 5 with a LN to go to)
+$       # Go to the last line, aka bottom of the buffer, aka end of the buffer
+-1      # Replace 1 with a number of lines to go up
++1      # Replace 1 with a number of lines to go down
+10,15p  # Print the contents of lines 10 to 15
+10,15np # Print lines 10 to 15, including LNs
+&lt;ENTER&gt; # Press ENTER to advance to the next line
+-2,+2p  # Print the previous 2 lines and the next 2 lines
+-2,+2np # Print the previous 2 lines and the next 2 lines, with LNs
+.,+5p   # Print the current line and the next 5 lines
+.,+5np  # Print the current line and the next 5 lines, with LNs
++5p     # Print the line that is 5 lines below the current address
++5pn    # Print the line that is 5 lines below the current address, with its LN
++5np    # Print the line that is 5 lines below the current address, with its LN
+-5p     # Print the line that is 5 lines above the current address 
+-5pn    # Print the line that is 5 lines above the current address, with its LN
+-5np    # Print the line that is 5 lines above the current address, with its LN
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="references">References</h2>
+<p>(Retrieved on Aug 1, 2024)</p>
+
+<ul>
+  <li>
+    <p><a href="gopher://katolaz.net/0/ed_tutorial.txt">ed(1) is The Right Tool - “ed-primer” for beginners - phlog (a blog over gopher)</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.tiltedwindmillpress.com/product/ed/">Ed Mastery - Book by Michael W Lucas</a></p>
+  </li>
+</ul>
+
+
+  </div>
+</article>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

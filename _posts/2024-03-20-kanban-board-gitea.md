@@ -32,6 +32,7 @@ Select the project where you want to add Kanban board
 You will be presented with a Kanban view  
 Here you can add new columns by clicking on *New Column*   
 Default: the first column is automatically added and is named *Uncategorized*  
+*Note:* you can move items in the column up or down   
 To add a new column, click on *New Column*   
 Give it a name by typing it in the *Name* text box   
 (in this example, let's name it: *Today*)   

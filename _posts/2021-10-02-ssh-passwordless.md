@@ -5,6 +5,9 @@ date: 2021-10-02 20:53:02 -0700
 categories: ssh unix sysadmin 
 ---
 
+Updated: Sep 25, 2024
+
+
 **Note:**
 In code excerpts and examples, the long lines are folded and then 
 indented to make sure they fit the page.
@@ -106,3 +109,40 @@ $ ssh user1@remote.example
 $ hostname
 remote.example
 ```
+
+**NOTE:** It is recommended that you create **separate** SSH key pairs for **each** *of the services* you are using because if a private key is compromised, only one service would be possibly affected and require SSH key change.
+
+If you already have `id_rsa` key file, running `ssh-keygen` will overwrite that key (it will ask for confirmation before overwriting it).  Since `id_rsa` is the default name for RSA key type, you can have as many keys as you want with any names you want.  You can specify the output file name by adding `-f` option.  You can also specify the type and length of the key if you want.  
+
+SSH keys for user authentication are usually stored in the user's .ssh directory under the home directory, that is, `~/.ssh` but in enterprise environments, the location is often different.  The default key file name depends on the algorithm, in the example above when using the default RSA algorithm it was `id_rsa`.  It could also be, for example, `id_dsa` or `id_ecdsa`.
+
+
+**[TODO]**  Complete this section
+
+ODAVDE
+
+From the man page for `ssh-keygen(1)` on FreeBSD 14 with OpenSSH version OpenSSH_9.5p1 and [https://www.ssh.com/academy/ssh/keygen](https://www.ssh.com/academy/ssh/keygen).
+
+OpenSSH supports the following key algorithms for authentication keys:
+* rsa - the default key size for is 3072 bits; 4096 bits is better.  Choosing a different algorithm may be advisable.  It is quite possible the RSA algorithm will become practically breakable in the foreseeable future.  All SSH clients support this algorithm.
+* ecdsa - a new Digital Signature Algorithm using elliptic curves.  This is probably a good algorithm for current applications.  Only three key sizes are supported: 256, 384, and 521 bits.  It's recommended to always use it with 521 bits.  Most SSH clients now support this algorithm.
+* ed25519 - this is a new algorithm added in OpenSSH.  Support for it in clients is not yet universal.
+
+References: [https://community.atlassian.com/t5/Bitbucket-questions/SSH-Keygen-invalidates-existing-SSH-keys/qaq-p/1289261](https://community.atlassian.com/t5/Bitbucket-questions/SSH-Keygen-invalidates-existing-SSH-keys/qaq-p/1289261), [https://www.ssh.com/academy/ssh/keygen](https://www.ssh.com/academy/ssh/keygen).
+
+     
+DOOVDE
+
+---
+
+## References
+(Retrieved on Sep 25, 2024)
+
+* [SSH Keygen, invalidates existing SSH keys?](https://community.atlassian.com/t5/Bitbucket-questions/SSH-Keygen-invalidates-existing-SSH-keys/qaq-p/1289261)
+
+* [How to Use ssh-keygen to Generate a New SSH Key?](https://www.ssh.com/academy/ssh/keygen)
+
+* [Using ssh-keygen and sharing for key-based authentication in Linux](https://www.redhat.com/sysadmin/configure-ssh-keygen)
+
+---
+

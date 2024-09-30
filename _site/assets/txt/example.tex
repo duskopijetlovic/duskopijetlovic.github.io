@@ -1,0 +1,27 @@
+% https://vladar.bearblog.dev/latex-for-tabletop/
+
+\documentclass[10pt,twoside,twocolumn,openany]{book}
+\usepackage{example}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+
+\title{\scshape\LaTeX~Example}
+\author{Vladar}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Example}
+
+Here's an example of a custom command defined in \verb|example.sty| that formats a monster stat block:
+
+\statblock[d6]{Orcs}{MV 40'; AC 6; HD 1; AB +1; \#AT 1 scimitar (1d8); SV F1; AL C; Int 7; ML 8; XP 10.}{}
+
+\vspace{\baselineskip}
+
+What follows is a dummy ``Lorem ipsum'' text.
+
+\lipsum[1-4]
+
+\end{document}

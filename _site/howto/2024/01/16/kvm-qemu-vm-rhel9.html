@@ -1,0 +1,3090 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT] - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]" />
+    <meta name="keywords" content="Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT], Dusko Pijetlovic, howto" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/howto/2024/01/16/kvm-qemu-vm-rhel9.html" property="og:url">
+    
+
+    
+      <meta content="2024-01-16T16:09:52-08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="howto" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/howto/2024/01/16/kvm-qemu-vm-rhel9.html">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]</h1>
+</header>
+
+<span class="time">16 Jan 2024</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/howto">howto</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><p>[TODO:] Add creation of volume as QCOW2 image from an XML template</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh dusko@example.com
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh pool-list --all
+ Name                 State      Autostart
+-------------------------------------------
+ default              active     yes
+ dirpool              inactive   yes
+ dwu                  active     yes
+ images               active     yes
+ iscsiadd02           active     yes
+ isos                 inactive   yes
+ PoolNappIt1          active     yes
+ tmp                  active     yes
+
+$ sudo virsh vol-list --pool iscsiadd02
+ Name                 Path
+------------------------------------------------------------------------------
+ epidote.qcow2        /iscsiadd02/epidote.qcow2
+ images               /iscsiadd02/images
+ ofc2.qcow2           /iscsiadd02/ofc2.qcow2
+ stores.qcow2         /iscsiadd02/stores.qcow2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh vol-info epidote.qcow2 --pool iscsiadd02
+Name:           epidote.qcow2
+Type:           file
+Capacity:       360.00 GiB
+Allocation:     200.00 KiB
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /iscsiadd02/epidote.qcow2
+-rw-r--r--. 1 root root 198K Jan  8 16:08 /iscsiadd02/epidote.qcow2
+
+$ file /iscsiadd02/epidote.qcow2
+/iscsiadd02/epidote.qcow2: QEMU QCOW Image (v2), 386547056640 bytes
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qemu-img info /iscsiadd02/epidote.qcow2
+image: /iscsiadd02/epidote.qcow2
+file format: qcow2
+virtual size: 360G (386547056640 bytes)
+disk size: 200K
+cluster_size: 65536
+Format specific information:
+    compat: 0.10
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh vol-dumpxml epidote.qcow2 --pool iscsiadd02
+&lt;volume type='file'&gt;
+  &lt;name&gt;epidote.qcow2&lt;/name&gt;
+  &lt;key&gt;/iscsiadd02/epidote.qcow2&lt;/key&gt;
+  &lt;source&gt;
+  &lt;/source&gt;
+  &lt;capacity unit='bytes'&gt;386547056640&lt;/capacity&gt;
+  &lt;allocation unit='bytes'&gt;204800&lt;/allocation&gt;
+  &lt;physical unit='bytes'&gt;202752&lt;/physical&gt;
+  &lt;target&gt;
+    &lt;path&gt;/iscsiadd02/epidote.qcow2&lt;/path&gt;
+    &lt;format type='qcow2'/&gt;
+    &lt;permissions&gt;
+      &lt;mode&gt;0644&lt;/mode&gt;
+      &lt;owner&gt;0&lt;/owner&gt;
+      &lt;group&gt;0&lt;/group&gt;
+      &lt;label&gt;system_u:object_r:default_t:s0&lt;/label&gt;
+    &lt;/permissions&gt;
+    &lt;timestamps&gt;
+      &lt;atime&gt;1705292977.548377238&lt;/atime&gt;
+      &lt;mtime&gt;1704758917.021316115&lt;/mtime&gt;
+      &lt;ctime&gt;1705194419.415541519&lt;/ctime&gt;
+    &lt;/timestamps&gt;
+  &lt;/target&gt;
+&lt;/volume&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /iscsiadd02/epidote.qcow2
+-rw-r--r--. 1 root root 198K Jan  8 16:08 /iscsiadd02/epidote.qcow2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -Alh /iscsiadd02/
+total 2.3T
+-rw-r--r--. 1 root root 198K Jan  8 16:08 epidote.qcow2
+drwxr-xr-x. 1 root root   46 Jan 13 14:40 images
+-rw-r--r--. 1 qemu qemu 2.2T Jan 15 17:39 ofc2.qcow2
+-rw-r--r--. 1 qemu qemu 126G Jan 15 17:38 stores.qcow2
+
+$ ls -Alh /iscsiadd02/images/
+total 9.0G
+-rw-r--r--. 1 qemu qemu 9.0G Jan 13 14:40 rhel-9.2-x86_64-dvd.iso
+
+$ sudo chown qemu:qemu /iscsiadd02/epidote.qcow2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /iscsiadd02/epidote.qcow2
+-rw-r--r--. 1 qemu qemu 198K Jan  8 16:08 /iscsiadd02/epidote.qcow2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh vol-dumpxml epidote.qcow2 --pool iscsiadd02
+&lt;volume type='file'&gt;
+  &lt;name&gt;epidote.qcow2&lt;/name&gt;
+  &lt;key&gt;/iscsiadd02/epidote.qcow2&lt;/key&gt;
+  &lt;source&gt;
+  &lt;/source&gt;
+  &lt;capacity unit='bytes'&gt;386547056640&lt;/capacity&gt;
+  &lt;allocation unit='bytes'&gt;204800&lt;/allocation&gt;
+  &lt;physical unit='bytes'&gt;202752&lt;/physical&gt;
+  &lt;target&gt;
+    &lt;path&gt;/iscsiadd02/epidote.qcow2&lt;/path&gt;
+    &lt;format type='qcow2'/&gt;
+    &lt;permissions&gt;
+      &lt;mode&gt;0644&lt;/mode&gt;
+      &lt;owner&gt;107&lt;/owner&gt;
+      &lt;group&gt;107&lt;/group&gt;
+      &lt;label&gt;system_u:object_r:default_t:s0&lt;/label&gt;
+    &lt;/permissions&gt;
+    &lt;timestamps&gt;
+      &lt;atime&gt;1705292977.548377238&lt;/atime&gt;
+      &lt;mtime&gt;1704758917.021316115&lt;/mtime&gt;
+      &lt;ctime&gt;1705369306.611531762&lt;/ctime&gt;
+    &lt;/timestamps&gt;
+  &lt;/target&gt;
+&lt;/volume&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh vol-dumpxml epidote.qcow2 --pool iscsiadd02 | grep mode
+      &lt;mode&gt;0644&lt;/mode&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo virsh vol-dumpxml epidote.qcow2 --pool iscsiadd02 | grep owner 
+      &lt;owner&gt;107&lt;/owner&gt;
+
+$ sudo virsh vol-dumpxml epidote.qcow2 --pool iscsiadd02 | grep group
+      &lt;group&gt;107&lt;/group&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grep ^root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grep ^qemu /etc/passwd
+qemu:x:107:107:qemu user:/:/sbin/nologin
+</code></pre></div></div>
+
+<p>Start serial QEMU RHEL 9.2 guest VM installation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ virt-install \
+ --name epidote \
+ --memory 8192 \
+ --disk vol=iscsiadd02/epidote.qcow2 \
+ --vcpus 4 \
+ --os-variant rhel9.2 \
+ --graphics none \
+ --location /iscsiadd02/images/rhel-9.2-x86_64-dvd.iso \
+ --extra-args 'console=ttyS0'
+</code></pre></div></div>
+
+<p>NOTE:
+For pre-RHEL 9 guest VM, you could use an extra option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--console pty,target_type=serial \
+</code></pre></div></div>
+
+<p>and a different <code class="language-plaintext highlighter-rouge">--extra-args</code> parameter:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--extra-args 'console=ttyS0,115200n8 serial'
+</code></pre></div></div>
+
+<p>As of time of this writing, when you install RHEL 9 guest VM with <code class="language-plaintext highlighter-rouge">virt-install(1)</code> with <code class="language-plaintext highlighter-rouge">--console pty,target_type=serial</code> and <code class="language-plaintext highlighter-rouge">--extra-args 'console=ttyS0,115200n8 serial'</code>, you will see this warning:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'serial' is deprecated and has been removed.
+To change the console use 'console=' instead.
+</code></pre></div></div>
+
+<p>Continuing with VM guest installation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---- snip ----
+---- snip ----
+
+Starting installer, one moment...
+
+anaconda 34.25.2.10-1.el9_2 for Red Hat Enterprise Linux 9.2 started.
+
+ * installation log files are stored in /tmp during the installation
+ * shell is available on TTY2
+ * if the graphical installation interface fails to start, try again with the
+   inst.text bootoption to start text installation
+ * when reporting a bug add logs from /tmp as separate text/plain attachments
+
+================================================================================
+================================================================================
+
+Text mode provides a limited set of installation options. It does not offer
+custom partitioning for full control over the disk layout. Would you like to use
+VNC mode instead?
+
+1) Start VNC
+2) Use text mode
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]:
+</code></pre></div></div>
+
+<p>[TODO]  2024<em>01_16_1630</em></p>
+
+<h2 id="rhel-subscription-manager--client-registration-via-red-hat-satellite-rhs">RHEL subscription-manager – Client Registration via Red Hat Satellite (RHS)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ hostname
+example.com
+</code></pre></div></div>
+
+<h3 id="installing-katello-ca-consumer">Installing katello-ca-consumer</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ yum \
+ install --nogpgcheck \
+ http://satellite6.example.com/pub/katello-ca-consumer-latest.noarch.rpm
+</code></pre></div></div>
+
+<h3 id="registering-the-client">Registering the Client</h3>
+
+<p>Once katello-ca-consumer is installed, proceed with the registration:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo subscription-manager register --org=YourOrgName --activationkey=&lt;ACTIVATION_KEY_NAME&gt;
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum -y remove rhn-setup rhn-client-tools \
+ yum-rhn-plugin rhnsd rhn-check rhnlib spacewalk-abrt spacewalk-oscap \
+ osad 'rh-*-rhui-client' 'candlepin-cert-consumer-*'
+</code></pre></div></div>
+
+<p>In this case, the OS is RHEL 9.
+Activation key name for RHEL 9 OS is:  <code class="language-plaintext highlighter-rouge">RHEL9</code></p>
+
+<p>Example for registering a Red Hat Enterprise Linux 9 system:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo \
+ subscription-manager register \
+ --org=YourOrgName \
+ --activationkey=YourActivationKey
+
+The system has been registered with ID: 0404e570-5090-4232-9568-9b99723e6efb
+The system has been registered with ID: 0404e570-...........................
+The registered system name is: example.com
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum -y remove rhn-setup rhn-client-tools \
+ yum-rhn-plugin rhnsd rhn-check rhnlib spacewalk-abrt spacewalk-oscap \
+ osad 'rh-*-rhui-client' 'candlepin-cert-consumer-*'
+</code></pre></div></div>
+
+<h3 id="host-tools">Host Tools</h3>
+
+<p>Ensure the <strong>katello-host-tools</strong> package is installed from the <strong>Satellite Tools</strong> repository on Satellite Server.
+This package helps in reporting back to Satellite and informs of current patch levels and general state of your host.
+Note, the repository is Satellite version dependent.
+When Satellite is upgraded, the repository name will change to correspond with the new Satellite Server version.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo subscription-manager repos --enable satellite-tools-6.10-for-rhel-8-x86_64-rpms
+
+$ sudo yum -y install katello-host-tools
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl stop goferd.service
+$ sudo systemctl disable goferd.service
+$ sudo yum remove katello-agent
+</code></pre></div></div>
+
+<p>List the repo IDs of the currently subscribed repositories:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo subscription-manager repos --list-enabled | grep ID | awk -F' ' '{ print $3 }'
+rhel-9-for-x86_64-appstream-rpms
+rhel-9-for-x86_64-baseos-rpms
+</code></pre></div></div>
+
+<p>List all installed packages.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum list installed | wc -l
+947
+</code></pre></div></div>
+
+<hr />
+
+<p>From the man page for virsh(1):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOTES
+---- snip ----
+       Several virsh commands take an optionally scaled integer; if no scale
+       is provided, then the default is listed in the command (for historical
+       reasons, some commands default to bytes, while other commands default
+       to kibibytes).  The following case-insensitive suffixes can be used to
+       select a specific scale:
+         b, byte  byte      1
+         KB       kilobyte  1,000
+         k, KiB   kibibyte  1,024
+         MB       megabyte  1,000,000
+         M, MiB   mebibyte  1,048,576
+         GB       gigabyte  1,000,000,000
+         G, GiB   gibibyte  1,073,741,824
+         TB       terabyte  1,000,000,000,000
+         T, TiB   tebibyte  1,099,511,627,776
+         PB       petabyte  1,000,000,000,000,000
+         P, PiB   pebibyte  1,125,899,906,842,624
+         EB       exabyte   1,000,000,000,000,000,000
+         E, EiB   exbibyte  1,152,921,504,606,846,976
+---- snip ----
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="references">References</h2>
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="github.io">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/howto/2024/01/16/kvm-qemu-vm-rhel9.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=1749788565247320";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+            
+            <div class="panel-body">
+              <h4>Related Posts</h4>
+              <ul>
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/howto/webbrowser/networking/sysadmin/unix/webdevelopment/http/html/ruby/tutorial/2024/09/24/testing-different-jekyll-themes.html">Testing Different Jekyll Themes</a>
+                  
+                    (Categories: <a href="/category/howto">howto</a>, <a href="/category/webbrowser">webbrowser</a>, <a href="/category/networking">networking</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/unix">unix</a>, <a href="/category/webdevelopment">webdevelopment</a>, <a href="/category/http">http</a>, <a href="/category/html">html</a>, <a href="/category/ruby">ruby</a>, <a href="/category/tutorial">tutorial</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unicode/utf8/x11/xorg/xterm/cli/terminal/shell/howto/sysadmin/unix/perl/python/vi/vim/ascii/plaintext/text/tex/latex/pdf/typography/font/html/design/webbrowser/webdevelopment/awk/regex/programming/coding/development/tool/reference/dotfiles/tip/2024/09/17/encodings-utf8-and-unicode-notes.html">Encodings, UTF-8 and Unicode Notes</a>
+                  
+                    (Categories: <a href="/category/unicode">unicode</a>, <a href="/category/utf8">utf8</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/xterm">xterm</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/howto">howto</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/unix">unix</a>, <a href="/category/perl">perl</a>, <a href="/category/python">python</a>, <a href="/category/vi">vi</a>, <a href="/category/vim">vim</a>, <a href="/category/ascii">ascii</a>, <a href="/category/plaintext">plaintext</a>, <a href="/category/text">text</a>, <a href="/category/tex">tex</a>, <a href="/category/latex">latex</a>, <a href="/category/pdf">pdf</a>, <a href="/category/typography">typography</a>, <a href="/category/font">font</a>, <a href="/category/html">html</a>, <a href="/category/design">design</a>, <a href="/category/webbrowser">webbrowser</a>, <a href="/category/webdevelopment">webdevelopment</a>, <a href="/category/awk">awk</a>, <a href="/category/regex">regex</a>, <a href="/category/programming">programming</a>, <a href="/category/coding">coding</a>, <a href="/category/development">development</a>, <a href="/category/tool">tool</a>, <a href="/category/reference">reference</a>, <a href="/category/dotfiles">dotfiles</a>, <a href="/category/tip">tip</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/hpc/server/hardware/sysadmin/automation/configmanagement/howto/vm/virtualization/qemu/kvm/cli/terminal/shell/linux/unix/networking/2024/09/12/hpc-torque-pbs-xcat-psh.html">HPC with TORQUE/PBS, xCAT, Gaussian and WebMO</a>
+                  
+                    (Categories: <a href="/category/hpc">hpc</a>, <a href="/category/server">server</a>, <a href="/category/hardware">hardware</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/automation">automation</a>, <a href="/category/configmanagement">configmanagement</a>, <a href="/category/howto">howto</a>, <a href="/category/vm">vm</a>, <a href="/category/virtualization">virtualization</a>, <a href="/category/qemu">qemu</a>, <a href="/category/kvm">kvm</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/linux">linux</a>, <a href="/category/unix">unix</a>, <a href="/category/networking">networking</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/unicode/utf8/x11/xorg/xterm/cli/terminal/shell/howto/sysadmin/unix/typography/font/webbrowser/html/2024/08/11/why-some-chars-displayed-as-squares.html">Why Does My Program Display Some Characters as Square (Tofu)?</a>
+                  
+                    (Categories: <a href="/category/unicode">unicode</a>, <a href="/category/utf8">utf8</a>, <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/xterm">xterm</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/howto">howto</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/unix">unix</a>, <a href="/category/typography">typography</a>, <a href="/category/font">font</a>, <a href="/category/webbrowser">webbrowser</a>, <a href="/category/html">html</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/x11/xorg/xterm/cli/terminal/shell/howto/sysadmin/unix/2024/08/09/xorg-x11-window-id-by-process-id.html">How to Find an X11 Window ID (WID) by a Process ID (PID)</a>
+                  
+                    (Categories: <a href="/category/x11">x11</a>, <a href="/category/xorg">xorg</a>, <a href="/category/xterm">xterm</a>, <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/howto">howto</a>, <a href="/category/sysadmin">sysadmin</a>, <a href="/category/unix">unix</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+            
+                <li class="relatedPost">
+                  <a href="http://localhost:4000/cli/terminal/shell/console/math/howto/2024/07/19/cli-math.html">CLI Math [WIP]</a>
+                  
+                    (Categories: <a href="/category/cli">cli</a>, <a href="/category/terminal">terminal</a>, <a href="/category/shell">shell</a>, <a href="/category/console">console</a>, <a href="/category/math">math</a>, <a href="/category/howto">howto</a>)
+                  
+                </li>
+          
+          
+        
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+    
+      
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+        
+          
+      
+    
+  
+  
+  </ul>
+</div>
+
+
+<div class="PageNavigation">
+  
+    <a class="prev" href="/wiki/freebsd/howto/webbrowser/webdevelopment/web/tool/markdown/plaintext/text/tex/latex/pdf/graph/diagram/writing/technicalwriting/documentation/visualization/staticsitegenerator/2023/09/23/how-to-install-ikiwiki-on-freebsd13.html">&laquo; How to Install ikiwiki on FreeBSD 13</a>
+  
+  
+    <a class="next" href="/howto/git/versioncontrol/sysadmin/cli/notebook/diary/journal/plaintext/text/terminal/shell/knowledge/projectmanagement/unix/graph/diagram/visualization/wiki/technicalwriting/documentation/writing/tex/latex/pdf/markdown/web/webbrowser/webdevelopment/software/coding/programming/opensource/reference/2024/02/03/git-notes.html">How to Create and Use Notes in Gitea with MDwiki &raquo;</a>
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "";
+    var disqus_identifier = "http://localhost:4000_Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]";
+    var disqus_title = "Install RHEL 9 (Red Hat Enterprise Linux 9) VM on KVM in Text Mode Over Serial Console [DRAFT]";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

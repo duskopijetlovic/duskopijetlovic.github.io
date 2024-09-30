@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "FreeBSD - Samba Howto"
 ---
 
@@ -39,7 +39,7 @@ SMB1 disabled -- no workgroup available
 ```
 
 ```
-$ smbclient '//boxon/it-shared$' --user=dusko
+$ smbclient '//boxon/group-shared$' --user=dusko
 Password for [WORKGROUP\dusko]:
 Try "help" to get a list of possible commands.
 smb: \> 

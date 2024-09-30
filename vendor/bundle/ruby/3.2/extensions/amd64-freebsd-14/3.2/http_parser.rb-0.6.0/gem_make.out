@@ -1,0 +1,19 @@
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+/usr/local/bin/ruby32 extconf.rb
+creating Makefile
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20240929-83646-u4klvd sitelibdir\=./.gem.20240929-83646-u4klvd clean
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20240929-83646-u4klvd sitelibdir\=./.gem.20240929-83646-u4klvd
+compiling ruby_http_parser.c
+compiling ryah_http_parser.c
+linking shared-object ruby_http_parser.so
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20240929-83646-u4klvd sitelibdir\=./.gem.20240929-83646-u4klvd install
+/usr/bin/install -c -m 0755 ruby_http_parser.so ./.gem.20240929-83646-u4klvd
+
+current directory: /usr/home/dusko/duskopijetlovic.github.io/vendor/bundle/ruby/3.2/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make DESTDIR\= sitearchdir\=./.gem.20240929-83646-u4klvd sitelibdir\=./.gem.20240929-83646-u4klvd clean

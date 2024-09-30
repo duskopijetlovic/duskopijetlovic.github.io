@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Programs and Fonts to Install on a New FreeBSD Machine - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Programs and Fonts to Install on a New FreeBSD Machine" />
+    <meta name="keywords" content="Programs and Fonts to Install on a New FreeBSD Machine, Dusko Pijetlovic, " />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Programs and Fonts to Install on a New FreeBSD Machine" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/notes/programs_and_fonts_to_install_freebsd" property="og:url">
+    
+
+    
+
+    
+
+    
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Programs and Fonts to Install on a New FreeBSD Machine">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/notes/programs_and_fonts_to_install_freebsd">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <h2 id="packages-available-in-freebsd-packages-collection">Packages Available in FreeBSD Packages Collection</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>texlive-base     TeX Live Typesetting System, base binaries
+texlive-docs     TeX Live, documentation
+texlive-texmf    TeX Live, macro packages and fonts
+texlive-tlmgr    TeX Live, manager modules    [1] 
+latex-mk         Collection of makefile and scripts for LaTeX documents
+txt2tags         Convert simply formatted text into markup (e.g., LaTeX, HTML)
+lyx              Document processor interfaced with LaTeX (nearly WYSIWYG)
+setzer           LaTeX editor written in Python with Gtk
+
+ipe              Extensible vector graphics editor with LaTeX support
+
+uniutils         Unicode Description Utilities
+uni              Query the Unicode database from the commandline
+uchardet         Universal charset detection library
+gucharmap        Unicode/ISO10646 character map and font viewer
+ftfy             Fix some problems with Unicode text after the fact
+
+keepassxc        KeePass Cross-platform Community Edition
+
+firefox          Web browser based on the browser portion of Mozilla
+thunderbird      Standalone mail and news that stands above
+mutt             Small but powerful text based program for read/writing e-mail
+
+hs-arbtt         Completely automatic time tracker for X11 desktop
+
+td-system-tools  Printing basic system information and system maintenance
+arp-scan         ARP scanning and fingerprinting tool
+py311-scapy      Powerful interactive packet manipulation program in python [2]
+
+whatmask         Convert between common subnet mask notations
+subnetcalc       IPv4/IPv6 Subnet Calculator
+
+qtfm             Small, lightweight file manager based on pure Qt
+(rox-filer       Simple and easy to use graphical file manager)
+(catseye-fm      Clear, fast, powerful file browser using gtk+2.0)
+
+xed              Small but powerful text editor for GTK (for X or X11/Xorg)
+
+kitty            Cross-platform, fast, featureful, GPU-based terminal emulator
+xdu              Graphically display the output of "du" in an X window
+xdiskusage       Show where disk space is taken up
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="manual-downloads-or-manual-installations">Manual Downloads or Manual Installations</h2>
+
+<h3 id="backupfs">BackupFS</h3>
+
+<p>[TODO] - Continue 
+2023_03_05_1900_freebsd_lenovo_x280_installed_backupfs_by_compiling_from_source_and_with_boost_cpp_libraries.txt</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo pkg install boost-all
+$ sudo pkg install boost_build
+$ sudo pkg install gcc 
+$ sudo pkg install gccmakedep 
+$ sudo pkg install cmake
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir ~/backupf
+$ cd ~/backupfs
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch https://github.com/hariguchi/backupfs/archive/refs/heads/master.zip
+
+$ mv master.zip backupfs.zip
+
+$ unzip backupfs.zip
+. . . 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mv backupfs-master backupfs
+
+$ cd backupfs
+</code></pre></div></div>
+
+<h3 id="gratex">GraTeX</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GraTeX         Visual graph creator for LaTeX (PGF &amp; TikZ)    [3] 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch https://sourceforge.net/projects/gratex/files/GraTeX.jar
+$ java -jar gratex.jar  
+</code></pre></div></div>
+
+<h3 id="file-browser-filebrowser---web-file-browser">File Browser (filebrowser) - Web File Browser</h3>
+
+<p><a href="https://filebrowser.org/">File Browser - Web File Browser</a></p>
+
+<p><a href="https://github.com/filebrowser/filebrowser">File Browser on GitHub</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fetch https://raw.githubusercontent.com/filebrowser/get/master/get.sh
+</code></pre></div></div>
+
+<p>NOTE: Requires <em>bash</em>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ head -1 get.sh
+#!/usr/bin/env bash
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chmod 0744 get.sh
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./get.sh
+</code></pre></div></div>
+
+<p>The script will ask you to enter your root password.</p>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Downloading File Browser for freebsd/amd64...
+https://github.com/filebrowser/filebrowser/releases/download/v2.30.0/freebsd-amd
+64-filebrowser.tar.gz
+Extracting...
+Putting filemanager in /usr/local/bin (may require password)
+
+Password:
+
+Successfully installed
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /usr/local/bin/filebrowser 
+-rwxr-xr-x  1 dusko wheel   16M May 19 03:14 /usr/local/bin/filebrowser
+</code></pre></div></div>
+
+<p>Start it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/local/bin/filebrowser
+2024/08/19 21:34:25 Warning: filebrowser.db can't be found. Initialing in /home/dusko/
+2024/08/19 21:34:25 Using database: /home/dusko/filebrowser.db
+2024/08/19 21:34:25 No config file used
+2024/08/19 21:34:25 Listening on 127.0.0.1:8080
+</code></pre></div></div>
+
+<p>With your web browser, Mozilla Firefox, open:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080
+</code></pre></div></div>
+
+<p>NOTE: The default username, password: <em>admin</em>, <em>admin</em>.</p>
+
+<p>To stop it, press <code class="language-plaintext highlighter-rouge">Ctrl+c</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>^C
+
+2024/08/19 21:36:51 Caught signal interrupt: shutting down.
+</code></pre></div></div>
+
+<p>If you want to configure <a href="https://filebrowser.org/configuration/authentication-method#no-authentication">No Authentication</a>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ filebrowser config set --auth.method=noauth
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2024/08/19 21:39:04 Using database: /home/dusko/filebrowser.db
+Sign up:          false
+Create User Dir:  false
+Auth method:      noauth
+[ . . . ]
+Server:
+  Log:           stdout
+  Port:          8080
+[ . . . ] 
+  Address:       127.0.0.1
+[ . . . ]
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -lh /home/dusko/filebrowser.db
+-rw-------  1 dusko dusko   64K Aug 19 21:39 /home/dusko/filebrowser.db
+
+$ date
+Mon 19 Aug 2024 22:39:46 PDT
+
+$ file /home/dusko/filebrowser.db
+/home/dusko/filebrowser.db: FILE_SIZE=65536
+
+$ wc -l /home/dusko/filebrowser.db
+       5 /home/dusko/filebrowser.db
+
+$ grep noauth /home/dusko/filebrowser.db
+Binary file /home/dusko/filebrowser.db matches
+
+$ strings /home/dusko/filebrowser.db | grep noauth | wc -l
+       1
+</code></pre></div></div>
+
+<h3 id="gateway-finder-imp">gateway-finder-imp</h3>
+
+<p><a href="https://github.com/whitel1st/gateway-finder-imp">gateway-finder-imp – Tool to identify routers on the local LAN and paths to the Internet</a></p>
+
+<hr />
+
+<h2 id="fonts">Fonts</h2>
+
+<h3 id="fonts-available-in-freebsd-packages-collection">Fonts Available in FreeBSD Packages Collection</h3>
+
+<p>NOTE: <code class="language-plaintext highlighter-rouge">noto-basic</code> is an <em>automotic</em> package; that is, it <em>requires</em> other packages a.k.a. <em>dependencies</em>. It has five dependencies.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pkg rquery %#d noto-basic
+5
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pkg rquery %dn noto-basic
+noto-serif
+noto-sans-symbols2
+noto-sans-symbols
+noto-sans-mono
+noto-sans
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo pkg install noto-basic
+[ . . . ]
+New packages to be INSTALLED:
+        noto-basic: 2.0_4
+        noto-sans: 2.013
+        noto-sans-mono: 2.014_1
+        noto-sans-symbols: 2.008_1
+        noto-sans-symbols2: 2.008
+        noto-serif: 2.013
+</code></pre></div></div>
+
+<h3 id="fonts-not-available-in-freebsd-packages-collection">Fonts Not Available in FreeBSD Packages Collection</h3>
+
+<h4 id="0xproto">0xProto</h4>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ fc-match 0xProto
+0xProto-Regular.otf: "0xProto" "Regular"
+ 
+$ xterm -fa 0xProto -fs 14 &amp;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mutt -F /mnt/usbflashdrive/mydotfiles/mutt-imap-ubc-chemistry/.muttrc.chem.ubc.ca.imap
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="footnotes">Footnotes</h2>
+
+<p>[1] This package contains the files needed to get the TeX Live tools (notably <code class="language-plaintext highlighter-rouge">tlmgr</code>) running: <em>perl</em> modules, <em>xz</em> binaries, plus (sometimes) <em>tar</em> and <em>wget</em>.
+These files end up in the standalone install packages, and in the <em>tlcritical</em> repository.</p>
+
+<p>[2] As of time of this writting, <em>scapy</em> required Python <em>3.11</em>.</p>
+
+<p>[3] <a href="https://sourceforge.net/projects/gratex/">GraTeX - SourceForge.net</a></p>
+<blockquote>
+  <p>Java application for creating graphs, with a simple and intuitive interface. Obtaining LaTeX code for designed graph is a single-click operation.
+Allows creating less and more complicated graphs for LaTeX documents without any knowledge about TikZ library.</p>
+
+  <p>The program lets you design and edit vertices, edges and labels to your liking thanks to a wide range of variants adequate to TikZ library.</p>
+
+  <p>GraTeX incorporates common editing mechanisms like saving/loading projects, undo-redo &amp; copy-paste operations, and many other useful features.</p>
+
+  <p>The application has been developed by two students of University of Science and Technology in Krakow, Poland.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://filebrowser.org/">File Browser - Web File Browser</a></li>
+  <li><a href="https://github.com/filebrowser/filebrowser">File Browser on GitHub</a></li>
+</ul>
+
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

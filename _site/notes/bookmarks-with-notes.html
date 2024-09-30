@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Bookmarks with Notes - Dusko Pijetlovic</title>
+    <meta name="author" content="Dusko Pijetlovic" />
+    <meta name="description" content="Bookmarks with Notes" />
+    <meta name="keywords" content="Bookmarks with Notes, Dusko Pijetlovic, " />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="1749788565247320" property="fb:app_id">
+    <meta content="Dusko Pijetlovic" property="og:site_name">
+
+    
+
+    
+      <meta content="Bookmarks with Notes" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="Dusko Pijetlovic - My Personal Web Space" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/notes/bookmarks-with-notes" property="og:url">
+    
+
+    
+      <meta content="2024-09-29T17:10:56-07:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@github.io">
+    <meta name="twitter:creator" content="@github.io">
+
+    
+      <meta name="twitter:title" content="Bookmarks with Notes">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/notes/bookmarks-with-notes">
+    
+
+    
+      <meta name="twitter:description" content="Dusko Pijetlovic - My Personal Web Space">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">Dusko Pijetlovic</a></h1>
+          
+            <div class="profile-about">
+              My personal notes where I store things I find interesting or might need in the future.
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://twitter.com/duskopijetlovic" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              
+                <li><a href="https://linkedin.com/in/duskopijetlovic" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              
+                <li><a href="https://github.com/duskopijetlovic" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ type to search" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>Navigation</strong>
+            <li><a href="/">Home</a></li>
+            
+              <li><a class="about" href="/about/">About</a></li>
+            
+              <li><a class="about" href="/notes/index.html">Notes</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML Feed</a></li>
+            
+              <li><a class="about" href="/category/categories">Categories</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">Bookmarks with Notes</h1>
+    <hr />
+  </header>
+  <div class="post-content">
+    <h2 id="backup">Backup</h2>
+
+<ul>
+  <li>
+    <p><a href="https://whynothugo.nl/journal/2014/08/06/performing-backups-the-right-way/">Performing backups the right way</a></p>
+  </li>
+  <li><a href="https://www.jwz.org/blog/2007/09/psa-backups/">PSA: Backups</a>
+    <ul>
+      <li>Also: <a href="https://www.jwz.org/doc/backups.html">https://www.jwz.org/doc/backups.html</a>
+        <blockquote>
+          <p>Dear Lazyweb, and also a certain you-know-who-you-are who should certainly know better by now, I am here to tell you about backups. It’s very simple.</p>
+
+          <p>. . .</p>
+
+          <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo rsync -vax --delete --ignore-errors / /Volumes/Backup/
+</code></pre></div>          </div>
+
+          <p>If your version of rsync supports the <code class="language-plaintext highlighter-rouge">--xattrs</code> and <code class="language-plaintext highlighter-rouge">--acls</code> options (it probably does), use those too.</p>
+
+          <p>If you have a desktop computer, have this happen every morning at 5AM by creating a temporary text file containing this line:</p>
+
+          <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0 5 * * * rsync -vax --delete --ignore-errors / /Volumes/Backup/
+</code></pre></div>          </div>
+
+          <p>and then doing sudo crontab -u root that-file</p>
+
+          <p>. . .</p>
+
+          <p>You have a computer. It came with a hard drive in it. Go buy two more drives of the same size or larger. If the drive in your computer is SATA2, get SATA2. If it’s a 2.5” laptop drive, get two of those. Brand doesn’t matter, but physical measurements and connectors should match. – By: Jamie Zawinski, 2007.</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/jloughry/crontab_backup_script">crontab_backup_script</a>
+    <blockquote>
+      <p>Inspired by http://www.jwz.org/blog/2007/09/psa-backups/ and extended to maintain off-line backups</p>
+
+      <p>Inspired by <a href="http://www.jwz.org/blog/2007/09/psa-backups/">jwz’s</a> method for on-line backups and modified in light of the <a href="http://en.wikipedia.org/wiki/CryptoLocker">CryptoLocker</a> malware to use off-line storage, this script runs nightly to synchronise <code class="language-plaintext highlighter-rouge">rsync</code> backups.</p>
+
+      <p>The method used to mount and unmount off-line storage is Mac OS X-specific, but this script backs up data residing on co-located servers, Windows machines, Macs, and web servers.</p>
+
+      <p>The <code class="language-plaintext highlighter-rouge">line_to_put_in_crontab</code> should be put in root’s crontab.</p>
+
+      <p>The backup volumes are kept unmounted; they really should be kept physically unplugged and powered off in case CryptoLocker gets smart enough in future to try mounting disks before it goes hunting.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3 id="zfs-snapshots">ZFS Snapshots</h3>
+
+<ul>
+  <li><a href="https://github.com/jimsalterjrs/sanoid">sanoid - These are policy-driven snapshot management and replication tools which use OpenZFS for underlying next-gen storage. (Btrfs support plans are shelved unless and until btrfs becomes reliable)</a></li>
+</ul>
+
+<h3 id="rsync-snapshots">Rsync Snapshots</h3>
+
+<ul>
+  <li><a href="https://github.com/cytopia/linux-timemachine">linux-timemachine – Rsync-based OSX-like time machine for Linux, MacOS and BSD for atomic and resumable local and remote backups</a>
+    <blockquote>
+      <p>Rsync-based OSX-like time machine for Linux, MacOS and BSD for atomic and resumable local and remote backups.</p>
+
+      <p>timemachine is a tiny and stable KISS (https://web.archive.org/web/20220411220714/https://en.wikipedia.org/wiki/KISS_principle) driven and POSIX (https://web.archive.org/web/20220411142007/https://en.wikipedia.org/wiki/POSIX) compliant script that mimics the behavior of OSX’s timemachine. It uses rsync (https://web.archive.org/web/20220411142007/https://linux.die.net/man/1/rsync) to incrementally back up your data to a different directory, hard disk or remote server via SSH. All operations are incremental, atomic and automatically resumable.</p>
+
+      <p>By default it uses the rsync options: –recursive, –perms, –owner, –group, –times and –links. In case your target filesystem does not support any of those options or you cannot use them due to missing permission, you can explicitly disable them via –no-perms, –no-owner, –no-group, –no-times, and –copy-links. See FAQ (https://web.archive.org/web/20220411142007/https://github.com/cytopia/linux-timemachine#bulb-faq) for examples.</p>
+
+      <p>Motivation</p>
+
+      <p>The goal of this project is to have a cross-operating system and minimal as possible backup script that can be easily reviewed by anyone without great effort. Additionally it should provide one task only and do it well without the need of external requirements and only rely on default installed tools.</p>
+
+      <p>Retention</p>
+
+      <p>As described above this project is KISS driven and only tries to do one job: back up your data.</p>
+
+      <p>Retention is a delicate topic as you want to be sure that data is removed as intended. For this there are already well-established tools that do an excellent job and have proven themselves over time: tmpreaper (https://web.archive.org/web/20220411142007/http://manpages.ubuntu.com/manpages/precise/man8/tmpreaper.8.html) and tmpwatch (https://web.archive.org/web/20220411142007/https://linux.die.net/man/8/tmpwatch).</p>
+
+      <p>Reliability</p>
+
+      <p>The script is written and maintained with maximum care. In order to retain a reliable and stable backup solution, a lot of effort goes into a vast amount of integration and regression tests (https://web.archive.org/web/20220411142007/https://github.com/cytopia/linux-timemachine/actions). These tests not only give you measurable confidence, but also help new contributors to not accidentally introduce new or old bugs.</p>
+
+      <p>FAQ</p>
+
+      <p>Q: Should I add trailing directory slashes (/)?
+A: Trailing directory slashes only matter for the source directory and will not make a difference if added to the destination directory.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://github.com/laurent22/rsync-time-backup">rsync-time-backup – Time Machine style backup with rsync</a>
+    <blockquote>
+      <p>This script offers Time Machine-style backup using rsync. It creates incremental backups of files and directories to the destination of your choice. The backups are structured in a way that makes it easy to recover any file at any point in time.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="documentation">Documentation</h2>
+
+<ul>
+  <li>
+    <p><a href="https://ittavern.com/dummy-ip-and-mac-addresses-for-documentation-and-sanitization/">Dummy IP &amp; MAC Addresses for Documentation &amp; Sanitization</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/lovasoa/whitebophir">whitebophir - Online collaborative Whiteboard that is simple, free, easy to use and to deploy</a></p>
+  </li>
+  <li>
+    <p><a href="https://wbo.ophir.dev/">whitebophir - Free online collaborative whiteboard WBO</a></p>
+    <blockquote>
+      <p>The public board is accessible to everyone. It is a happily disorganized mess where you can meet with anonymous strangers and draw together. Everything there is ephemeral.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="visualization">Visualization</h2>
+
+<ul>
+  <li>
+    <p><a href="https://ittavern.com/visual-guide-to-ssh-tunneling-and-port-forwarding/">Visual guide to SSH tunneling and port forwarding</a></p>
+  </li>
+  <li>
+    <p><a href="https://news.ycombinator.com/item?id=41596818">Visual guide to SSH tunneling and port forwarding - Discussion on Hacker News</a></p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="editor">Editor</h2>
+
+<h3 id="vi">Vi</h3>
+
+<ul>
+  <li><a href="https://world.hey.com/dhh/wonderful-vi-a1d034d3">Wonderful vi</a></li>
+</ul>
+
+<hr />
+
+<h2 id="writing">Writing</h2>
+
+<ul>
+  <li><a href="https://sambleckley.com/writing/lab-notebooks.html">Lab Notebooks</a>
+    <blockquote>
+      <p>What wet-lab chemistry can teach software engineers</p>
+    </blockquote>
+  </li>
+  <li><a href="http://www.markwk.com/plain-text-life.html">Note Taking, Writing and Life Organization Using Plain Text Files</a>
+    <blockquote>
+      <p>The Why: Advantages and Disadvantages of Plaintext Files</p>
+
+      <p>“Writing is thinking. To write well is to think clearly. That’s why it’s so hard.” – David McCullough</p>
+
+      <p>Writing is arguably the critical ingredient to how we think and learn.  If you can’t write about something coherently and intelligibly, then your thinking on that topic or subject is vague and incomplete.</p>
+
+      <p>Similarly, I’d argue writing is a key aspect to personal and professional organization too. Often through lists, note-taking, project management tools, or a process journal, we write out our plans, goals, intentions and other aspects that clarify what we want to accomplish.  Writing allows us to express vague feelings and turn them into intentions and goals.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="postmaster">Postmaster</h2>
+
+<h3 id="smtp">SMTP</h3>
+
+<h4 id="smtp-rfcs">SMTP RFCs</h4>
+
+<ul>
+  <li>RFC5322 (used to be RFC822)
+<a href="https://opensmtpd.org/presentations/asiabsdcon2013-smtpd/#slide-3">OpenSMTPD: We deliver ! by Eric Faurot - Presentation at AsiaBSDCon 2013</a>
+    <blockquote>
+      <p>Exchange Internet messages:</p>
+      <ul>
+        <li>as defined by RFC5322 (used to be 822)</li>
+      </ul>
+
+      <p>[ . . . ]</p>
+    </blockquote>
+  </li>
+  <li>RFC 5321
+<a href="https://opensmtpd.org/">OpenSMTPD - Home page (retrieved on Sep 24, 2024)</a>
+    <blockquote>
+      <p>OpenSMTPD is a free implementation of the server-side SMTP protocol as defined by RFC 5321 [ . . . ]</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3 id="sendmail">Sendmail</h3>
+
+<ul>
+  <li>
+    <p><a href="https://aosabook.org/en/v1/sendmail.html">The Architecture of Open Source Applications (Volume 1) - Sendmail - Eric Allman</a></p>
+  </li>
+  <li>
+    <p><a href="https://web.archive.org/web/20080228054830/http://www.ultimateevil.org/~jeff/uuasc-2003-04-03.html">Sendmail Made Easy - UUASC (UNIX Users Association of Southern California - LA) - April 3, 2003 - archived from the original on 2008-02-28</a></p>
+    <blockquote>
+      <p>Sendmail is configured by the <code class="language-plaintext highlighter-rouge">sendmail.cf</code> file, which is typically located in either <code class="language-plaintext highlighter-rouge">/etc</code> or <code class="language-plaintext highlighter-rouge">/etc/mail</code>.  This file contains literally over a thousand lines of configuration data which most people find intimidating.  After reading through this document, you should be able to wade through that file with enough understanding to tell what it is doing.</p>
+
+      <p>To configure <em>sendmail</em>, though, we do not actually edit the <code class="language-plaintext highlighter-rouge">sendmail.cf</code> file.  Normally you edit a file named <code class="language-plaintext highlighter-rouge">sendmail.mc</code>, which is used to <em>“compile”</em> the <code class="language-plaintext highlighter-rouge">sendmail.cf</code> file.  The <code class="language-plaintext highlighter-rouge">sendmail.mc</code> file is written in a language called <code class="language-plaintext highlighter-rouge">m4</code>, which was originally a pre-processor for Fortran (similar to cpp for C).</p>
+
+      <p>The following is an example of one of the m4 macro files I actually use for one of the mail servers I have configured.  This file contains some special changes for the <em>Cyrus IMAP</em> daemon, which I tweaked a bit to use <em>Procmail</em> in the mix as well.</p>
+
+      <p>[ . . . ]</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="productivity">Productivity</h2>
+
+<ul>
+  <li><a href="http://arbtt.nomeata.de/#what">arbtt - automatic, rule-based time tracker</a>
+    <blockquote>
+      <p>arbtt is a cross-platform, completely automatic time tracker.</p>
+
+      <p>There are lots of time-tracking programs out there that allow you to collect statistics about how you spend your time, which activities are your biggest time-wasters, and so on. However, most of them require explicit action on your part: you have to manually enter what activity or project you’re working on, and that has several disadvantages:</p>
+      <ul>
+        <li>You need to stop what you’re doing to insert the meta-information, and that breaks your concentration;</li>
+        <li>If you are lazy or get annoyed and don’t keep updating it, the statistics will be useless</li>
+        <li>You won’t be able to catch a little thing like quickly answering an e-mail or looking for the weather report.</li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://github.com/nomeata/arbtt">arbtt - source code on GitHub</a></p>
+  </li>
+  <li><a href="https://www.xda-developers.com/im-tired-of-overwhelming-productivity-apps-so-i-created-this-simple-system-instead/">I’m tired of overwhelming productivity apps, so I created this simple system instead</a>
+    <blockquote>
+      <p>Key Takeaways</p>
+      <ul>
+        <li>Use simple, efficient apps for productivity, like TickTick for tasks and Google Calendar for events.</li>
+        <li>Keep note-taking simple with Google Docs and Windows Notepad, and streamline your reading process with Feedly, Pocket, and Google Discover.</li>
+        <li>Focus on personal habits and discipline, not just the features of productivity apps, to achieve your goals.</li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://plaintext-productivity.net/">Plaintext Productivity</a></p>
+  </li>
+  <li><a href="https://johnhenrymuller.com/today">today.txt - If you do this and only this, today will be a good day</a></li>
+</ul>
+
+<hr />
+
+<h2 id="plain-text-plaintext-plain-text">Plain Text (plaintext, plain-text)</h2>
+
+<ul>
+  <li>
+    <p><a href="https://brajeshwar.com/2022/plain-text/">Plain Text - brajeshwar.com</a> [<sup><a href="#footnotes">1</a></sup>]</p>
+  </li>
+  <li><a href="https://johnhenrymuller.com/today">today.txt - Includes a template for today.txt file in plain text</a>
+    <blockquote>
+      <p>If you do this and only this, today will be a good day.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://github.com/jukil/plain-text-life">A template to organise life in plain text files - inspired by today.txt template and then extended it a little bit</a></p>
+  </li>
+  <li><a href="https://georgecoghill.wordpress.com/plain-text/">Plain Text Journaling System - The Overthinker</a>
+    <blockquote>
+      <p>Includes a template for plain text daily journaling</p>
+    </blockquote>
+  </li>
+  <li><a href="https://journaltxt.github.io/">Journal.TXT - Single-Text File Journals - The Human Multi-Document Format for Writers</a>
+    <blockquote>
+      <p>Write your journal in a single-text file.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://markwhen.com/">Markwhen - A markdown-like journal language for plainly writing logs, gantt charts, blogs, feeds, notes, journals, diaries, todos, timelines, calendars or anything that happens over time</a>
+    <blockquote>
+      <p>Output:
+Calendar
+Timeline
+Oneview
+JSON</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://sive.rs/plaintext">Write plain text files - Derek Sivers</a></p>
+  </li>
+  <li>
+    <p><a href="https://danlucraft.com/blog/2008/04/plain-text-organizer/">A Plain Text Personal Organizer (One big text file)</a></p>
+  </li>
+  <li>
+    <p><a href="http://donlelek.github.io/2015-03-09-text-only-workflow/">Achieve a text-only work-flow HOWTO</a></p>
+  </li>
+  <li>
+    <p><a href="https://plaintextproject.online">Plain Text Project</a></p>
+  </li>
+  <li>
+    <p><a href="https://plaintext-productivity.net/">Plaintext Productivity</a></p>
+  </li>
+  <li><a href="http://www.markwk.com/plain-text-life.html">Note Taking, Writing and Life Organization Using Plain Text Files</a>
+    <blockquote>
+      <p>Fallacy of the Collector</p>
+
+      <p>As a self-tracker and documenting guy, I love collecting stuff and tracking different aspects of my life.  For example, automation tools like IFTTT and Zapier can make it seamless for me to pull in links, articles and clippings from tools like Todoist or Instapaper.  Evernote and most note-taking tools also make it a tad too easily to be used for miscellaneous collecting.  Once all of my notes were into plain text, I discovered how much of it was just collected stuff.</p>
+
+      <p>The key realization here is that your plain text files system should not just be another collection system.  In fact, collecting and aggregating should be a minor aspect of what these systems should do.  What our system should help us do is to learn, connect and create and to stay organized.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://terokarvinen.com/2021/calendar-txt/">Calendar.txt - Keep your calendar in a plain text file</a>
+    <blockquote>
+      <p>Calendar.txt is versionable, supports all operating systems and easily syncs.</p>
+
+      <p>You’re not going to need it before 2033, but here is the <a href="https://terokarvinen.com/2021/calendar-txt/calendartxt-generator-0.0.1.zip">short go program to generate calendar.txt templates</a>.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://demeyere.com/text-calendar/">Plain text planning calendar</a></p>
+  </li>
+  <li>
+    <p><a href="https://xosh.org/text-to-diagram/">A list of Online text to diagram tools</a></p>
+  </li>
+  <li><a href="https://txt2tags.org/">txt2tags - One source, multiple targets</a>
+    <blockquote>
+      <p>Txt2tags is a document generator.  It reads a text file with minimal markup such as <strong>bold</strong> and //italic// and converts it to many formats.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://github.com/mundimark/awesome-txt">awesome-txt – A collection of awesome .TXT Text tools, formats, services, tips &amp; tricks and more</a></li>
+</ul>
+
+<hr />
+
+<h2 id="tool-makers">Tool Makers</h2>
+
+<ul>
+  <li>
+    <p><a href="http://www.solemnwarning.net/">solemnwarning (Daniel Collins) - Never stopping to think if I should</a></p>
+  </li>
+  <li>
+    <p><a href="https://gitlab.com/users/es20490446e/projects">Alberto Salvia Novella - Personal projects</a></p>
+  </li>
+  <li>
+    <p><a href="http://dots.omarpolo.com/">Omar Polo</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/omar-polo/">Omar Polo on GitHub</a></p>
+  </li>
+  <li>
+    <p><a href="https://git.sr.ht/~whynothugo/">whynothugo</a></p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="websites">Websites</h2>
+
+<ul>
+  <li>
+    <p><a href="https://matt.might.net/articles/">Matt Might</a></p>
+  </li>
+  <li>
+    <p><a href="https://jacksonchen666.com/">Jackson Chen - jacksonchen666</a></p>
+  </li>
+  <li>
+    <p><a href="https://jpmens.net/archive/">Jan-Piet Mens</a></p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="dotfiles">Dotfiles</h2>
+
+<ul>
+  <li><a href="https://git.sr.ht/~whynothugo/dotfiles/tree/main/item/home/.local/bin">whynothugo - dotfiles</a></li>
+</ul>
+
+<hr />
+
+<h2 id="unicode">Unicode</h2>
+
+<h3 id="locally-hosted">Locally hosted</h3>
+
+<ul>
+  <li><a href="https://text.makeup/">text.makeup</a></li>
+</ul>
+
+<hr />
+
+<h2 id="unix">Unix</h2>
+
+<ul>
+  <li>
+    <p><a href="http://bhami.com/rosetta.html">Rosetta Stone for Unix - Map Commands to Other Versions of UNIX - aka The Ultimate Unix Cheat Sheet - aka A Sysadmin’s Unixersal Translator - or - What do they call that in this world?</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.levenez.com/unix/">UNIX History (huge chart)</a></p>
+  </li>
+  <li><a href="https://www.oreilly.com/openbook/utp/">Unix Text Processing (Hayden Books)</a>
+    <blockquote>
+      <p>Unix Text Processing, by Dale Dougherty and Tim O’Reilly, was published by Hayden Books in 1987, back when O’Reilly &amp; Associates wrote technical documentation for hire. Hayden later took the book out of print, but Dale and Tim retained the copyright and have decided to make it available through our web site under Creative Commons’ Attribution License.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://matt.might.net/articles/sculpting-text/">Sculpting text with regex, grep, sed, awk, emacs and vim</a></li>
+</ul>
+
+<hr />
+
+<h2 id="sysadmin">Sysadmin</h2>
+
+<ul>
+  <li><a href="http://veggiechinese.net/data_center_management/sydes_yardley_datacenter_management.pdf">Data Center Management and Best Practices</a></li>
+</ul>
+
+<hr />
+
+<h2 id="shell">Shell</h2>
+
+<ul>
+  <li><a href="https://github.com/dylanaraps/pure-sh-bible">pure-sh-bible</a>
+    <blockquote>
+      <p>A collection of pure POSIX sh alternatives to external processes.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="diagrams-and-graphs">Diagrams and Graphs</h2>
+
+<ul>
+  <li><a href="https://xosh.org/text-to-diagram/">A list of Online text to diagram tools</a></li>
+</ul>
+
+<hr />
+
+<h2 id="minimalism">Minimalism</h2>
+
+<ul>
+  <li><a href="https://github.com/dylanaraps/barsh">barsh - Use your terminal as a bar</a>
+    <blockquote>
+      <ol>
+        <li>Modify script to display information.</li>
+        <li>Run script in terminal.</li>
+        <li>Get window manager to use terminal as bar.</li>
+      </ol>
+    </blockquote>
+  </li>
+  <li>
+    <p><a href="https://github.com/dylanaraps/bin">Dylan Araps - scripts</a></p>
+  </li>
+  <li><a href="https://github.com/dylanaraps/startpage">Startpage - Simple start page written in HTML/SCSS</a></li>
+</ul>
+
+<hr />
+
+<h2 id="inspiration">Inspiration</h2>
+
+<ul>
+  <li><a href="https://edstrom.dev/vbjmn/about">edstrom.dev - about</a>
+    <blockquote>
+      <p>Hello. On this homepage, I publish some of my notes.</p>
+
+      <p>Notes of what?</p>
+
+      <p>What not? They can include:
+study notes, taken while I learn;
+guides / tips;
+cheatsheets;
+observations;
+movie lists and other attempts to systematize;
+open questions / confusions.</p>
+
+      <p>Most of all, it’s not a blog.  Blogs (and social media) tend to peg each post to a point in time, so that they age like milk and not like wine.  That’s the “stream” in <a href="https://edstrom.dev/nbgks/the-garden-and-the-stream">The Garden and the Stream</a>.  I always saw more sense in the “garden” a.k.a. evergreen/<a href="https://gwern.net/about#long-content">long content</a>, where you continually reuse, refine and extend your pages.</p>
+
+      <p>If there’s any guiding principle, it’s the notion of a slipbox as described by <a href="https://edstrom.dev/tdzkq/book-how-to-take-smart-notes">Book: How to Take Smart Notes</a>, though as of [2023-11-23 Thu] I think future-me wouldn’t call this a good slipbox just yet.</p>
+
+      <p>It may make sense to realize the notes existed <strong>before</strong> the website, they’re <strong>not written for it</strong>.  I was writing them anyway, for my own purposes.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="cool">Cool</h2>
+
+<ul>
+  <li>
+    <p><a href="https://www.russellcottrell.com/blog/simpleClock.htm">A simple SVG clock (in JavaScript) - Russell Cottrell</a></p>
+  </li>
+  <li><a href="https://www.russellcottrell.com/blog/singleHand.htm">A single-handed clock (in JavaScript) - Russell Cottrell</a>
+    <blockquote>
+      <p>One hand is all you need!  The earliest clocks and watches, and some historic clocks still in use, only had one hand.</p>
+
+      <p>On a 24-hour dial with midnight at the bottom and noon at the top, the position of the hour hand is analogous to the apparent position of the sun.</p>
+    </blockquote>
+  </li>
+  <li><a href="https://www.russellcottrell.com/blog/ClockChimes.htm">Clock Chimes - Russell Cottrell</a>
+    <blockquote>
+      <p>Clock Chimes runs in the background to play quarter and hour chimes accurately.</p>
+
+      <p>It uses a web worker that runs in an operating system thread, independent of the browser.
+The chime sounds are synthesized, keeping the document size small.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="footnotes">Footnotes</h2>
+
+<p>[1] From <a href="https://brajeshwar.com/2022/plain-text/#fn:plaintext">Plain Text - brajeshwar.com</a>:</p>
+<blockquote>
+  <p>Plain Text is a loose term for data that represent only characters of readable material but not its graphical representation nor other objects.  It may also include a limited number of “whitespace” characters that affect simple arrangement of text, such as spaces, line breaks, or tabulation characters.  Plain text is different from formatted text, where style information is included; from structured text, where structural parts of the document such as paragraphs, sections, and the like are identified; and from binary files in which some portions must be interpreted as binary objects.</p>
+</blockquote>
+
+  </div>
+</article>
+
+        <footer>
+          <!-- &copy; Dusko Pijetlovic -->
+          
+            <!-- - <a href="https://github.com/duskopijetlovic">https://github.com/duskopijetlovic</a> - Powered by Jekyll. -->
+          
+          <div class="btn-github" style="float:right;">
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+            <!-- <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe> -->
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

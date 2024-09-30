@@ -1,6 +1,6 @@
 ---
-layout: default
-title: "ed(1) Notes [DRAFT]"
+layout: page
+title: "ed(1) Notes [WIP]"
 ---
 
 Abbreviations:
