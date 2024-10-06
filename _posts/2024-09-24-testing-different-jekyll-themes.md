@@ -44,7 +44,7 @@ $ gem install bundler jekyll
 
 ## Set Gems Directory and Add It to the Shell Path 
 
-Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  Add environment variables to `~/.cshrc` file to configure the gem installation path. [<sup>[5](#footnotes)</sup>]
+Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  I use the standard FreeBSD shell *csh* so I need to add environment variables to `~/.cshrc` file to configure the gem installation path. [<sup>[5](#footnotes)</sup>]
 
 ---
 
@@ -60,7 +60,7 @@ Avoid installing RubyGems packages (called gems) as the root user.  Instead, set
 ```
 
 
-NOTE: You might encounter *NotImplementedError* when running `bundle install`: 
+NOTE: On FreeBSD 14, I encountered *NotImplementedError* when running `bundle install`: 
 
 ```
 NotImplementedError: dart-sass for x86_64-freebsd14 not available at [. . .] 
@@ -88,7 +88,7 @@ Browse to *http://localhost:4000*.
 
 If you encounter *NotImplementedError* when running `bundle install` (NotImplementedError: dart-sass for x86_64-freebsd14), fix it by hard-setting the `jekyll-sass-converter` version in your `Gemfile`. [<sup>[6](#footnotes)</sup>]
 
-NOTE: You might encounter `ERROR '/' not found` and/or `ERROR '/index.html'` when running `bundle exec jekyll serve`.  Fix it by setting the value of the `baseurl` to an empty string - `baseurl: ""` in your `_config.yml` file. [<sup>[9](#footnotes)</sup>]
+NOTE: On FreeBSD 14, I encountered `ERROR '/' not found` and/or `ERROR '/index.html'` when running `bundle exec jekyll serve`.  Fix it by setting the value of the `baseurl` to an empty string - `baseurl: ""` in your `_config.yml` file. [<sup>[9](#footnotes)</sup>]
 
 Copy your Markdown files (`*.md`) to the `_posts` directory. 
 
@@ -137,8 +137,6 @@ Bundler home page: [Bundler: The best way to manage a Ruby application's gems](h
 
 
 [5] Here's how to add environment variables to `~/.cshrc` file on FreeBSD 14.
-
-My shell is `csh` (C shell).
 
 ```
 % ps $$
@@ -257,14 +255,14 @@ gem 'jekyll-sass-converter', '~> 2.2'
 ```
 
 [7] From [Jekyll themes - Made Mistakes (mademistakes) theme](https://mademistakes.com/work/jekyll-themes/)
-> Below are the Jekyll themes and starters Ive designed, developed, and released as open source.  Each theme contains the `_layouts`, `_includes`, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.
+> Below are the Jekyll themes and starters I've designed, developed, and released as open source.  Each theme contains the `_layouts`, `_includes`, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.
 > 
 > Getting started with each is roughly the same:
 > 1. Install as a [Ruby gem](https://jekyllrb.com/docs/themes/#understanding-gem-based-themes), [remote theme](https://github.com/benbalter/jekyll-remote-theme), or fork the theme repository you'd like to use or modify.
 > 2. [Install Bundler](https://bundler.io/) `gem install bundler` and run `bundle install` to install all dependencies (Jekyll, plugins, and so on).
 3. Update Jekyll's `_config.yml` file, customize data files (found in the `_data` directory), and replace sample posts and pages with your own content.
 > 
-> For more specifics, consult each theme's documentation by visiting the setup guide links below.
+> For more specifics, consult each theme's documentation by visiting the setup guide links.
 
 
 [8] [Understanding gem-based themes](https://jekyllrb.com/docs/themes/#understanding-gem-based-themes)

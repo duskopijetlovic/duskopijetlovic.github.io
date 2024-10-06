@@ -153,9 +153,16 @@ Shell: csh</p>
 </ul>
 
 <p><strong>CRON</strong></p>
+
 <ul>
   <li>taskwarrior</li>
-  <li>remind</li>
+  <li>remind
+    <ul>
+      <li>xmessage(1) - with <code class="language-plaintext highlighter-rouge">remind -c</code></li>
+      <li>xmessage(1) - with <code class="language-plaintext highlighter-rouge">remind /path/to/.reminders</code>:w</li>
+      <li>mail(1) (mailx(1)) - weekly reminder (<code class="language-plaintext highlighter-rouge">remind -c+1</code>)</li>
+    </ul>
+  </li>
   <li>recursive stickies  <br />
 Based on 
 <a href="https://mitxela.com/projects/recursive">Recursive Notes (Recursive Post-It Notes or Recursive Stickies)</a>  <br />

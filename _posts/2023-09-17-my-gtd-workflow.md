@@ -21,8 +21,12 @@ Shell: csh
 * Paper notebook, pen, pencil
 
 **CRON**    
+
 * taskwarrior
 * remind
+  * xmessage(1) - with `remind -c`
+  * xmessage(1) - with `remind /path/to/.reminders`:w
+  * mail(1) (mailx(1)) - weekly reminder (`remind -c+1`)
 * recursive stickies    
 Based on 
   [Recursive Notes (Recursive Post-It Notes or Recursive Stickies)](https://mitxela.com/projects/recursive)    

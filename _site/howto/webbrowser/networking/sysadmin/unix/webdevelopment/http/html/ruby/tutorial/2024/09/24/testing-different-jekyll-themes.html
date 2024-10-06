@@ -171,7 +171,7 @@ Shell: tcsh</p>
 
 <h2 id="set-gems-directory-and-add-it-to-the-shell-path">Set Gems Directory and Add It to the Shell Path</h2>
 
-<p>Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  Add environment variables to <code class="language-plaintext highlighter-rouge">~/.cshrc</code> file to configure the gem installation path. [<sup><a href="#footnotes">5</a></sup>]</p>
+<p>Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  I use the standard FreeBSD shell <em>csh</em> so I need to add environment variables to <code class="language-plaintext highlighter-rouge">~/.cshrc</code> file to configure the gem installation path. [<sup><a href="#footnotes">5</a></sup>]</p>
 
 <hr />
 
@@ -185,7 +185,7 @@ Shell: tcsh</p>
 # =&gt; Now browse to http://localhost:4000
 </code></pre></div></div>
 
-<p>NOTE: You might encounter <em>NotImplementedError</em> when running <code class="language-plaintext highlighter-rouge">bundle install</code>:</p>
+<p>NOTE: On FreeBSD 14, I encountered <em>NotImplementedError</em> when running <code class="language-plaintext highlighter-rouge">bundle install</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NotImplementedError: dart-sass for x86_64-freebsd14 not available at [. . .] 
 </code></pre></div></div>
@@ -210,7 +210,7 @@ Shell: tcsh</p>
 
 <p>If you encounter <em>NotImplementedError</em> when running <code class="language-plaintext highlighter-rouge">bundle install</code> (NotImplementedError: dart-sass for x86_64-freebsd14), fix it by hard-setting the <code class="language-plaintext highlighter-rouge">jekyll-sass-converter</code> version in your <code class="language-plaintext highlighter-rouge">Gemfile</code>. [<sup><a href="#footnotes">6</a></sup>]</p>
 
-<p>NOTE: You might encounter <code class="language-plaintext highlighter-rouge">ERROR '/' not found</code> and/or <code class="language-plaintext highlighter-rouge">ERROR '/index.html'</code> when running <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code>.  Fix it by setting the value of the <code class="language-plaintext highlighter-rouge">baseurl</code> to an empty string - <code class="language-plaintext highlighter-rouge">baseurl: ""</code> in your <code class="language-plaintext highlighter-rouge">_config.yml</code> file. [<sup><a href="#footnotes">9</a></sup>]</p>
+<p>NOTE: On FreeBSD 14, I encountered <code class="language-plaintext highlighter-rouge">ERROR '/' not found</code> and/or <code class="language-plaintext highlighter-rouge">ERROR '/index.html'</code> when running <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code>.  Fix it by setting the value of the <code class="language-plaintext highlighter-rouge">baseurl</code> to an empty string - <code class="language-plaintext highlighter-rouge">baseurl: ""</code> in your <code class="language-plaintext highlighter-rouge">_config.yml</code> file. [<sup><a href="#footnotes">9</a></sup>]</p>
 
 <p>Copy your Markdown files (<code class="language-plaintext highlighter-rouge">*.md</code>) to the <code class="language-plaintext highlighter-rouge">_posts</code> directory.</p>
 
@@ -262,8 +262,6 @@ Bundler home page: <a href="https://bundler.io/">Bundler: The best way to manage
 </blockquote>
 
 <p>[5] Here’s how to add environment variables to <code class="language-plaintext highlighter-rouge">~/.cshrc</code> file on FreeBSD 14.</p>
-
-<p>My shell is <code class="language-plaintext highlighter-rouge">csh</code> (C shell).</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ps $$
   PID TT  STAT    TIME COMMAND
@@ -366,7 +364,7 @@ gem 'jekyll-sass-converter', '~&gt; 2.2'
 
 <p>[7] From <a href="https://mademistakes.com/work/jekyll-themes/">Jekyll themes - Made Mistakes (mademistakes) theme</a></p>
 <blockquote>
-  <p>Below are the Jekyll themes and starters Ive designed, developed, and released as open source.  Each theme contains the <code class="language-plaintext highlighter-rouge">_layouts</code>, <code class="language-plaintext highlighter-rouge">_includes</code>, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.</p>
+  <p>Below are the Jekyll themes and starters I’ve designed, developed, and released as open source.  Each theme contains the <code class="language-plaintext highlighter-rouge">_layouts</code>, <code class="language-plaintext highlighter-rouge">_includes</code>, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.</p>
 
   <p>Getting started with each is roughly the same:</p>
   <ol>
@@ -375,7 +373,7 @@ gem 'jekyll-sass-converter', '~&gt; 2.2'
     <li>Update Jekyll’s <code class="language-plaintext highlighter-rouge">_config.yml</code> file, customize data files (found in the <code class="language-plaintext highlighter-rouge">_data</code> directory), and replace sample posts and pages with your own content.</li>
   </ol>
 
-  <p>For more specifics, consult each theme’s documentation by visiting the setup guide links below.</p>
+  <p>For more specifics, consult each theme’s documentation by visiting the setup guide links.</p>
 </blockquote>
 
 <p>[8] <a href="https://jekyllrb.com/docs/themes/#understanding-gem-based-themes">Understanding gem-based themes</a></p>

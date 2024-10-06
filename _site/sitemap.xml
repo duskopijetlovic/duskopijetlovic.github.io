@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 29 Sep 2024 17:10:56 -0700</pubDate>
-    <lastBuildDate>Sun, 29 Sep 2024 17:10:56 -0700</lastBuildDate>
+    <pubDate>Wed, 02 Oct 2024 16:04:58 -0700</pubDate>
+    <lastBuildDate>Wed, 02 Oct 2024 16:04:58 -0700</lastBuildDate>
     <generator>Jekyll v3.10.0</generator>
     
       <item>
@@ -48,7 +48,7 @@ Shell: tcsh&lt;/p&gt;
 
 &lt;h2 id=&quot;set-gems-directory-and-add-it-to-the-shell-path&quot;&gt;Set Gems Directory and Add It to the Shell Path&lt;/h2&gt;
 
-&lt;p&gt;Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  Add environment variables to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cshrc&lt;/code&gt; file to configure the gem installation path. [&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;]&lt;/p&gt;
+&lt;p&gt;Avoid installing RubyGems packages (called gems) as the root user.  Instead, set up a gem installation directory for your user account.  I use the standard FreeBSD shell &lt;em&gt;csh&lt;/em&gt; so I need to add environment variables to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cshrc&lt;/code&gt; file to configure the gem installation path. [&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;]&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -62,7 +62,7 @@ Shell: tcsh&lt;/p&gt;
 # =&amp;gt; Now browse to http://localhost:4000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;NOTE: You might encounter &lt;em&gt;NotImplementedError&lt;/em&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;NOTE: On FreeBSD 14, I encountered &lt;em&gt;NotImplementedError&lt;/em&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NotImplementedError: dart-sass for x86_64-freebsd14 not available at [. . .] 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -87,7 +87,7 @@ Shell: tcsh&lt;/p&gt;
 
 &lt;p&gt;If you encounter &lt;em&gt;NotImplementedError&lt;/em&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; (NotImplementedError: dart-sass for x86_64-freebsd14), fix it by hard-setting the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jekyll-sass-converter&lt;/code&gt; version in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;. [&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;]&lt;/p&gt;
 
-&lt;p&gt;NOTE: You might encounter &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERROR &apos;/&apos; not found&lt;/code&gt; and/or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERROR &apos;/index.html&apos;&lt;/code&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt;.  Fix it by setting the value of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;baseurl&lt;/code&gt; to an empty string - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;baseurl: &quot;&quot;&lt;/code&gt; in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; file. [&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;]&lt;/p&gt;
+&lt;p&gt;NOTE: On FreeBSD 14, I encountered &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERROR &apos;/&apos; not found&lt;/code&gt; and/or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERROR &apos;/index.html&apos;&lt;/code&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt;.  Fix it by setting the value of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;baseurl&lt;/code&gt; to an empty string - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;baseurl: &quot;&quot;&lt;/code&gt; in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; file. [&lt;sup&gt;&lt;a href=&quot;#footnotes&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;]&lt;/p&gt;
 
 &lt;p&gt;Copy your Markdown files (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*.md&lt;/code&gt;) to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory.&lt;/p&gt;
 
@@ -139,8 +139,6 @@ Bundler home page: &lt;a href=&quot;https://bundler.io/&quot;&gt;Bundler: The be
 &lt;/blockquote&gt;
 
 &lt;p&gt;[5] Here’s how to add environment variables to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cshrc&lt;/code&gt; file on FreeBSD 14.&lt;/p&gt;
-
-&lt;p&gt;My shell is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;csh&lt;/code&gt; (C shell).&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% ps $$
   PID TT  STAT    TIME COMMAND
@@ -243,7 +241,7 @@ gem &apos;jekyll-sass-converter&apos;, &apos;~&amp;gt; 2.2&apos;
 
 &lt;p&gt;[7] From &lt;a href=&quot;https://mademistakes.com/work/jekyll-themes/&quot;&gt;Jekyll themes - Made Mistakes (mademistakes) theme&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-  &lt;p&gt;Below are the Jekyll themes and starters Ive designed, developed, and released as open source.  Each theme contains the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_layouts&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_includes&lt;/code&gt;, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.&lt;/p&gt;
+  &lt;p&gt;Below are the Jekyll themes and starters I’ve designed, developed, and released as open source.  Each theme contains the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_layouts&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_includes&lt;/code&gt;, Sass/CSS, JavaScript, and other sample files needed to build with Jekyll and host a static site or blog.&lt;/p&gt;
 
   &lt;p&gt;Getting started with each is roughly the same:&lt;/p&gt;
   &lt;ol&gt;
@@ -252,7 +250,7 @@ gem &apos;jekyll-sass-converter&apos;, &apos;~&amp;gt; 2.2&apos;
     &lt;li&gt;Update Jekyll’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; file, customize data files (found in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_data&lt;/code&gt; directory), and replace sample posts and pages with your own content.&lt;/li&gt;
   &lt;/ol&gt;
 
-  &lt;p&gt;For more specifics, consult each theme’s documentation by visiting the setup guide links below.&lt;/p&gt;
+  &lt;p&gt;For more specifics, consult each theme’s documentation by visiting the setup guide links.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;[8] &lt;a href=&quot;https://jekyllrb.com/docs/themes/#understanding-gem-based-themes&quot;&gt;Understanding gem-based themes&lt;/a&gt;&lt;/p&gt;
@@ -725,6 +723,10 @@ character  byte     UTF-32   encoded as     glyph   name
 &lt;p&gt;&lt;a href=&quot;https://www.freshports.org/textproc/uni&quot;&gt;uni on FreshPorts&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://freebsd.pkgs.org/14/freebsd-amd64/uni-2.7.0_3.pkg.html&quot;&gt;uni on pkgs.org&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In addition, available as a WASM (WebAssembly) demo: &lt;a href=&quot;https://arp242.github.io/uni-wasm/&quot;&gt;https://arp242.github.io/uni-wasm/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;uni WASM (WebAssembly) demo details: &lt;a href=&quot;https://www.arp242.net/wasm-cli.html&quot;&gt;Running Go CLI programs in the browser with WASM&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Project home page: &lt;a href=&quot;https://github.com/arp242/uni&quot;&gt;https://github.com/arp242/uni&lt;/a&gt;&lt;/p&gt;
 
@@ -1336,6 +1338,12 @@ grapheme clusters in input delimited to 17 bytes:
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt&quot;&gt;UTF-8 decoder capability and stress test&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/arp242/uni&quot;&gt;uni - Query the Unicode database from the commandline, with good support for emojis&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://arp242.github.io/uni-wasm/&quot;&gt;WASM (WebAssembly) demo for uni&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://github.com/arp242/uni?tab=readme-ov-file#alternatives&quot;&gt;A nice list of Unicode tools&lt;/a&gt;&lt;/p&gt;
@@ -24579,9 +24587,16 @@ Shell: csh&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;strong&gt;CRON&lt;/strong&gt;&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;taskwarrior&lt;/li&gt;
-  &lt;li&gt;remind&lt;/li&gt;
+  &lt;li&gt;remind
+    &lt;ul&gt;
+      &lt;li&gt;xmessage(1) - with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;remind -c&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;xmessage(1) - with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;remind /path/to/.reminders&lt;/code&gt;:w&lt;/li&gt;
+      &lt;li&gt;mail(1) (mailx(1)) - weekly reminder (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;remind -c+1&lt;/code&gt;)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
   &lt;li&gt;recursive stickies  &lt;br /&gt;
 Based on 
 &lt;a href=&quot;https://mitxela.com/projects/recursive&quot;&gt;Recursive Notes (Recursive Post-It Notes or Recursive Stickies)&lt;/a&gt;  &lt;br /&gt;

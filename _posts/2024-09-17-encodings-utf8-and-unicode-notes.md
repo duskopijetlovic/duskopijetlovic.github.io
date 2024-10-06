@@ -423,6 +423,10 @@ Available as a package for FreeBSD:
 
 [uni on pkgs.org](https://freebsd.pkgs.org/14/freebsd-amd64/uni-2.7.0_3.pkg.html)
 
+In addition, available as a WASM (WebAssembly) demo: [https://arp242.github.io/uni-wasm/](https://arp242.github.io/uni-wasm/)
+
+uni WASM (WebAssembly) demo details: [Running Go CLI programs in the browser with WASM](https://www.arp242.net/wasm-cli.html)
+
 Project home page: [https://github.com/arp242/uni](https://github.com/arp242/uni)
 
 
@@ -1056,6 +1060,10 @@ grapheme clusters in input delimited to 17 bytes:
 * [Markus Kuhn's Unicode FAQ, a very comprehensive resource about Unicode support on Free Unix-like systems](https://www.cl.cam.ac.uk/~mgk25/unicode.html)
 
 * [UTF-8 decoder capability and stress test](https://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt)
+
+* [uni - Query the Unicode database from the commandline, with good support for emojis](https://github.com/arp242/uni)
+
+* [WASM (WebAssembly) demo for uni](https://arp242.github.io/uni-wasm/)
 
 * [A nice list of Unicode tools](https://github.com/arp242/uni?tab=readme-ov-file#alternatives)
 
