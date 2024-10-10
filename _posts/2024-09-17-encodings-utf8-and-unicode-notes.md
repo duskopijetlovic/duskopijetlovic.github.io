@@ -1131,6 +1131,12 @@ grapheme clusters in input delimited to 17 bytes:
 
 * [How to be absolutely, positively, double definitely sure your web font renders](https://pixelambacht.nl/2013/font-face-render-check/)
 
+* [Survival guide to i18n](https://intertwingly.net/stories/2004/04/14/i18n.html)
+
+* [The character encoding problem by Peter Verthez](https://gedcom-parse.sourceforge.net/doc/encoding.html#The_character_encoding_problem)
+
+* [A tutorial on character code issues by Jukka "Yucca" Korpela - archive from the original 2017-09-17](https://web.archive.org/web/20170917131301/http://www.cs.tut.fi/~jkorpela/chars.html)
+
 * [The Ultimate Unicode Explorer & Tools - fontspace.com](https://www.fontspace.com/unicode)
 > Browse through Unicode with a twist: We'll show you all the fonts that are available for each character. 
 
@@ -1458,6 +1464,11 @@ NOTE: Three pictures below show that pasting the farmer emoji in *xterm* termina
 
 * [UTF-8 Sampler](https://kermitproject.org/utf8.html)
 
+* [Parsing UTF-8](https://www.omarpolo.com/post/parsing-utf8.html)
+
+* [Flexible and Economical UTF-8 Decoder](https://bjoern.hoehrmann.de/utf-8/decoder/dfa/)
+> Systems with elaborate Unicode support usually confront programmers with a multitude of different functions and macros to process UTF-8 encoded strings, often with different ideas on handling buffer boundaries, state between calls, error conditions, and performance characteristics, making them difficult to use correctly and efficiently.  Implementations also tend to be very long and complicated; one popular library has over 500 lines of code just for one version of the decoder.  This page presents one that is very easy to use correctly, short, small, fast, and free.
+
 * [uni.pl - Perl script from leahneukirchen (Leah Neukirchen) - List Unicode symbols matching pattern](https://leahneukirchen.org/dotfiles/bin/uni)
 
 * [decodeunicode.org](https://decodeunicode.org/)
@@ -1708,6 +1719,11 @@ NOTE: Three pictures below show that pasting the farmer emoji in *xterm* termina
 
 * [Unicode programming, with examples](https://begriffs.com/posts/2019-05-23-unicode-icu.html)
 
+* [Jeppe's Unicode page](http://www.jeppesn.dk/utf-8.html)
+> This page is UTF-8 encoded.  Take a look at the following character(s): ñ
+> 
+> If you see an "n" with a "~" above, your browser understands UTF-8 and you can read this page. If you see something else (typically an "A" with a "~" followed by a plus/minus sign) your browser does not understand UTF-8 and you should find yourself a better browser.
+
 * [Byte order mark (BOM) - Wikipedia](https://en.wikipedia.org/wiki/Byte_order_mark)
 
 * [Endianness - Wikipedia](https://en.wikipedia.org/wiki/Endianness)
@@ -1919,9 +1935,26 @@ s. This site is also known as on snot and fonts. [Full length pages](https://luc
 
 * [Bitten by Unicode](https://pyatl.dev/2024/09/01/bitten-by-unicode/)
 
+* [Unicode shenanigans: Martine Ã©crit en UTF-8](https://blog.poisson.chat/posts/2024-10-05-unicode-shenanigans.html) 
+ 	
+* [Unicode shenanigans: Martine Ã©crit en UTF-8 - Discussion on Hacker News](https://news.ycombinator.com/item?id=41752023)
+
+* [Mojibake, anyone? - BASHing data 2](https://www.datafix.com.au/BASHing2/2024-07-19.html)
+
+* [A series of posts on mojibake - BASHing data 2](https://www.datafix.com.au/BASHing2/2024-07-19.html#1)
+> Previous posts about mojibake:
+> * [2018-08-06: Mojibake detective work](https://www.datafix.com.au/BASHing/2018-08-06.html)
+> * [2019-07-05: Return of the mojibake detective](https://www.datafix.com.au/BASHing/2019-07-05.html)
+> * [2020-04-01: More mojibake fun](https://www.datafix.com.au/BASHing/2020-04-01.html)
+> * [2020-12-16: Mojibake bonanza](https://www.datafix.com.au/BASHing/2020-12-16.html)
+> * [2021-05-19: Mojibake madness](https://www.datafix.com.au/BASHing/2021-05-19.html)
+> * [2024-02-09: Mojibake with 2 hearts and 52 bytes](https://www.datafix.com.au/BASHing2/2024-02-09.html)
+
 * [Unicode is Kind of Insane](http://www.benfrederickson.com/unicode-insanity/)
 
 * [The End-of-Line Story -- RFC Editor (2004)](https://www.rfc-editor.org/old/EOLstory.txt)
+
+* [Which Unicode character should represent the English apostrophe? (And why the Unicode committee is very wrong)](https://tedclancy.wordpress.com/2015/06/03/which-unicode-character-should-represent-the-english-apostrophe-and-why-the-unicode-committee-is-very-wrong/)
 
 ----
 

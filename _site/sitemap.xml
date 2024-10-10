@@ -5,8 +5,8 @@
     <description>Dusko Pijetlovic - My Personal Web Space</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 02 Oct 2024 16:04:58 -0700</pubDate>
-    <lastBuildDate>Wed, 02 Oct 2024 16:04:58 -0700</lastBuildDate>
+    <pubDate>Wed, 09 Oct 2024 21:14:44 -0700</pubDate>
+    <lastBuildDate>Wed, 09 Oct 2024 21:14:44 -0700</lastBuildDate>
     <generator>Jekyll v3.10.0</generator>
     
       <item>
@@ -1429,6 +1429,15 @@ grapheme clusters in input delimited to 17 bytes:
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://pixelambacht.nl/2013/font-face-render-check/&quot;&gt;How to be absolutely, positively, double definitely sure your web font renders&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://intertwingly.net/stories/2004/04/14/i18n.html&quot;&gt;Survival guide to i18n&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://gedcom-parse.sourceforge.net/doc/encoding.html#The_character_encoding_problem&quot;&gt;The character encoding problem by Peter Verthez&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://web.archive.org/web/20170917131301/http://www.cs.tut.fi/~jkorpela/chars.html&quot;&gt;A tutorial on character code issues by Jukka “Yucca” Korpela - archive from the original 2017-09-17&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.fontspace.com/unicode&quot;&gt;The Ultimate Unicode Explorer &amp;amp; Tools - fontspace.com&lt;/a&gt;
     &lt;blockquote&gt;
       &lt;p&gt;Browse through Unicode with a twist: We’ll show you all the fonts that are available for each character.&lt;/p&gt;
@@ -1851,6 +1860,14 @@ However, the &lt;em&gt;code positions&lt;/em&gt; of characters vary from one cha
     &lt;p&gt;&lt;a href=&quot;https://kermitproject.org/utf8.html&quot;&gt;UTF-8 Sampler&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.omarpolo.com/post/parsing-utf8.html&quot;&gt;Parsing UTF-8&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://bjoern.hoehrmann.de/utf-8/decoder/dfa/&quot;&gt;Flexible and Economical UTF-8 Decoder&lt;/a&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;Systems with elaborate Unicode support usually confront programmers with a multitude of different functions and macros to process UTF-8 encoded strings, often with different ideas on handling buffer boundaries, state between calls, error conditions, and performance characteristics, making them difficult to use correctly and efficiently.  Implementations also tend to be very long and complicated; one popular library has over 500 lines of code just for one version of the decoder.  This page presents one that is very easy to use correctly, short, small, fast, and free.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://leahneukirchen.org/dotfiles/bin/uni&quot;&gt;uni.pl - Perl script from leahneukirchen (Leah Neukirchen) - List Unicode symbols matching pattern&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://decodeunicode.org/&quot;&gt;decodeunicode.org&lt;/a&gt;
@@ -2165,6 +2182,13 @@ It also offers a tool that lets you inspect strings and view the breakdown of th
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://begriffs.com/posts/2019-05-23-unicode-icu.html&quot;&gt;Unicode programming, with examples&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.jeppesn.dk/utf-8.html&quot;&gt;Jeppe’s Unicode page&lt;/a&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;This page is UTF-8 encoded.  Take a look at the following character(s): ñ&lt;/p&gt;
+
+      &lt;p&gt;If you see an “n” with a “~” above, your browser understands UTF-8 and you can read this page. If you see something else (typically an “A” with a “~” followed by a plus/minus sign) your browser does not understand UTF-8 and you should find yourself a better browser.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Byte_order_mark&quot;&gt;Byte order mark (BOM) - Wikipedia&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
@@ -2454,9 +2478,34 @@ It’s also used in Halloween context, to express the spooky atmosphere, to repr
     &lt;p&gt;&lt;a href=&quot;https://pyatl.dev/2024/09/01/bitten-by-unicode/&quot;&gt;Bitten by Unicode&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://blog.poisson.chat/posts/2024-10-05-unicode-shenanigans.html&quot;&gt;Unicode shenanigans: Martine Ã©crit en UTF-8&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://news.ycombinator.com/item?id=41752023&quot;&gt;Unicode shenanigans: Martine Ã©crit en UTF-8 - Discussion on Hacker News&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing2/2024-07-19.html&quot;&gt;Mojibake, anyone? - BASHing data 2&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing2/2024-07-19.html#1&quot;&gt;A series of posts on mojibake - BASHing data 2&lt;/a&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;Previous posts about mojibake:&lt;/p&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing/2018-08-06.html&quot;&gt;2018-08-06: Mojibake detective work&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing/2019-07-05.html&quot;&gt;2019-07-05: Return of the mojibake detective&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing/2020-04-01.html&quot;&gt;2020-04-01: More mojibake fun&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing/2020-12-16.html&quot;&gt;2020-12-16: Mojibake bonanza&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing/2021-05-19.html&quot;&gt;2021-05-19: Mojibake madness&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;https://www.datafix.com.au/BASHing2/2024-02-09.html&quot;&gt;2024-02-09: Mojibake with 2 hearts and 52 bytes&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
     &lt;p&gt;&lt;a href=&quot;http://www.benfrederickson.com/unicode-insanity/&quot;&gt;Unicode is Kind of Insane&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.rfc-editor.org/old/EOLstory.txt&quot;&gt;The End-of-Line Story – RFC Editor (2004)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.rfc-editor.org/old/EOLstory.txt&quot;&gt;The End-of-Line Story – RFC Editor (2004)&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tedclancy.wordpress.com/2015/06/03/which-unicode-character-should-represent-the-english-apostrophe-and-why-the-unicode-committee-is-very-wrong/&quot;&gt;Which Unicode character should represent the English apostrophe? (And why the Unicode committee is very wrong)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;hr /&gt;
