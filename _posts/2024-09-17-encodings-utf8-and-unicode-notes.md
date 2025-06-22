@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Encodings, UTF-8 and Unicode Notes"
+title: "Encodings, UTF-8 and Unicode - Notes"
 date: 2024-09-17 10:40:13 -0700 
 categories:  unicode utf8 x11 xorg xterm cli terminal shell howto sysadmin
              unix perl python vi vim ascii plaintext text tex latex pdf
@@ -1348,15 +1348,15 @@ grapheme clusters in input delimited to 17 bytes:
 > Copy and paste "🧑‍🌾" in your terminal emulator.
 > How many cells forward did your cursor move? Depending on your terminal emulator, it may have moved 2, 4, 5, or 6 cells.
 > Yikes.
-
-NOTE: Three pictures below show that pasting the farmer emoji in *xterm* terminal emulator with *csh* (C shell), *bash* (GNU Bourne-again shell) and *sh* (Bourne shell) shells on my FreeBSD 14 system moved cursor four cells forward.
-
-![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with csh shell moved cursor four cells forward](/assets/img/xterm-csh-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with csh shell moved cursor four cells forward")
-
-![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with bash shell moved cursor four cells forward](/assets/img/xterm-bash-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with bash shell moved cursor four cells forward")
-
-![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with sh (Bourne shell) moved cursor four cells forward](/assets/img/xterm-sh-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with sh (Bourne shell) moved cursor four cells forward")
-
+>
+> NOTE: Three pictures below show that pasting the farmer emoji in *xterm* terminal emulator with *csh* (C shell), *bash* (GNU Bourne-again shell) and *sh* (Bourne shell) shells on my FreeBSD 14 system moved cursor four cells forward.
+> 
+> ![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with csh shell moved cursor four cells forward](/assets/img/xterm-csh-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with csh shell moved cursor four cells forward")
+> 
+> ![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with bash shell moved cursor four cells forward](/assets/img/xterm-bash-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with bash shell moved cursor four cells forward")
+> 
+> ![Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with sh (Bourne shell) moved cursor four cells forward](/assets/img/xterm-sh-unicode-farmer-emoji.png "Unicode character name Farmer (emoji) - In FreeBSD, pasting it in xterm with sh (Bourne shell) moved cursor four cells forward")
+> 
 > This blog post describes why this happens and how terminal emulator and program authors can achieve consistent spacing for all characters.
 > 
 > . . . 
@@ -1389,9 +1389,7 @@ NOTE: Three pictures below show that pasting the farmer emoji in *xterm* termina
 > . . . 
 > 
 > Grapheme clustering is the process that lets a program see **three** 32-bit values as a **single** user-perceived *character*. The algorithm for grapheme clustering is defined in [UAX #29, "Unicode Text Segmentation"](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries).
->
-> 
-
+ 
 * [Libgrapheme: A simple freestanding C99 library for Unicode (suckless.org)](https://libs.suckless.org/libgrapheme/)
 > Libgrapheme is an extremely simple freestanding C99 library providing utilities for properly handling strings according to the latest Unicode standard 15.0.0.
 > It offers fully Unicode compliant:
@@ -1426,9 +1424,122 @@ NOTE: Three pictures below show that pasting the farmer emoji in *xterm* termina
 
 * [Terminal Emulators Battle Royale - Unicode Edition!](https://www.jeffquast.com/post/ucs-detect-test-results/)
 
-* [It's Not Wrong that "🤦🏼‍♂️".length == 7 -- String Lengths in Unicode](https://hsivonen.fi/string-length/)
+* [Why does "👩🏾‍🌾" have a length of 7 in JavaScript? - aka Why does the farmer emoji have a length of 7 in JavaScript?](https://evanhahn.com/javascript-string-lengths/)
+> In short: 👩🏾‍🌾 is made of 1 grapheme cluster, 4 scalars, and 7 UTF-16 code units. That’s why its length is 7.
+>
+> [I turned this blog post into a talk](https://evanhahn.com/chicagojs2023/) which you might prefer.
+
+* [JavaScript and the farmer emoji 👩🏾‍🌾 - Presentation slides](https://evanhahn.com/chicagojs2023/slides.pdf)
+>
+> *Extended Grapheme Cluster*
+>
+> The text between extended grapheme cluster boundaries as specified by Unicode Standard Annex #29, "Unicode Text Segmentation."
+> 
+> Abbreviated as EGC.
+>
+> *Unicode Scalar Value*
+> 
+> Any Unicode code point except high-surrogate and low-surrogate code points.  In other words, the ranges of integers 0 to D7FF16 and E00016 to 10FFFF16 inclusive.
+> 
+> Most extended grapheme clusters contain one scalar.
+> 
+> J 74   
+> ♬ 9836    
+> 🌸 127800    
+> 
+> *Scalars* are *usually* written with **U+**.
+> 
+> ♬ 9836 AKA U+266C
+> 
+> Some extended grapheme clusters contain many scalars
+> 
+> 👩🏾‍🌾 128105 127998 8205 127806
+> 
+> How do you store these scalars?
+>
+> JavaScript stores scalars with UTF-16.
+> 
+> *UTF-16 Encoding Form*
+> 
+> The Unicode encoding form that assigns each Unicode scalar value in the ranges U+0000..U+D7FF and U+E000..U+FFFF to a single unsigned 16-bit code unit with the same numeric value as the Unicode scalar value, and that assigns each Unicode scalar value in the range U+10000..U+10FFFF to a surrogate pair, according to Table 3-5, "UTF-16 Bit Distribution."
+> 
+> Units of 16-bit integers (0 – 65,535)
+> 
+> Many scalars fit in a 16-bit unit
+> 
+> grapheme J  
+> scalar 74  
+> UTF-16 units [74]  
+>
+> grapheme ♬    
+> scalar 9836   
+> UTF-16 units [9836]  
+> 
+> Some scalars are too big and get split in two.
+>
+> "surrogate pair"
+> 
+> grapheme 🌸   
+> scalar 127800   
+> UTF-16 units [55356, 57144]   
+> 
+> grapheme 👩🏾‍🌾   
+> scalars 128105 127998 8205 127806   
+> UTF-16 units [55357, 56425, 55356, 57342, 8205, 55356, 57150]   
+> 
+> What does length count?
+>
+> Answer: Length count is in UTF-16 units (NOT in grapheme clusters NOR in scalars)
+> 
+> ```
+> "👩🏾‍🌾".length
+> // => 7
+> ```
+>
+> Most of JavaScript uses UTF-16 code units
+> 
+> Summary:
+> 
+> extended grapheme clusters   
+> scalar   
+> UTF-16  
+> length counts UTF-16 units    
+
+* [It's Not Wrong that "🤦🏼‍♂️".length == 7 - aka String Lengths in Unicode](https://hsivonen.fi/string-length/)
+> But It's Better that "🤦🏼‍♂️".len() == 17 and Rather Useless that len("🤦🏼‍♂️") == 5
+> 
+> From time to time, someone shows that in JavaScript the .length of a string containing an emoji results in a number greater than 1 (typically 2) and then proceeds to the conclusion that haha JavaScript is so broken—and is rewarded with many likes.  In this post, I will try to convince you that ridiculing JavaScript for this is less insightful than it first appears and that Swift’s approach to string length isn’t unambiguously the best one.  Python 3's approach is unambiguously the worst one, though. 
+>
+> [Discussion on Hacker News](https://news.ycombinator.com/item?id=20914184)
 
 * [String Lengths in Unicode - Discussion on Hacker News](https://news.ycombinator.com/item?id=20914184)
+
+* [Why Supporting Unlabeled UTF-8 in HTML on the Web Would Be Problematic](https://hsivonen.fi/utf-8-detection/)
+> UTF-8 has won.  Yet, Web authors have to opt in to having browsers treat HTML as UTF-8 instead of the browsers Just Doing the Right Thing by default.  Why?
+> 
+> I'm writing this down in comprehensive form, because otherwise I will keep rewriting unsatisfactory partial explanations repeatedly as bug comments again and again.  For more on how to label, see [another writeup](https://hsivonen.fi/label-utf-8/).
+
+* [Firefox's HTML parser](https://github.com/validator/htmlparser)
+> An HTML5 parser.
+> 
+> Please see [http://about.validator.nu/htmlparser/](http://about.validator.nu/htmlparser/)
+> -- Henri Sivonen [hsivonen@iki.fi](hsivonen@iki.fi).
+
+* [Character encoding converters - encoding_rs: a web-compatible character encoding library in Rust - by Henri Sivonen](https://hsivonen.fi/encoding_rs/)  
+
+* [encoding_rs - source code on GitHub - A Gecko-oriented implementation of the Encoding Standard in Rust](https://github.com/hsivonen/encoding_rs) 
+> [https://docs.rs/encoding_rs/](https://docs.rs/encoding_rs/)
+
+* [Encoding detector - chardetng: A More Compact Character Encoding Detector for the Legacy Web - by Henri Sivonen](https://hsivonen.fi/encoding_rs/)
+
+* [chardetng - source code on GitHub - A character encoding detector for legacy Web content](https://github.com/hsivonen/chardetng)
+
+* [grapheme: A python package for grapheme aware string handling](https://github.com/alvinlindstam/grapheme)
+> What? Why?
+> 
+> Unicode strings are made up of a series of unicode characters but a unicode character does not always map to a user perceived character.  Some human perceived characters are represented as two or more unicode characters.
+> 
+> However, all built in python string functions and string methods work with single unicode characters without considering their connection to each other.
 
 * [Emojipedia - All things emoji](https://emojipedia.org/)
 
