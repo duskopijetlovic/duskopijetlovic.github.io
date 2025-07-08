@@ -63,11 +63,17 @@ untouched.
 > 
 > The backup volumes are kept unmounted; they really should be kept physically unplugged and powered off in case CryptoLocker gets smart enough in future to try mounting disks before it goes hunting.
 
+* [rsync recipes](https://danburzo.ro/toolbox/rsync/)
+
+* [HOWTO build your own open source Dropbox clone](https://web.archive.org/web/20100625043249/http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/)
+
 * [GitHub - nickjeffrey/kvm_backup: Backup scripts for KVM virtual machines](https://github.com/nickjeffrey/kvm_backup)
 > Simple shell scripts to perform backup of KVM virtual machines.
 > Runs from cron on your KVM host(s).
 > 
 > Supported backup destinations include local disk path, remote NFS share, another remote KVM host.
+
+* [Using rsync with libguestfs](https://rwmj.wordpress.com/2013/04/22/using-rsync-with-libguestfs/)
 
 * [Backing up FreeBSD and other Unix systems](https://bezoar.org/src/backups/)
 > I have a 3-Tbyte server running FreeBSD-6.1 that handles versioned backups.
@@ -126,6 +132,35 @@ untouched.
 
 ## Documentation
 
+* [Feather Wiki - A tiny tool for simple, self-contained wikis!](https://feather.wiki/)
+> Feather Wiki is a lightning-fast [infinitely extensible](https://feather.wiki/?page=extensions) tool for creating non-linear notebooks, databases, and wikis.
+> Inspired by [TiddlyWiki](https://tiddlywiki.com/), the app itself is contained within a *single 58-kilobyte HTML file* that runs right in your browser.
+> Publishing your content for the world to see is as simple as uploading that file to a web server, and updating content is as simple as overwriting the file.
+> 
+> Unlike TiddlyWiki, Feather Wiki reduces loading time on even the slowest internet connections by keeping the file size as small as possible while still using a style reminiscent of other popular wikis.
+> With low-level access to its underlying code framework, you can customize Feather Wiki to do almost anything you want.
+
+* [MDwiki - Markdown based Wiki done 100% on the client via JavaScript](https://dynalon.github.io/mdwiki/#!index.md)
+> MDwiki is a CMS/Wiki completely built in HTML5/Javascript and runs 100% on the client.
+> No special software installation or server side processing is required.
+> Just upload the mdwiki.html shipped with MDwiki into the same directory as your markdown files and you are good to go!
+> 
+> * [MDwiki - source code hosted on GitHub pages](https://github.com/Dynalon/mdwiki)
+> 
+> **Features**
+>
+> * Built completely in Javascript/HTML5 and does not require any local or remote installations
+> * Uses [Markdown](http://daringfireball.net/projects/markdown/) as its input markup language
+> * Built on top of [jQuery](http://www.jquery.org/) and [Bootstrap3](http://www.getbootstrap.com/) to work cross-browser, with responsive layout
+> * Extends Markdown with special [*Gimmicks*](https://dynalon.github.io/mdwiki/#!./gimmicks.md) that add rich client functions, like syntax highlighting via [hightlight.js](https://highlightjs.org/), [GitHub Gists](https://gist.github.com/), or [Google Maps](http://maps.google.com/) for geo data
+> * Themeable through Bootstrap compatibility, supports all themes from [bootswatch](http://www.bootswatch.com/)
+> 
+> **Requirements**
+>
+> * Webspace (or a web server that can serve static files) - can be **local**
+> * Any modern Webbrowser
+> * [mdwiki.html](https://dynalon.github.io/mdwiki/#!./download.md) file
+
 * [Documentation - Oatmeal](https://eli.li/docs)
 > Documentation
 >
@@ -170,6 +205,28 @@ untouched.
 ## Editor
 
 ### ed
+
+* [Ed Mastery - Michael W Lucas](https://mwl.io/nonfiction/tools#ed)
+> Let me be perfectly clear: ed(1) is the standard Unix text editor.
+> If you don't know ed, you're not a sysadmin.
+> You're a mere dabbler. A dilettante. Deficient.
+> 
+> Forty years after ed's introduction, internationally acclaimed author Michael W Lucas has finally unlocked the mysteries of ed for everyone.
+> With Ed Mastery, you too can become a proper sysadmin.
+>
+> Ed Mastery will help you:
+> * understand buffers and addresses
+> * insert, remove, and mangle text
+> * master file management and shell escapes
+> * comprehend regular expressions, searches, and substitutions
+> * create high-performance scripts for transforming files
+> 
+> You must be at least this competent to use this computer.
+> Read Ed Mastery today!
+> 
+> "I'm glad someone's finally giving ed the attention it deserves."
+> 
+> ~ Ken Thompson, co-creator of Unix
 
 * [ed Cheatsheet](https://sdf.org/?tutorials/ed)
 > SDF Public Access UNIX System - Free Shell Account and Shell Access
@@ -303,6 +360,24 @@ untouched.
 
 * [Why a Digital Garden?](https://web.archive.org/web/20230620093928/https://jessmahler.com/why-a-digital-garden/) 
 
+* [Digital garden - Dan Cătălin Burzo - Guides, resources, and writing in progress](https://danburzo.ro/garden/)
+> * Technical notes
+>   - My toolbox: Favorite software libraries, command-line cheatsheets, etc.
+>   - Snippets: Small bits of useful code.
+>   - Releasing JavaScript: How to write & maintain open-source JavaScript projects.
+>   - DOM Events Diagram: A visual reference of DOM Event interface inheritance.
+>   - Microinteractions: Details in interaction design.
+>   - Input methods: A compendium of ways users can insert text into an editor.
+> 
+> * Literal garden
+>   - Rețetar: A growing collection of our favorite recipes. Written in Romanian.
+>   - Grow notes: Notes on growing edible plants.
+>   - Indoor plant care: Some notes on caring for indoor plants.
+>
+> * Past writings
+>   - React Recipes: Documents ways of working with React.js.
+>   - WordPress Template Hierarchy: A visual guide to how templates relate to each other in WordPress.
+
 ---
 
 ## Inspiration
@@ -374,9 +449,49 @@ untouched.
 
 * [Jeffrey Paul - Berlin, Deutschland](https://sneak.berlin)
 
-* [Linux Cheat Sheets (cheatsheets) - Zintis Perkons](https://www.zintis.net/)
-
 * [James' Coffee Blog](https://jamesg.blog/)
+
+---
+
+## Life Management - Self Management
+
+* [Year Compass](https://yearcompass.com/)
+> YearCompass is a booklet that helps close your year and plan the next one.
+>
+> Download the booklet: [https://yearcompass.com/#download](https://yearcompass.com/#download)
+
+---
+
+## Blogs
+
+* [Random Biology - Commentary and informative articles on science, medicine, and technology ](https://randombio.com/)
+> [About (aka What)](https://randombio.com/what.html):
+> 
+> [ . . . ]
+> 
+> Our motto is "Viscus, incompositus, ignavus, nuntius," which means "Entropy, disorder, disinclination, and messiness."
+> It is a perfect description of the condition of this website and should give some idea of the probability that we will ever do anything about it.
+> 
+> Our other motto is "No Flash, No Javascript, No animated ads, No cookies, No tracking, no ChatGPT, and No viruses."
+> 
+> We accept no advertising or donations.
+> We do not sell anything.
+> But if you value what's posted here, the best way to keep this site alive is by linking to it.
+> 
+> Please note, I am not on Twitter, Facebook, or any other social medium.j
+> If you see a post there claiming to be from me, it's fake.
+> In support of the First Amendment, this site will not link to any site that is confirmed to engage in political censorship and will not discuss their content, if any. 
+> 
+> [ . . . ]
+> 
+> About Us
+>
+> I am a professor of neurology with a Ph.D. in biophysics.
+> Before I retired, I taught and did research at a small medical school.
+> I receive no compensation of any kind for the opinions and information on this website, but my dolphin is solely responsible for its content.
+> He just says the darnedest things. 
+> 
+> ~ T. J. Nelson
 
 ---
 
@@ -396,6 +511,35 @@ untouched.
 * RFC 5321
 [OpenSMTPD - Home page (retrieved on Sep 24, 2024)](https://opensmtpd.org/)
 > OpenSMTPD is a free implementation of the server-side SMTP protocol as defined by RFC 5321 [ . . . ]
+
+* [What's this **"envelope sender"** and **"envelope recipient"** stuff? - getmail frequently-asked-questions](https://pyropus.ca./software/getmail/faq.html#faq-configuring-envelope)
+>
+> The "envelope" of an email message is "message metadata"; that is, the message is information, and the envelope is information about the message (information about other information).
+> Knowing this is critical to understanding what a domain or multidrop mailbox is, how it works, and what getmail can do for you.
+> 
+> [Others have tried to explain this](https://cr.yp.to/smtp/mail.html) with varying degrees of success.
+> I'll use the standard analogy of normal postal (i.e. non-electronic) mail: 
+>
+> [ . . . ]
+> 
+
+* [The MAIL, RCPT, and DATA verbs](https://cr.yp.to/smtp/mail.html) 
+aka - What's this "envelope sender" and "envelope recipient" stuff?
+>
+> **The MAIL, RCPT, and DATA verbs**
+> 
+> The server keeps track of an **envelope** for the client.
+> 
+> The envelope contains any number of **envelope recipient addresses** and at most one **return path**.
+> The envelope is **empty** when it contains no addresses.
+> 
+> When the client connects to the server, the envelope is empty.
+>
+> For example, after the following [responses](https://cr.yp.to/smtp/request.html#response) and [requests](https://cr.yp.to/smtp/request.html#request), the envelope contains the return path `djb@silverton.berkeley.edu`, the recipient address `God@heaven.af.mil`, and the recipient address `angels@heaven.af.mil`:
+>
+> [ . . . ]
+> 
+
 
 ### Sendmail
 
@@ -418,6 +562,25 @@ untouched.
 > * [**Index (List of links)**](https://www.sendmail.org/~ca/email/misc.html)
 > * [Avoiding UBE - aka Using check_* in sendmail 8.8](https://www.sendmail.org/~ca/email/check.html)
 > * [cf/README - aka SENDMAIL CONFIGURATION FILES](https://www.sendmail.org/~ca/email/doc8.10/cf.README)
+
+
+### Tools
+
+* [Procmail Quick Start - An introduction to email filtering with a focus on procmail](http://www.ii.com/internet/robots/procmail/qs/)
+> Copyright (c) Nancy McGough & Infinite Ink, Originally published in 1994 as part of the Filtering Mail FAQ, Last modified 27-Nov-2007
+>
+Also, it has a nice Glossary: 
+> 
+> [**Terms Used in This Article**](http://www.ii.com/internet/robots/procmail/qs/#terms)
+> 
+> For example:
+> 
+> [*MTA*  or  *message transfer agent*  or  *mail transport agent*  or *mailer*](http://www.ii.com/internet/robots/procmail/qs/#mta)
+> 
+> The underlying program that a mail server uses to send and receive mail messages.
+> There are many MTAs in use today, for example CommuniGate Pro, Courier, Exchange, exim, MMDF, postfix, Post.office, qmail, sendmail, smail, and Zmailer.
+> Note that on some systems the sending MTA is different from the receiving MTA.
+> For more information, see the definition of MTA at FOLDOC, Cameron Laird's personal notes on message transfer agents, Unix Mail Transport Systems reviewed by JdeBP, and the definition of Message Transfer Agent at Wikipedia.
 
 ---
 
@@ -584,10 +747,51 @@ untouched.
 
 ## Networking
 
+* [TCP/IP and Linux Network Security with Iptables](https://www.unixlore.net/archives/tcp-ip-and-linux-network-security-with-iptables.html)
+> This next presentation is an overview of TCP/IP and network security with the Linux [Netfilter (iptables) framework](https://www.netfilter.org/).
+> I've always thought that a network or firewall administrator needed a good grounding in networking basics, so this was part of a two-hour presentation that was designed to touch on TCP/IP before talking about iptables rulesets.
+> You can download it here in the original Oo.org (OpenOffice.org) or PDF formats, or check it out online:
+> 
+> [TCP/IP and Network Security with Iptables - OpenOffice.org](https://www.unixlore.net/downloads/netsecgnu.odp)
+> 
+> [TCP/IP and Network Security with Iptables - PDF](https://www.unixlore.net/downloads/netsecgnu.pdf)
+> 
+> Date: 2006-03-25
+> 
+> One of the books I recommend anyone wanting to seriously broaden their networking knowledge read is Richard Stevens' masterpiece The Protocols (TCP/IP Illustrated, Volume 1).
+
+[TCP/IP Illustrated, Volume 1: The Protocols, Addison-Wesley, 1994, ISBN 0-201-63346-9 -- W. Richard Stevens' former Home Page](https://web.archive.org/web/20250425155233/http://www.kohala.com/start/tcpipiv1.html)
+
+[TCP/IP Illustrated, Vol. 1: The Protocols 1st Edition by W. Richard Stevens -- The Internet Archive digital library, archive.org](https://archive.org/details/TCPIPIllustratedVol.1TheProtocols1stEdition)
+
+[TCP/IP Illustrated - Wikipedia](https://en.wikipedia.org/wiki/TCP/IP_Illustrated)
+
 * [IP Primer BCNE book - by Jon Fullmer - Brocade_IP_Primer_eBook.pdf](https://www.jonfullmer.com/Brocade_IP_Primer_eBook.pdf)
 > Brocade IP Primer, First Edition
 > 
 > Everything you need to obtain a solid foundation in networking technologies and design concepts
+
+* [The TCP/IP Guide - Absolutely Free Online Version - Charles M. Kozierok](http://www.tcpipguide.com/free/index.htm)
+> A TCP/IP Reference You Can Understand
+> 
+> [About](http://www.tcpipguide.com/index.htm):
+> The TCP/IP Guide is a reference resource on the TCP/IP protocol suite that was designed to be not only comprehensive, but comprehensible.
+> Organized using a logical, hierarchical structure, The TCP/IP Guide uses a personal, easy-going writing style that lets anyone understand the technologies that run the Internet.
+> The Guide explains dozens of protocols and technologies in over 1,500 pages.
+> It includes full coverage of PPP, ARP, IP, IPv6, IP NAT, IPSec, Mobile IP, ICMP, RIP, BGP, TCP, UDP, DNS, DHCP, SNMP, FTP, SMTP, NNTP, HTTP, Telnet and much more.
+> 
+> The result of over three years' work by the author of the widely acclaimed electronic resource The PC Guide, The TCP/IP Guide breaks new ground in technical education, combining understandable text with numerous examples, over 300 full-color illustrations, and numerous ease-of-use features.
+> It is distributed in electronic (PDF) form, resulting in numerous benefits: up-to-date content, lower cost, immediate availability, thousands of hyperlinks between related topics, and instant text search.
+> The TCP Guide is ideal for anyone who wants to really understand how TCP/IP works, including educators, students, networking professionals, and those working towards certifications.
+
+* [An Introduction to Computer Networks - Peter L Dordal](https://intronetworks.cs.luc.edu/)
+> Peter L Dordal, Department of Computer Science, Loyola University Chicago
+>
+> Welcome to the website for An Introduction to Computer Networks, a free and open general-purpose computer-networking textbook, complete with diagrams and exercises.
+> It covers the LAN, internetworking and transport layers, focusing primarily on TCP/IP.
+> Particular attention is paid to congestion; other special topics include queuing, real-time traffic, network management, security, mininet and the ns simulator.
+> 
+> The book is suitable as the primary text for an undergraduate or introductory graduate course in computer networking, as a supplemental text for a wide variety of network-related courses, and as a reference work. 
 
 ---
 
@@ -609,6 +813,10 @@ untouched.
 
 * [Unix Text Processing (Hayden Books)](https://www.oreilly.com/openbook/utp/)
 > Unix Text Processing, by Dale Dougherty and Tim O'Reilly, was published by Hayden Books in 1987, back when O'Reilly & Associates wrote technical documentation for hire. Hayden later took the book out of print, but Dale and Tim retained the copyright and have decided to make it available through our web site under Creative Commons' Attribution License. 
+
+* [The UNIX Programming Environment - by Brian W. Kernighan and Rob Pike](https://archive.org/details/UnixProgrammingEnviornment/mode/2up)
+
+* [FreeBSD Documentation](https://www.freebsd.org/docs/)
 
 * [Sculpting text with regex, grep, sed, awk, emacs and vim](https://matt.might.net/articles/sculpting-text/)
 
@@ -642,6 +850,42 @@ untouched.
 > It also includes Search functionality, and a standardized page format.
 > * The traditional [HTML tutorials](https://sdf.org/?tutorials#HTML_Tutorials), which are linked below.
 > These contain many basic and advanced tutorials created and updated by SDF users over the years.
+
+* [The Unix site on Stack Exchange](https://unix.stackexchange.com/questions)
+
+* [The Arch Linux Wiki](https://wiki.archlinux.org/)
+> Very useful, even for and other Linux distros and BSDs.
+
+* [Debian Reference](https://www.debian.org/doc/manuals/debian-reference/)
+> Debian Reference - broad overview of the Debian system, covers many aspects of system administration through shell-command examples.
+
+* [The Gentoo Wiki](https://wiki.gentoo.org/)
+
+* [Introduction to UNIX for Web Developers](https://www.extropia.com/tutorials/unix/index.html)
+
+* [BLFS - Beyond Linux From Scratch](https://www.linuxfromscratch.org/blfs/)
+> * What is Beyond Linux From Scratch?
+> 
+> Beyond Linux From Scratch (BLFS) is a project that continues where the LFS book finishes. It assists users in developing their systems according to their needs by providing a broad range of instructions for installing and configuring various packages on top of a base LFS system.
+> 
+> * Why would I want a BLFS system?
+> 
+> If you are wondering why you would want a BLFS system or don't know what LFS is, then you don't want to be here just yet - you should head over to the [LFS Project Homepage](https://www.linuxfromscratch.org/lfs/index.html) where all will be explained.
+> 
+> * What can I do with my BLFS system?
+> 
+> Nearly anything!
+> An LFS system is primed to become a system that fits whatever need you have.
+> BLFS is the book that takes you down your own custom path.
+> You could build an office workstation, a multimedia desktop, a router, a server, or all of the above!
+> And the best part is you only install what you need.
+
+* [Linuxize](https://linuxize.com/)
+
+* [Linux Resources - Andrew McNabb](https://www.mcnabbs.org/andrew/linux/)
+> Miscellaneous projects, config files, and technical information from my personal experience.
+
+* [Linux Cheat Sheets (cheatsheets) - Zintis Perkons](https://www.zintis.net/)
 
 ---
 
@@ -833,6 +1077,56 @@ untouched.
 ## Mental Health
 
 * [Therapy Worksheets](https://www.therapistaid.com/therapy-worksheets)
+
+* [Anxiety and Procrastination: How They're Connected and What to Do About It](https://solvingprocrastination.com/anxiety/)
+> The relationship between anxiety and procrastination is complex. 
+
+* [Using a list to manage executive function - The Day Plan system -- Overthinking Everything](https://drmaciver.substack.com/p/using-a-list-to-manage-executive)
+> The Day Plan system
+> 
+> A Day Plan looks a lot like a TODO list.
+> It more or less is a TODO list.
+> But it's a TODO list that has been optimised for managing anxiety and executive dysfunction, at the cost of not being as good a TODO list.
+> 
+> Day Plan is actually a bad name for it in its current state, but I've been calling it that for so long that the name has become part of it and I don't want to change it.
+> It's not really a plan though, it's more like something to relieve your brain of the burden of keeping track of stuff and making decisions.
+> 
+> A Day Plan is a list of things that you could do today.
+> At the end of the day you will throw it away, never to be looked at again.
+> At this point it should ideally still have some items on it that have not been completed.
+> 
+> [ . . . ]
+> 
+> *Why is the Day Plan designed this way?*
+> 
+> The Day Plan is designed around two principles:
+>
+> * Externalising your task management into a TODO list is obviously useful in all the normal ways.
+> * I get massive TODO list anxiety.
+>
+> It's been my experience that any TODO list system I use will acquire an ugh field around it that gradually turns it into a thing I’m guiltily avoiding.
+> The Day Plan system is the result of my paring away every source of anxiety from a TODO list. 
+
+* [Side effects of Cognitive-Behavioral Therapy (CBT)](https://ask.metafilter.com/126534/Side-effects-of-CognitiveBehavioral-Therapy-CBT)
+>
+> [ . . . ]
+> 
+> I have done CBT for years, in the short-term with a therapist and now on my own.
+> I have mild OCD and "double depression" (dysthymia with occasional major depression) and find that CBT works for me if 1) I continue to take my antidepressant; 2) if I write things down using structured exercises (as in David Burns' *New Feel-Good Workbook*) rather than trying to do it in my head.
+> The antidepressant took down the anxiety level enough that I could actually pay attention to the cognitive distortions rather than counter-arguing them ("But what if I really DID screw up enough that they'll fire me?") and writing the exercises down in a structured way also helped me stick to the routin
+> 
+> I would suggest some short-term work with a therapist.
+> It may be that there are some deeper control issues that are coming up that may make it harder to stick with the CBT on your own.
+> This is strongly suggested by the "I can't relax otherwise I'll get screwed up".
+> Many people with truly dysfunctional family backgrounds develop hypervigilance of this sort, where they feel they have to control things that are actually out of their control.
+
+* [My life was ruled by panic attacks. Here's my seven-point guide to tackling anxiety - Tim Clare](https://www.theguardian.com/lifeandstyle/2022/may/22/my-life-was-ruled-by-panic-attacks-how-tim-clare-learned-to-cope-with-anxiety)
+> *Coward: Why We Get Anxious and What We Can Do About It* by Tim Clare is published by Canongate.
+
+* [Why men should keep a journal](https://www.theguardian.com/lifeandstyle/2017/may/21/why-men-should-keep-a-journal)
+> Writing down how you are feeling has immense mental and physical health benefits - and men need it most, says Ollie Aplin. 
+
+* [The cheesy secret behind successful decision making](https://www.independent.co.uk/news/science/the-cheesy-secret-behind-successful-decision-making-841419.html)
 
 ---
 
