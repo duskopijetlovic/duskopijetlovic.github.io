@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "DevOps for the Desparate with FreeBSD"
+title: "DevOps for the Desparate with FreeBSD [WIP]"
 date: 2025-04-08 20:13:06 -0700 
 categories: devops freebsd sysadmin 
 ---

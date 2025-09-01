@@ -7,6 +7,25 @@ title: "FEC - Frequently Executed Commands [WIP]"
 $ exec xinit  # OR: exec startx
 ```
 
+On laptop:
+
+```
+$ ./mirror_ext_monitor_xrandr.sh
+```
+
+```
+$ cat mirror_ext_monitor_xrandr.sh 
+#!/bin/sh
+
+# Based on 
+#   <https://wiki.archlinux.org/title/Xrandr>
+
+intern=eDP-1
+extern=HDMI-1 
+
+xrandr --output "$intern" --primary --auto --output "$extern" --same-as "$intern" --auto
+```
+
 ```
 $ dmesg | tail -11
 ugen0.5: <Kingston DT microDuo 3C> at usbus0
