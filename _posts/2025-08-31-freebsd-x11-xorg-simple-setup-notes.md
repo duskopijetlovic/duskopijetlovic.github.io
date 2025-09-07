@@ -37,6 +37,147 @@ Laptop (and screen/display) used for this setup: **Lenovo ThinkPad T14s Gen3**
 * CPU: 12th Gen Intel Core i7-1280P
 * RAM: 32 GB
 
+* OS: FreeBSD 14
+* Shell: csh
+* Window Manager: fvwm3 1.1.0
+
+----
+
+# Brightness
+
+
+Add the following two lines to ```/boot/loader.conf```:
+
+```
+acpi_ibm_load="YES"
+acpi_video_load="YES"
+```
+
+Current brightness:
+
+```
+% backlight
+brightness: 32
+```
+
+Change brightness:
+
+```
+% backlight 80
+```
+
+```
+% pkg search gammy
+gammy-0.9.64_1  Adaptive screen brightness and temperature for Windows and Unix
+```
+
+```
+% sudo pkg install gammy
+```
+
+Start gammy:
+
+```
+% gammy
+```
+
+----
+
+# DPI
+
+
+```
+% xrandr | wc -l
+      47
+ 
+% xrandr --verbose | wc -l
+     440
+
+% xrandr | grep "connected primary"
+eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
+```
+
+So, with active area dimensions 301mm x 188mm, my ```/usr/local/etc/X11/xorg.conf.d/10-intel.conf``` file looks like this: 
+
+```
+% cat /usr/local/etc/X11/xorg.conf.d/10-intel.conf
+Section "Monitor"
+    Identifier  "MainMonitor"
+    Option      "Primary" "true"
+    DisplaySize 301 188
+EndSection
+
+Section "Device"
+    Identifier  "intel"
+    Option      "Monitor-eDP-1"   "MainMonitor"
+    Option      "Monitor-HDMI-1"  "ExternalMonitor"
+EndSection
+
+Section "Screen"
+    Identifier "MainScreen"
+    Device     "intel"
+    Monitor    "MainMonitor"
+EndSection
+```
+
+Before the change, DPI on this system was set to 110: 
+
+```
+% grep "Xft.dpi" ~/.Xresources
+Xft.dpi:    110
+```
+
+```
+% xrdb -query | grep dpi 
+Xft.dpi:        110
+```
+
+What should be DPI for this laptop's screen?
+
+To calculate, use a DPI calculator/PPI calculator; for example:
+
+[https://www.sven.de/dpi/](https://www.sven.de/dpi/)
+
+For this laptop's monitor:
+
+* Horizontal resolution: 1920 pixels
+* Vertical resolution: 1200 pixels
+* Diagonal: 14 inches 
+* Aspect ratio: 16:10
+
+The result is:
+
+```
+Display size:
+11.87" × 7.42" = 88.09in (30.15cm × 18.85cm = 568.32cm) at 
+161.73 PPI, 0.1571mm dot pitch, 26155 PPI
+```
+
+That is: **DPI** is **161.73** 
+
+Edit the ```~/.Xresources``` file, and change it from 110 to 161.73.
+
+```
+% grep "Xft.dpi" ~/.Xresources
+Xft.dpi:    161.73
+```
+
+After that, run ```xrdb(1)``` to reload the ```.Xresources``` and replace current settings: 
+
+```
+% xrdb ~/.Xresources
+```
+
+DPI is now set to 161.73:
+
+```
+% xrdb -query | grep dpi
+Xft.dpi:        161.73
+```
+
+----
+
+# Useful Commands and Examples for Exploring Hardware
 
 ```
 % sudo dmidecode | wc -l
@@ -103,38 +244,10 @@ screen #0:
 ```
 
 ```
-% xrandr | wc -l
-      47
- 
-% xrandr --verbose | wc -l
-     440
-
-% xrandr | grep "connected primary"
-eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
+% ls /dev/backlight/
+backlight0              intel_backlight0
 ```
 
-So, with active area dimensions 301mm x 188mm, my ```/usr/local/etc/X11/xorg.conf.d/10-intel.conf``` file looks like this: 
-
-```
-% cat /usr/local/etc/X11/xorg.conf.d/10-intel.conf
-Section "Monitor"
-    Identifier  "MainMonitor"
-    Option      "Primary" "true"
-    DisplaySize 301.50 188.50
-EndSection
-
-Section "Device"
-    Identifier  "intel"
-    Option      "Monitor-eDP-1"   "MainMonitor"
-    Option      "Monitor-HDMI-1"  "ExternalMonitor"
-EndSection
-
-Section "Screen"
-    Identifier "MainScreen"
-    Device     "intel"
-    Monitor    "MainMonitor"
-EndSection
-```
 
 ---
 
