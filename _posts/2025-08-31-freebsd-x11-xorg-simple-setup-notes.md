@@ -237,6 +237,9 @@ vgapci0@pci0:0:2:0:	class=0x030000 rev=0x0c hdr=0x00 vendor=0x8086 device=0x46a6
     device     = 'Alder Lake-P GT2 [Iris Xe Graphics]'
     class      = display
  
+% xdpyinfo | grep "number of screens"
+number of screens:    1
+
 % xdpyinfo | grep -B2 resolution
 screen #0:
   dimensions:    1920x1200 pixels (294x184 millimeters)
@@ -246,6 +249,377 @@ screen #0:
 ```
 % ls /dev/backlight/
 backlight0              intel_backlight0
+```
+
+
+```
+% fc-list | wc -l
+    1895
+
+% fc-list :scalable=true:spacing=mono:family | wc -l
+     175
+
+% fc-list :scalable=true:spacing=mono:family | less
+---- snip ----
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | wc -l
+      60
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | less
+---- snip ----
+```
+
+```
+% fc-match | wc -l
+       1
+
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match SomeFont
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "Some Font"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match 0xProto
+0xProto-Regular.otf: "0xProto" "Regular"
+ 
+% fc-match 0xPROTO
+0xProto-Regular.otf: "0xProto" "Regular"
+
+% fc-match '*0xProto*'
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "*0xProto*"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+```
+
+
+```
+% fc-list | grep 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% find ~/.fonts -iname '*0xProto*'
+/home/dusko/.fonts/0xProto-Regular.otf
+/home/dusko/.fonts/0xProto-Regular.ttf
+```
+
+
+```
+% fc-list | grep -i 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% fc-list -v 0xProto | grep -i file
+        file: "/home/dusko/.fonts/0xProto-Regular.ttf"(s)
+        file: "/home/dusko/.fonts/0xProto-Regular.otf"(s)
+```
+
+
+To get detailed information about 0xProto:
+
+```
+% fc-list -v 0xProto | wc -l
+      88
+ 
+% fc-list -v 0xProto | grep postscriptname
+        postscriptname: "0xProto-Regular"(s)
+        postscriptname: "0xProto-Regular"(s)
+```
+
+
+```
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-list | grep "NotoSans-Regular.ttf"
+/usr/local/share/fonts/noto/NotoSans-Regular.ttf: Noto Sans:style=Regular
+
+% find /usr/local/share/fonts -iname '*Noto*' | wc -l
+     366
+
+% find /usr/local/share/fonts -iname '*Noto*' 
+/usr/local/share/fonts/noto
+/usr/local/share/fonts/noto/NotoSerifDisplay-BlackItalic.ttf
+/usr/local/share/fonts/noto/NotoSerifCJKsc-ExtraLight.otf
+---- snip ----
+/usr/local/share/fonts/noto/NotoSans-BoldItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-SemiCondensedExtraLightItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-BlackItalic.ttf
+```
+
+
+```
+% pkg search --regex ^xfontsel
+xfontsel-1.1.1    Point and click selection of X11 font names
+
+% pkg search --regex --full ^xfontsel
+xfontsel-1.1.1
+Name           : xfontsel
+---- snip ----
+
+Description    :
+This package contains xfontsel, an application which provides 
+a simple way to display fonts known to your X server.
+```
+
+```
+% sudo pkg install xfontsel
+```
+
+```
+% xfontsel -help
+usage:  xfontsel [-options ...] -fn font
+
+where options include:
+    -display dpy           X server to contact
+    -geometry geom         size and location of window
+    -pattern fontspec      font name pattern to match against
+    -print                 print selected font name on exit
+    -sample string         sample text to use for 1-byte fonts
+    -sample16 string       sample text to use for 2-byte fonts
+    -sampleUCS string      sample text to use for ISO10646 fonts
+    -scaled                use scaled instances of fonts
+plus any standard toolkit options
+```
+
+```
+% xfontsel -pattern 'mono' -print
+
+#  The  xfontsel  window displayed:
+#    no names match
+
+% xfontsel -pattern '*mono*' -print
+        
+#  The  xfontsel  window displayed:
+#    106 names match
+
+#  After quitting xfontsel(1):
+
+-*-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-*-*%
+```
+
+
+```
+% pkg search xlsfonts
+xlsfonts-1.0.8    Server font list displayer for X
+
+% sudo pkg install xlsfonts
+```
+
+```
+% xlsfonts -h
+xlsfonts: unrecognized argument -h
+
+usage:  xlsfonts [-options] [-fn pattern]
+where options include:
+    -l[l[l]]                 give long info about each font
+    -m                       give character min and max bounds
+    -C                       force columns
+    -1                       force single column
+    -u                       keep output unsorted
+    -o                       use OpenFont/QueryFont instead of ListFonts
+    -w width                 maximum width for multiple columns
+    -n columns               number of columns if multi column
+    -display displayname     X server to contact
+    -d displayname           (alias for -display displayname)
+    -v                       print program version
+```
+
+```
+% xlsfonts | wc -l
+   23232
+
+% xlsfonts "*" | wc -l
+   23232
+```
+
+```
+% xlsfonts "mono" | wc -l
+xlsfonts: pattern "mono" unmatched
+       0
+
+% xlsfonts "*mono*" | wc -l
+    6962
+
+% xlsfonts "*mono*" | head
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-ascii-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-2
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-3
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb18030.2000-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb2312.1980-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso10646-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso8859-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0201.1976-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0208.1983-0
+```
+
+
+```
+% xlsfonts | wc -l
+   23232
+
+% xlsfonts | grep -i monospaced | wc -l
+       0
+ 
+% xlsfonts | grep -i monospace | wc -l
+       0
+
+% xlsfonts | grep -i fixed | wc -l
+    1014
+
+% xlsfonts | grep -i fixed | tail
+-sony-fixed-medium-r-normal--24-170-100-100-c-120-jisx0201.1976-0
+-sony-fixed-medium-r-normal--24-230-75-75-c-120-iso8859-1
+-sony-fixed-medium-r-normal--24-230-75-75-c-120-iso8859-1
+-sony-fixed-medium-r-normal--24-230-75-75-c-120-jisx0201.1976-0
+-sony-fixed-medium-r-normal--24-230-75-75-c-120-jisx0201.1976-0
+fixed
+fixed
+fixed
+fixed
+koi-fixed
+ 
+% xlsfonts | grep -i fixed | grep ^fixed | wc -l
+       4
+ 
+% xlsfonts | grep -i fixed | grep -i ^fixed | wc -l
+       4
+ 
+% xlsfonts | grep -i fixed | grep ^fixed
+fixed
+fixed
+fixed
+fixed
+```
+
+```
+% sudo pkg install xfd 
+```
+
+```
+% pkg info xfd
+---- snip ----
+Comment        : Display all characters in an X font
+---- snip ----
+Description    :
+This package contains xfd, an applications used for displying all
+characters in an X font.
+```
+
+```
+% xfd -fa gallant
+
+#   xfd(1) loaded Noto Sans-12:style=Regular
+#   WHY?
+#   This is why:
+
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match gallant
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+```
+
+```
+% fc-list | wc -l
+    1895
+
+% sudo pkg install xscreensaver
+
+% fc-list | wc -l
+    1900
+
+% fc-list | grep -i gallant
+/usr/local/share/fonts/xscreensaver/gallant12x22.ttf: gallant12x22:style=Medium
+
+% xfd -fa gallant12x22
+
+#   xfd(1) loaded the correct font, that is:
+#     gallant12x22-12:style=Medium
+
+% xfd -fn gallant12x22
+Warning: Cannot convert string "gallant12x22" to type FontStruct
+xfd:  no font to display
+```
+
+
+```
+% xrdb -query | wc -l
+      47
+
+% xrdb -query | grep -i font | wc -l
+       1
+ 
+% xrdb -query | grep -i font
+XTerm*boldFont: -adobe-courier-bold-r-normal--18-180-75-75-m-110-iso8859-1
+```
+
+```
+% sudo pkg install appres
+appres-1.0.7    Program to list application's resources
+```
+
+```
+% pkg info appres
+appres-1.0.7
+---- snip ----
+
+Description    :
+The appres program prints the resources seen by an application
+(or subhierarchy of an application) with the specified class and
+instance names.  It can be used to determine which resources a 
+particular program will load.
+```
+
+```
+% appres XTerm xterm | wc -l
+     175
+
+% appres XTerm xterm
+---- snip ----
+```
+
+
+```
+% locate "app-defaults" | grep -i xterm
+/usr/local/lib/X11/app-defaults/KOI8RXTerm
+/usr/local/lib/X11/app-defaults/KOI8RXTerm-color
+/usr/local/lib/X11/app-defaults/UXTerm
+/usr/local/lib/X11/app-defaults/UXTerm-color
+/usr/local/lib/X11/app-defaults/XTerm
+/usr/local/lib/X11/app-defaults/XTerm-color
+ 
+% wc -l /usr/local/lib/X11/app-defaults/XTerm
+     272 /usr/local/lib/X11/app-defaults/XTerm
+
+% grep -v \! /usr/local/lib/X11/app-defaults/XTerm | wc -l
+     149
+
+% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i fix | wc -l
+       8
+
+% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i fixed
+*VT100.utf8Fonts.font2: -misc-fixed-medium-r-normal--8-80-75-75-c-50-iso10646-1
+*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+*VT100.utf8Fonts.font3: -misc-fixed-medium-r-normal--14-130-75-75-c-70-iso10646-1
+*VT100.utf8Fonts.font4: -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso10646-1
+*VT100.utf8Fonts.font5: -misc-fixed-medium-r-normal--18-120-100-100-c-90-iso10646-1
+*VT100.utf8Fonts.font6: -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1
+! The default fixed font and font2-font6 are commonly aliased to iso106461 (Unicode)
+!*VT100.utf8Fonts.font7: -sony-fixed-medium-r-normal--24-170-100-100-c-120-iso8859-1
+```
+
+```
+% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i default
+*fontMenu*fontdefault*Label:    Default
+! The default fixed font and font2-font6 are commonly aliased to iso106461 (Unicode)
+!                                             fontdefault/SmeBSB
+!                                             fontdefault/SmeBSB
+! xterm can switch at runtime between bitmap (default) and TrueType fonts.
 ```
 
 
@@ -461,6 +835,21 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 > DPI: Dots per Inch – The Printed World
 
 * [What is the difference between DPI (dots per inch) and PPI (pixels per inch)?](https://graphicdesign.stackexchange.com/questions/6080/what-is-the-difference-between-dpi-dots-per-inch-and-ppi-pixels-per-inch)
+
+
+**References - Miscellaneous**
+
+* [Setting up FreeBSD for Lenovo Thinkpad X220 (2011 year)](https://eugene-andrienko.com/it/2020/09/26/thinkpad-x220-freebsd.html)
+
+* [Cannot change brightness on laptop (FreeBSD 13.1) (Thread Start date: Dec 15, 2022) -- FreeBSD Forums](https://forums.freebsd.org/threads/cannot-change-brightness-on-laptop-freebsd-13-1.87460/)
+
+* [Brightness: lxqt-config-brightness and Gammy -- FreeBSD Forums](https://forums.freebsd.org/threads/brightness-lxqt-config-brightness-and-gammy.79960/)
+
+* [XTerm introduction and TrueType fonts configuration](https://futurile.net/2016/06/14/xterm-setup-and-truetype-font-configuration/)
+
+* [Vi-Mode Ubiquitous Cursor Indicator](http://micahelliott.com/posts/2015-07-20-vim-zsh-tmux-cursor.html)
+
+* [Change font size in XTerm using keyboard](https://blog.rot13.org/2010/03/change-font-size-in-xterm-using-keyboard.html)
 
 ---
 
