@@ -6,6 +6,15 @@ categories: x11 xorg xterm config dotfiles howto font freebsd utf8 unicode unix
             cli terminal shell tip 
 ---
 
+Word cloud: font, typography, kerning, bitmap, monospaced, 
+                  fixed, fixed-pitch, fixed-width, non-proportional, 
+                  proportional, variable-pitch, glyph, 
+                  TrueType, Xft, fontconfig, `.otf`, `.ttf`, `.ttc`, `.bdf`, 
+                  Unicode, UTF-8,
+                  xterm, terminal, shell, CLI
+
+----
+
 # My Notes from [How to configure X11 in a simple way](https://eugene-andrienko.com/it/2025/07/24/x11-configuration-simple.html) by Eugene Andrienko
 (Posted on 2025-07-24. Retrieved on 2025-08-31.)
 
@@ -177,179 +186,32 @@ Xft.dpi:        161.73
 
 ----
 
-# Useful Commands and Examples for Exploring Hardware
+# Fonts TODO 
+
+## xfontsel, xlsfonts, xfd 
+
+If on your FreeBSD system these three packages (`xfontsel`, `xlsfonts`, `xfd`) were not installed when you installed the `X` (`xorg`) metaport and other `X` (`xorg`) -related metaports and ports, you'll need to install them. 
+
+To list `X` (`xorg`) and `X` (`xorg`) -related metaports and ports:
 
 ```
-% sudo dmidecode | wc -l
-     975
-
-% sudo dmidecode | grep "Version: ThinkPad"
-      Version: ThinkPad T14s Gen 3
-
-% sudo dmidecode | grep "SKU Number: LENOVO"
-      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
-
-% sudo dmidecode | sed -n 608,616p
-System Information
-      Manufacturer: LENOVO
-      Product Name: 21BR000NUS
-      Version: ThinkPad T14s Gen 3
-      Serial Number: [redacted]
-      UUID: [redacted]
-      Wake-up Type: Power Switch
-      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
-      Family: ThinkPad T14s Gen 3
-
-% sudo dmidecode | grep Intel | grep Version
-      Version: 12th Gen Intel(R) Core(TM) i7-1280P
-
-% sudo dmidecode | sed -n 517,521p
-Processor Information
-      Socket Designation: U3E1
-      Type: Central Processor
-      Family: Core i7
-      Manufacturer: Intel(R) Corporation
-
-% sudo dmidecode | grep i7 | grep Version
-        Version: 12th Gen Intel(R) Core(TM) i7-1280P
+% pkg info | grep ^xorg-
+xorg-7.7_3                   X.Org complete distribution metaport
+xorg-apps-7.7_4              X.org apps meta-port
+xorg-docs-1.7.3,1            X.org documentation files
+xorg-drivers-7.7_7           X.org drivers meta-port
+xorg-fonts-7.7_1             X.org fonts meta-port
+xorg-fonts-100dpi-7.7        X.Org 100dpi bitmap fonts
+xorg-fonts-75dpi-7.7         X.Org 75dpi bitmap fonts
+xorg-fonts-cyrillic-7.7      X.Org Cyrillic bitmap fonts
+xorg-fonts-miscbitmaps-7.7   X.Org miscellaneous bitmap fonts
+xorg-fonts-truetype-7.7_1    X.Org TrueType fonts
+xorg-fonts-type1-7.7         X.Org Type1 fonts
+xorg-libraries-7.7_6         X.org libraries meta-port
+xorg-server-21.1.18,1        X.Org X server and related programs
 ```
 
-```
-% sysctl hw.physmem
-hw.physmem: 34007212032
-
-% printf %s\\n "34359738368 / 1024 / 1024" | bc
-32768
- 
-% printf %s\\n "34359738368 / 1024 / 1024 / 1024" | bc
-32
-```
-
-```
-% dmesg | grep "real memory"
-real memory  = 34359738368 (32768 MB)
-```
-
-```
-% pciconf -lv | grep -B3 display
-vgapci0@pci0:0:2:0:	class=0x030000 rev=0x0c hdr=0x00 vendor=0x8086 device=0x46a6 subvendor=0x17aa subdevice=0x22ee
-    vendor     = 'Intel Corporation'
-    device     = 'Alder Lake-P GT2 [Iris Xe Graphics]'
-    class      = display
- 
-% xdpyinfo | grep "number of screens"
-number of screens:    1
-
-% xdpyinfo | grep -B2 resolution
-screen #0:
-  dimensions:    1920x1200 pixels (294x184 millimeters)
-  resolution:    166x166 dots per inch
-```
-
-```
-% ls /dev/backlight/
-backlight0              intel_backlight0
-```
-
-
-```
-% fc-list | wc -l
-    1895
-
-% fc-list :scalable=true:spacing=mono:family | wc -l
-     175
-
-% fc-list :scalable=true:spacing=mono:family | less
----- snip ----
-
-% fc-list :scalable=true:spacing=mono:family | grep mono | wc -l
-      60
-
-% fc-list :scalable=true:spacing=mono:family | grep mono | less
----- snip ----
-```
-
-```
-% fc-match | wc -l
-       1
-
-% fc-match
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-
-% fc-match SomeFont
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-match "Some Font"
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-
-% fc-match 0xProto
-0xProto-Regular.otf: "0xProto" "Regular"
- 
-% fc-match 0xPROTO
-0xProto-Regular.otf: "0xProto" "Regular"
-
-% fc-match '*0xProto*'
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-match "*0xProto*"
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-```
-
-
-```
-% fc-list | grep 0xProto
-/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
-/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
-
-% find ~/.fonts -iname '*0xProto*'
-/home/dusko/.fonts/0xProto-Regular.otf
-/home/dusko/.fonts/0xProto-Regular.ttf
-```
-
-
-```
-% fc-list | grep -i 0xProto
-/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
-/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
-
-% fc-list -v 0xProto | grep -i file
-        file: "/home/dusko/.fonts/0xProto-Regular.ttf"(s)
-        file: "/home/dusko/.fonts/0xProto-Regular.otf"(s)
-```
-
-
-To get detailed information about 0xProto:
-
-```
-% fc-list -v 0xProto | wc -l
-      88
- 
-% fc-list -v 0xProto | grep postscriptname
-        postscriptname: "0xProto-Regular"(s)
-        postscriptname: "0xProto-Regular"(s)
-```
-
-
-```
-% fc-match
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-list | grep "NotoSans-Regular.ttf"
-/usr/local/share/fonts/noto/NotoSans-Regular.ttf: Noto Sans:style=Regular
-
-% find /usr/local/share/fonts -iname '*Noto*' | wc -l
-     366
-
-% find /usr/local/share/fonts -iname '*Noto*' 
-/usr/local/share/fonts/noto
-/usr/local/share/fonts/noto/NotoSerifDisplay-BlackItalic.ttf
-/usr/local/share/fonts/noto/NotoSerifCJKsc-ExtraLight.otf
----- snip ----
-/usr/local/share/fonts/noto/NotoSans-BoldItalic.ttf
-/usr/local/share/fonts/noto/NotoSans-SemiCondensedExtraLightItalic.ttf
-/usr/local/share/fonts/noto/NotoSans-BlackItalic.ttf
-```
-
+On my system they were not installed so I had to install them.
 
 ```
 % pkg search --regex ^xfontsel
@@ -415,17 +277,17 @@ xlsfonts: unrecognized argument -h
 
 usage:  xlsfonts [-options] [-fn pattern]
 where options include:
-    -l[l[l]]                 give long info about each font
-    -m                       give character min and max bounds
-    -C                       force columns
-    -1                       force single column
-    -u                       keep output unsorted
-    -o                       use OpenFont/QueryFont instead of ListFonts
-    -w width                 maximum width for multiple columns
-    -n columns               number of columns if multi column
-    -display displayname     X server to contact
-    -d displayname           (alias for -display displayname)
-    -v                       print program version
+ -l[l[l]]             give long info about each font
+ -m                   give character min and max bounds
+ -C                   force columns
+ -1                   force single column
+ -u                   keep output unsorted
+ -o                   use OpenFont/QueryFont instead of ListFonts
+ -w width             maximum width for multiple columns
+ -n columns           number of columns if multi column
+ -display displayname X server to contact
+ -d displayname       (alias for -display displayname)
+ -v                   print program version
 ```
 
 ```
@@ -510,6 +372,8 @@ This package contains xfd, an applications used for displying all
 characters in an X font.
 ```
 
+NOTE: In addition to `-fn` option (which specifies the *core X* server side font to be displayed), the `xfd(1)` utility *also supports* `-fa` option (which specifies an *Xft* font to be displayed).
+
 ```
 % xfd -fa gallant
 
@@ -524,39 +388,61 @@ NotoSans-Regular.ttf: "Noto Sans" "Regular"
 NotoSans-Regular.ttf: "Noto Sans" "Regular"
 ```
 
-```
-% fc-list | wc -l
-    1895
-
-% sudo pkg install xscreensaver
-
-% fc-list | wc -l
-    1900
-
-% fc-list | grep -i gallant
-/usr/local/share/fonts/xscreensaver/gallant12x22.ttf: gallant12x22:style=Medium
-
-% xfd -fa gallant12x22
-
-#   xfd(1) loaded the correct font, that is:
-#     gallant12x22-12:style=Medium
-
-% xfd -fn gallant12x22
-Warning: Cannot convert string "gallant12x22" to type FontStruct
-xfd:  no font to display
-```
-
 
 ```
-% xrdb -query | wc -l
-      47
-
-% xrdb -query | grep -i font | wc -l
-       1
- 
-% xrdb -query | grep -i font
-XTerm*boldFont: -adobe-courier-bold-r-normal--18-180-75-75-m-110-iso8859-1
+% xfd -fn "-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 ```
+
+Loaded:
+
+```
+-Adobe-Courier-Bold-O-normal--17-120-100-100-M-100-ISO8859-1
+```
+
+To confirm:
+
+```
+% xfontsel -print -fn "-Adobe-Courier-Bold-O-normal--17-120-100-100-M-100-ISO8859-1"
+```
+
+Output:
+
+```
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
+```
+
+```
+% xfd -fn fixed
+```
+
+Loaded:
+
+```
+-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+```
+% xfontsel -print -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1"
+```
+
+Output:
+
+```
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
+```
+
+```
+% xfontsel -print -fn fixed
+```
+
+Output:
+
+```
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
+```
+
+
+## appres
 
 ```
 % sudo pkg install appres
@@ -583,6 +469,8 @@ particular program will load.
 ---- snip ----
 ```
 
+
+## app-defaults
 
 ```
 % locate "app-defaults" | grep -i xterm
@@ -623,10 +511,301 @@ particular program will load.
 ```
 
 
+## xrdb 
+
+```
+% xrdb -query | wc -l
+      47
+
+% xrdb -query | grep -i font | wc -l
+       1
+ 
+% xrdb -query | grep -i font
+XTerm*boldFont: -adobe-courier-bold-r-normal--18-180-75-75-m-110-iso8859-1
+```
+
+
+## fc-list, fc-match
+
+```
+% fc-list | wc -l
+    1895
+
+% sudo pkg install xscreensaver
+
+% fc-list | wc -l
+    1900
+
+% fc-list | grep -i gallant
+/usr/local/share/fonts/xscreensaver/gallant12x22.ttf: gallant12x22:style=Medium
+
+% xfd -fa gallant12x22
+
+#   xfd(1) loaded the correct font, that is:
+#     gallant12x22-12:style=Medium
+
+% xfd -fn gallant12x22
+Warning: Cannot convert string "gallant12x22" to type FontStruct
+xfd:  no font to display
+```
+
+```
+% fc-list | wc -l
+    1895
+
+% fc-list :scalable=true:spacing=mono:family | wc -l
+     175
+
+% fc-list :scalable=true:spacing=mono:family | less
+---- snip ----
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | wc -l
+      60
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | less
+---- snip ----
+```
+
+```
+% fc-match | wc -l
+       1
+
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match SomeFont
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "Some Font"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match 0xProto
+0xProto-Regular.otf: "0xProto" "Regular"
+ 
+% fc-match 0xPROTO
+0xProto-Regular.otf: "0xProto" "Regular"
+
+% fc-match '*0xProto*'
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "*0xProto*"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+```
+
+
+```
+% fc-list | grep 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% find ~/.fonts -iname '*0xProto*'
+/home/dusko/.fonts/0xProto-Regular.otf
+/home/dusko/.fonts/0xProto-Regular.ttf
+```
+
+
+```
+% fc-list | grep -i 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% fc-list -v 0xProto | grep -i file
+        file: "/home/dusko/.fonts/0xProto-Regular.ttf"(s)
+        file: "/home/dusko/.fonts/0xProto-Regular.otf"(s)
+```
+
+
+To get detailed information about a font; for example, about 0xProto font:
+
+```
+% fc-list -v 0xProto | wc -l
+      88
+ 
+% fc-list -v 0xProto | grep postscriptname
+        postscriptname: "0xProto-Regular"(s)
+        postscriptname: "0xProto-Regular"(s)
+```
+
+
+```
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-list | grep "NotoSans-Regular.ttf"
+/usr/local/share/fonts/noto/NotoSans-Regular.ttf: Noto Sans:style=Regular
+
+% find /usr/local/share/fonts -iname '*Noto*' | wc -l
+     366
+
+% find /usr/local/share/fonts -iname '*Noto*' 
+/usr/local/share/fonts/noto
+/usr/local/share/fonts/noto/NotoSerifDisplay-BlackItalic.ttf
+/usr/local/share/fonts/noto/NotoSerifCJKsc-ExtraLight.otf
+---- snip ----
+/usr/local/share/fonts/noto/NotoSans-BoldItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-SemiCondensedExtraLightItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-BlackItalic.ttf
+```
+
+----
+
+
+# Useful Commands and Examples for Exploring Hardware
+
+```
+% sudo dmidecode | wc -l
+     975
+
+% sudo dmidecode | grep "Version: ThinkPad"
+      Version: ThinkPad T14s Gen 3
+
+% sudo dmidecode | grep "SKU Number: LENOVO"
+      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
+
+% sudo dmidecode | sed -n 608,616p
+System Information
+      Manufacturer: LENOVO
+      Product Name: 21BR000NUS
+      Version: ThinkPad T14s Gen 3
+      Serial Number: [redacted]
+      UUID: [redacted]
+      Wake-up Type: Power Switch
+      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
+      Family: ThinkPad T14s Gen 3
+
+% sudo dmidecode | grep Intel | grep Version
+      Version: 12th Gen Intel(R) Core(TM) i7-1280P
+
+% sudo dmidecode | sed -n 517,521p
+Processor Information
+      Socket Designation: U3E1
+      Type: Central Processor
+      Family: Core i7
+      Manufacturer: Intel(R) Corporation
+
+% sudo dmidecode | grep i7 | grep Version
+        Version: 12th Gen Intel(R) Core(TM) i7-1280P
+```
+
+```
+% sysctl hw.physmem
+hw.physmem: 34007212032
+
+% printf %s\\n "34359738368 / 1024 / 1024" | bc
+32768
+ 
+% printf %s\\n "34359738368 / 1024 / 1024 / 1024" | bc
+32
+```
+
+```
+% dmesg | grep "real memory"
+real memory  = 34359738368 (32768 MB)
+```
+
+```
+% pciconf -lv | grep -B3 display
+vgapci0@pci0:0:2:0:	class=0x030000 rev=0x0c hdr=0x00 vendor=0x8086 device=0x46a6 subvendor=0x17aa subdevice=0x22ee
+    vendor     = 'Intel Corporation'
+    device     = 'Alder Lake-P GT2 [Iris Xe Graphics]'
+    class      = display
+ 
+% xdpyinfo | grep "number of screens"
+number of screens:    1
+
+% xdpyinfo | grep -B2 resolution
+screen #0:
+  dimensions:    1920x1200 pixels (294x184 millimeters)
+  resolution:    166x166 dots per inch
+```
+
+```
+% ls /dev/backlight/
+backlight0              intel_backlight0
+```
+
 ---
 
 ## Laptop with an External Monitor - TODO
 
+
+---
+
+TODO: 
+
+[The Unicode HOWTO: Display setup](https://linux.die.net/HOWTO/Unicode-HOWTO-2.html)
+
+---
+
+TODO:
+
+* [Pleasant Fonts - FreeBSD Forums](https://forums.freebsd.org/threads/pleasant-fonts.84570/)
+
+* [Fonts on Linux, Chapter One: Changing Default and Fallback Fonts with Fontconfig](https://dt.iki.fi/fontconfig-1)
+
+* [How To Set Default Fonts and Font Aliases on Linux](https://jichu4n.com/posts/how-to-set-default-fonts-and-font-aliases-on-linux/)
+
+* [UTF8 Playground](https://utf8-playground.netlify.app/)
+
+* [UTF8 Playground - Source on GitHub](https://github.com/vishnuharidas/utf8-playground)
+
+* [Font configuration](https://wiki.archlinux.org/title/Font_configuration#Replace_or_set_default_fonts)
+> Although [Fontconfig](https://www.freedesktop.org/wiki/Software/fontconfig/) is used often in modern Unix and Unix-like operating systems, some applications rely on the original method of font selection and display, the [X Logical Font Description](https://wiki.archlinux.org/title/X_Logical_Font_Description) (XLFD).
+
+---
+
+TODO:
+
+```
+% pkg search terminus-font
+terminus-font-4.49.1_1   Terminus Font - a clean fixed width font
+
+% pkg search --regex ^terminus
+terminus-font-4.49.1_1   Terminus Font - a clean fixed width font
+terminus-ttf-4.49.3      Terminus Font - a clean fixed width font (TTF version)
+ 
+% pkg rquery %dn terminus-font
+mkfontscale
+fontconfig
+```
+
+```
+% xterm -report-fonts > xterm-report-fonts
+
+% awk '{print $1}' xterm-report-fonts | grep -n "^f[A-Z]"
+2:fNorm:
+29:fBold:
+56:fWide:
+83:fWBold:
+111:fNorm:
+138:fBold:
+165:fWide:
+192:fWBold:
+
+% sed -n 2p /tmp/xterm-report-fonts 
+        fNorm: fixed
+
+% sed -n 29p /tmp/xterm-report-fonts
+        fBold: fixed
+
+% sed -n 56p /tmp/xterm-report-fonts
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+
+% sed -n 83p /tmp/xterm-report-fonts
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+
+% sed -n 111p /tmp/xterm-report-fonts
+        fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+
+% sed -n 138p /tmp/xterm-report-fonts
+        fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+
+% sed -n 165p /tmp/xterm-report-fonts
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+
+% sed -n 192p /tmp/xterm-report-fonts
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
 
 ---
 
@@ -851,9 +1030,158 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 
 * [Change font size in XTerm using keyboard](https://blog.rot13.org/2010/03/change-font-size-in-xterm-using-keyboard.html)
 
+* [XLFD (X Logical Font Description) Conventions](https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/XLFD/xlfd.html)
+
+* [fontconfig - A library for configuring and customizing font access](https://www.freedesktop.org/wiki/Software/fontconfig/)
+
+* [The Unicode HOWTO: Display setup](https://linux.die.net/HOWTO/Unicode-HOWTO-2.html)
+
+* [The Unicode HOWTO, Bruno Haible, haible@clisp.cons.org, v1.0, 23 January 2001](https://linux.die.net/HOWTO/Unicode-HOWTO.html)
+> This document describes how to change your Linux system so it uses UTF-8 as text encoding.
+> This is work in progress.
+> Any tips, patches, pointers, URLs are very welcome.
+
 ---
 
 ## Footnotes
 
 [1] A *monospaced* font, also called a *fixed-pitch*, *fixed-width*, or *non-proportional* font, is a font whose letters and characters each occupy the same amount of *horizontal space*.
 This contrasts with variable-width fonts, where the letters and spacings have different widths.
+
+The ```font``` resource is a standard resource setting for the *X Toolkit*, which deals only with [XLFD (X Logical Font Description) Conventions](https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/XLFD/xlfd.html) bitmap, while ```faceName``` was added long after, in applications such as *xterm* to provide a way to specify **TrueType** fonts (actually whatever ```fontconfig``` supports, which *can* include *bitmap* fonts).
+
+---
+From [XLFD (X Logical Font Description) Conventions](https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/XLFD/xlfd.html): 
+
+* Monospaced = fixed pitch
+  - A font whose logical character widths are constant (that is, every glyph in the font has the same logical width).
+* Proportional = variable pitch
+  - A font whose logical character widths vary for each glyph.
+* CharCell
+  - A monospaced font that follows the standard typewriter character cell model (that is, the glyphs of the font can be modeled by X clients as "boxes" of the same width and height that are imaged side-by-side to form text strings or top-to-bottom to form text lines).
+  By definition, all glyphs have the same logical character width, and no glyphs have "ink" outside of the character cell.
+  There is no kerning.
+
+---
+
+* XLFD (bitmap): [xlsfonts](http://linux.die.net/man/1/xlsfonts), [xfontsel](https://linux.die.net/man/1/xfontsel), [xfd](https://linux.die.net/man/1/xfd)
+* [fontconfig](https://www.freedesktop.org/wiki/Software/fontconfig/) (TrueType *and* it can support *bitmap* fonts too): [fc-list](http://linux.die.net/man/1/fc-list), [fc-match](https://linux.die.net/man/1/fc-match) 
+
+* From [X Logical Font Description (XLFD) - Arch Wiki](https://wiki.archlinux.org/title/X_Logical_Font_Description):
+> [X Logical Font Description (XLFD)](https://en.wikipedia.org/wiki/X_logical_font_description) is the *original* **core** X11 fonts system.
+> It was designed for **bitmap** fonts, and support for **scalable** fonts (Type 1, TrueType, and OpenType/CFF) was added *later*.
+* XLFD *does not support* anti‑aliasing and sub‑pixel rasterization.
+
+---
+
+
+From [Fonts in X11R6.8, Juliusz Chroboczek, jch@pps.jussieu.fr, 25 March 2004](https://www.x.org/archive/X11R6.8.0/doc/fonts.html), [Section 3. Fonts included with X11R6.8](https://www.x.org/archive/X11R6.8.0/doc/fonts3.html) 
+> Fonts included with X11R6.8
+>
+> 3.1. Standard bitmap fonts
+> 
+> The Sample Implementation of X11 (SI) comes with a large number of bitmap fonts, including the `fixed' family, and bitmap versions of Courier, Times, Helvetica and some members of the Lucida family.
+> In the SI, these fonts are provided in the **ISO 8859-1** encoding (ISO Latin Western-European).
+> 
+> In X11R6.8, a number of these fonts are provided in *Unicode-encoded* font files instead.
+> At build time, these fonts are split into font files encoded according to legacy encodings, a process which allows us to provide the standard fonts in a number of regional encodings with no duplication of work.
+> 
+> For example, the font file
+>
+> ```
+> /usr/X11R6/lib/X11/fonts/misc/6x13.bdf
+> ```
+>
+> with XLFD
+>
+> ```
+> -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+> ```
+>
+> is a Unicode-encoded version of the standard `fixed' font with added support for the Latin, Greek, Cyrillic, Georgian, Armenian, IPA and other scripts plus numerous technical symbols. 
+
+---
+
+# Glossary / Acronyms / Terms [TODO]
+
+* (Often used interchangeably) X.Org Server - X - X11 - Xorg: X.Org Foundation implementation of the X Window System (X11) display server
+  - So, X.Org Server (X): *implementation* of the *X Window System* (X11) *display server*
+    - X Window System = X11
+    - X11 = protocol, the core protocol
+    - X.Org Server = X
+
+References:
+
+* [X Window System - Wikipedia](https://en.wikipedia.org/wiki/X_Window_System):
+> X Window System (X11, or simply X) is a windowing system for bitmap displays, common on Unix-like operating systems.
+
+* [Windowing system - Wikipedia](https://en.wikipedia.org/wiki/Windowing_system): 
+> The X Window System was first released in 1984 and is historically the main windowing system for Unix and Unix-like operating systems.
+> The **core protocol** has been at **version 11** since **1987**, hence it commonly being known as "X11".
+> The current reference implementation of the X11 protocol is the X.Org Server, which provides the display server and some ancillary components. 
+>
+> [ . . . ]
+> 
+> The *main* component of any windowing system is usually called the *display server*, although alternative terms such as *window server* are also in use.
+
+* [Xorg - Arch Wiki](https://wiki.archlinux.org/title/Xorg)
+> [X.Org Server](https://en.wikipedia.org/wiki/X.Org_Server) - commonly referred to as simply **X** - is the [X.Org Foundation](https://en.wikipedia.org/wiki/X.Org_Foundation) implementation of the [X Window System](https://en.wikipedia.org/wiki/X_Window_System) (**X11**) display server, and it is the most popular display server among Linux users.
+>
+> For the alternative and successor, see [Wayland](https://wiki.archlinux.org/title/Wayland).
+
+* XLFD = X Logical Font Description 
+
+* Type 1, TrueType, OpenType/CFF = scalable fonts
+
+---
+
+# FAQ
+
+## How do misc-fixed look like?
+
+Answer: On my FreeBSD 14 system:
+
+```
+% xfontsel -print
+```
+
+For `fndry` select `misc`.
+For `fmly` select `fixed`.
+Click 'quit'.
+
+Output:
+
+```
+-misc-fixed-*-*-*-*-*-*-*-*-*-*-*-*%
+```
+
+Then with xfd(1): 
+
+```
+% xfd -fn "-Misc-Fixed-Bold-R-Normal--13-120-75-75-c-70-ISO8859-1"
+```
+
+Similarly:
+
+```
+% xfd -fn "-misc-fixed-*-*-*-*-*-*-*-*-*-*-*-*"
+```
+
+will load the same font; that is: -Misc-Fixed-Bold-R-Normal--13-120-75-75-c-70-ISO8859-1
+
+---
+
+<!--
+  -- TODO:
+  -- 
+  -- https://iamvishnu.com/posts/utf8-is-brilliant-design
+  -- http://docsrv.sco.com/en/GECG/X_Font_ProcListXsrv.html 
+  -- http://docsrv.sco.com/en/GECG/X_Font_ProcListXsrv.html 
+  -- https://ia801601.us.archive.org/22/items/xwindowsystem03quermiss/xwindowsystem03quermiss.pdf 
+  -- https://forums.freebsd.org/threads/pleasant-fonts.84570/
+  -- https://old.reddit.com/r/chrome/comments/6fbeh4/is_it_possible_to_use_bitmap_fonts_in_chrome/ 
+  -- https://www.x.org/archive/X11R6.8.0/doc/fonts3.html
+  -- [FAQ: Fonts - University of Utah - Mathematics Department](https://www.math.utah.edu/faq/fonts/fonts.html) 
+  -- https://stackoverflow.com/questions/59889366/identify-xterm-fonts-being-used-and-corresponding-cygwin-package 
+  -->
+
