@@ -6,10 +6,10 @@ categories: x11 xorg xterm config dotfiles howto font freebsd utf8 unicode unix
             cli terminal shell tip 
 ---
 
-Word cloud: font, typography, kerning, bitmap, monospaced, 
+Word cloud: font, typography, kerning, bitmap, XLFD, monospaced, 
                   fixed, fixed-pitch, fixed-width, non-proportional, 
-                  proportional, variable-pitch, glyph, 
-                  TrueType, Xft, fontconfig, `.otf`, `.ttf`, `.ttc`, `.bdf`, 
+                  proportional, variable-pitch, glyph, XLFD,
+                  FreeType, Xft, fontconfig, `.otf`, `.ttf`, `.ttc`, `.bdf`, 
                   Unicode, UTF-8,
                   xterm, terminal, shell, CLI
 
@@ -22,7 +22,7 @@ Word cloud: font, typography, kerning, bitmap, monospaced,
 
 * High DPI (HighDPI or HiDPI) display 
 * Fonts
-  * Shell, terminal - XTerm
+  * Shell, terminal - **XTerm**
   * Proportional vs. monospace(d) vs. bitmap (pixel fonts) vs. fixed bitmap vs. TrueType (Xft) [<sup>[1](#footnotes)</sup>]
   * Unicode
 * Brightness
@@ -49,6 +49,14 @@ Laptop (and screen/display) used for this setup: **Lenovo ThinkPad T14s Gen3**
 * OS: FreeBSD 14
 * Shell: csh
 * Window Manager: fvwm3 1.1.0
+
+----
+
+# Starting X (X Window System, X11)
+
+```
+% exec xinit  # OR: exec startx
+```
 
 ----
 
@@ -186,547 +194,315 @@ Xft.dpi:        161.73
 
 ----
 
-# Fonts TODO 
+## Fonts for Use with XTerm
 
-## xfontsel, xlsfonts, xfd 
+In general, for `xterm(1)`, I prefer using bitmapped (old-style) fixed width fonts when I'm using an external monitor, while for a a laptop, I like better OpenType (OTF, new-style) and TrueType fonts (TTF, new-style).
 
-If on your FreeBSD system these three packages (`xfontsel`, `xlsfonts`, `xfd`) were not installed when you installed the `X` (`xorg`) metaport and other `X` (`xorg`) -related metaports and ports, you'll need to install them. 
+From [Install TTF font on xterm (cygwin)](https://superuser.com/questions/920572/install-ttf-font-on-xterm-cygwin):
+> TrueType fonts (TTF) with X are usually done using `fontconfig`.
+> One of its features is that it looks by default in the **.fonts** directory under your **home** directory.
+> You would use `fc-list` to list the fonts which are available, and use them with the `-fa` (family name) and `-fs` (font size) options of `xterm`. (while `xfd` has a corresponding `-fa` option, `xfontsel` does not).
+> 
+> `xset` on the other hand, looks for **bitmap** fonts which are referenced using the **XLFD** naming convention.
+>You would use `xlsfonts` for listing those, and the `-fn` option of `xterm`.
 
-To list `X` (`xorg`) and `X` (`xorg`) -related metaports and ports:
 
-```
-% pkg info | grep ^xorg-
-xorg-7.7_3                   X.Org complete distribution metaport
-xorg-apps-7.7_4              X.org apps meta-port
-xorg-docs-1.7.3,1            X.org documentation files
-xorg-drivers-7.7_7           X.org drivers meta-port
-xorg-fonts-7.7_1             X.org fonts meta-port
-xorg-fonts-100dpi-7.7        X.Org 100dpi bitmap fonts
-xorg-fonts-75dpi-7.7         X.Org 75dpi bitmap fonts
-xorg-fonts-cyrillic-7.7      X.Org Cyrillic bitmap fonts
-xorg-fonts-miscbitmaps-7.7   X.Org miscellaneous bitmap fonts
-xorg-fonts-truetype-7.7_1    X.Org TrueType fonts
-xorg-fonts-type1-7.7         X.Org Type1 fonts
-xorg-libraries-7.7_6         X.org libraries meta-port
-xorg-server-21.1.18,1        X.Org X server and related programs
-```
+### Fonts for Use with XTerm on This Laptop - Main Screen (Built-In Display)
 
-On my system they were not installed so I had to install them.
+
+In order of preference:
+
+
+#### 0xProto - OpenType Font (OTF), TrueType Font (TTF) 
 
 ```
-% pkg search --regex ^xfontsel
-xfontsel-1.1.1    Point and click selection of X11 font names
-
-% pkg search --regex --full ^xfontsel
-xfontsel-1.1.1
-Name           : xfontsel
----- snip ----
-
-Description    :
-This package contains xfontsel, an application which provides 
-a simple way to display fonts known to your X server.
+% xterm -fa 0xProto -fs 12
 ```
 
-```
-% sudo pkg install xfontsel
-```
+#### X Core Fonts (Bitmapped, XLFD) for XTerm on This Laptop 
 
 ```
-% xfontsel -help
-usage:  xfontsel [-options ...] -fn font
+% xterm -fn "-adobe-courier-medium-r-normal--24-240-75-75-m-150-iso10646-1"
 
-where options include:
-    -display dpy           X server to contact
-    -geometry geom         size and location of window
-    -pattern fontspec      font name pattern to match against
-    -print                 print selected font name on exit
-    -sample string         sample text to use for 1-byte fonts
-    -sample16 string       sample text to use for 2-byte fonts
-    -sampleUCS string      sample text to use for ISO10646 fonts
-    -scaled                use scaled instances of fonts
-plus any standard toolkit options
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-34-240-100-100-m-200-iso10646-1"
+
+% xterm -fn "-adobe-courier-medium-r-normal--34-240-100-100-m-200-iso10646-1"
+
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-24-240-75-75-m-140-iso10646-1"
+
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-26-190-100-100-m-159-iso10646-1"
+
+% xterm -fn "-ibm-courier-medium-r-normal--0-0-0-0-m-0-iso10646-1"
+
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-20-140-100-100-m-120-iso10646-1"
+
+% xterm -fn "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1"
+
+% xterm -fn "-bitstream-terminal-medium-r-normal--18-140-100-100-c-110-iso8859-1"
+
+% xterm -fa '' -fn "-sun-gallant-medium-r-normal--22-220-75-75-c-120-iso10646-1" 
 ```
 
-```
-% xfontsel -pattern 'mono' -print
+For the last (Gallant Font), you have to install it from [https://github.com/NanoBillion/gallant](https://github.com/NanoBillion/gallant).
 
-#  The  xfontsel  window displayed:
-#    no names match
 
-% xfontsel -pattern '*mono*' -print
-        
-#  The  xfontsel  window displayed:
-#    106 names match
+#### Searching for Bitmap Fonts (X Core Fonts, XLFD Fonts)
 
-#  After quitting xfontsel(1):
-
--*-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-*-*%
-```
-
+**XLFD**: 14 fields.
+Field names are separated by dashes '-', and an XLFD font name starts with a dash '-'):
 
 ```
-% pkg search xlsfonts
-xlsfonts-1.0.8    Server font list displayer for X
-
-% sudo pkg install xlsfonts
+-fndry-fmly-wght-slant-swdth-adstyl-pxlsz-ptsz-resx-resy-spc-avgwdth-rgstry-encdng
 ```
 
-```
-% xlsfonts -h
-xlsfonts: unrecognized argument -h
+For additional searches for an X core font (bitmapped, old-style font), I often use the following XLFD fields.
 
-usage:  xlsfonts [-options] [-fn pattern]
-where options include:
- -l[l[l]]             give long info about each font
- -m                   give character min and max bounds
- -C                   force columns
- -1                   force single column
- -u                   keep output unsorted
- -o                   use OpenFont/QueryFont instead of ListFonts
- -w width             maximum width for multiple columns
- -n columns           number of columns if multi column
- -display displayname X server to contact
- -d displayname       (alias for -display displayname)
- -v                   print program version
+```
+* wght (Weight): medium
+* slant (Slant): r for roman (or upright)
+* swdth (Nominal width): normal, condensed
+* pxlsz (height, in pixels, of the type - Also called "body size")
+* ptsz (height, in points, of the type)
+* resx (horizontal screen resolution the font was designed for, in DPI 
+* resy (vertical screen resolution the font was designed for, in DPI) 
+* spc (the kind of spacing used by the font (its *escapement* class); either 'p' (a *proportional* font containing characters with varied spacing), 'm' (a *monospaced* font containing characters with constant spacing), or 'c' (a *character cell* font containing characters with constant spacing and constant height)
+* avgwdth (average width of the characters used in the font, in 1/10th pixel units) 
 ```
 
 ```
 % xlsfonts | wc -l
    23232
-
-% xlsfonts "*" | wc -l
+ 
+% xlsfonts -fn "*" | wc -l
    23232
 ```
 
-```
-% xlsfonts "mono" | wc -l
-xlsfonts: pattern "mono" unmatched
-       0
 
-% xlsfonts "*mono*" | wc -l
-    6962
-
-% xlsfonts "*mono*" | head
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-ascii-0
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-1
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-2
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-3
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb18030.2000-0
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb2312.1980-0
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso10646-1
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso8859-1
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0201.1976-0
--adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0208.1983-0
-```
-
+`fmly` (family): fixed, `pxlsz` (body size in pixels) 
 
 ```
-% xlsfonts | wc -l
-   23232
+% xlsfonts -fn "*-fixed-*-*-*-*-18-*" | less 
+```
 
-% xlsfonts | grep -i monospaced | wc -l
-       0
- 
-% xlsfonts | grep -i monospace | wc -l
-       0
+This is good on an external monitor, but too small for this laptop:
 
-% xlsfonts | grep -i fixed | wc -l
-    1014
+```
+% xterm -fn "-misc-fixed-medium-r-normal--18-120-100-100-c-90-iso10646-1"
+```
 
-% xlsfonts | grep -i fixed | tail
--sony-fixed-medium-r-normal--24-170-100-100-c-120-jisx0201.1976-0
--sony-fixed-medium-r-normal--24-230-75-75-c-120-iso8859-1
--sony-fixed-medium-r-normal--24-230-75-75-c-120-iso8859-1
--sony-fixed-medium-r-normal--24-230-75-75-c-120-jisx0201.1976-0
--sony-fixed-medium-r-normal--24-230-75-75-c-120-jisx0201.1976-0
-fixed
-fixed
-fixed
-fixed
-koi-fixed
- 
-% xlsfonts | grep -i fixed | grep ^fixed | wc -l
-       4
- 
-% xlsfonts | grep -i fixed | grep -i ^fixed | wc -l
-       4
- 
-% xlsfonts | grep -i fixed | grep ^fixed
-fixed
-fixed
-fixed
-fixed
+Additional searches:
+
+```
+% xlsfonts -fn "*-fixed-*-*-*-*-24-*" | wc -l
+% xlsfonts -fn "*-fixed-*-*-*-*-24-*" | less
 ```
 
 ```
-% sudo pkg install xfd 
+% xlsfonts -fn "-*-*-medium-r-normal-*-24-*" | wc -l
+% xlsfonts -fn "-*-*-medium-r-normal-*-24-*" | less 
 ```
 
-```
-% pkg info xfd
----- snip ----
-Comment        : Display all characters in an X font
----- snip ----
-Description    :
-This package contains xfd, an applications used for displying all
-characters in an X font.
-```
-
-NOTE: In addition to `-fn` option (which specifies the *core X* server side font to be displayed), the `xfd(1)` utility *also supports* `-fa` option (which specifies an *Xft* font to be displayed).
-
-```
-% xfd -fa gallant
-
-#   xfd(1) loaded Noto Sans-12:style=Regular
-#   WHY?
-#   This is why:
-
-% fc-match
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-
-% fc-match gallant
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-```
+The following gsearch: Spacing (11th field: *spc*): 'm' for monospaced - with *medium* weight (3rd field: *wgth) and upright ('r' for forman) slant (4th field: *slant*)
 
 
 ```
-% xfd -fn "-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
+% xlsfonts -fn "-*-*-*-r-normal-*-*-*-*-*-m-*" | wc -l
+% xlsfonts -fn "-*-*-*-r-normal-*-*-*-*-*-m-*" | less 
 ```
 
-Loaded:
+The following gsearch: Spacing (11th field: *spc*): 'c' for character cell - with *medium* weight (3rd field: *wgth) and upright ('r' for forman) slant (4th field: *slant*)
 
 ```
--Adobe-Courier-Bold-O-normal--17-120-100-100-M-100-ISO8859-1
-```
-
-To confirm:
-
-```
-% xfontsel -print -fn "-Adobe-Courier-Bold-O-normal--17-120-100-100-M-100-ISO8859-1"
-```
-
-Output:
-
-```
--*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
-```
-
-```
-% xfd -fn fixed
-```
-
-Loaded:
-
-```
--Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
-```
-
-```
-% xfontsel -print -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1"
-```
-
-Output:
-
-```
--*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
-```
-
-```
-% xfontsel -print -fn fixed
-```
-
-Output:
-
-```
--*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
-```
-
-
-## appres
-
-```
-% sudo pkg install appres
-appres-1.0.7    Program to list application's resources
-```
-
-```
-% pkg info appres
-appres-1.0.7
----- snip ----
-
-Description    :
-The appres program prints the resources seen by an application
-(or subhierarchy of an application) with the specified class and
-instance names.  It can be used to determine which resources a 
-particular program will load.
-```
-
-```
-% appres XTerm xterm | wc -l
-     175
-
-% appres XTerm xterm
----- snip ----
-```
-
-
-## app-defaults
-
-```
-% locate "app-defaults" | grep -i xterm
-/usr/local/lib/X11/app-defaults/KOI8RXTerm
-/usr/local/lib/X11/app-defaults/KOI8RXTerm-color
-/usr/local/lib/X11/app-defaults/UXTerm
-/usr/local/lib/X11/app-defaults/UXTerm-color
-/usr/local/lib/X11/app-defaults/XTerm
-/usr/local/lib/X11/app-defaults/XTerm-color
- 
-% wc -l /usr/local/lib/X11/app-defaults/XTerm
-     272 /usr/local/lib/X11/app-defaults/XTerm
-
-% grep -v \! /usr/local/lib/X11/app-defaults/XTerm | wc -l
-     149
-
-% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i fix | wc -l
-       8
-
-% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i fixed
-*VT100.utf8Fonts.font2: -misc-fixed-medium-r-normal--8-80-75-75-c-50-iso10646-1
-*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
-*VT100.utf8Fonts.font3: -misc-fixed-medium-r-normal--14-130-75-75-c-70-iso10646-1
-*VT100.utf8Fonts.font4: -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso10646-1
-*VT100.utf8Fonts.font5: -misc-fixed-medium-r-normal--18-120-100-100-c-90-iso10646-1
-*VT100.utf8Fonts.font6: -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1
-! The default fixed font and font2-font6 are commonly aliased to iso106461 (Unicode)
-!*VT100.utf8Fonts.font7: -sony-fixed-medium-r-normal--24-170-100-100-c-120-iso8859-1
-```
-
-```
-% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i default
-*fontMenu*fontdefault*Label:    Default
-! The default fixed font and font2-font6 are commonly aliased to iso106461 (Unicode)
-!                                             fontdefault/SmeBSB
-!                                             fontdefault/SmeBSB
-! xterm can switch at runtime between bitmap (default) and TrueType fonts.
-```
-
-
-## xrdb 
-
-```
-% xrdb -query | wc -l
-      47
-
-% xrdb -query | grep -i font | wc -l
-       1
- 
-% xrdb -query | grep -i font
-XTerm*boldFont: -adobe-courier-bold-r-normal--18-180-75-75-m-110-iso8859-1
-```
-
-
-## fc-list, fc-match
-
-```
-% fc-list | wc -l
-    1895
-
-% sudo pkg install xscreensaver
-
-% fc-list | wc -l
-    1900
-
-% fc-list | grep -i gallant
-/usr/local/share/fonts/xscreensaver/gallant12x22.ttf: gallant12x22:style=Medium
-
-% xfd -fa gallant12x22
-
-#   xfd(1) loaded the correct font, that is:
-#     gallant12x22-12:style=Medium
-
-% xfd -fn gallant12x22
-Warning: Cannot convert string "gallant12x22" to type FontStruct
-xfd:  no font to display
-```
-
-```
-% fc-list | wc -l
-    1895
-
-% fc-list :scalable=true:spacing=mono:family | wc -l
-     175
-
-% fc-list :scalable=true:spacing=mono:family | less
----- snip ----
-
-% fc-list :scalable=true:spacing=mono:family | grep mono | wc -l
-      60
-
-% fc-list :scalable=true:spacing=mono:family | grep mono | less
----- snip ----
-```
-
-```
-% fc-match | wc -l
-       1
-
-% fc-match
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-
-% fc-match SomeFont
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-match "Some Font"
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-
-% fc-match 0xProto
-0xProto-Regular.otf: "0xProto" "Regular"
- 
-% fc-match 0xPROTO
-0xProto-Regular.otf: "0xProto" "Regular"
-
-% fc-match '*0xProto*'
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-match "*0xProto*"
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
-```
-
-
-```
-% fc-list | grep 0xProto
-/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
-/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
-
-% find ~/.fonts -iname '*0xProto*'
-/home/dusko/.fonts/0xProto-Regular.otf
-/home/dusko/.fonts/0xProto-Regular.ttf
-```
-
-
-```
-% fc-list | grep -i 0xProto
-/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
-/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
-
-% fc-list -v 0xProto | grep -i file
-        file: "/home/dusko/.fonts/0xProto-Regular.ttf"(s)
-        file: "/home/dusko/.fonts/0xProto-Regular.otf"(s)
-```
-
-
-To get detailed information about a font; for example, about 0xProto font:
-
-```
-% fc-list -v 0xProto | wc -l
-      88
- 
-% fc-list -v 0xProto | grep postscriptname
-        postscriptname: "0xProto-Regular"(s)
-        postscriptname: "0xProto-Regular"(s)
-```
-
-
-```
-% fc-match
-NotoSans-Regular.ttf: "Noto Sans" "Regular"
- 
-% fc-list | grep "NotoSans-Regular.ttf"
-/usr/local/share/fonts/noto/NotoSans-Regular.ttf: Noto Sans:style=Regular
-
-% find /usr/local/share/fonts -iname '*Noto*' | wc -l
-     366
-
-% find /usr/local/share/fonts -iname '*Noto*' 
-/usr/local/share/fonts/noto
-/usr/local/share/fonts/noto/NotoSerifDisplay-BlackItalic.ttf
-/usr/local/share/fonts/noto/NotoSerifCJKsc-ExtraLight.otf
----- snip ----
-/usr/local/share/fonts/noto/NotoSans-BoldItalic.ttf
-/usr/local/share/fonts/noto/NotoSans-SemiCondensedExtraLightItalic.ttf
-/usr/local/share/fonts/noto/NotoSans-BlackItalic.ttf
+% xlsfonts -fn "-*-*-medium-r-normal-*-*-*-*-*-c-*" | wc -l
+% xlsfonts -fn "-*-*-medium-r-normal-*-*-*-*-*-c-*" | less 
 ```
 
 ----
 
+TODO - Clean this section
 
-# Useful Commands and Examples for Exploring Hardware
+For use in X (X11, X Window System), there are two types of fonts:
 
-```
-% sudo dmidecode | wc -l
-     975
+* X core fonts (old-style bitmapped fixed width fonts and Type1 fonts)
+* OpenType/TrueType (newer) fonts
 
-% sudo dmidecode | grep "Version: ThinkPad"
-      Version: ThinkPad T14s Gen 3
+There are two kinds of fonts in X11: server-side (drawn by the X server, shown in `xlsfonts(1)`) and client-side (drawn by the application, shown in `fc-list(1)`.
 
-% sudo dmidecode | grep "SKU Number: LENOVO"
-      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
 
-% sudo dmidecode | sed -n 608,616p
-System Information
-      Manufacturer: LENOVO
-      Product Name: 21BR000NUS
-      Version: ThinkPad T14s Gen 3
-      Serial Number: [redacted]
-      UUID: [redacted]
-      Wake-up Type: Power Switch
-      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
-      Family: ThinkPad T14s Gen 3
+[https://man.freebsd.org/cgi/man.cgi?query=xterm&manpath=FreeBSD+10.2-RELEASE+and+Ports](https://man.freebsd.org/cgi/man.cgi?query=xterm&manpath=FreeBSD+10.2-RELEASE+and+Ports)
+> However (even though `xfd` accepts a "-fa" option to denote *FreeType* fonts), `xfontsel` has *not* been similarly extended.
+> 
+> As a workaround, you may try:
+>
+> ```
+> fc-list :scalable=true:spacing=mono: family
+> ```
+> 
+> to find a list of scalable fixed-pitch fonts which may be  used
+> for the faceName	resource value.
 
-% sudo dmidecode | grep Intel | grep Version
-      Version: 12th Gen Intel(R) Core(TM) i7-1280P
+----
 
-% sudo dmidecode | sed -n 517,521p
-Processor Information
-      Socket Designation: U3E1
-      Type: Central Processor
-      Family: Core i7
-      Manufacturer: Intel(R) Corporation
+### XTerm's Default Font 
 
-% sudo dmidecode | grep i7 | grep Version
-        Version: 12th Gen Intel(R) Core(TM) i7-1280P
-```
+The default font for `xterm` is an alias *fixed*.
+
+For more about finding out what it resolves to on your system, see [<sup>[2](#footnotes)</sup>].
+
+In short (TLDR):
 
 ```
-% sysctl hw.physmem
-hw.physmem: 34007212032
+% xset -q | grep -A1 "Font Path"
+Font Path:
+  /usr/local/share/fonts/ ---- snip ----
 
-% printf %s\\n "34359738368 / 1024 / 1024" | bc
-32768
- 
-% printf %s\\n "34359738368 / 1024 / 1024 / 1024" | bc
-32
-```
+% ls -1 /usr/local/share/fonts/misc/fonts.*
+/usr/local/share/fonts/misc/fonts.alias
+/usr/local/share/fonts/misc/fonts.dir
+/usr/local/share/fonts/misc/fonts.scale
+``` 
 
-```
-% dmesg | grep "real memory"
-real memory  = 34359738368 (32768 MB)
-```
+
+NOTE: With `xlsfonts(1)`:
 
 ```
-% pciconf -lv | grep -B3 display
-vgapci0@pci0:0:2:0:	class=0x030000 rev=0x0c hdr=0x00 vendor=0x8086 device=0x46a6 subvendor=0x17aa subdevice=0x22ee
-    vendor     = 'Intel Corporation'
-    device     = 'Alder Lake-P GT2 [Iris Xe Graphics]'
-    class      = display
- 
-% xdpyinfo | grep "number of screens"
-number of screens:    1
-
-% xdpyinfo | grep -B2 resolution
-screen #0:
-  dimensions:    1920x1200 pixels (294x184 millimeters)
-  resolution:    166x166 dots per inch
+% xlsfonts -l fixed
+DIR  MIN  MAX EXIST DFLT PROP ASC DESC NAME
+-->    0  255  some    0   23  11    2 -misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1
+-->    0  255  some    0   23  11    2 -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-->    0  255  some    0   23  11    2 -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-->    0  255  some    0   23  11    2 -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
 ```
 
+Continuing - with exploring the `fonts.alias` and `fonts.dir` files. 
+
 ```
-% ls /dev/backlight/
-backlight0              intel_backlight0
+% grep ^fixed /usr/local/share/fonts/misc/fonts.alias 
+fixed        -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
 ```
 
----
+So, on my system, **fixed** alias resolves to `-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1`.
+
+
+NOTE: Note that *fixed* is aliased specifically to the ISO 8859-1 version of the font, not to the Unicode version (which would be ISO 10646-1).
+
+To find out that font's file:
+
+```
+% grep -- "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1" /usr/local/share/fonts/misc/fonts.dir 
+6x13-ISO8859-1.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+6x13-ISO8859-10.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-10
+6x13-ISO8859-11.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-11
+6x13-ISO8859-13.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-13
+6x13-ISO8859-14.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-14
+6x13-ISO8859-15.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-15
+6x13-ISO8859-16.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-16
+
+% ls /usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz
+/usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz
+```
+
+So, on my system, **fixed** alias resolves to: 
+
+```
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+```
+
+and that font's file is:
+
+```
+/usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz
+```
+
+----
+
+### Unicode Support
+
+If there is `iso10646-1` in XLFD font name: it supports Unicode. 
+
+```
+-misc-fixed-medium-o-semicondensed--13-120-75-75-c-60-iso10646-1
+```
+
+vs.
+
+If there is `iso8859-1` in XLFD font name: it does not support Unicode.
+
+```
+-misc-fixed-medium-o-semicondensed--13-120-75-75-c-60-iso8859-1
+```
+
+----
 
 ## Laptop with an External Monitor - TODO
+
+When I use an external monitor with the laptop.
+
+On laptop:
+
+```
+% ./mirror_ext_monitor_xrandr.sh
+```
+
+```
+% cat mirror_ext_monitor_xrandr.sh 
+#!/bin/sh
+
+# Based on 
+#   <https://wiki.archlinux.org/title/Xrandr>
+
+intern=eDP-1
+extern=HDMI-1 
+
+xrandr --output "$intern" --primary --auto --output "$extern" --same-as "$intern" --auto
+```
+
+----
+
+### Fonts for Use with XTerm on an External Monitor
+
+
+#### X Core (Bitmapped, Old-Style) Fonts 
+
+In contrast to the laptop, with an external monitor, for `xterm` I prefer bitmapped fontx (X Core fonts, aka old-style fonts).
+
+```
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-14-140-75-75-m-90-iso106
+46-1"
+
+% xterm -fn "-misc-fixed-medium-r-normal--18-120-100-100-c-90-iso8859-1"
+
+% xterm -fn "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1"
+
+% xterm -fn "-sun-gallant-medium-r-normal--22-220-75-75-c-120-iso10646-1"
+# (You need to install it manually from:
+# https://github.com/NanoBillion/gallant)
+```
+
+#### TrueType and OpenType (New-Style) Fonts
+
+With *Fontconfig*.
+
+Good but too big:
+
+```
+% xterm -fa 'Monospace' -fs 14
+```
+ 
+Not so good:
+
+```
+% xterm -fa 'Monospace' -fs 12
+% xterm -fa 'Monospace' -fs 11
+```
+
+To list monospaced fonts (with using Fontconfig's `fc-list(1)`):
+ 
+```
+% fc-list | cut -f2 -d: | sort -u | grep -i Mono 
+```
+
+----
 
 
 ---
@@ -960,7 +736,9 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 > * efont-japanese-bdf-collection/
 >   The archive which includes Japanese (i.e. JISX0201, 0208 and 0213) and Roman (ISO8859-1) Fonts of some sizes.
 > * efont-serif/
->   The **modifiable** and **distributable** outline font which is based on Roman type and Mincho type. We are planning to distribute it in TrueType and CID Type-1 formats. The development started on November 29, 2000. Designers and testers are wanted.
+>   The **modifiable** and **distributable** outline font which is based on Roman type and Mincho type. We are planning to distribute it in TrueType and CID Type-1 formats.
+> The development started on November 29, 2000.
+> Designers and testers are wanted.
 > * bdfresize/
 >    Bdfresize is a command to magnify or reduce fonts which are described with the standard BDF format. The original author Hiroto Kagotani was pleased to hand over its maintenance to the /efont/. 
 
@@ -1032,7 +810,11 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 
 * [XLFD (X Logical Font Description) Conventions](https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/XLFD/xlfd.html)
 
-* [fontconfig - A library for configuring and customizing font access](https://www.freedesktop.org/wiki/Software/fontconfig/)
+* [Fonts - The Linux Cookbook, Second Edition, by Michael Stutz](https://dsl.org/cookbook/cookbook_20.html)
+
+* [How do you know the correct name to use for X11 fonts for XTerm*faceName or xterm -fa NAME?](https://superuser.com/questions/465142/how-do-you-know-the-correct-name-to-use-for-x11-fonts-for-xtermfacename-or-xter#comment2564250_1375786)
+
+* [Fontconfig - A library for configuring and customizing font access](https://www.freedesktop.org/wiki/Software/fontconfig/)
 
 * [The Unicode HOWTO: Display setup](https://linux.die.net/HOWTO/Unicode-HOWTO-2.html)
 
@@ -1040,6 +822,9 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 > This document describes how to change your Linux system so it uses UTF-8 as text encoding.
 > This is work in progress.
 > Any tips, patches, pointers, URLs are very welcome.
+
+* [Gallant Font](https://github.com/NanoBillion/gallant)
+> The 12x22 raster font we love, used by Sun Microsystems SPARC stations. With a ton of Unicode glyphs! 
 
 ---
 
@@ -1074,7 +859,6 @@ From [XLFD (X Logical Font Description) Conventions](https://www.x.org/releases/
 
 ---
 
-
 From [Fonts in X11R6.8, Juliusz Chroboczek, jch@pps.jussieu.fr, 25 March 2004](https://www.x.org/archive/X11R6.8.0/doc/fonts.html), [Section 3. Fonts included with X11R6.8](https://www.x.org/archive/X11R6.8.0/doc/fonts3.html) 
 > Fonts included with X11R6.8
 >
@@ -1100,9 +884,1105 @@ From [Fonts in X11R6.8, Juliusz Chroboczek, jch@pps.jussieu.fr, 25 March 2004](h
 >
 > is a Unicode-encoded version of the standard `fixed' font with added support for the Latin, Greek, Cyrillic, Georgian, Armenian, IPA and other scripts plus numerous technical symbols. 
 
+
+[2] About XTerm's Default Font
+
+## Default Font for XTerm
+
+With default (`xterm` started with just `xterm`, that is, without using any of the `xterm` options): 
+
+```
+% xterm
+```
+
+In the new `xterm` window, run: 
+
+```
+% xtermcontrol --get-font
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+```
+
+Confirm/check with `xterm(1)`:
+
+```
+% xterm -report-fonts | wc -l
+     218
+
+% xterm -report-fonts | grep -- "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1"
+     fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+     fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+```
+
+
+As a contrast, next example shows `xterm` with a font selected from the FreeType library (new-style font), as opposed to a bitmap (old-style) font (which are specified with XLFD notation).
+
+```
+% xterm -fa mono -fs 12
+```
+
+In the new `xterm` window, run: 
+
+```
+% xtermcontrol --get-font
+mono
+```
+
+Ask the `xprop(1)` utility, using its `-font` argument, to show the properties of the font named *fixed*.
+
+```
+% xprop -font fixed | grep -w FONT
+FONT = -Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+```
+% xprop -font fixed
+---- snip ----
+FOUNDRY = Misc
+FAMILY_NAME = Fixed
+WEIGHT_NAME = Medium
+SLANT = R
+---- snip ----
+PIXEL_SIZE = 13
+POINT_SIZE = 120
+RESOLUTION_X = 75
+RESOLUTION_Y = 75
+SPACING = C
+AVERAGE_WIDTH = 60
+CHARSET_REGISTRY = ISO8859
+CHARSET_ENCODING = 1
+---- snip ----
+FONT = -Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+---- snip ----
+```
+
+From the man page for `xterm(1)`:
+
+```
+   -fn font
+           This option specifies the font to be used for displaying normal
+           text.  The corresponding resource name is font.  The resource
+           value default is fixed.
+```
+
+
+Note "The resource value (for the `-fn` option) default is **fixed**".
+
+From:
+
+```
+% xprop -font fixed
+---- snip ----
+FONT = -Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+Also:
+
+```
+% xterm -report-fonts | grep "f[A-Z]" | grep -i fixed | wc -l
+       8
+ 
+% xterm -report-fonts | grep "f[A-Z]" | wc -l
+       8
+ 
+% xterm -report-fonts | grep "f[A-Z]" | grep -i fixed | wc -l
+       8
+ 
+% xterm -report-fonts | grep "f[A-Z]" | grep -i fixed
+       fNorm: fixed
+       fBold: fixed
+       fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+       fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+       fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
+
+```
+% xterm -report-fonts | grep "f[A-Z]" | grep -i fixed | grep -- "-13-120-" | wc -l
+       6
+ 
+% xterm -report-fonts | grep "f[A-Z]" | grep -i fixed | grep -- "-13-120-" 
+       fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+       fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+       fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+       fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
+
+With `xterm` use its `-xrm` option specifies a resource string to be used.
+
+Here, use the `reportFonts` resource.
+
+From the man page for `xterm(1)`:
+
+```
+   reportFonts (class ReportFonts)
+           If true, xterm will print to the standard output a summary of
+           each font's metrics (size, number of glyphs, etc.), as it loads
+           them.  The default is “false”.
+```
+
+
+```
+% xterm -xrm "*reportFonts: true" | wc -l
+     218
+```
+
+```
+% xterm -xrm "*reportFonts: true" | grep "f[A-Z]" | wc -l
+       8
+ 
+% xterm -xrm "*reportFonts: true" | grep "f[A-Z]" | grep -i fixed | wc -l
+       8
+ 
+% xterm -xrm "*reportFonts: true" | grep "f[A-Z]" | grep -i fixed 
+        fNorm: fixed
+        fBold: fixed
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+        fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
+
+With `xterm`, explicitly load font *fixed* (which is actually an *alias* for the font that is loaded).
+
+```
+% xterm -xrm "*font:fixed"
+```
+
+Next, with `xterm`, load font *fixed* and use the resource string `reportFonts` to print to the standard output a summary of that font's metrics (size, number of glyphs, etc.), as `xterm` loads them.  
+
+```
+% xterm -xrm "*reportFonts: true" -xrm "*font:fixed" | wc -l
+     218
+ 
+% xterm -xrm "*reportFonts: true" -xrm "*font:fixed" | grep "f[A-Z]" | wc -l
+       8
+ 
+% xterm -xrm "*reportFonts: true" -xrm "*font:fixed" | grep "f[A-Z]" | grep -i fixed | wc -l
+       8
+ 
+% xterm -xrm "*reportFonts: true" -xrm "*font:fixed" | grep "f[A-Z]" | grep -i fixed 
+        fNorm: fixed
+        fBold: fixed
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+        fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
+
+
+With the `-report-xres` option for `xterm`:
+
+```
+% xterm -report-xres | wc -l
+     261
+```
+
+```
+% xterm -report-xres | grep -E "font[[:space:]]"
+font                    : fixed
+```
+ 
+```
+% xterm -report-xres | grep -E "font[^[:alnum:]]"
+font                    : fixed
+```
+
+```
+% xterm -report-xres | grep -E "font[[:>:]]"
+font                    : fixed
+```
+
+```
+% xterm -report-xres
+---- snip ----
+font                    : fixed
+font1                   : nil2
+font2                   : 5x7
+font3                   : 6x10
+font4                   : 7x13
+font5                   : 9x15
+font6                   : 10x20
+font7                   : -adobe-courier-medium-r-normal--24-240-75-75-m-150-iso10646-1
+fontDoublesize          : true
+fontWarnings            : 1
+---- snip ----
+utf8                    : default
+utf8Fonts               : default
+utf8Latin1              : false
+---- snip ----
+```
+
+Use `xset(1)` to find the *Font Path*.
+
+```
+% xset -q | wc -l
+      27
+
+% xset -q | grep -A1 "Font Path"
+Font Path:
+  /usr/local/share/fonts/ . . . 
+```
+
+```
+% ls -lh /usr/local/share/fonts/ | wc -l
+      32
+ 
+% ls -lh /usr/local/share/fonts/misc/ | wc -l
+     413
+ 
+% ls /usr/local/share/fonts/misc/fonts*
+/usr/local/share/fonts/misc/fonts.alias /usr/local/share/fonts/misc/fonts.scale
+/usr/local/share/fonts/misc/fonts.dir
+```
+
+```
+% grep ^fixed /usr/local/share/fonts/misc/fonts.alias
+fixed        -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+```
+
+```
+% grep -- "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1" /usr/local/share/fonts/misc/fonts.dir 
+6x13-ISO8859-1.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+6x13-ISO8859-10.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-10
+6x13-ISO8859-11.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-11
+6x13-ISO8859-13.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-13
+6x13-ISO8859-14.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-14
+6x13-ISO8859-15.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-15
+6x13-ISO8859-16.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-16
+```
+
+```
+% ls /usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz                      
+/usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz
+```
+
+```
+% mkdir /tmp/6x13check
+ 
+% cd /tmp/6x13check
+ 
+% pwd
+/tmp/6x13check
+ 
+% cp -i /usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz .
+ 
+% gunzip 6x13-ISO8859-1.pcf.gz
+ 
+% ls
+6x13-ISO8859-1.pcf
+ 
+% file 6x13-ISO8859-1.pcf 
+6x13-ISO8859-1.pcf: X11 Portable Compiled Font data, bit: MSB, byte: MSB first
+ 
+% wc -l 6x13-ISO8859-1.pcf
+      10 6x13-ISO8859-1.pcf
+ 
+% strings 6x13-ISO8859-1.pcf | wc -l
+     191
+
+% strings 6x13-ISO8859-1.pcf | grep -i "misc-fixed"
+-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+```
+% xlsfonts | grep -i -- "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1" | wc -l
+      15
+ 
+% xlsfonts | grep -i -- "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1"
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-10
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-10
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-11
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-11
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-13
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-13
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-14
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-14
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-15
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-15
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-16
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-16
+```
+
+```
+% xlsfonts -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1" | wc -l
+       6
+ 
+% xlsfonts -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1"
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+```
+
+```
+% xlsfonts -h
+xlsfonts: unrecognized argument -h
+
+usage:  xlsfonts [-options] [-fn pattern]
+where options include:
+    -l[l[l]]                 give long info about each font
+---- snip ----
+ 
+% xlsfonts -l -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1" | wc -l
+       7
+ 
+% xlsfonts -ll -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1" | wc -l
+     228
+ 
+% xlsfonts -lll -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1" | wc -l
+    1770
+```
+
+With `xfontsel(1)` application, to work with only a subset of the fonts, specify `-pattern` option followed by a partially or fully qualified font name; so `-pattern "*-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1*"` will select that subset of fonts which contain that string somewhere in their font name.
+
+```
+% xfontsel -pattern "*-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1*"
+```
+
+This returned "6  names match".
+
+```
+% xfd -fn "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1" 
+```
+
+From the man page for `xfd(1)`: 
+
+```
+DESCRIPTION
+       The xfd utility creates a window containing the name of the font being
+       displayed, a row of command buttons, several lines of text for
+       displaying character metrics, and a grid containing one glyph per cell.
+```
+
+In this case, `xfd(1)` created a window containing this name of the font displayed:
+
+```
+-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+```
+% xterm -fn "-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1" -report-fonts | grep "f[A-Z]"
+        fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+        fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fNorm: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+        fBold: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+        fWide: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+        fWBold: -Misc-Fixed-medium-R-*-*-13-120-75-75-C-120-ISO10646-1
+```
+
+## app-defaults
+
+```
+% locate "app-defaults" | grep -i xterm
+/usr/local/lib/X11/app-defaults/KOI8RXTerm
+/usr/local/lib/X11/app-defaults/KOI8RXTerm-color
+/usr/local/lib/X11/app-defaults/UXTerm
+/usr/local/lib/X11/app-defaults/UXTerm-color
+/usr/local/lib/X11/app-defaults/XTerm
+/usr/local/lib/X11/app-defaults/XTerm-color
+ 
+% wc -l /usr/local/lib/X11/app-defaults/XTerm
+     272 /usr/local/lib/X11/app-defaults/XTerm
+
+% grep -v \! /usr/local/lib/X11/app-defaults/XTerm | wc -l
+     149
+
+% grep "font:" /usr/local/lib/X11/app-defaults/XTerm
+*SimpleMenu*menuLabel.font: -adobe-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-*
+*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+ 
+% grep "font:" /usr/local/lib/X11/app-defaults/XTerm | grep fixed
+*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+```
+
+```
+% grep -i font /usr/local/lib/X11/app-defaults/XTerm | grep -i default
+*fontMenu*fontdefault*Label:    Default
+! The default fixed font and font2-font6 are commonly aliased to iso106461 (Unicode)
+!                                         fontdefault/SmeBSB
+!                                         fontdefault/SmeBSB
+! xterm can switch at runtime between bitmap (default) and TrueType fonts.
+```
+
+## appres
+
+```
+% sudo pkg install appres
+appres-1.0.7    Program to list application's resources
+```
+
+```
+% pkg info appres
+appres-1.0.7
+---- snip ----
+
+Description    :
+The appres program prints the resources seen by an application
+(or subhierarchy of an application) with the specified class and
+instance names.  It can be used to determine which resources a 
+particular program will load.
+```
+
+```
+% appres XTerm xterm | wc -l
+     175
+
+% appres XTerm xterm
+---- snip ----
+
+% appres XTerm xterm | grep "font:"
+*SimpleMenu*menuLabel.font:     -adobe-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-*
+*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+
+% appres XTerm xterm | grep "font:" | grep fixed
+*VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+```
+
+
+## find-xterm-fonts Perl script 
+
+Using *find-xterm-fonts* Perl script from the maintainer of XTerm, Thomas E. Dickey: 
+
+```
+% fetch https://invisible-island.net/datafiles/release/misc-scripts.tar.gz
+
+% tar xf misc-scripts.tar.gz
+ 
+% ls
+misc-scripts-20250722   misc-scripts.tar.gz
+
+% cd misc-scripts-20250722/
+
+% ls
+CHANGES                         MANIFEST
+check-manpage                   nm_cmp
+classpath                       no-local
+compare-terminfo                nodot
+count-nroff                     noenv
+diffstat2css                    nolocale
+find-xterm-fonts                noterm
+---- snip ----
+
+% file find-xterm-fonts
+find-xterm-fonts: Perl script text executable
+
+% ./find-xterm-fonts
+# opening /usr/local/lib/X11/app-defaults/XTerm
+---- snip ----
+        *VT100.utf8Fonts.font:  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+---- snip ----
+# opening /usr/local/lib/X11/app-defaults/UXTerm
+        *VT100.font:    -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+---- snip ----
+# opening /usr/local/lib/X11/app-defaults/KOI8RXTerm
+        *VT100.font:    -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-koi8-r
+---- snip ---- 
+
+Font-files used:
+---- snip ----
+        /usr/local/share/fonts/misc/6x13.pcf.gz
+        -> UXTerm*VT100.font
+        -> XTerm*VT100.utf8Fonts.font
+---- snip ----
+
+No font-files missing
+
+Packages providing font-files:
+
+font-adobe-75dpi-1.0.3_4
+        /usr/local/share/fonts/75dpi/courR24.pcf.gz
+        /usr/local/share/fonts/75dpi/helvB12-ISO8859-1.pcf.gz
+font-misc-misc-1.1.2_4
+        /usr/local/share/fonts/misc/10x20-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/10x20-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/10x20.pcf.gz
+        /usr/local/share/fonts/misc/5x7-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/5x8-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/5x8.pcf.gz
+        /usr/local/share/fonts/misc/6x10-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/6x13-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/6x13-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/6x13.pcf.gz
+        /usr/local/share/fonts/misc/7x13-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/7x14-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/7x14.pcf.gz
+        /usr/local/share/fonts/misc/8x13-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/8x13-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/8x13.pcf.gz
+        /usr/local/share/fonts/misc/9x15-ISO8859-1.pcf.gz
+        /usr/local/share/fonts/misc/9x18-KOI8-R.pcf.gz
+        /usr/local/share/fonts/misc/9x18.pcf.gz
+        /usr/local/share/fonts/misc/nil2.pcf.gz
+```
+
+----
+
+# Appendix
+
+## Useful Commands and Examples for Exploring Hardware
+
+```
+% sudo dmidecode | wc -l
+     975
+
+% sudo dmidecode | grep "Version: ThinkPad"
+      Version: ThinkPad T14s Gen 3
+
+% sudo dmidecode | grep "SKU Number: LENOVO"
+      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
+
+% sudo dmidecode | sed -n 608,616p
+System Information
+      Manufacturer: LENOVO
+      Product Name: 21BR000NUS
+      Version: ThinkPad T14s Gen 3
+      Serial Number: [redacted]
+      UUID: [redacted]
+      Wake-up Type: Power Switch
+      SKU Number: LENOVO_MT_21BR_BU_Think_FM_ThinkPad T14s Gen 3
+      Family: ThinkPad T14s Gen 3
+
+% sudo dmidecode | grep Intel | grep Version
+      Version: 12th Gen Intel(R) Core(TM) i7-1280P
+
+% sudo dmidecode | sed -n 517,521p
+Processor Information
+      Socket Designation: U3E1
+      Type: Central Processor
+      Family: Core i7
+      Manufacturer: Intel(R) Corporation
+
+% sudo dmidecode | grep i7 | grep Version
+        Version: 12th Gen Intel(R) Core(TM) i7-1280P
+```
+
+```
+% sysctl hw.physmem
+hw.physmem: 34007212032
+
+% printf %s\\n "34359738368 / 1024 / 1024" | bc
+32768
+ 
+% printf %s\\n "34359738368 / 1024 / 1024 / 1024" | bc
+32
+```
+
+```
+% dmesg | grep "real memory"
+real memory  = 34359738368 (32768 MB)
+```
+
+```
+% pciconf -lv | grep -B3 display
+vgapci0@pci0:0:2:0:	class=0x030000 rev=0x0c hdr=0x00 vendor=0x8086 device=0x46a6 subvendor=0x17aa subdevice=0x22ee
+    vendor     = 'Intel Corporation'
+    device     = 'Alder Lake-P GT2 [Iris Xe Graphics]'
+    class      = display
+ 
+% xdpyinfo | grep "number of screens"
+number of screens:    1
+
+% xdpyinfo | grep -B2 resolution
+screen #0:
+  dimensions:    1920x1200 pixels (294x184 millimeters)
+  resolution:    166x166 dots per inch
+```
+
+```
+% ls /dev/backlight/
+backlight0              intel_backlight0
+```
+
+----
+
+## Useful Tools for Using and Exploring Fonts
+
+
+### X Tools for X Core Fonts - For XLFD (aka: Bitmapped fonts) - xlsfonts, xfontsel, xfd
+
+**XLFD**: *X Logical Font Description*  (as opposed to *Fontconfig* and *FreeType* libraries). 
+
+If on your FreeBSD system these three packages (`xfontsel`, `xlsfonts`, `xfd`) were not installed when you installed the `X` (`xorg`) metaport and other `X` (`xorg`) -related metaports and ports, you'll need to install them. 
+
+To list `X` (`xorg`) and `X` (`xorg`) -related metaports and ports:
+
+```
+% pkg info | grep ^xorg-
+xorg-7.7_3                   X.Org complete distribution metaport
+xorg-apps-7.7_4              X.org apps meta-port
+xorg-docs-1.7.3,1            X.org documentation files
+xorg-drivers-7.7_7           X.org drivers meta-port
+xorg-fonts-7.7_1             X.org fonts meta-port
+xorg-fonts-100dpi-7.7        X.Org 100dpi bitmap fonts
+xorg-fonts-75dpi-7.7         X.Org 75dpi bitmap fonts
+xorg-fonts-cyrillic-7.7      X.Org Cyrillic bitmap fonts
+xorg-fonts-miscbitmaps-7.7   X.Org miscellaneous bitmap fonts
+xorg-fonts-truetype-7.7_1    X.Org TrueType fonts
+xorg-fonts-type1-7.7         X.Org Type1 fonts
+xorg-libraries-7.7_6         X.org libraries meta-port
+xorg-server-21.1.18,1        X.Org X server and related programs
+```
+
+On my system they were not installed so I had to install them.
+
+
+### xlsfonts
+
+```
+% pkg search xlsfonts
+xlsfonts-1.0.8    Server font list displayer for X
+
+% sudo pkg install xlsfonts
+```
+
+```
+% xlsfonts -h
+xlsfonts: unrecognized argument -h
+
+usage:  xlsfonts [-options] [-fn pattern]
+where options include:
+ -l[l[l]]             give long info about each font
+ -m                   give character min and max bounds
+ -C                   force columns
+ -1                   force single column
+ -u                   keep output unsorted
+ -o                   use OpenFont/QueryFont instead of ListFonts
+ -w width             maximum width for multiple columns
+ -n columns           number of columns if multi column
+ -display displayname X server to contact
+ -d displayname       (alias for -display displayname)
+ -v                   print program version
+```
+
+
+NOTE: `xlsfonts(1)` deals only with **XLFD** *14-part* names. 
+
+Chapter *Fonts* of *The Linux Cookbook* (Second Edition, by Michael Stutz) has a table describing the meaning of each field of X font names in **XLFD** (*X Logical Font Description*): 
+
+[X Fonts - The Linux Cookbook, Second Edition, by Michael Stutz](https://dsl.org/cookbook/cookbook_20.html#SEC313)
+
+```
+% xlsfonts | wc -l
+   23232
+
+% xlsfonts "*" | wc -l
+   23232
+```
+
+
+When the searched font doesn't exist on the system:
+
+```
+% xlsfonts "mono"
+xlsfonts: pattern "mono" unmatched
+```
+
+When there is a match for the given pattern:
+
+```
+% xlsfonts "*mono*" | wc -l
+    6962
+
+% xlsfonts "*mono*" | head
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-ascii-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-2
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-cns11643-3
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb18030.2000-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-gb2312.1980-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso10646-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-iso8859-1
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0201.1976-0
+-adobe-noto sans mono cjk jp-bold-r-normal--0-0-0-0-p-0-jisx0208.1983-0
+```
+
+It's *case insensitive*:
+
+```
+% xlsfonts -fn "*fixed*" | wc -l
+    1014
+ 
+% xlsfonts -fn "*Fixed*" | wc -l
+    1014
+ 
+% xlsfonts -fn "*FIXED*" | wc -l
+    1014
+```
+
+```
+% xlsfonts | wc -l
+   23232
+
+% xlsfonts | grep -i monospaced | wc -l
+       0
+ 
+% xlsfonts | grep -i monospace | wc -l
+       0
+
+% xlsfonts | grep -i fixed | wc -l
+    1014
+```
+
+When searched for the [Fixed (typeface) - aka **misc-fixed**](https://en.wikipedia.org/wiki/Fixed_(typeface)) fonts:
+
+```
+% xlsfonts -fn "*fixed*" | grep -i misc | wc -l
+     970
+ 
+% xlsfonts -fn "*fixed*" | grep -v misc | wc -l
+      44
+```
+
+```
+% xlsfonts -fn "*misc-fixed*" | wc -l
+     970
+```
+
+```
+% xlsfonts -fn "*misc-fixed*" | grep -i "\-Misc\-Fixed\-Medium\-R\-Normal\-\-7\-70\-75\-75\-C\-50\-ISO10646\-1"
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+ 
+% xlsfonts -fn "*misc-fixed*" | grep -n -i "\-Misc\-Fixed\-Medium\-R\-Normal\-\-7\-70\-75\-75\-C\-50\-ISO10646\-1"
+758:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+759:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+```
+
+Or:
+
+```
+% xlsfonts -fn "*misc-fixed*" | grep -i -- "-Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO10646-1"
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+
+% xlsfonts -fn "*misc-fixed*" | grep -n -i -- "-Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO10646-1"
+758:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+759:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+```
+
+```
+% xlsfonts -fn "*-Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO10646-1*"
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+```
+
+You don't have to use the `-fn` option:
+
+```
+% xlsfonts "*-Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO10646-1*"
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+```
+
+```
+% xlsfonts "*misc-fixed*" | grep -n -i "\-Misc\-Fixed\-Medium\-R\-Normal\-\-7\-70\-75\-75\-C\-50\-ISO10646\-1"
+758:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+759:-misc-fixed-medium-r-normal--7-70-75-75-c-50-iso10646-1
+```
+
+### xfontsel
+
+```
+% pkg search --regex ^xfontsel
+xfontsel-1.1.1    Point and click selection of X11 font names
+```
+
+```
+$ pkg search --regex --full ^xfontsel | sed -n '/Description/,$p'
+Description    :
+This package contains xfontsel, an application which provides a simple way to
+display fonts known to your X server.
+```
+
+```
+% sudo pkg install xfontsel
+```
+
+```
+% xfontsel -help
+usage:  xfontsel [-options ...] -fn font
+
+where options include:
+    -display dpy           X server to contact
+    -geometry geom         size and location of window
+    -pattern fontspec      font name pattern to match against
+    -print                 print selected font name on exit
+    -sample string         sample text to use for 1-byte fonts
+    -sample16 string       sample text to use for 2-byte fonts
+    -sampleUCS string      sample text to use for ISO10646 fonts
+    -scaled                use scaled instances of fonts
+plus any standard toolkit options
+```
+
+
+NOTE: `xfontsel(1)` deals only with **XLFD** *14-part* names. 
+
+To work with only a *subset* of the fonts, specify `-pattern` option followed by a partially or fully qualified font name; e.g., `-pattern "*medium*"` will select that subset of fonts which contain the string *medium* somewhere in their font name. 
+
+When the searched font doesn't exist on the system:
+
+```
+$ xfontsel -fn nonexistingfont
+Warning: Cannot convert string "nonexistingfont" to type FontStruct
+```
+
+```
+$ xfontsel -fn mono
+Warning: Cannot convert string "mono" to type FontStruct
+```
+
+```
+% xfontsel -pattern 'mono' -print
+
+#  The  xfontsel(1)  window displayed:
+#    no names match
+```
+
+```
+% xfontsel -pattern '*mono*' -print
+        
+#  On my system, the  xfontsel(1)  window displayed:
+#    12 names match
+
+#  After quitting xfontsel(1):
+-*-b612 mono-*-*-*-*-*-*-*-*-*-*-*-*$ 
+```
+
+
+### xfd 
+
+```
+% sudo pkg install xfd 
+```
+
+```
+% pkg info xfd
+---- snip ----
+Comment        : Display all characters in an X font
+---- snip ----
+Description    :
+This package contains xfd, an applications used for displying all
+characters in an X font.
+```
+
+NOTE: In addition to `-fn` option (which specifies the *core X* server side font to be displayed), the `xfd(1)` utility *also supports* `-fa` option (which specifies an *Xft* font to be displayed).
+
+```
+% xfd -fa gallant
+
+#   xfd(1) loaded Noto Sans-12:style=Regular
+#   WHY?
+#   This is why:
+
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match gallant
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+```
+
+```
+% xfd -fn fixed
+```
+
+Loaded:
+
+```
+-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+```
+
+```
+% xfontsel -print -fn "-Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1"
+```
+
+Output:
+
+```
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
+```
+
+```
+% xfontsel -print -fn fixed
+```
+
+Output:
+
+```
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*% 
+```
+
+
+### Fontconfig Tools (fc-list, fc-match, fc-conflist) - For OpenType, TrueType Fonts
+
+Print a list of all the configuration files processed by *Fontconfig*.
+
+```
+% fc-conflist 
+```
+
+The output is a '-' or '+' depending on whether the file is ignored or processed, a space, the file's path, a colon and space, and the description from the file or 'No description' if none is present.
+
+The order of files looks like how *fontconfig* actually processes them except one containing `<include>` element.
+
+```
+% fc-list | wc -l
+    1895
+
+% sudo pkg install xscreensaver
+
+% fc-list | wc -l
+    1900
+
+% fc-list | grep -i gallant
+/usr/local/share/fonts/xscreensaver/gallant12x22.ttf: gallant12x22:style=Medium
+
+% xfd -fa gallant12x22
+
+#   xfd(1) loaded the correct font, that is:
+#     gallant12x22-12:style=Medium
+
+% xfd -fn gallant12x22
+Warning: Cannot convert string "gallant12x22" to type FontStruct
+xfd:  no font to display
+```
+
+```
+% fc-list | wc -l
+    1895
+
+% fc-list :scalable=true:spacing=mono:family | wc -l
+     175
+
+% fc-list :scalable=true:spacing=mono:family | less
+---- snip ----
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | wc -l
+      60
+
+% fc-list :scalable=true:spacing=mono:family | grep mono | less
+---- snip ----
+```
+
+```
+% fc-match | wc -l
+       1
+
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match SomeFont
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "Some Font"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+
+% fc-match 0xProto
+0xProto-Regular.otf: "0xProto" "Regular"
+ 
+% fc-match 0xPROTO
+0xProto-Regular.otf: "0xProto" "Regular"
+
+% fc-match '*0xProto*'
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-match "*0xProto*"
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+```
+
+
+```
+% fc-list | grep 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% find ~/.fonts -iname '*0xProto*'
+/home/dusko/.fonts/0xProto-Regular.otf
+/home/dusko/.fonts/0xProto-Regular.ttf
+```
+
+
+```
+% fc-list | grep -i 0xProto
+/home/dusko/.fonts/0xProto-Regular.otf: 0xProto:style=Regular
+/home/dusko/.fonts/0xProto-Regular.ttf: 0xProto:style=Regular
+
+% fc-list -v 0xProto | grep -i file
+        file: "/home/dusko/.fonts/0xProto-Regular.ttf"(s)
+        file: "/home/dusko/.fonts/0xProto-Regular.otf"(s)
+```
+
+
+To get detailed information about a font; for example, about 0xProto font:
+
+```
+% fc-list -v 0xProto | wc -l
+      88
+ 
+% fc-list -v 0xProto | grep postscriptname
+        postscriptname: "0xProto-Regular"(s)
+        postscriptname: "0xProto-Regular"(s)
+```
+
+
+```
+% fc-match
+NotoSans-Regular.ttf: "Noto Sans" "Regular"
+ 
+% fc-list | grep "NotoSans-Regular.ttf"
+/usr/local/share/fonts/noto/NotoSans-Regular.ttf: Noto Sans:style=Regular
+
+% find /usr/local/share/fonts -iname '*Noto*' | wc -l
+     366
+
+% find /usr/local/share/fonts -iname '*Noto*' 
+/usr/local/share/fonts/noto
+/usr/local/share/fonts/noto/NotoSerifDisplay-BlackItalic.ttf
+/usr/local/share/fonts/noto/NotoSerifCJKsc-ExtraLight.otf
+---- snip ----
+/usr/local/share/fonts/noto/NotoSans-BoldItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-SemiCondensedExtraLightItalic.ttf
+/usr/local/share/fonts/noto/NotoSans-BlackItalic.ttf
+```
+
+
+### Additional Fontconfig Tools
+
+```
+% man fonts-conf
+```
+
+See also:
+
+```
+fc-cache(1) fc-list(1) fc-match(1) fc-pattern(1) fc-query(1) fc-scan(1) fc-cat(1)
+```
+
 ---
 
-# Glossary / Acronyms / Terms [TODO]
+## Glossary / Acronyms / Terms [TODO]
 
 * (Often used interchangeably) X.Org Server - X - X11 - Xorg: X.Org Foundation implementation of the X Window System (X11) display server
   - So, X.Org Server (X): *implementation* of the *X Window System* (X11) *display server*
@@ -1133,7 +2013,7 @@ References:
 
 * Type 1, TrueType, OpenType/CFF = scalable fonts
 
----
+----
 
 # FAQ
 
@@ -1155,33 +2035,94 @@ Output:
 -misc-fixed-*-*-*-*-*-*-*-*-*-*-*-*%
 ```
 
-Then with xfd(1): 
+```
+% xlsfonts | wc -l
+   23234
+
+% xlsfonts "*-misc-fixed*" | wc -l
+     970
+```
+
+Filter out more.
 
 ```
-% xfd -fn "-Misc-Fixed-Bold-R-Normal--13-120-75-75-c-70-ISO8859-1"
+% xlsfonts "*-misc-fixed*" | less
+
+% xlsfonts "*-misc-fixed-medium-r-normal*" | wc -l
+     454
+
+% xlsfonts "*-misc-fixed-medium-r-normal*" | less
+
+% xlsfonts "*-misc-fixed-medium-r-normal--20*" | wc -l
+      34
+ 
+% xlsfonts "*-misc-fixed-medium-r-normal--20*" | less
+```
+
+```
+% xfontsel -pattern "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1" 
+```
+
+Returned "6  names match".
+
+
+Then with `xfd(1)`:
+
+```
+% xfd -fn "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1"
 ```
 
 Similarly:
 
 ```
-% xfd -fn "-misc-fixed-*-*-*-*-*-*-*-*-*-*-*-*"
+% xfd -fn "*-misc-fixed-medium-r-normal--20-*"
 ```
 
-will load the same font; that is: -Misc-Fixed-Bold-R-Normal--13-120-75-75-c-70-ISO8859-1
+will display:
+
+```
+-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO8859-1
+```
+
+and
+
+```
+% xfd -fn "-misc-fixed-medium-r-normal--*-*-*-*-*-*-iso10646-1"
+```
+
+will display:
+
+```
+-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO10646-1
+```
+
+```
+% xterm -fn "-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO10646-1"
+```
 
 ---
 
 <!--
   -- TODO:
   -- 
+  -- ChatGPT chat
+  -- https://unix4lyfe.org/xterm/
+  -- https://wiki.archlinux.org/title/Fonts
+  -- https://www.jeffquast.com/post/terminal_wcwidth_solution/
   -- https://iamvishnu.com/posts/utf8-is-brilliant-design
   -- http://docsrv.sco.com/en/GECG/X_Font_ProcListXsrv.html 
+  -- https://www.designmatrix.com/services/XResources_fonts.html
   -- http://docsrv.sco.com/en/GECG/X_Font_ProcListXsrv.html 
+  -- https://stackoverflow.com/questions/17078247/linux-c-xft-how-to-use-it
   -- https://ia801601.us.archive.org/22/items/xwindowsystem03quermiss/xwindowsystem03quermiss.pdf 
   -- https://forums.freebsd.org/threads/pleasant-fonts.84570/
+  -- https://askubuntu.com/questions/161652/how-to-change-the-default-font-size-of-xterm?rq=1
+  -- https://unix.stackexchange.com/questions/675000/scaling-default-xterm-font-to-large 
   -- https://old.reddit.com/r/chrome/comments/6fbeh4/is_it_possible_to_use_bitmap_fonts_in_chrome/ 
   -- https://www.x.org/archive/X11R6.8.0/doc/fonts3.html
   -- [FAQ: Fonts - University of Utah - Mathematics Department](https://www.math.utah.edu/faq/fonts/fonts.html) 
   -- https://stackoverflow.com/questions/59889366/identify-xterm-fonts-being-used-and-corresponding-cygwin-package 
   -->
+
+---
 

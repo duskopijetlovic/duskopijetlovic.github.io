@@ -22,6 +22,12 @@ Word cloud: ASCII Unicode UTF-8 CLI terminal xterm shell console RS232serial
 
 ---
 
+TLDR: The `remind(1)` program outputs the Form Feed (FF, ASCII `0x0C`, represented as `^L`) control character in its calendar displays.
+Purpose of the FF character in `remind(1)` output is to facilitate pagination in terminal environments.
+`^L` only becomes visible when the program in the pipeline decides to render it (`less`, `cat -v`, `od`, `hexdump`).
+
+---
+
 Tested on FreeBSD 14.3-RELEASE-p1 in xterm (version/patch number 400) with csh shell.
 
 ```
@@ -615,7 +621,7 @@ From [C0 and C1 control codes](https://en.wikipedia.org/wiki/C0_and_C1_control_c
 > Unicode provides Control Pictures that can replace C0 control characters to make them visible on screen.
 > However, *caret notation* is used *more often*.
 >
-> From [ASCII control codes](https://en.wikipedia.org/wiki/ASCII#Control_characters), originally defined in ANSI X3.4.
+> From [ASCII control codes](https://en.wikipedia.org/wiki/ASCII#Control_characters), originally defined in [ANSI X3.4](https://en.wikipedia.org/wiki/ANSI_X3.4):
 > 
 > ``` 
 > Caret notation: ^L
@@ -879,6 +885,17 @@ And, from the man page for `lesskey(1)`:
 
 * [Four Column ASCII](https://garbagecollected.org/2017/01/31/four-column-ascii/)
 
+* [I always thought it was a shame the ASCII table is rarely shown in columns (or rows) of 32](https://news.ycombinator.com/item?id=13499386)
+> I always thought it was a shame the ascii table is rarely shown in columns (or rows) of 32, as it makes a lot of this quite obvious. e.g., [http://pastebin.com/cdaga5i1](http://pastebin.com/cdaga5i1)
+> 
+> It becomes immediately obvious why, e.g., `^[` becomes **escape**.
+> Or that the alphabet is just `40h` **+** the *ordinal position of the letter* (or `60h` for *lower-case*).
+> Or that we *shift* between *upper* & *lower*-case with a *single bit*.
+> 
+> esr's rendering of the table - forcing it to fit hexadecimal as eight groups of 4 bits, rather than four groups of 5 bits, makes the relationship between `^I` and *tab*, or `^[` and *escape*, nearly invisible.
+> 
+> It's like making the periodic table 16 elements wide because we're partial to hex, and then wondering why no-one can spot the relationships anymore.
+
 * [UTF-8 Tool](https://www.cogsci.ed.ac.uk/~richard/utf-8.cgi)
 
 * [Why “caffè” may not be “caffè”](https://journal.bsd.cafe/2025/09/01/why-caffe-may-not-be-caffe/)
@@ -896,8 +913,24 @@ And, from the man page for `lesskey(1)`:
 * [Unicode - a brief introduction (advanced](https://exploringjs.com/js/book/ch_unicode.html)
 
 * [Control keys and control characters](https://www.johndcook.com/blog/2019/09/28/control-characters/)
+> Control-[
+> 
+> Some control characters correspond to characters other than letters.
+> If you flip the second bit of the ASCII code for `[` you get the control character for **escape**.
+* And in some software, such as *vi* or *Emacs*, `Control-[` has the *same effect* as the *escape key*.
+>
+> [ . . . ]
+>
+> [1] Control keys are often written with capital letters, like Control-H.
+> This can be misleading if you think this means you have to also hold down the shift key as if you were typing a capital H.
+> Control-h would be better notation.
+> But the ASCII codes for control characters correspond to capital letters, so I use capital letters here.
+
+* [How UTF-8 works](https://www.johndcook.com/blog/2019/09/09/how-utf-8-works/)
 
 * [ASCII Table](https://www.asciitable.com/)
+
+* [GNU coding standards stipulates formfeed in source code. Why? (gnu.org)](https://old.reddit.com/r/programming/comments/2eixhe/gnu_coding_standards_stipulates_formfeed_in/)
 
 ---
 
@@ -975,7 +1008,9 @@ Pages in [Category: Control characters](https://en.wikipedia.org/wiki/Category:C
 > * Zero-width non-joiner (ZWNJ)
 > * Zero-width space (ZWSP)
 
+
 * man `termios(4)`
+>
 > ```
 > NAME
 >      termios - general terminal line discipline
