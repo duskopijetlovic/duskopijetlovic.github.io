@@ -215,15 +215,50 @@ In order of preference:
 
 #### 0xProto - OpenType Font (OTF), TrueType Font (TTF) 
 
+For this laptop, I prefer *0xProto* OpenType/TrueType font, so I start `xterm` with the `-fa` option (which corresponds to `xterm`'s *faceName* resource, and is used for selecting fonts from the *FreeType* library), and I also use the font size (`-fs` option) of *12*: 
+
 ```
 % xterm -fa 0xProto -fs 12
 ```
 
+To make it permanent, add the following two lines to your `~/.Xresources` file: 
+
+```
+XTerm*faceName: 0xProto
+XTerm*faceSize: 12
+```
+
+Then, to re-read your Xresources file, and throw away your old resources, run:
+
+```
+% xrdb ~/.Xresources
+```
+
 #### X Core Fonts (Bitmapped, XLFD) for XTerm on This Laptop 
+
+As mentioned before, for `xterm` on the laptop I prefer TrueType and OpenType (new-style) fonts.
+However, when I sometimes choose to use bitmapped fonts (X core fonts, or old-style font), I like `-adobe-courier-medium-r-normal--24-240-75-75-m-150-iso10646-1`, so I start `xterm` with the `-fn` option.
 
 ```
 % xterm -fn "-adobe-courier-medium-r-normal--24-240-75-75-m-150-iso10646-1"
+```
 
+To make it permanent, add the following line to your `~/.Xresources` file: 
+
+```
+XTerm*font: -adobe-courier-medium-r-normal--24-240-75-75-m-150-iso10646-1
+```
+
+Then, to re-read your Xresources file, and throw away your old resources, run:
+
+```
+% xrdb ~/.Xresources
+```
+
+
+Other X core (bitmapped, XLFD) fonts that look somewhat good on this laptop:
+
+```
 % xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-34-240-100-100-m-200-iso10646-1"
 
 % xterm -fn "-adobe-courier-medium-r-normal--34-240-100-100-m-200-iso10646-1"
@@ -240,10 +275,10 @@ In order of preference:
 
 % xterm -fn "-bitstream-terminal-medium-r-normal--18-140-100-100-c-110-iso8859-1"
 
-% xterm -fa '' -fn "-sun-gallant-medium-r-normal--22-220-75-75-c-120-iso10646-1" 
+% xterm -fa '' -fn "-sun-gallant-medium-r-normal--22-220-75-75-c-120-iso10646-1"
 ```
 
-For the last (Gallant Font), you have to install it from [https://github.com/NanoBillion/gallant](https://github.com/NanoBillion/gallant).
+For the last font (Gallant Font), you have to install it from [https://github.com/NanoBillion/gallant](https://github.com/NanoBillion/gallant).
 
 
 #### Searching for Bitmap Fonts (X Core Fonts, XLFD Fonts)
@@ -278,7 +313,7 @@ For additional searches for an X core font (bitmapped, old-style font), I often 
 ```
 
 
-`fmly` (family): fixed, `pxlsz` (body size in pixels) 
+For example, for the search below with the `xlsfonts(1)` program: `fmly` (family): *fixed*, `pxlsz` (body size in pixels): *18*. 
 
 ```
 % xlsfonts -fn "*-fixed-*-*-*-*-18-*" | less 
@@ -302,15 +337,14 @@ Additional searches:
 % xlsfonts -fn "-*-*-medium-r-normal-*-24-*" | less 
 ```
 
-The following gsearch: Spacing (11th field: *spc*): 'm' for monospaced - with *medium* weight (3rd field: *wgth) and upright ('r' for forman) slant (4th field: *slant*)
-
+The following search: spacing (11th field: *spc*): 'm' for *monospaced* - with *medium* weight (3rd field: *wgth*) and *upright* ('r' for *roman*) slant (4th field: *slant*).
 
 ```
 % xlsfonts -fn "-*-*-*-r-normal-*-*-*-*-*-m-*" | wc -l
 % xlsfonts -fn "-*-*-*-r-normal-*-*-*-*-*-m-*" | less 
 ```
 
-The following gsearch: Spacing (11th field: *spc*): 'c' for character cell - with *medium* weight (3rd field: *wgth) and upright ('r' for forman) slant (4th field: *slant*)
+The following search: spacing (11th field: *spc*): 'c' for *character cell* - with *medium* weight (3rd field: *wgth*) and *upright* ('r' for *roman*) slant (4th field: *slant*).
 
 ```
 % xlsfonts -fn "-*-*-medium-r-normal-*-*-*-*-*-c-*" | wc -l
@@ -464,7 +498,7 @@ xrandr --output "$intern" --primary --auto --output "$extern" --same-as "$intern
 
 #### X Core (Bitmapped, Old-Style) Fonts 
 
-In contrast to the laptop, with an external monitor, for `xterm` I prefer bitmapped fontx (X Core fonts, aka old-style fonts).
+In contrast to the laptop, with an external monitor, for `xterm` I prefer bitmapped fonts (X Core fonts, aka old-style fonts).
 
 ```
 % xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-14-140-75-75-m-90-iso106
@@ -2017,7 +2051,7 @@ References:
 
 # FAQ
 
-## How do misc-fixed look like?
+## How do *misc-fixed* fonts look like?
 
 Answer: On my FreeBSD 14 system:
 
@@ -2043,7 +2077,9 @@ Output:
      970
 ```
 
-Filter out more.
+On my system, there are 970 fonts in the *misc-fixed* collection of fonts.
+
+Now, you can dig deeper, and start filtering out, until you find a font or a set of fonts that you like. 
 
 ```
 % xlsfonts "*-misc-fixed*" | less
