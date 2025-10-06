@@ -61,6 +61,8 @@ urls:
       url: /about/
     - text: Notes
       url: /notes/index.html
+    - text: Startpage
+      url: /html/startpage.html
     - text: XML Feed
       url: /feed.xml
     - text: Categories 
