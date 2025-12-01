@@ -8,7 +8,9 @@ categories: x11 xorg xterm config dotfiles howto font freebsd utf8 unicode unix
 
 Word cloud: font, typography, kerning, bitmap, XLFD, monospaced, 
                   fixed, fixed-pitch, fixed-width, non-proportional, 
-                  proportional, variable-pitch, glyph, XLFD,
+                  proportional, variable-pitch, glyph, XLFD, laptop,
+                  14-inch screen, monitor, display, WUXGA (Wide Ultra XGA), 
+                  High DPI (HighDPI or HiDPI), Very High Density (140+ PPI), 
                   FreeType, Xft, fontconfig, `.otf`, `.ttf`, `.ttc`, `.bdf`, 
                   Unicode, UTF-8,
                   xterm, terminal, shell, CLI
@@ -20,19 +22,22 @@ Word cloud: font, typography, kerning, bitmap, XLFD, monospaced,
 
 # My Primary Concerns 
 
-* High DPI (HighDPI or HiDPI) display 
+* Display: 14-inch WUXGA (Wide Ultra XGA), 1920 by 1200 pixels
+  - So, not strictly High DPI (HighDPI or HiDPI) display but still a Very High Density (140+ PPI) panel
 * Fonts
-  * Shell, terminal - **XTerm**
-  * Proportional vs. monospace(d) vs. bitmap (pixel fonts) vs. fixed bitmap vs. TrueType (Xft) [<sup>[1](#footnotes)</sup>]
-  * Unicode
+  - Shell, terminal - **XTerm**
+  - Proportional vs. monospace(d) vs. bitmap (pixel fonts) vs. fixed bitmap vs. TrueType (Xft) [<sup>[1](#footnotes)</sup>]
+  - Unicode
 * Brightness
 
 
 ## Laptop - Main Screen (Built-In Display)
 
-# High DPI (HighDPI or HiDPI) Display 
+# Very High Density (140+ PPI) DPI Display
 
-How to setup X server to operate with HighDPI display?
+aka: "Retina" display
+
+How to setup X server to operate with a Very High Density (140+ PPI) display?
 
 Laptop (and screen/display) used for this setup: **Lenovo ThinkPad T14s Gen3**
 
@@ -621,7 +626,7 @@ fontconfig
 
 ## References
 
-**References - HiDPI and X11 (Xorg) Setup**
+**References - HiDPI, WUXGA, Very High Density (140+ PPI) X11 (Xorg) Setup**
 
 * [How to configure X11 in a simple way](https://eugene-andrienko.com/it/2025/07/24/x11-configuration-simple.html) by Eugene Andrienko
 (Posted on 2025-07-24. Retrieved on 2025-08-31.)
