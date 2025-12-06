@@ -16,56 +16,51 @@ My environment:
 * No DE (Desktop Environment)
 
 ## TL;DR
-- Set **Xft.dpi: 94** in `~/.Xresources` to match your external monitor scaling.
-- Physical DPI (from EDID): use `xdpyinfo | grep dimensions` → compute with `(pixels/mm) × 25.4`.
+- For my 14-inch laptop, set **Xft.dpi: 120** in `~/.Xresources` to match the external monitor scaling.
+- Physical DPI (from EDID): use `xdpyinfo | grep dimensions` -> compute with `(pixels/mm) × 25.4`.
 - Logical DPI (what apps use): check with `xrdb -query | grep Xft.dpi`.
 - `xdpyinfo` shows **X server DPI** (rarely used by modern apps).
 - Modern apps (GTK, Qt, Firefox, Thunderbird) need their own scaling settings.
 - Xft.dpi can be changed **live** (`xrdb -merge`). X server DPI **cannot**.
 - Scaling on X11 is per-toolkit; no universal scaling unless inside a Desktop Environment.
 - For Firefox/Thunderbird, use `layout.css.devPixelsPerPx = 1.0` for 1× scaling.
-- xterm uses its own bitmap font sizes (XLFD), independent of DPI.
-
-
-A concise, practical, and *minimal* reference for understanding and checking DPI, font scaling, and related mechanisms in X11.
-
-Includes: core concepts, commands, quick formulas, and a Q&A section.
+- `xterm` for *bitmap* fonts (**XLFD**) uses its own font sizes, independent of DPI.
 
 ---
 
-## 1. Core Terms (One‑Sentence Definitions)
+## 1. Core Terms
 
-**Physical dimensions** — The size of the display in millimeters, usually read from EDID.
+**Physical dimensions** - The size of the display in millimeters, usually read from EDID.
 
-**Physical DPI** — Pixels per inch computed from physical size; often inaccurate on laptops.
+**Physical DPI** - Pixels per inch computed from physical size; often inaccurate on laptops.
 
-**Logical DPI** — The DPI value X uses for UI and font scaling; controlled by `Xft.dpi` or XSETTINGS.
+**Logical DPI** - The DPI value X uses for UI and font scaling; controlled by `Xft.dpi` or XSETTINGS.
 
-**Global Xft.dpi** — A logical DPI value that affects all applications using Xft/Fontconfig (not XLFD).
+**Global Xft.dpi** - A logical DPI value that affects all applications using Xft/Fontconfig (not XLFD).
 
-**X Server DPI (xdpyinfo DPI)** — The DPI value determined by the X server at startup, based on EDID or defaulting to 96.
+**X Server DPI (xdpyinfo DPI)** - The DPI value determined by the X server at startup, based on EDID or defaulting to 96.
 
-**EDID** — A small data block from the display that reports resolution, size, and capabilities.
+**EDID** - A small data block from the display that reports resolution, size, and capabilities.
 
 ---
 
 ## 2. What Each Command Shows
 
-**`xdpyinfo`** — Shows what the *X server* believes: physical size, resolution, and the X server's DPI.
+**`xdpyinfo`** - Shows what the *X server* believes: physical size, resolution, and the X server's DPI.
 
-**`xrandr`** — Shows physical size and resolution per output, as reported via EDID.
+**`xrandr`** - Shows physical size and resolution per output, as reported via EDID.
 
-**`xrdb -query`** — Shows the current logical DPI (`Xft.dpi`) used by Xft/Fontconfig-based apps.
+**`xrdb -query`** - Shows the current logical DPI (`Xft.dpi`) used by Xft/Fontconfig-based apps.
 
-**`/var/log/Xorg.0.log`** — Shows EDID-reported millimeter size and the DPI computed by Xorg at startup.
+**`/var/log/Xorg.0.log`** - Shows EDID-reported millimeter size and the DPI computed by Xorg at startup.
 
-**`xdpi` (external tool)** — Shows physical DPI per display using EDID values.
+**`xdpi` (external tool)** - Shows physical DPI per display using EDID values.
 
 ---
 
-## 3. Commands (Copy‑Paste Ready)
+## 3. Commands
 
-**Show X server DPI (logical? physical?)**
+**Show X server DPI**
 ```
 xdpyinfo | grep -i dots
 ```
@@ -95,10 +90,10 @@ grep -i "dimension" /var/log/Xorg.0.log
 (pixels / millimeters) × 25.4
 ```
 
-**Logical DPI** — no formula; it's whatever you set in:
+**Logical DPI** - no formula; it's whatever you set in:
 - `~/.Xresources` (Xft.dpi)
 - `xrdb -merge`
-- A desktop environment’s XSETTINGS daemon
+- A desktop environment's XSETTINGS daemon
 
 ---
 
@@ -117,13 +112,13 @@ Physical DPI:
 ≈ 162 DPI
 ```
 
-If `Xft.dpi` is set to 144:
+If `Xft.dpi` is set to 120 (in `~/.Xresources`):
 ```
-xrdb -query | grep Xft.dpi → 144
-xdpyinfo → still shows 162 (X server DPI)
+xrdb -query | grep Xft.dpi -> 120 
+xdpyinfo -> still shows 162 (X server DPI)
 ```
 
-This is normal because **X server DPI does not change automatically when Xft.dpi changes.**
+This is normal because X server DPI does **not** change **automatically** when `Xft.dpi` changes.
 
 ---
 
@@ -131,13 +126,13 @@ This is normal because **X server DPI does not change automatically when Xft.dpi
 
 ### Change logical DPI (affects fonts/UI in modern apps)
 ```
-printf "Xft.dpi: 144" | xrdb -merge
+printf "Xft.dpi: 120" | xrdb -merge
 ```
-Effective immediately for most apps.
+Effective immediately for most apps (you'll probably need to restart them).
 
 ### Change X server DPI (rare, requires restart)
 ```
-startx -- -dpi 144
+startx -- -dpi 120 
 ```
 Or add to Xorg config.
 
@@ -145,7 +140,7 @@ Changing X server DPI *live* is generally **not** supported.
 
 ---
 
-## 7. Q&A (Practical)
+## 7. Q&A
 
 **Q: How do I check *physical* DPI?**  
 A: `xdpyinfo | grep dimensions` or `xrandr`, then compute using the formula.
@@ -154,10 +149,10 @@ A: `xdpyinfo | grep dimensions` or `xrandr`, then compute using the formula.
 A: `xrdb -query | grep Xft.dpi`.
 
 **Q: Why do xdpyinfo DPI and Xft.dpi differ?**  
-A: xdpyinfo shows **X server DPI**; Xft.dpi is a **separate logical DPI** for modern font systems.
+A: `xdpyinfo` shows **X server DPI**; `Xft.dpi` is a **separate logical DPI** for modern font systems.
 
 **Q: Is Xft.dpi global?**  
-A: Yes—global for all Xft/Fontconfig-based applications; does not affect legacy XLFD apps.
+A: Yes - global for all Xft/Fontconfig-based applications; does not affect legacy XLFD apps.
 
 **Q: Can I change Xft.dpi live?**  
 A: Yes, using `xrdb -merge`.
@@ -173,22 +168,21 @@ A: Compare `xrandr` or `xdpyinfo` millimeter values with the actual physical mea
 ## 8. Additional Answers for FreeBSD + FVWM3 Environment
 
 **What DPI should I set on my laptop?**  
-To match a 94‑DPI external monitor, set **Xft.dpi: 94** so all Fontconfig/Xft applications scale similarly.
+To match a 94-DPI external monitor, set **Xft.dpi: 120** so all Fontconfig/Xft applications scale similarly.
 
 **Can this be set globally?**  
-Yes: put `Xft.dpi: 94` in `~/.Xresources` and load with `xrdb -merge`. Some toolkits (GTK, Qt, Firefox, Thunderbird) still need separate per‑toolkit scaling.
+Yes: put `Xft.dpi: 120` in `~/.Xresources` and load with `xrdb -merge`.
+Some toolkits (GTK, Qt, Firefox, Thunderbird) still need separate per-toolkit scaling.
 
-**Is this document title acceptable?**  
-“Yes: *Scaling on HiDPI Screens in FreeBSD and Unix‑derived OSs*” is accurate.
-
-**Is today’s scaling situation per‑application?**  
+**Is today's scaling situation per-application?**  
 Yes. There is no universal scaling across X11; each toolkit may require overrides.
 
 **Font scaling vs. full scaling**  
-Font scaling affects *text size only*. Full scaling enlarges *entire UI elements* (buttons, icons, padding, windows), typically via toolkit DPI multipliers.
+Font scaling affects *text size only*.
+Full scaling enlarges *entire UI elements* (buttons, icons, padding, windows), typically via toolkit DPI multipliers.
 
 **Do I need fractional scaling?**  
-No. Since you want ~94 DPI, set `Xft.dpi: 94` and adjust toolkit settings; fractional scaling is mostly needed for DEs.
+No. Since you want ~120 DPI, set `Xft.dpi: 120` and adjust toolkit settings; fractional scaling is mostly needed for DEs (Desktop Environments)
 
 **Do apps render at their own resolution?**  
 Yes. Applications draw at native resolution unless toolkit scaling is applied.
@@ -203,24 +197,23 @@ Because each toolkit (GTK, Qt, Xlib, Xft) uses its own environment variables and
 `xrandr` shows physical size but does *not* compute DPI.
 
 **DPI vs PPI?**  
-DPI originated from printing; PPI is correct for screens. In practice, DPI ≈ PPI.
-
-**View previous external monitor data?**  
-Usually no. Xorg logs physical size only when the display is attached.
+DPI originated from printing; PPI is correct for screens.
+In practice, DPI ~= PPI.
 
 **Can Xft.dpi be changed live?**  
-Yes: `printf "Xft.dpi: 94" | xrdb -merge`.  
+Yes: `printf "Xft.dpi: 120" | xrdb -merge`.  
 Toolkit-specific DPI (Qt, GTK) can also be changed live via environment variables.
 
-**What do `xdpi` and Qt report?**  
-`xdpi` reports EDID‑based physical DPI. Qt reports logical DPI per screen (Qt’s internal interpretation).
+**What do `xdpi` and `qtdpi` report?**  
+`xdpi` reports EDID-based physical DPI.
+`qtdpi` reports logical DPI per screen (Qt's internal interpretation).
 
 **Toolkits you need to configure:**  
-- GTK2: `~/.gtkrc-2.0` (font sizes).  
+- GTK2: `~/.gtkrc-2.0` (font sizes). 
 - GTK3: `~/.config/gtk-3.0/settings.ini` (scaling + font sizes).  
 - Qt5/Qt6: env vars (`QT_SCALE_FACTOR`, `QT_FONT_DPI`, etc.).  
 - Firefox/Thunderbird: set `layout.css.devPixelsPerPx = 1.0` for 1× scaling.
 
-**xterm scaling**  
-Bitmap fonts: use XLFD names in `~/.Xresources` as you currently do.
+**xterm scaling (for bitmap fonts)**  
+*Bitmap fonts*: use **XLFD names** in `~/.Xresources`. 
 

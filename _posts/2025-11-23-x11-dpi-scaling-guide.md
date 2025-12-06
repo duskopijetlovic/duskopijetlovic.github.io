@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "X11 DPI Scaling Guide" 
-date: 2025-11-24 10:16:11 -0700 
+date: 2025-11-23 10:16:11 -0700 
 categories: x11 xorg xterm config dotfiles howto font freebsd utf8 unicode unix 
             cli terminal shell tip c programming tutorial howto
 ---
@@ -206,7 +206,7 @@ These values have the best support across: Xft, Fontconfig, GTK2/GTK3, Qt, Web e
   | 70-90        | 96-110              |
   | 90-110       | 110-132             |
   | 110-140      | 120-144             |
-  | 140-180      | 120-168             |
+  | 140-200      | 120-168             |
   | >200         | 150-200 (HiDPI zone)|
   ```
 
@@ -492,6 +492,24 @@ Useful because toolkits sometimes guess wrong physical DPI.
 > Another characteristic of the screen resolution is color depth which measures the number of bits representing color of each pixel.
 > Higher screen resolution is commonly associated with higher productivity as you can see more information at the same time and don't have to switch between windows frequently.
 > As a result increasing your screen resolution is often a better investment than buying a faster processor or more memory.
+
+* [How to Pick a Good Monitor for Software Development](https://nickjanetakis.com/blog/how-to-pick-a-good-monitor-for-software-development)
+
+* [DPI Calculator / PPI Calculator](https://www.sven.de/dpi/)
+
+* [Screen DPI Calculator](https://projectorsize.com/screen-dpi-calculator/)
+
+* [Monitor DPI Calculator](https://sagecalculator.com/monitor-dpi-calculator/)
+
+* [TFTCentral - Monitor reviews, articles, information and news](https://tftcentral.co.uk/)
+ 
+* [srandrd - simple randr daemon](https://github.com/jceb/srandrd)
+> srandrd(1) is a tool that executes a command on xrandr output change events, i.e. if a monitor is plugged or unplugged.
+> By default srandrd forks to background and exits if the xserver exits.
+
+* [Time to upgrade your monitor](https://tonsky.me/blog/monitors/)
+
+* [Time to Upgrade Your Monitor - Hacker News](https://news.ycombinator.com/item?id=23551983)
 
 ---
 
