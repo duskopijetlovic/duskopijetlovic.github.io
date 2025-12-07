@@ -201,7 +201,7 @@ Xft.dpi:        161.73
 
 ## Fonts for Use with XTerm
 
-In general, for `xterm(1)`, I prefer using bitmapped (old-style) fixed width fonts when I'm using an external monitor, while for a a laptop, I like better OpenType (OTF, new-style) and TrueType fonts (TTF, new-style).
+In general, for `xterm(1)`, I prefer using bitmapped (old-style) fixed width fonts when I'm using an external monitor, while for a laptop, I like better OpenType (OTF, new-style) and TrueType fonts (TTF, new-style).
 
 From [Install TTF font on xterm (cygwin)](https://superuser.com/questions/920572/install-ttf-font-on-xterm-cygwin):
 > TrueType fonts (TTF) with X are usually done using `fontconfig`.
@@ -473,27 +473,73 @@ If there is `iso8859-1` in XLFD font name: it does not support Unicode.
 
 ----
 
-## Laptop with an External Monitor - TODO
+## Steps for Laptop with an External Monitor
 
-When I use an external monitor with the laptop.
+* Open laptop lid
+* Plug in the external monitor
+* If the external monitor is blank, run:
 
-On laptop:
+```
+% xrandr | grep -w connected
+```
+
+If the output shows only the internal built-in laptop's screen, for example:
+
+```
+eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
+```
+
+Exit X11 (aka Xorg, or X Window System):
+
+```
+% pkill Xorg
+```
+
+Start X11:
+
+```
+% exec xinit
+```
+
+If the external monitor is now not blank, you can run:
+ 
+```
+% xrandr | grep -w connected
+```
+
+In this example, the output shows that the screen is extended; that is, the external monitor is to the right of the laptop's monitor:
+
+```
+eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
+DP-1 connected 2560x1440+1920+0 (normal left inverted right x axis y axis) 518mm x 324mm
+```
+
+If that's the setup you like, you can stop here.
+
+If, on the other hand, you want a mirrored configuration, run this shell script:
 
 ```
 % ./mirror_ext_monitor_xrandr.sh
 ```
 
+The content of that script:
+
 ```
-% cat mirror_ext_monitor_xrandr.sh 
+% cat mirror_ext_monitor_xrandr.sh
 #!/bin/sh
 
-# Based on 
-#   <https://wiki.archlinux.org/title/Xrandr>
-
 intern=eDP-1
-extern=HDMI-1 
+extern=DP-1
 
 xrandr --output "$intern" --primary --auto --output "$extern" --same-as "$intern" --auto
+```
+
+Now, the output from `xrandr` is:
+
+```
+% xrandr | grep -w connected
+eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
+DP-1 connected 2560x1440+0+0 (normal left inverted right x axis y axis) 518mm x 324mm
 ```
 
 ----
@@ -506,8 +552,7 @@ xrandr --output "$intern" --primary --auto --output "$extern" --same-as "$intern
 In contrast to the laptop, with an external monitor, for `xterm` I prefer bitmapped fonts (X Core fonts, aka old-style fonts).
 
 ```
-% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-14-140-75-75-m-90-iso106
-46-1"
+% xterm -fn "-b&h-lucidatypewriter-medium-r-normal-sans-14-140-75-75-m-90-iso10646-1"
 
 % xterm -fn "-misc-fixed-medium-r-normal--18-120-100-100-c-90-iso8859-1"
 

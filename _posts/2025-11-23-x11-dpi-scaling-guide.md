@@ -63,6 +63,24 @@ Recommended values:
 * For Firefox/Thunderbird, use `layout.css.devPixelsPerPx = 1.0` for 1x scaling.
 * For bitmap (XLFD) fonts, Xterm uses its own font sizes, independent of DPI.
 
+
+## What DPI should I use on an external monitor? 
+
+NOTE: No scaling needed for external monitors.
+The goal is to be standing or sitting and be able to comfortably read text at 100% scaling without eye strain.
+
+Choose one of monitors with the following specifications, listed here in order of preference:
+
+* 1920x1200 - WUXGA: 24-inch (PPI 94.34, pixel pitch 0.27 mm)
+* 2560x1440 - QHD (Quad HD) or WQHD (Wide QHD) or 1440p: 27-inch (PPI 108.79, pixel pitch 0.23 mm
+* 1920x1080 - FHD (Full HD): 24-inch (PPI 91.79, pixel pitch 0.28 mm)
+
+NOTE: Panel Type of the chosen monitor needs to be: IPS (In-Plane Switching). 
+
+For other possible monitor choices see footnote [<sup>[1](#footnotes)</sup>].
+
+----
+
 # 1. Check or Compute Physical DPI (from EDID)
 
 aka: **Actual** pixel density of the monitor  
@@ -386,6 +404,8 @@ So for practical purposes you can treat a monitor with ~100 PPI as ~100 DPI.
 ```
 | Pixel Pitch | PPI (approx.) |
 | ----------- | ------------- |
+| 0.31 mm     | 82 PPI        |
+| 0.29 mm     | 88 PPI        |
 | 0.27 mm     | 94 PPI        |
 | 0.25 mm     | 102 PPI       |
 | 0.23 mm     | 110 PPI       |
@@ -513,3 +533,32 @@ Useful because toolkits sometimes guess wrong physical DPI.
 
 ---
 
+## Footnotes
+ 
+[1] Possible monitors for use with laptop.  
+
+```
+| Resolution                 | Diagonal Size | PPI    | Dot Pitch     |
+| (Horizontal x Vertical )   | (inches)      |        | (Pixel Pitch) |
+| (pixels)                   |               |        | (mm)          |
+
+| 1920x1080 (FHD or Full HD) | 27            | 81.59  | 0.31          |
+|                            | 25            | 88.12  | 0.29          |
+|                            | 24            | 91.79  | 0.28          |
+|                            | 22            | 100.13 | 0.25          |
+|                            | 21            | 104.90 | 0.24          |
+|                            | 19            | 115.94 | 0.22          |
+
+| 1920x1200 (WUXGA or 1200p) | 27            | 83.86  | 0.30          |
+|                            | 25            | 90.57  | 0.28          | 
+|                            | 24            | 94.34  | 0.27          |
+|                            | 22            | 102.92 | 0.25          |
+|                            | 20            | 113.21 | 0.22          |
+|                            | 16            | 114.51 | 0.18          |
+
+| 2560x1440 (WQHD, 1440p)    | 32            | 91.79  | 0.28          |
+|                            | 27            | 108.79 | 0.23          |
+|                            | 24            | 122.38 | 0.21          |
+|                            | 25            | 117.49 | 0.22          |
+|                            | 22            | 133.51 | 0.19          |
+```
