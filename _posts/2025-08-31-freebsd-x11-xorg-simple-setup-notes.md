@@ -382,7 +382,7 @@ There are two kinds of fonts in X11: server-side (drawn by the X server, shown i
 
 ----
 
-### XTerm's Default Font 
+### XTerm's Default Font - aka: XTerm uses X server's built-in fixed font
 
 The default font for `xterm` is an alias *fixed*.
 
@@ -507,7 +507,10 @@ If the external monitor is now not blank, you can run:
 % xrandr | grep -w connected
 ```
 
-In this example, the output shows that the screen is extended; that is, the external monitor is to the right of the laptop's monitor:
+OVDE
+
+In this example, the output shows that the screen is extended (aka spanning desktop).
+Here, the external monitor is to the right of the laptop's monitor:
 
 ```
 eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 301mm x 188mm
@@ -871,9 +874,9 @@ Display size: 11.87" × 7.42" = 88.09in² (30.15cm × 18.85cm = 568.32cm²) at 1
 **References - The difference between PPI and DPI**
 
 * [PPI vs. DPI – The Difference Explained Simply](https://pixelcalculator.com/en/dpi-vs-ppi-difference.php)
-> PPI: Pixels per Inch – The Digital World
+> PPI: Pixels per Inch - The Digital World
 >
-> DPI: Dots per Inch – The Printed World
+> DPI: Dots per Inch - The Printed World
 
 * [What is the difference between DPI (dots per inch) and PPI (pixels per inch)?](https://graphicdesign.stackexchange.com/questions/6080/what-is-the-difference-between-dpi-dots-per-inch-and-ppi-pixels-per-inch)
 
@@ -2064,7 +2067,13 @@ See also:
 fc-cache(1) fc-list(1) fc-match(1) fc-pattern(1) fc-query(1) fc-scan(1) fc-cat(1)
 ```
 
----
+----
+
+## Useful X Tools - Generic, General 
+
+* To display the start of the cut buffer: `xprop -root -len 100 CUT_BUFFER0`
+
+----
 
 ## Glossary / Acronyms / Terms [TODO]
 
@@ -2074,7 +2083,7 @@ fc-cache(1) fc-list(1) fc-match(1) fc-pattern(1) fc-query(1) fc-scan(1) fc-cat(1
     - X11 = protocol, the core protocol
     - X.Org Server = X
 
-References:
+## References:
 
 * [X Window System - Wikipedia](https://en.wikipedia.org/wiki/X_Window_System):
 > X Window System (X11, or simply X) is a windowing system for bitmap displays, common on Unix-like operating systems.
@@ -2184,6 +2193,13 @@ will display:
 
 ```
 % xterm -fn "-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO10646-1"
+```
+
+**To display the point size of the `fixed` font being used:**
+
+```
+% xprop -font fixed POINT_SIZE
+POINT_SIZE = 120
 ```
 
 ---

@@ -28,7 +28,7 @@ However, when you use the laptop with only its built-in screen, everything appea
 * Set **Xft.dpi: 120** in `~/.Xresources` 
 
 Explanation:
-- Physical DPI on this laptop = *162*. --> See (11a).
+- Physical DPI on this laptop = *162*. --> See [11a. Compute Physical DPI](#11a-compute-physical-dpi), and footnote [<sup>[1](#footnotes)</sup>].
 - DPI that I like on the extarnal monitor = 94.
 - Preferred *effective DPI* ~94. 
 
@@ -48,17 +48,12 @@ Xft.dpi: 144
 
 to `~/.Xresources`.
 
-Recommended values:
-
-* **96** = standard
-* **120** = ~125% scaling (good for 90-110 DPI screens)
-* **144** = ~150% scaling
-
-* Physical DPI (from EDID): use `xdpyinfo | grep dimensions` -> compute with `(pixels/mm) x 25.4`.
+* Recommended DPI values for my laptop: **120** = ~125% scaling (good for 90-110 DPI screens), or **144** = ~150% scaling.
+* Physical DPI: use `xrandr | grep -w connected` -> compute with `(pixels/mm) x 25.4`.  See [11a. Compute Physical DPI](#11a-compute-physical-dpi), and footnote [<sup>[1](#footnotes)</sup>]
 * Logical DPI (what apps use): check with `xrdb -query | grep Xft.dpi`.
 * `xdpyinfo` shows **X server DPI** (rarely used by modern apps).
 * Modern apps (GTK, Qt, Firefox, Thunderbird) need their own scaling settings.
-* `Xft.dpi` can be changed **live** (`xrdb -merge`). X server DPI **cannot**.
+* `Xft.dpi` can be changed **live** (`xrdb -merge`), while X server DPI **cannot**.
 * Scaling on X11 is per-toolkit; no universal scaling unless inside a Desktop Environment.
 * For Firefox/Thunderbird, use `layout.css.devPixelsPerPx = 1.0` for 1x scaling.
 * For bitmap (XLFD) fonts, Xterm uses its own font sizes, independent of DPI.
@@ -66,7 +61,7 @@ Recommended values:
 
 ## What DPI should I use on an external monitor? 
 
-NOTE: No scaling needed for external monitors.
+NOTE: Usually no scaling needed for external monitors.
 The goal is to be standing or sitting and be able to comfortably read text at 100% scaling without eye strain.
 
 Choose one of monitors with the following specifications, listed here in order of preference:
@@ -77,7 +72,7 @@ Choose one of monitors with the following specifications, listed here in order o
 
 NOTE: Panel Type of the chosen monitor needs to be: IPS (In-Plane Switching). 
 
-For other possible monitor choices see footnote [<sup>[1](#footnotes)</sup>].
+For other possible monitor choices see footnote [<sup>[2](#footnotes)</sup>].
 
 ----
 
@@ -86,22 +81,6 @@ For other possible monitor choices see footnote [<sup>[1](#footnotes)</sup>].
 aka: **Actual** pixel density of the monitor  
 aka: Commands you use for DPI diagnostics
 
-To determine the DPI value that Xorg has set for your display, you can use the `grep` command to search the Xorg log file.
-
-```
-$ grep DPI /var/log/Xorg.0.log
-```
-
-While this command shows the DPI value Xorg is using, it might not always reflect the physical DPI of your monitor, especially if Xorg is unable to correctly determine the display's physical dimensions or if a default DPI (like 96 DPI) is being applied. 
-For a more accurate physical DPI calculation, you need to manually compute it from its actual physical dimensions and resolution (pixels). 
-
-First, find out the monitor's dimensions and pixels (resolution).  
-
-```
-$ xdpyinfo | grep dimensions          # gives pixels + mm size
-```
-
-Alternatively:
 
 ```
 $ xrandr --prop | grep -w connected   # gives pixels + mm size
@@ -113,14 +92,13 @@ Then, compute the physical DPI:
 (pixels / millimeters) x 25.4
 ```
 
-For an example of computing physical DPI, see (11a).
+For an example of computing physical DPI, see [11a. Compute Physical DPI](#11a-compute-physical-dpi).
 
 NOTE: EDID may sometimes report incorrect millimeter sizes.
 
 # 2. Check X Server DPI (rarely meaningful)
 
 aka: What Xorg calculates *at startup* from EDID or overrides (e.g., overrides by commands 
-
 
 aka: What Xorg *thinks* your DPI is  
 aka: "`xdpyinfo` dots-per-inch" (often physical DPI, not logical DPI)
@@ -131,7 +109,7 @@ Shown in:
 $ xdpyinfo | grep dots
 ```
 
-For an example of using `xdpyinfo` to get X Server DPI, see (11b).
+For an example of using `xdpyinfo` to get X Server DPI, see [11b. X Server DPI](#11b-x-server-dpi).
 
 * Almost never affects anything modern.
 * Only very old X11 programs care.
@@ -159,14 +137,17 @@ $ grep Xft.dpi ~/.Xresources
 
 Can be changed live via `xrdb -merge`.
 
-For an example using `xrdb -query` or using `grep` on `.Xresources` to query the logical DPI, see (11c).
+For an example using `xrdb -query` or using `grep` on `.Xresources` to query the logical DPI, see [11c. Logical DPI](#11c-logical-dpi).
+
 
 ### Set Logical DPI (Recommended Workflow)
 
 Logical DPI = `Xft.dpi`, controls *font scaling* for modern apps.
 
 **Where is the logical DPI set?**   
-See 3a, 3b, and 3c.
+
+See [3a](#3a-to-set-logical-dpi-temporary---during-the-current-x-session), [3b](#3b-to-set-logical-dpi-permanently), [3c](#3c-to-set-x-server-dpi-requires-restart---rarely-meaningful).
+
 
 #### 3a. To set logical DPI temporary - during the current X session
 
@@ -335,7 +316,7 @@ This avoids XSETTINGS daemons and keeps scaling predictable.
 * Rule 1: `Xft.dpi` controls almost all modern GUI apps.
 * Rule 2: X server DPI (xdpyinfo dots) rarely matters today.
 * Rule 3: Bitmap fonts ignore scaling (hardcoded pixel sizes).
-* Rule 4: For laptop screens under 100-110 DPI, typical comfort values:
+* Rule 4: For laptop screens with physical DPI > ~132, typical comfort values:
   * 120-144 DPI (~120%-150% scaling)
 * Rule 5: Set `Xft.dpi` in `.Xresources` -> consistent behavior across apps.
 
@@ -423,13 +404,6 @@ So for my use (text, terminal use), aiming for PPI **~90-110** is a good target.
 ### 11a. Compute Physical DPI
 
 Physical DPI = `(pixels / millimeters) x 25.4`
-
-```
-$ xdpyinfo | grep dimensions
-  dimensions:    1920x1200 pixels (301x188 millimeters)
-```
-
-Alternatively, with `xrandr`:
 
 ```
 $ xrandr | grep -w connected
@@ -534,8 +508,51 @@ Useful because toolkits sometimes guess wrong physical DPI.
 ---
 
 ## Footnotes
+
+[1] Sometimes `xdpyinfo` doesn't show dimensions for the **current** monitor (screen or output).
+For example, after I unplugged an external monitor from my laptop, without restarting X (X11, X Window System), `xdpyinfo` was showing dimensions of **only** the *external monitor*: 
+
+```
+$ xdpyinfo | grep dimensions
+  dimensions:    2560x1440 pixels (334x188 millimeters)
+```
+
+However, the laptop's screen (eDP-1) was actually 301x188 mm, 1920x1200 pixels: 
+
+```
+$ grep "Display dimensions" /var/log/Xorg.0.log
+[686196.891] (**) modeset(0): Display dimensions: (301, 188) mm
+
+$ grep "using initial mode" /var/log/Xorg.0.log
+[686196.891] (II) modeset(0): Output eDP-1 using initial mode 1920x1200 +0+0
+[686196.891] (II) modeset(0): Output DP-1 using initial mode 2560x1440 +1920+0
+```
+
+```
+$ xrandr --verbose | grep -w connected
+eDP-1 connected primary 1920x1200+0+0 (0x49) normal (normal left inverted right x axis y axis) 301mm x 188mm
  
-[1] Possible monitors for use with laptop.  
+$ xrandr --verbose | grep -w disconnected | grep '0mm x 0mm'
+DP-1 disconnected 2560x1440+0+0 (0x96) normal (normal left inverted right x axis y axis) 0mm x 0mm
+``` 
+
+Similarly, the X Server log file, `/var/log/Xorg.0.log`, sometimes doesn't show correct DPI for the current monitor.
+
+```
+$ grep DPI /var/log/Xorg.0.log
+```
+
+While this command should show the DPI value Xorg is using, it might not always reflect the physical DPI of your monitor, especially if Xorg is unable to correctly determine the display's physical dimensions or if a default DPI (like 96 DPI) is being applied.
+For a more accurate physical DPI calculation, you need to manually compute it from its actual physical dimensions and resolution (pixels).
+
+As above with `xdpyinfo`, after I unplugged an external monitor from my laptop, without restarting X (X11, X Window System), the Xorg log file was not showing correct physical DPI:
+
+```
+$ grep DPI /var/log/Xorg.0.log
+[686196.891] (**) modeset(0): DPI set to (378, 194)
+```
+
+[2] Possible monitors for use with laptop.  
 
 ```
 | Resolution                 | Diagonal Size | PPI    | Dot Pitch     |
@@ -562,3 +579,6 @@ Useful because toolkits sometimes guess wrong physical DPI.
 |                            | 25            | 117.49 | 0.22          |
 |                            | 22            | 133.51 | 0.19          |
 ```
+
+----
+
