@@ -151,18 +151,18 @@ First note.
 
 ### Create Index File for New Directory
 
-Create ```index.md``` and save it in the directory without the underscore (```_```); that is, in the ```notes``` directory.
+Create ```index.html``` and save it in the directory without the underscore (```_```); that is, in the ```notes``` directory.
 
 **NOTE:**   
 If you place the **Index** file in the ```_notes``` instead of in the ```notes``` directory, the listing will also include a link to the ```index.html``` file itself.
 Most likely, you don't want that.
 
-Example content of the ```index.md``` file in the ```notes``` directory:
+Example content of the ```index.html``` file in the ```notes``` directory:
 
 {% raw %}
 
 ```
-$ cat notes/index.md 
+$ cat notes/index.html
 ---
 title: My Notes
 layout: default
@@ -184,10 +184,10 @@ layout: default
 ```
 
 
-An alternate ```index.md``` file:
+An alternate ```index.html``` file:
 
 ```
-$ cat notes/index.md 
+$ cat notes/index.html
 ---
 title: My Notes
 layout: default

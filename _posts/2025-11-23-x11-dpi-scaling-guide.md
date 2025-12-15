@@ -98,7 +98,7 @@ NOTE: EDID may sometimes report incorrect millimeter sizes.
 
 # 2. Check X Server DPI (rarely meaningful)
 
-aka: What Xorg calculates *at startup* from EDID or overrides (e.g., overrides by commands 
+aka: What Xorg calculates *at startup* from EDID or overrides (e.g., overrides by commands) 
 
 aka: What Xorg *thinks* your DPI is  
 aka: "`xdpyinfo` dots-per-inch" (often physical DPI, not logical DPI)
@@ -203,13 +203,13 @@ These values have the best support across: Xft, Fontconfig, GTK2/GTK3, Qt, Web e
   | Physical DPI | Recommended Xft.dpi |
   | ------------ | ------------------- |
   | 70-90        | 96-110              |
-  | 90-110       | 110-132             |
+  | 90-110       | 96-132              |
   | 110-140      | 120-144             |
   | 140-200      | 120-168             |
   | >200         | 150-200 (HiDPI zone)|
   ```
 
-  - For *my* preference (90-110 comfortable PPI):
+  - For *my* preference (96-120 comfortable PPI):
     - Start at `Xft.dpi`: 120.
     - Try 132 or 144 if needed.
 * STEP C - Set logical DPI
@@ -298,7 +298,7 @@ QT_AUTO_SCREEN_SCALE_FACTOR=0
   Xft.dpi: 120
   ```
 
-* Leave X Server DPI (`startx -- -dpi 120`) untouched (do not chase it).
+* Leave X Server DPI (`startx -- -dpi 120`) untouched (do **not** chase it).
 
 * Adjust individual toolkits:
    - `QT_FONT_DPI=120`

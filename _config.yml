@@ -39,6 +39,9 @@ collections:
   notes:
     permalink: /notes/:path
     output: true
+  links:
+    permalink: /links/:path
+    output: true
 
 social:
 #   - icon: fa-facebook
@@ -63,6 +66,8 @@ urls:
       url: /notes/index.html
     - text: Startpage
       url: /html/startpage.html
+    - text: Links
+      url: /links/index.html
     - text: XML Feed
       url: /feed.xml
     - text: Categories 
