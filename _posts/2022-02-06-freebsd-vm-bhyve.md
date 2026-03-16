@@ -109,6 +109,12 @@ vm-bhyve-1.4.2                 Management system for bhyve virtual machines
 Based on 
 [churchers/vm-bhyve.](https://github.com/churchers/vm-bhyve)(Retrieved on Feb 6, 2022). 
 
+2025-04-08 Update:  
+> As of April 8, 2025, this repo is no longer maintained.
+> After discussion in issue [#544](https://github.com/churchers/vm-bhyve/issues/544), the project has found a new home under the FreeBSD organization:
+> 
+> [https://github.com/freebsd/vm-bhyve](https://github.com/freebsd/vm-bhyve)
+
 
 Install vm-bhyve.
 
