@@ -77,7 +77,11 @@ NOTE: For me, the List will be the base of my new system, so I replaced *List* w
   - `today.txt` file
   - `calendar.txt` file
 * Metadata in each file
-  - Tags (Item Types, Keywords): `+Project` `@Context` `(A|B|C|D)` `:writing:` 
+  - Tags (Item Types, Keywords): 
+    - Projects (`+`): e.g., `+GarageDecluttering`
+    - Context (`@`): e.g., `@phone`
+    - Priority (`A|B|C|D`) - e.g., `(A) Call John` 
+    - Tag (preceded and followed by a single colon (`:`)) - e.g., `:action:` or `:notes:flagged:`
 * No apps
 * Only UNIX tools
 
@@ -89,48 +93,61 @@ Typically hard to implement in plain text systems: paragraph separation.
 **See also:** a dinkus, an asterism, greppability, typographical device, zareba, fleuron, dingbat, visual separation, visual separator, visual divider, semantic marker, delimiter, paragraph divider, paragraph separator, paragraph segmentation, paragraph mark, record header, ornamental section break, space break, scene break, thought breaker, placeholder.
 
 
-Chosen: **dinkus** - horizontal row of three spaced asterisks, centered on its own line:
+Chosen - decided to use this separator:
+
+* Horizontal row of three asterisks, placed at position numbers: 1, 40, 80:
 
 ```
-                 * * *
+*                                      *                                       *
 ```
 
 
 ### Other Markers Considered
 
+* **Dinkus** - horizontal row of three spaced asterisks, centered on its own line:
+
+```
+                                     * * *
+```
+
 * A variation of asterism:
 
 ```
-                   *  
-                  * *
+                                       *  
+                                      * *
 ```
 
+* Horizontal row of three spaced asterisks, at the beginning of the line:
+
+```
+* * *
+```
 
 * My own/customized paragraph separator - the following sequence: 
 
 ```
------=====*****=====-----
+                           -----=====*****=====-----
 ```
 
 * A blank line before and after the dinkus:
 
 ```
 
-                 * * *
+                                     * * *
 
 ```
 
 * No space between asterisks:
 
 ```
-                 ***
+                                      ***
 ```
 
 * A blank line before and after it:
 
 ```
 
-                 ***
+                                      ***
 
 ```
 
@@ -138,29 +155,28 @@ Chosen: **dinkus** - horizontal row of three spaced asterisks, centered on its o
 * Horizontal row of three spaced colons, three non-spaced colons, without and with a blank line before and after:
 
 ```
-                 :::
+                                      :::
 ```
 
 ```
 
-                 :::
+                                      :::
 
 ```
 
 
 ```
-                : : :
+                                     : : :
 ```
 
 ```
 
-                : : :
+                                     : : :
 
 ```
 
-* The same but with dashes (`---`). 
 
-  - Decided to use the following sequence as a paragraph separator (in multiline entries): `-----=====*****=====-----` 
+* The same as with three colons, but with three dashes (`---`). 
 
 
 ## The System Structure
@@ -246,7 +262,7 @@ My variant (my customizations):
 * Other types of entries can have multiple lines 
 * One sentence -> One line
 * A blank line can be used in multiline entries
-* Paragraph separator: ```-----=====*****=====-----```
+* Paragraph separator: ```*           *            *```
 * Tags are enclosed in colons (aka a word surrounded by colons) [<sup>[4](#footnotes)</sup>] 
 * (Experimental) Title - enclosed in between `<><>` and `<><>` : ```<><> My Title <><>```
 
@@ -505,6 +521,8 @@ Demo: [https://www.gibney.de/yeah_it_s_a_stopwatch](https://www.gibney.de/yeah_i
 >
 > I like having the title so I can see it in the tab and the font setting makes cutting/pasting code look better.
 
+* [My simple note-taking system for Emacs (without Org)](https://protesilaos.com/codelog/2020-10-08-intro-usls-emacs-notes/)
+
 * [Awfice - the world smallest office suite](https://github.com/zserge/awfice)
 > Awfice is a collection of tiny office suite apps:
 >
@@ -592,6 +610,8 @@ Demo: [https://www.gibney.de/yeah_it_s_a_stopwatch](https://www.gibney.de/yeah_i
 * [Org-Mode Is One of the Most Reasonable Markup Languages to Use for Text - Hacker News](https://news.ycombinator.com/item?id=15321850)
 
 * [How to Use Tags - Karl Voit](https://karl-voit.at/2022/01/29/How-to-Use-Tags/)
+
+* [Managing Digital Files (e.g., Photographs) in Files and Folders - Karl Voit](https://karl-voit.at/managing-digital-photographs/)
 
 * [etmtk - Event and Task Manager in Tk](https://people.duke.edu/~dgraham/etmtk/)
 > Manage events and tasks using simple text files.

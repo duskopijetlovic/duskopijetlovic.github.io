@@ -1,4 +1,11 @@
+---
+layout: post
+title: "Why is Form Feed Character 0x0C in ASCII ESC Question Mark 18h in ANSI" 
+date: 2026-04-03 09:41:08 -0700 
+categories: ansi ascii plaintext 
+---
 
+```
 The ASCII Form Feed character (FF), represented as 0x0C or \f, and the ANSI escape sequence ESC[?18h serve different purposes and are not directly equivalent.
 
 Form Feed (0x0C):
@@ -14,3 +21,8 @@ It is not a direct representation of a page break but rather a command to manage
 
 Therefore, while both relate to printing or display control, their functions and interpretations are distinct.
 The Form Feed character directly signals a page break, while the ANSI escape sequence controls a specific operational mode of the terminal regarding printer interaction.
+```
+
+---
+
+
