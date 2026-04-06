@@ -2,28 +2,24 @@
 layout: post
 title: "How to Scroll in VT (Virtual Terminal)/Text Console in FreeBSD" 
 date: 2026-03-29 16:39:59 -0700 
-categories: rs232serial 
+categories: rs232serial console terminal cli keyboard sysadmin freebsd unix 
 ---
 
 AKA: Scrollback in VT (Virtual Terminal) (text console, the system console, tty)
 
 ---
 
-Search engine: >> baroco mistel md770 how to scroll lock 
-
 ## Scrollback in VT on FreeBSD
 
-On FreeBSD, to scroll back in VT (virtual terminal), you need to press the **Scroll Lock** key, then scroll up and down with the arrow keys. 
-To scroll up or down a full screen at a time, use the Page Up and Page Down keys.
+On FreeBSD, to scroll back in VT (virtual terminal), you need to press the **Scroll Lock** key, then scroll up and down with the **arrow keys**.
+To scroll up or down a full screen at a time, use the **Page Up** and **Page Down** keys.
 
 
 ## If Keyboard doesn't have Scroll Lock Key
 
 If your keyboard doesn't have a Scroll Lock key, it very likely uses a special function key sequence to access Scroll Lock.
 
-On my keyboard, the Mistel Barocco MD770, you can activate Scroll Lock by pressing **Fn + [{** (the key to the right of 'P'). 
-
-To scroll up and down with: **Shift+PgUp/Dn**
+On my wired split mechanical keyboard, Mistel Barocco MD770, you can activate Scroll Lock by pressing **Fn + [{** (the key to the right of 'P'). 
 
 
 ## Alternative 1 - Use a Terminal Multiplexer

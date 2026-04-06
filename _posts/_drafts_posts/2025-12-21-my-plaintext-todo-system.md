@@ -28,6 +28,7 @@ NOTE: For me, the List will be the base of my new system, so I replaced *List* w
   - Digital Component
     - Plain text
     - Tagging
+    - Links - connections are created by using manual tagging 
     - One sentence -> One line [<sup>[1](#footnotes)</sup>]
     - For TODO -> 1 line/task; that is: A single line represents a single task
     - Other types of entries can have multiple lines 
@@ -301,6 +302,32 @@ x (A) 2025-05-20 2025-04-30 measure space for :+storagelShelves:@storage:diy:due
 * For ‘next_actions’ list, grep (verb, meaning: use the `grep(1)` utility) for `:todo:` items.
 * For ‘what_done’ list, grep for `:done:` items.
 * For ‘checklist_daily' or ‘checklist_weekly', grep for `:checklist`: items. [<sup>[5](#footnotes)</sup>]
+
+---
+
+## Linking Entries and Finding Connections
+
+When you need links to other items, you can add a unique identity (timestamp) with a type prefix that points to a resource.
+
+```
+Some text I am writing about sports analytics. ref_file:20201007_124941
+
+I found a helpful diagram illustrating this concept. ref_img:20230108_142056
+
+For more context, see this article on the topic. ref_uri:20230420_153022
+
+ref_file:20201007_124941--sports--performance-metrics-and-training-optimization.txt
+ref_img:20230108_142056--sports--market-structure-diagram.png
+ref_uri:20230420_153022--economics--https://example.com/economics-article
+```
+
+These are inserted by typing the `ref_` prefix with the appropriate type suffix, followed by the timestamp and resource details.
+The `ref_` prefix with type-specific suffixes (`_file:`, `_img:`, `_uri:`, etc.) makes references immediately clear and extensible.
+References follow the format `<timestamp>--<category>--<filename-or-uri>`, providing both structure and clarity.
+ 
+Technically, this is not a link.
+It is a reference to any resource, local or remote, which you can locate using appropriate tools: `find(1)` or `grep(1)` for references, or your browser for URIs.
+There is no automatic reverse reference tracking, so references are one-way only, keeping the system minimal and predictable.
 
 ---
 
