@@ -34,16 +34,24 @@ On my wired split mechanical keyboard, Mistel Barocco MD770, you can activate Sc
 
 ## Linux: Software Scrollback was Removed in version 5.9 of the Kernel
 
+On Linux, Scrollback via Shift+PageUp and Shift+PageDown is no longer supported on console terminals by kernels newer than version 5.9.
+
 [vgacon (the VGA soft scrollback): remove software scrollback support - Linux kernel source tree](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=973c096f6a85e5b5f2a295126ba6928d9a6afd45)
 
 [fbcon: remove soft scrollback code - Linux kernel source tree](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=50145474f6ef4a9c19205b173da6264a644c7489)
 
 
-### Alternatives - Use a Terminal Multiplexer or KMSCon
+### Alternatives - Use a Terminal Multiplexer or less(1) or KMSCon 
 
 * Use a terminal multiplexer; for example, `tmux(1)` or `screen(1)`.
 
-* [KMSCon](https://cgit.freedesktop.org/~dvdhrm/kmscon/plain/README) still has scrollback support - See the References section below.
+* Use the `less(1)` program.
+
+Of course, by the time you launch `tmux(1)`, `screen(1)` or `less(1)`, the message you need may have already scrolled out of view.
+
+* [KMSCon](https://cgit.freedesktop.org/~dvdhrm/kmscon/plain/README) offers perhaps a better alternative by serving as a system console terminal emulator that captures all output from the start, avoiding this timing issue.
+
+For more about KMSCon, see the References section below.
 
 ---
 
