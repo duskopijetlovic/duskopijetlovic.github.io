@@ -310,24 +310,30 @@ x (A) 2025-05-20 2025-04-30 measure space for :+storagelShelves:@storage:diy:due
 When you need links to other items, you can add a unique identity (timestamp) with a type prefix that points to a resource.
 
 ```
-Some text I am writing about sports analytics. ref_file:20201007_124941
+Some text I am writing about sports analytics. [ref_file:20231105_135123]
+I found a helpful diagram illustrating this concept. [ref_img:20231105_135218]
+For more context, see this article on the topic. [ref_uri:20231105_135329]
 
-I found a helpful diagram illustrating this concept. ref_img:20230108_142056
-
-For more context, see this article on the topic. ref_uri:20230420_153022
-
-ref_file:20201007_124941--sports--performance-metrics-and-training-optimization.txt
-ref_img:20230108_142056--sports--market-structure-diagram.png
-ref_uri:20230420_153022--economics--https://example.com/economics-article
+ref_file:20231105_135123--training_metrics_and_optimization.txt
+ref_img:20231105_135218--sport--sample_training_chart_1.png
+ref_uri:20231105_135329--https://example.com/sports-article.html
 ```
 
-These are inserted by typing the `ref_` prefix with the appropriate type suffix, followed by the timestamp and resource details.
-The `ref_` prefix with type-specific suffixes (`_file:`, `_img:`, `_uri:`, etc.) makes references immediately clear and extensible.
-References follow the format `<timestamp>--<category>--<filename-or-uri>`, providing both structure and clarity.
- 
-Technically, this is not a link.
-It is a reference to any resource, local or remote, which you can locate using appropriate tools: `find(1)` or `grep(1)` for references, or your browser for URIs.
-There is no automatic reverse reference tracking, so references are one-way only, keeping the system minimal and predictable.
+These are inserted by typing the `ref_` prefix with the appropriate type suffix, followed by a single colon (`:`) and the timestamp. 
+
+The `ref_` prefix with type-specific suffixes (`_file:`, `_img:`, `_footer:`, `_uri:`, etc.) can be called an *inline reference*.
+The inline reference (`ref_<type>:<timestamp>`) is an identifier added as you write, wherever you need to point to an external source.
+The same identifier, followed by `--<category>--<filename-or-uri>` on its own line, becomes the *reference definition*, naming or locating the source for that reference.
+
+For placement of full references, decide upfront, based on your entry's length and purpose, whether to collect them all at the end (cleaner for reading) or place them right after each relevant section (easier to maintain while writing).
+
+References follow the format `<timestamp>--<filename-or-uri>`.
+You can optionally extend the format by adding a category: `<timestamp>--<category>--<filename-or-uri>`.
+
+Strictly speaking, these are not links.
+They are references to any resource, whether stored locally (on your filesystem) or remotely (accessible via HTTP/HTTPS), which you can locate using appropriate tools: `find(1)` or `grep(1)` for local files, or your web browser for URIs. 
+
+Based on [My simple note-taking system for Emacs (without Org) - 2020-10-08](https://protesilaos.com/codelog/2020-10-08-intro-usls-emacs-notes/).
 
 ---
 
@@ -488,6 +494,9 @@ In Mozilla Firefox:  Bookmarks > Bookmark Current Tab
 
 Enter a name for it, and click on Save.
 
+More examples:
+
+[For fun: browser as scratchpad - 2020-10-14](https://moi.vonos.net/2020/10/scratchpad/)
 
 ### Writer - Distraction free writing tool in a Web Browser - By Marek Gibney
 
@@ -548,7 +557,15 @@ Demo: [https://www.gibney.de/yeah_it_s_a_stopwatch](https://www.gibney.de/yeah_i
 >
 > I like having the title so I can see it in the tab and the font setting makes cutting/pasting code look better.
 
-* [My simple note-taking system for Emacs (without Org)](https://protesilaos.com/codelog/2020-10-08-intro-usls-emacs-notes/)
+* [For fun: browser as scratchpad - 2020-10-14](https://moi.vonos.net/2020/10/scratchpad/)
+> A colleague recently pointed out that the following command can be pasted into either Firefox or Chrome to get an editable window for keeping notes.
+> The text can even be saved afterwards.
+> 
+> `data:text/html,<html contenteditable>`
+>
+> There are more examples on the same page.
+
+* [My simple note-taking system for Emacs (without Org) - 2020-10-08](https://protesilaos.com/codelog/2020-10-08-intro-usls-emacs-notes/)
 
 * [Awfice - the world smallest office suite](https://github.com/zserge/awfice)
 > Awfice is a collection of tiny office suite apps:
