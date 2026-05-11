@@ -710,7 +710,18 @@ Tools:
 ----
 
 ## References
-(Retrieved on Aug 5, 2024)
+(Updated on May 10, 2026)   
+(Retrieved on May 10, 2026)   
+(Posted on Aug 9, 2024)
+
+
+* [Re: how to convert a window ID to a linux process ID? - devel@xfree86.org mail archive - Mar 24, 2004](https://www.mail-archive.com/devel@xfree86.org/msg05806.htmlJ)
+
+* [whose xterm is it anyway?](https://web.archive.org/web/20170609065704/http://www.tedunangst.com/flak/post/whose-xterm-is-it-anyway)
+
+* [What process created this X11 window?](https://unix.stackexchange.com/questions/5478/what-process-created-this-x11-window)
+
+* [What process created this window with no PID associated? [duplicate]](https://unix.stackexchange.com/questions/46621/what-process-created-this-window-with-no-pid-associated)
 
 * [How to convert a X11 window ID to a process ID?](https://stackoverflow.com/questions/1131277/how-to-convert-a-x11-window-id-to-a-process-id?rq=1)
 
