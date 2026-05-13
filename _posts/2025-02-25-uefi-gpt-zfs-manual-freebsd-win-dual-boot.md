@@ -324,6 +324,10 @@ Using *vi(1)* to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 * [[UEFI/GPT] [Dual-Boot] How to install FreeBSD (with ZFS) alongside another OS (sharing the same disk)](https://forums.freebsd.org/threads/uefi-gpt-dual-boot-how-to-install-freebsd-with-zfs-alongside-another-os-sharing-the-same-disk.75734/)
 
+* [[Solved] manually installing FreeBSD (without bsdinstall) - FreeBSD Forums - Mar 7, 2025](https://forums.freebsd.org/threads/manually-installing-freebsd-without-bsdinstall.97092/)
+
+* [How to manually install FreeBSD on a remote server (with UFS, ZFS, encryption...)](https://stanislas.blog/2018/12/how-to-install-freebsd-server/)
+
 * [FreeBSD Alongside Windows](https://vermaden.wordpress.com/2025/02/02/freebsd-alongside-windows/)
 
 * [Install Environment](https://wiki.freebsd.org/MasonLoringBliss/InstallEnvironment)
@@ -332,9 +336,15 @@ Using *vi(1)* to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 * [How To Dual Boot Windows 11 and FreeBSD 14 (GELI Encrypted ZFS Root + UFS Boot Drive)](https://forums.freebsd.org/threads/how-to-dual-boot-windows-11-and-freebsd-14-geli-encrypted-zfs-root-ufs-boot-drive.92472/)
 
+* [Install FreeBSD (Short and Sweet Version)](https://www.dwarmstrong.org/freebsd-install/)
+
+* [How To Install FreeBSD 15 Step-by-Step](https://ostechnix.com/install-freebsd/)
+
 * [Resources or guides for UEFI dual-boot with Windows? (self.freebsd)](https://old.reddit.com/r/freebsd/comments/x9znz8/resources_or_guides_for_uefi_dualboot_with_windows/)
 
 * [zdb and zpool cache-files?](https://www.truenas.com/community/threads/zdb-and-zpool-cache-files.50760/)
+
+* [Chapter 2. Installing FreeBSD - 2.1. Synopsis (bsdinstall) - FreeBSD Handbook](https://docs.freebsd.org/en/books/handbook/bsdinstall/)
 
 ----
 
