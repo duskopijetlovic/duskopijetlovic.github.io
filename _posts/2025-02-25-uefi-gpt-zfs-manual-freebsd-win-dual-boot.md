@@ -16,7 +16,11 @@ KEYWORDS: FreeBSD ZFS RootOnZFS GPTZFSBoot ZFSBOOT UEFI GPT dualboot
           boot bootloader bootmanager rEFInd readonly writeable
           gpart geom zpool zfs label labelclear
           unionfs tmpfs manualinstall live livesystem liveCD
-          ramdisk md(4) mdconfig(8) mdmfs(8)
+          ramdisk `md(4)` `mdconfig(8)` `mdmfs(8)`
+
+---
+
+FreeBSD can be installed manually by extracting the base and kernel tarballs and later creating the config files in the `/etc/` directory. 
 
 ---
 
@@ -310,7 +314,7 @@ If do want a writeable ```/mnt```, you can unionfs for it too, or you can use *m
 # sed -i.bak "s/PermitRootLogin no/PermitRootLogin yes/" /etc/ssh/sshd_config
 ```
 
-Using *vi(1)* to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```)
+Using `vi(1)` to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```)
 
 ----
 
@@ -320,7 +324,20 @@ Using *vi(1)* to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 * [FreeBSD UEFI Root on ZFS and Windows Dual Boot](http://kev009.com/wp/2016/07/freebsd-uefi-root-on-zfs-and-windows-dual-boot/)
 
+* [HOWTO: FreeBSD ZFS Madness - by vermaden - FreeBSD Forums - Start date Apr 26, 2012](https://forums.freebsd.org/threads/howto-freebsd-zfs-madness.31662/)
+
 * [Installing FreeBSD manually (no installer)](https://forums.freebsd.org/threads/installing-freebsd-manually-no-installer.63201/)
+
+* [Procedure for manual installation - FreeBSD Forums - Start date Jan 28, 2018](https://forums.freebsd.org/threads/procedure-for-manual-installation.64370/)
+
+* [Disk Setup On FreeBSD - Warren Block - Archived on 2025-01-09](https://web.archive.org/web/20250109023806/http://www.wonkity.com/~wblock/docs/html/disksetup.html)
+> 
+> ```
+> # gpart add -t freebsd da0
+> # gpart set -a active -i 1 da0
+> # gpart create -s bsd da0s1
+> # gpart bootcode -b /boot/boot da0s1 
+> ```
 
 * [[UEFI/GPT] [Dual-Boot] How to install FreeBSD (with ZFS) alongside another OS (sharing the same disk)](https://forums.freebsd.org/threads/uefi-gpt-dual-boot-how-to-install-freebsd-with-zfs-alongside-another-os-sharing-the-same-disk.75734/)
 
@@ -328,23 +345,112 @@ Using *vi(1)* to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 * [How to manually install FreeBSD on a remote server (with UFS, ZFS, encryption...)](https://stanislas.blog/2018/12/how-to-install-freebsd-server/)
 
-* [FreeBSD Alongside Windows](https://vermaden.wordpress.com/2025/02/02/freebsd-alongside-windows/)
+* [FreeBSD Alongside Windows - vermaden](https://vermaden.wordpress.com/2025/02/02/freebsd-alongside-windows/)
 
-* [Install Environment](https://wiki.freebsd.org/MasonLoringBliss/InstallEnvironment)
+* [Install FreeBSD with One Command - vermaden](https://vermaden.wordpress.com/2024/11/10/install-freebsd-with-one-command/)
+
+* [Bug 279622 - Change Default bsdinstall(8) Partition Sizes for Auto (ZFS) Option - FreeBSD Bugzilla](https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=279622)
+
+* [ZFS and GELI by Hand - Mason Loring Bliss - FreeBSD Wiki](https://wiki.freebsd.org/MasonLoringBliss/ZFSandGELIbyHAND)
+
+* [Install Environment - Mason Loring Bliss - FreeBSD Wiki](https://wiki.freebsd.org/MasonLoringBliss/InstallEnvironment)
+> I tend to use my install docs by copying and pasting the lines in, adjusting as needed.
+>
+> I boot from the install ISO, generally a memstick image for physical machines, and go into a live session.
+> 
+> From the live session, I want to ssh in from an established system to do the install.
+> However, running sshd is a small challenge. To overcome this, I do the following: 
+>
+> . . .
+>
+
+* [How do I boot FreeBSD from GRUB on a UEFI system? -aka- Booting FreeBSD from UEFI GRUB - by Mason Loring Bliss - FreeBSD Wiki](https://wiki.freebsd.org/MasonLoringBliss/BootingFreeBSDfromUEFIGRUB)
 
 * [ZFS and GELI by Hand](https://wiki.freebsd.org/MasonLoringBliss/ZFSandGELIbyHAND)
 
 * [How To Dual Boot Windows 11 and FreeBSD 14 (GELI Encrypted ZFS Root + UFS Boot Drive)](https://forums.freebsd.org/threads/how-to-dual-boot-windows-11-and-freebsd-14-geli-encrypted-zfs-root-ufs-boot-drive.92472/)
 
+* [Installing FreeBSD Alongside Ubuntu and Windows - FreeBSD Forums - Start date Oct 11, 2019](https://forums.freebsd.org/threads/installing-freebsd-alongside-ubuntu-and-windows.72610/) 
+
+* [FreeBSDInstallationGuide - How to install and setup FreeBSD - Daniel Tameling on GitHub](https://github.com/daniel-tameling/FreeBSDInstallationGuide)
+
+* [How do I install FreeBSD 11.2 manually in a desktop PC (without bsd installer - AKA: bsdinstall(8) - system installer)](https://forum.level1techs.com/t/how-do-i-install-freebsd-11-2-manually-in-a-desktop-pc-without-bsd-installer/133864)
+
+* [Remote Installation of the FreeBSD Operating System Without a Remote Console - FreeBSD Documentation - Articles](https://docs.freebsd.org/en/articles/remote-install/)
+
+* [Linux system possible to install FreeBSD using a mfsBSD image - FreeBSD Forums - Start date Aug 9, 2022](https://forums.freebsd.org/threads/linux-system-possible-to-install-freebsd-using-a-mfsbsd-image.86107/)
+
+* [mfsBSD and mfslinux](https://mfsbsd.vx.sk/)
+> This is a set of scripts that generates a bootable image (and/or ISO file), that creates a working minimal installation of FreeBSD (mfsBSD) or Linux (mfslinux).
+> 
+> It is completely loaded into memory.
+> 
+> Mfslinux is based on [OpenWrt](https://openwrt.org/).
+
+* [depenguin-run -- Installer script for mfsBSD image to install FreeBSD with zfs-on-root using qemu](https://github.com/depenguin-me/depenguin-run)
+
+* [Solved - Installing FreeBSD in Hetzner - The FreeBSD Forums - Jul 13, 2022](https://forums.freebsd.org/threads/installing-freebsd-in-hetzner.85399/#post-574863)
+
+* [depenguin.me - Follow these instructions to Install FreeBSD on a dedicated server from a Linux rescue environment](https://depenguin.me/)
+>
+> 1. Boot into the rescue console for your dedicated server
+>
+> * Hetzner Rescue - [Hetzner Rescue System](https://docs.hetzner.com/robot/dedicated-server/troubleshooting/hetzner-rescue-system/)
+> * OVHCloud Rescue - [Rescue Mode on a Dedicated Server](https://help.ovhcloud.com/csm/en-dedicated-servers-ovhcloud-rescue?id=kb_article_view&sysparm_article=KB0043949)
+> * Xneelo Rescue - [How to use the Linux Rescue system on your Self-Managed Server](https://xneelo.co.za/help-centre/control-panel/linux-rescue-system-self-managed-server/)
+> 
+> SSH into the rescue control as root.
+> Prepare file path or URL of SSH public key.
+>
+> . . . 
+>
+
+* [depenguin.me - ELI5 - explain like I'm 5](https://depenguin.me/eli5.html)
+> **ELI5** 
+> 
+> **Booting**
+> 
+> Computers can boot from CDROM, hard drives and USB drives.
+> 
+> A server can also boot from the network. This is how a rescue console is provided on servers.
+> 
+> **Rescue Console / Recovery Console**
+> 
+> The provider's control panel is used to send a signal to the server to use network boot on next reboot.
+> 
+> This might be a minimal Linux distribution, or minimal windows environment.
+> 
+> The server is rebooted into the configured rescue environment with networking and disk access.
+
 * [Install FreeBSD (Short and Sweet Version)](https://www.dwarmstrong.org/freebsd-install/)
 
 * [How To Install FreeBSD 15 Step-by-Step](https://ostechnix.com/install-freebsd/)
+
+* [FreeBSD on Hetzner dedicated servers - VX Weblog](https://blog.vx.sk/archives/353)
+
+* [Installing FreeBSD with OpenZFS via the Linux rescue system](https://community.hetzner.com/tutorials/freebsd-openzfs-via-linux-rescue)
+
+* [Installing FreeBSD on older dedicated servers via the Linux rescue system](https://community.hetzner.com/tutorials/freebsd-with-qemu-via-linux-rescue)
 
 * [Resources or guides for UEFI dual-boot with Windows? (self.freebsd)](https://old.reddit.com/r/freebsd/comments/x9znz8/resources_or_guides_for_uefi_dualboot_with_windows/)
 
 * [zdb and zpool cache-files?](https://www.truenas.com/community/threads/zdb-and-zpool-cache-files.50760/)
 
 * [Chapter 2. Installing FreeBSD - 2.1. Synopsis (bsdinstall) - FreeBSD Handbook](https://docs.freebsd.org/en/books/handbook/bsdinstall/)
+
+* [How do I install FreeBSD without bsdinstall?](https://unix.stackexchange.com/questions/242136/how-do-i-install-freebsd-without-bsdinstall)
+> Look at the boot_command of this file ... 
+>
+> [github.com/jlduran/packer-FreeBSD/blob/main/packer.pkr.hcl](https://github.com/jlduran/packer-FreeBSD/blob/main/packer.pkr.hcl) for hints.
+
+* [packer-FreeBSD - packer.pkr.hcl](https://github.com/jlduran/packer-FreeBSD/blob/main/packer.pkr.hcl)
+
+* [InstallFest How-To Guide - FreeBSD Foundation - Part 1 of 2](https://freebsdfoundation.org/freebsd-project/resources/installfest-how-to-guide/)
+
+* [InstallFest How-To Guide - Part 2 of 2](https://freebsdfoundation.org/freebsd-project/resources/installfest-how-to-guide-p2/)
+> This Walkthrough is a Continuation of Part 1 of the InstallFest How-To Guide
+> 
+> [Follow the link here for part 1](https://freebsdfoundation.org/freebsd-project/resources/installfest-how-to-guide/)
 
 ----
 
