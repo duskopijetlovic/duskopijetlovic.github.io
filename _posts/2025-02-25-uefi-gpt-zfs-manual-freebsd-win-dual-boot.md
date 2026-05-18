@@ -5,10 +5,15 @@ date: 2025-02-25 23:06:27 -0700
 categories: zfs freebsd windows boot howto cli terminal shell disk 
 ---
 
+Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6
+
+
 aka: RootOnZFS, GPTZFSBoot, ZFSBoot
 
 OS 1: FreeBSD 14   
 OS 2: Windows 11 Pro
+
+PC: Lenovo ThinkPad E14 Gen 6 laptop
 
 ---
 
@@ -23,6 +28,11 @@ KEYWORDS: FreeBSD ZFS RootOnZFS GPTZFSBoot ZFSBOOT UEFI GPT dualboot
 FreeBSD can be installed manually by extracting the base and kernel tarballs and later creating the config files in the `/etc/` directory. 
 
 ---
+
+## Collect PC Information
+
+Collect: PC and Windows 11 information, disk information, display settings. [<sup>[1](#footnotes)</sup>].
+
 
 ## Code Snippets 
 
@@ -177,6 +187,7 @@ no pools available to import
 
 # zpool set bootfs=zroot/ROOT/default zroot
 # zpool set cachefile=/tmp/boot/zfs/zpool.cache zroot    ### [1] 
+### [1]: Can be changed; e.g.: to /etc/zfs/zpool.cache
 
 # chmod 1777 /tmp/zroot/tmp/
 # chmod 1777 /tmp/zroot/var/tmp/
@@ -267,8 +278,6 @@ It's not recommended to enable `PermitRootLogin` again but if you wanted to, you
 # passwd
 ```
 
-[1]: Can be changed; e.g.: to /etc/zfs/zpool.cache
-
 ----
 
 ## Overview
@@ -306,7 +315,7 @@ Instead, you can use *unionfs* for ```/etc``` and ```/root```.
 # mount -t unionfs /tmp/root /root
 ```
 
-If do want a writeable ```/mnt```, you can unionfs for it too, or you can use *mdmfs, mount_mfs(8)* to configure and mount an *in-memory file system* using the md 4 driver (see ```man 4 md```) or the tmpfs 5 filesystem (see ```man 5 tmpfs```).
+If you do want a writeable ```/mnt```, you can use *unionfs* for it too, or you can use *mdmfs, mount_mfs(8)* to configure and mount an *in-memory file system* using the md 4 driver (see ```man 4 md```) or the tmpfs 5 filesystem (see ```man 5 tmpfs```).
 
 * In my tests, using *sed(1)* in FreeBSD installer for modifying ```sshd_config``` caused a crash.
 
@@ -315,6 +324,139 @@ If do want a writeable ```/mnt```, you can unionfs for it too, or you can use *m
 ```
 
 Using `vi(1)` to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```)
+
+----
+
+## Footnotes
+
+[1] **PC and Windows 11 Information, disk information, display settings**
+
+This laptop (Lenovo ThinkPad E14 Gen 6 laptop) came with Windows 11 Professional pre-installed.
+
+In Windows: Press **Window key** + **E** to open Windows Explorer.
+Right-click on *This PC*, click on *Properties*
+
+```
+Device specifications
+
+Processor: AMD Ryzen 7 7735U with Radeon Graphics   2.70 GHZ
+Installed RAM: 32.0 GB (30.8 GB usable)
+. . . 
+Pen and touch: Touch support with 10 touch points 
+
+Device specifications
+
+Edition: Windows 11 Pro 
+```
+
+Press **Windows Key** + **R** to open Windows Run Command Dialog Box, and then type in:
+
+```
+msinfo32
+```
+
+In *System information* window, under *System Summary*: 
+
+```
+Processor: AMD Ryzen 7 7735U with Radeon Graphics, 2701 Mhz, 8 Core(s), 16 Logical Processor(s) 
+```
+
+
+**Disk Information**
+
+Press **Windows Key** + **R** to open Windows Run Dialog, and then type in:
+
+```
+diskmgmt.msc
+```
+
+From the *Disk Management* utility:
+
+```
+Disk 0 - 1863 GB: EFI 260 MB | D: 1860 GB NTFS | Recovery ~2 GB
+Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | Recovery ~2 GB | Unallocated 1624 GB
+```
+
+Includes: Volume labels (C:, D:), Filesystem (NTFS), BitLocker status, Capacity + unallocated space, Visual/logical layout.
+
+
+Press **Windows Key** + **R** to open Windows Run Dialog, and then type in:
+
+```
+diskpart
+```
+
+Run the following commands:
+
+```
+diskpart
+list disk
+select disk 0
+list partition
+select disk 1
+list partition
+exit
+```
+
+From the output of the *diskpart* commands:
+
+```
+Disk 0
+  Partition 1  System    260 MB   (EFI)
+  Partition 2  Reserved   16 MB   (MSR)
+  Partition 3  Primary  1860 GB   (D: NTFS)
+  Partition 4  Recovery 2000 MB
+
+Disk 1
+  Partition 1  System    260 MB   (EFI)
+  Partition 2  Reserved   16 MB   (MSR)
+  Partition 3  Primary   236 GB   (C: NTFS, BitLocker)
+  Partition 4  Recovery 2000 MB
+```
+
+Includes: Partition map (exact partition numbering), Hidden structures (MSR).
+
+Disk 1 cannot be extended due to layout constraints. 
+
+Constraint: Recovery partition blocks extension of C: into unallocated space.
+
+Key rule: A partition can only be extended if unallocated space is immediately to its right.
+
+Current layout:
+
+```
+C: -> Recovery -> Unallocated
+```
+
+Required layout for extension:
+
+```
+C: -> Unallocated
+```
+
+Implication: The Recovery partition must be moved or removed.
+
+Options:
+* Delete Recovery -> extend C: -> recreate Recovery
+* Move Recovery (requires third-party tool)
+* Create a new volume from unallocated space (leave C: as-is)
+
+In short: Recovery partition blocks extension.
+C: must be adjacent to unallocated space.
+Options: delete/move Recovery partition, or create new volume.
+
+
+**Display Settings**
+
+Right-click anywhere on the desktop.
+Select *Display settings*
+
+Under *Scale & Layout*:
+
+```
+Scale: 150% (Recommended)
+Display resolution: 1920 x 1200 (Recommended)
+```
 
 ----
 
