@@ -13,7 +13,7 @@ aka: RootOnZFS, GPTZFSBoot, ZFSBoot
 OS 1: FreeBSD 14   
 OS 2: Windows 11 Pro
 
-PC: Lenovo ThinkPad E14 Gen 6 laptop
+PC: Lenovo ThinkPad E14 Gen 6 laptop AMD model, Type (Machine Type or MT) 21M3 - customized
 
 ---
 
@@ -29,9 +29,17 @@ FreeBSD can be installed manually by extracting the base and kernel tarballs and
 
 ---
 
-## Collect PC Information
+## Collect Information 
 
-Collect: PC and Windows 11 information, disk information, display settings. [<sup>[1](#footnotes)</sup>].
+My *Lenovo ThinkPad E14 Gen 6 AMD model, Type (Machine Type or MT) 21M3* laptop is customized, with the base model Product Number: 21M3CTO1WW, and with Windows 11 Professional pre-installed.
+
+Collect information from one of these three sources: 
+* [User Guide - ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - Lenovo](https://support.lenovo.com/ca/en/documentation/e14_g6_e16_g2), or
+* [Lenovo ThinkPad E14 Gen 6 laptop AMD model (14-inch), Type (Machine Type or MT) 21M3 - Product Home](https://pcsupport.lenovo.com/ca/en/products/laptops-and-netbooks/thinkpad-edge-laptops/thinkpad-e14-gen-6-type-21m3-21m4/21m3/21m3cto1ww/), or
+* Your Lenovo Account Order Details - Log in to your Lenovo account: [https://account.lenovo.com/](https://account.lenovo.com/), or
+* Windows 11: PC and Windows 11 information, disk information, display settings. [<sup>[1](#footnotes)</sup>].
+
+**Tech Specs (after/with my customizations) of this ThinkPad E14 Gen 6 AMD model** are listed in Footnotes [<sup>[2](#footnotes)</sup>].
 
 
 ## Code Snippets 
@@ -331,7 +339,7 @@ Using `vi(1)` to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 [1] **PC and Windows 11 Information, disk information, display settings**
 
-This laptop (Lenovo ThinkPad E14 Gen 6 laptop) came with Windows 11 Professional pre-installed.
+This laptop (Lenovo ThinkPad E14 Gen 6 AMD model) comes with Windows 11 Professional pre-installed.
 
 In Windows: Press **Window key** + **E** to open Windows Explorer.
 Right-click on *This PC*, click on *Properties*
@@ -386,15 +394,18 @@ Press **Windows Key** + **R** to open Windows Run Dialog, and then type in:
 diskpart
 ```
 
-Run the following commands:
+In the DiskPart, run the following commands:
+
 
 ```
-diskpart
 list disk
 select disk 0
 list partition
+detail disk
 select disk 1
 list partition
+detail disk
+list volume 
 exit
 ```
 
@@ -417,10 +428,14 @@ Disk 1
 Includes: Partition map (exact partition numbering), Hidden structures (MSR).
 
 Disk 1 cannot be extended due to layout constraints. 
-
 Constraint: Recovery partition blocks extension of C: into unallocated space.
-
 Key rule: A partition can only be extended if unallocated space is immediately to its right.
+
+NOTE: MSR = Microsoft Reserved Partition.
+It's always a small (~16 MB), hidden partition that exists on GPT disks (on both disks), and that Windows reserves for internal disk management operations. 
+
+**Note:** DiskPart doesn't display unallocated space in `list partition` or `detail disk`.  
+It is inferred from `list disk` (Free column) and partition ordering (i.e., space after the last partition).
 
 Current layout:
 
@@ -445,6 +460,221 @@ In short: Recovery partition blocks extension.
 C: must be adjacent to unallocated space.
 Options: delete/move Recovery partition, or create new volume.
 
+The current Disk 1 layout is actually helpful for installing FreeBSD alongside Windows, and the above constraint is not a problem for dual boot: 
+
+```
+EFI -> MSR -> C: -> Recovery -> Unallocated
+```
+
+I decided to create a "textbook"layout; that is:
+
+```
+EFI -> MSR -> C: -> Free space -> Recovery (last)
+```
+
+To do this, the Recovery partition needs to be moved to disk end by disabling WinRE (Windows Recovery Partition), deleting partition, extending C:, recreating WinRE partition, and re-enabling WinRE.
+
+
+**Moving Windows Recovery Partion to End of Disk**
+
+Backup important data.
+
+Press **Win+R** to open Windows Run Dialog, and then type in:
+
+```
+cmd
+```
+
+Instead of pressing Enter, Press **Ctrl + Shift + Enter** to launch an elevated Command Prompt (aka Run As Administrator).
+
+Confirm BitLocker status:
+
+```
+manage-bde -status C:
+```
+
+If enabled, suspend protection before proceeding:
+
+```
+manage-bde -protectors -disable C:
+```
+
+Check WinRE (Windows Recovery) status:
+
+```
+reagentc /info
+```
+
+You should see:
+
+```
+Windows RE status: Enabled
+```
+
+Disable Windows Recovery (this detaches WinRE from the existing Recovery partition):
+
+```
+reagentc /disable
+```
+
+Delete Recovery partition
+
+```
+diskpart
+select disk 1
+list partition
+select partition 4
+delete partition override
+exit
+```
+
+Result:
+
+```
+EFI -> MSR -> C: -> Unallocated
+```
+
+Start the Disk Management Utility:
+
+```
+diskmgmt
+```
+
+In the *Disk Management* utility, you should see:
+
+```
+Disk 0 - 1863 GB: EFI 260 MB | D: 1860 GB NTFS | Recovery ~2 GB
+Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | Unallocated 1626 GB
+```
+
+Check WinRE (Windows Recovery) status:
+
+```
+reagentc /info
+```
+
+You should see: 
+
+```
+Windows RE status: Disabled
+```
+
+Create a partition for FreeBSD (leave ~2 GB for WinRE):
+
+```
+diskpart
+list disk
+```
+
+Confirm: ~1626 GB Free
+
+
+```
+Free space: 1626 GB => 1,626,000 MB
+Leave:            ~2,048 MB
+```
+
+So:
+
+```
+1626000 - 2048 = 1623950 MB
+```
+
+If you want a small safety buffer, you can do:
+
+```
+select disk 1
+create partition primary size=1623000
+```
+
+which leaves a bit more than 2 GB.
+
+Quick verification:
+
+```
+list partition
+list disk
+```
+
+Result:
+
+```
+EFI -> MSR -> C: -> FreeBSD placeholder partition -> Unallocated (~40 GB)
+```
+
+
+Create a partition for WinRE (Windows Recovery):
+
+```
+create partition primary size=2048
+```
+
+```
+list partition
+```
+
+showed:
+
+```
+list partition
+
+  Partition ###  Type              Size     Offset
+  -------------  ----------------  -------  -------
+  Partition 1    System             260 MB  1024 KB
+  Partition 2    Reserved            16 MB   261 MB
+  Partition 3    Primary            236 GB   277 MB
+  Partition 4    Primary           1585 GB   236 GB
+* Partition 5    Primary           2048 MB  1822 GB
+```
+
+Select the WinRE partition:
+
+```
+select partition 5
+```
+
+Format this new partition:
+
+```
+format quick fs=ntfs label="WinRE"
+```
+
+Set it as a Recovery partition: 
+
+```
+set id=de94bba4-06d1-4d40-a16a-bfd50179d6ac
+gpt attributes=0x8000000000000001
+```
+
+It makes it recognized by Windows as Recovery (`set id=...`), hidden and protected (`gpt attributes=...`).
+
+Exit DiskPart:
+
+```
+exit
+```
+
+Then:
+
+```
+reagentc /enable
+reagentc /info
+```
+
+
+Start the Disk Management Utility:
+
+```
+diskmgmt
+```
+
+In the *Disk Management* utility, you should see:
+
+```
+Disk 0 - 1863 GB: EFI 260 MB | D: 1860 GB NTFS | Recovery ~2 GB
+Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | 1585 GB RAW | 2 GB | 38 GB Unallocated
+```
+
 
 **Display Settings**
 
@@ -458,6 +688,30 @@ Scale: 150% (Recommended)
 Display resolution: 1920 x 1200 (Recommended)
 ```
 
+
+[2] My Lenovo ThinkPad E14 Gen 6 AMD - Tech Specifications
+
+* Processor: AMD Ryzen 7 7735U Processor (2.70 GHz up to 4.75 GHz) - selected upgrade
+* Storage: Dual M.2 slots - See ***Note*** below
+* First Solid State Drive: 256 GB SSD M.2 2242 PCIe Gen4 TLC Opal - See ***Note*** below
+* Second Solid State Drive: None - See ***Note*** below
+* Operating System: Windows 11 Pro 64 - selected upgrade
+* Memory (RAM): 32 GB DDR5-4800MHz (SODIMM) - (2 x 16 GB) - selected upgrade
+* Display: 14-inch WUXGA (1920 x 1200), IPS, Anti-Glare, Touch, 45%NTSC, 300 nits, 60Hz, with 16:10 aspect ratio - selected upgrade
+* Graphic Card: Integrated Graphics
+* Camera: 1080P FHD RGB with Microphone and Privacy Shutter - selected upgrade
+* Wireless: Realtek Wi-Fi 6 RTL8852BE 2x2 AX & Bluetooth® 5.1 or above
+* Ethernet: Wired Ethernet
+* Fingerprint Reader: No Fingerprint Reader
+* Keyboard: Backlit, Black - English (US) - selected upgrade
+* TPM Setting: Enabled Discrete TPM2.0
+* Absolute BIOS Selection: BIOS Absolute Enabled
+* Battery: 3 Cell Li-Polymer 57Wh - selected upgrade
+* Power Cord: 65W USB-C Low Cost 90% PCC 2pin AC Adapter - US
+
+**NOTE:** I've replaced the first SSD with a 2TB SDD and also installed another 2TB SSD in the second M.2 slot.
+So, this laptop has 2 x 2TB SSDs.
+
 ----
 
 ## References
@@ -467,6 +721,26 @@ Display resolution: 1920 x 1200 (Recommended)
 * [FreeBSD UEFI Root on ZFS and Windows Dual Boot](http://kev009.com/wp/2016/07/freebsd-uefi-root-on-zfs-and-windows-dual-boot/)
 
 * [HOWTO: FreeBSD ZFS Madness - by vermaden - FreeBSD Forums - Start date Apr 26, 2012](https://forums.freebsd.org/threads/howto-freebsd-zfs-madness.31662/)
+
+* [ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - User Guide - Lenovo](https://support.lenovo.com/ca/en/documentation/e14_g6_e16_g2)
+
+* [Lenovo ThinkPad E14 Gen 6 laptop AMD model (14-inch), Type (Machine Type or MT) 21M3 - Product Home](https://pcsupport.lenovo.com/ca/en/products/laptops-and-netbooks/thinkpad-edge-laptops/thinkpad-e14-gen-6-type-21m3-21m4/21m3/21m3cto1ww/)
+
+* [Lenovo ThinkPad E14 Gen 6 (Type 21M3, 21M4), E16 Gen 2 (Type 21M5, 21M6) - Setup Guide in PDF](https://download.lenovo.com/pccbbs/mobiles_pdf/e14_g6_e16_g2_amd_sg_en_pl_pt_bg_pt-br_es.pdf) 
+
+* [Lenovo ThinkPad E14 Gen 6 (14-inch AMD) Laptop - Sleek & powerful 14 inch entry-level SMB laptop - Lenovo CA](https://www.lenovo.com/ca/en/p/laptops/thinkpad/thinkpade/lenovo-thinkpad-e14-gen-6-14-inch-amd/len101t0095)
+
+* [Lenovo ThinkPad E14 Gen 6 / ThinkPad E - Setup Guide in PDF](https://download.lenovo.com/pccbbs/mobiles_pdf/e14_g6_e16_g2_sg_en_it_nl_de_fr_ar_el.pdf)
+
+* [Lenovo ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 Hardware Maintenance Manual - in PDF](https://download.lenovo.com/pccbbs/mobiles_pdf/e14_g6_e16_g2_hmm_en.pdf)
+
+* [Lenovo ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - User Guide - Download in HTML Format](https://download.lenovo.com/km/dita/prod/202602/e14_g6_e16_g2/f6e052abe49520d0c61655b8ab2e98e1_e14_g6_e16_g2/en/e14_g6_e16_g2.zip) 
+
+* [Lenovo ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - Safety and Warranty Guide - in PDF](https://download.lenovo.com/pccbbs/mobiles_pdf/class_b_ml_swg_en_fr_ar.pdf)
+
+* [Lenovo ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - Generic Safety and Compliance Notices (includes accessibility and ergonomic information, and cleaning and maintenance) - in PDF](https://download.lenovo.com/pccbbs/pubs/safety_compliance_notices/generic_notices_class_b_en.pdf) 
+
+* Lenovo - Documentation content is subject to change without notice. To get the latest documentation, go to [https://pcsupport.lenovo.com](https://pcsupport.lenovo.com).
 
 * [Installing FreeBSD manually (no installer)](https://forums.freebsd.org/threads/installing-freebsd-manually-no-installer.63201/)
 
@@ -595,4 +869,5 @@ Display resolution: 1920 x 1200 (Recommended)
 > [Follow the link here for part 1](https://freebsdfoundation.org/freebsd-project/resources/installfest-how-to-guide/)
 
 ----
+
 
