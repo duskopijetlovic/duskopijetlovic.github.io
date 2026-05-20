@@ -42,6 +42,14 @@ Collect information from one of these three sources:
 **Tech Specs (after/with my customizations) of this ThinkPad E14 Gen 6 AMD model** are listed in Footnotes [<sup>[2](#footnotes)</sup>].
 
 
+## Any Other Preparation Steps 
+
+For example, I had to:
+
+* Move Windows Recovery partion to end of disk [<sup>[3](#footnotes)</sup>]
+* Remove stale UEFI firmware boot entry (NVRAM entry) from my previous FreeBSD test installation. [<sup>[4](#footnotes)</sup>]
+
+
 ## Code Snippets 
 
 ```
@@ -473,9 +481,47 @@ EFI -> MSR -> C: -> Free space -> Recovery (last)
 ```
 
 To do this, the Recovery partition needs to be moved to disk end by disabling WinRE (Windows Recovery Partition), deleting partition, extending C:, recreating WinRE partition, and re-enabling WinRE.
+For steps on how to do, see [<sup>[3](#footnotes)</sup>] below.
 
 
-**Moving Windows Recovery Partion to End of Disk**
+**Display Settings**
+
+Right-click anywhere on the desktop.
+Select *Display settings*
+
+Under *Scale & Layout*:
+
+```
+Scale: 150% (Recommended)
+Display resolution: 1920 x 1200 (Recommended)
+```
+
+
+[2] My Lenovo ThinkPad E14 Gen 6 AMD - Tech Specifications
+
+* Processor: AMD Ryzen 7 7735U Processor (2.70 GHz up to 4.75 GHz) - selected upgrade
+* Storage: Dual M.2 slots - See ***Note*** below
+* First Solid State Drive: 256 GB SSD M.2 2242 PCIe Gen4 TLC Opal - See ***Note*** below
+* Second Solid State Drive: None - See ***Note*** below
+* Operating System: Windows 11 Pro 64 - selected upgrade
+* Memory (RAM): 32 GB DDR5-4800MHz (SODIMM) - (2 x 16 GB) - selected upgrade
+* Display: 14-inch WUXGA (1920 x 1200), IPS, Anti-Glare, Touch, 45%NTSC, 300 nits, 60Hz, with 16:10 aspect ratio - selected upgrade
+* Graphic Card: Integrated Graphics
+* Camera: 1080P FHD RGB with Microphone and Privacy Shutter - selected upgrade
+* Wireless: Realtek Wi-Fi 6 RTL8852BE 2x2 AX & Bluetooth® 5.1 or above
+* Ethernet: Wired Ethernet
+* Fingerprint Reader: No Fingerprint Reader
+* Keyboard: Backlit, Black - English (US) - selected upgrade
+* TPM Setting: Enabled Discrete TPM2.0
+* Absolute BIOS Selection: BIOS Absolute Enabled
+* Battery: 3 Cell Li-Polymer 57Wh - selected upgrade
+* Power Cord: 65W USB-C Low Cost 90% PCC 2pin AC Adapter - US
+
+**NOTE:** I've replaced the first SSD with a 2TB SDD and also installed another 2TB SSD in the second M.2 slot.
+So, this laptop has 2 x 2TB SSDs.
+
+
+[3] **Moving Windows Recovery Partion to End of Disk**
 
 Backup important data.
 
@@ -485,7 +531,7 @@ Press **Win+R** to open Windows Run Dialog, and then type in:
 cmd
 ```
 
-Instead of pressing Enter, Press **Ctrl + Shift + Enter** to launch an elevated Command Prompt (aka Run As Administrator).
+Instead of pressing Enter, press **Ctrl + Shift + Enter** to launch an elevated Command Prompt (aka Run As Administrator).
 
 Confirm BitLocker status:
 
@@ -676,41 +722,53 @@ Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | 1585 GB RA
 ```
 
 
-**Display Settings**
+[4] Remove stale UEFI firmware boot entry (NVRAM entry) from a previous FreeBSD test installation
 
-Right-click anywhere on the desktop.
-Select *Display settings*
 
-Under *Scale & Layout*:
+Verify UEFI mode 
 
 ```
-Scale: 150% (Recommended)
-Display resolution: 1920 x 1200 (Recommended)
+$ [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
 ```
 
+Expected output:
 
-[2] My Lenovo ThinkPad E14 Gen 6 AMD - Tech Specifications
+```
+UEFI
+```
 
-* Processor: AMD Ryzen 7 7735U Processor (2.70 GHz up to 4.75 GHz) - selected upgrade
-* Storage: Dual M.2 slots - See ***Note*** below
-* First Solid State Drive: 256 GB SSD M.2 2242 PCIe Gen4 TLC Opal - See ***Note*** below
-* Second Solid State Drive: None - See ***Note*** below
-* Operating System: Windows 11 Pro 64 - selected upgrade
-* Memory (RAM): 32 GB DDR5-4800MHz (SODIMM) - (2 x 16 GB) - selected upgrade
-* Display: 14-inch WUXGA (1920 x 1200), IPS, Anti-Glare, Touch, 45%NTSC, 300 nits, 60Hz, with 16:10 aspect ratio - selected upgrade
-* Graphic Card: Integrated Graphics
-* Camera: 1080P FHD RGB with Microphone and Privacy Shutter - selected upgrade
-* Wireless: Realtek Wi-Fi 6 RTL8852BE 2x2 AX & Bluetooth® 5.1 or above
-* Ethernet: Wired Ethernet
-* Fingerprint Reader: No Fingerprint Reader
-* Keyboard: Backlit, Black - English (US) - selected upgrade
-* TPM Setting: Enabled Discrete TPM2.0
-* Absolute BIOS Selection: BIOS Absolute Enabled
-* Battery: 3 Cell Li-Polymer 57Wh - selected upgrade
-* Power Cord: 65W USB-C Low Cost 90% PCC 2pin AC Adapter - US
+List current UEFI boot entries
 
-**NOTE:** I've replaced the first SSD with a 2TB SDD and also installed another 2TB SSD in the second M.2 slot.
-So, this laptop has 2 x 2TB SSDs.
+```
+$ efibootmgr
+```
+
+Example output
+
+```
+BootCurrent: 001D
+BootOrder: 0000,0001,0018,0019,001A,001B,001D,001C,001E,001F,0020
+Boot0000* Windows Boot Manager
+Boot0001* FreeBSD
+. . . 
+
+Boot0011 Boot Menu
+Boot0012 Diagnostics Splash Menu
+. . . 
+```
+
+Delete the entry
+
+```
+$ sudo efibootmgr -b 0001 -B
+```
+
+Verify removal:
+
+```
+$ efibootmgr
+```
+
 
 ----
 
