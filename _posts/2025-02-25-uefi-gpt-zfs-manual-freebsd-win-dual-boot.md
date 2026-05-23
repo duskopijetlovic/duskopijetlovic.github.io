@@ -5,13 +5,13 @@ date: 2025-02-25 23:06:27 -0700
 categories: zfs freebsd windows boot howto cli terminal shell disk 
 ---
 
-Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6
+Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6 and tested with FreeBSD 15 (in the original version of this post, tested with FreeBSD 14).
 
 
 aka: RootOnZFS, GPTZFSBoot, ZFSBoot
 
-OS 1: FreeBSD 14   
-OS 2: Windows 11 Pro
+
+The two OSs are FreeBSD 15 and Windows 11 Professional.
 
 PC: Lenovo ThinkPad E14 Gen 6 laptop AMD model, Type (Machine Type or MT) 21M3 - customized
 
@@ -44,13 +44,18 @@ Collect information from one of these three sources:
 
 ## Any Other Preparation Steps 
 
-For example, I had to:
+For example, I had to perform the following.
 
 * Move Windows Recovery partion to end of disk [<sup>[3](#footnotes)</sup>]
-* Remove stale UEFI firmware boot entry (NVRAM entry) from my previous FreeBSD test installation. [<sup>[4](#footnotes)</sup>]
+* I prefer not to download distribution files (.txz files: `base.txz`, `kernel.txz`, `lib32.txz`) during FreeBSD installation.
+Since they are not available in the FreeBSD memstick installation image, I had to copy them from the DVD ISO image and inject them into the memstick image. [<sup>[4](#footnotes)</sup>]
+* Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. [<sup>[5](#footnotes)</sup>]
+* Remove stale UEFI firmware boot entry (NVRAM entry) from my previous FreeBSD test installation. [<sup>[6](#footnotes)</sup>]
 
 
-## Code Snippets 
+## Code Snippets - Shell Scripts and Manufacturer's UEFI Boot Menu
+
+UEFI Boot Menu -aka- EFI Boot Manager (UEFI Firmware NVRAM)
 
 ```
 Reboot
@@ -73,21 +78,16 @@ FreeBSD Installer
     +-------------------------------------------+
 ```
 
-```
-Select  [   Shell   ]
 
-(It will show the following message:)
-"When finished, type 'exit' to return to the installer."
-```
+After selecting ```[ Shell ]```, a shell session opens and displays the message:
 
 ```
-# kldload unionfs
-# mkdir /tmp/etc /tmp/root
-# mount -t unionfs /tmp/etc /etc
-# mount -t unionfs /tmp/root /root
+When finished, type 'exit' to return to the installer.
+```
 
+
+```
 # ifconfig
----- snip ---
 re0: flags=1008802<BROADCAST,SIMPLEX,MULTICAST,LOWER_UP> metric 0 mtu 1500
 ---- snip ---
 
@@ -95,10 +95,261 @@ re0: flags=1008802<BROADCAST,SIMPLEX,MULTICAST,LOWER_UP> metric 0 mtu 1500
 ---- snip ---
 bound to 192.168.1.7 -- renewal in 43200 seconds.
 
+# kldload unionfs
+# mkdir /tmp/etc /tmp/root
+# mount -t unionfs /tmp/etc /etc
+# mount -t unionfs /tmp/root /root
+
 # printf %s\\n "PermitRootLogin yes" >> /etc/ssh/sshd_config
 # service sshd onestart
 # passwd
 ```
+
+```
+### From another machine on the same network, remotely log in with SSH
+ssh root@192.168.1.7
+```
+
+Download the script `freebsd-create-partitions-and-zfs-pool.sh`:
+* [freebsd-create-partitions-and-zfs-pool.sh]({{ site.url }}/assets/txt/freebsd-create-partitions-and-zfs-pool.sh)
+
+```
+# chmod 0744 freebsd-create-partitions-and-zfs-pool.sh
+```
+
+```
+# ./freebsd-create-partitions-and-zfs-pool.sh
+>>> Loading ZFS
+kldload: can't load zfs: module already loaded or in kernel
+vfs.zfs.min_auto_ashift: 9 -> 12
+>>> Current partition layout
+=>        34  3907029101  nda1  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   495454208     3  ms-basic-data  (236G)
+   496021504  3325849600        - free -  (1.5T)
+  3821871104     4194304     5  ms-recovery  (2.0G)
+  3826065408    80963727        - free -  (39G)
+
+>>> Creating FreeBSD partitions
+nda1p4 added
+nda1p6 added
+>>> New partition layout
+=>        34  3907029101  nda1  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   495454208     3  ms-basic-data  (236G)
+   496021504  3325849600     6  freebsd-zfs  (1.5T)
+  3821871104     4194304     5  ms-recovery  (2.0G)
+  3826065408    33554432     4  freebsd-swap  (16G)
+  3859619840    47409295        - free -  (23G)
+
+>>> Creating ZFS pool
+>>> Now test zpool export, then import
+>>>
+>>> RUN:
+>>> # zpool export zroot
+>>> # zpool import -o altroot=/tmp/zroot zroot
+```
+
+
+```
+# zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+zroot  1.55T   396K  1.55T        -         -     0%     0%  1.00x    ONLINE  /tmp/zroot
+
+# zpool export zroot
+
+# zpool list
+no pools available
+
+# zpool import
+  pool: zroot
+    id: 6792010037806990514
+ state: ONLINE
+action: The pool can be imported using its name or numeric identifier.
+config:
+
+        zroot       ONLINE
+          gpt/zfs0  ONLINE
+
+# The shell script created /tmp/zroot directory
+# ls -ld /tmp/zroot/
+drwxr-xr-x  2 root wheel 0 May 22 16:29 /tmp/zroot/
+
+# zpool import -o altroot=/tmp/zroot zroot
+ 
+# zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+zroot  1.55T   624K  1.55T        -         -     0%     0%  1.00x    ONLINE  /tmp/zroot
+
+# zpool import
+no pools available to import
+```
+
+
+Download the script `freebsd-creating-zfs-datasets-installing-base-system-and-conf.sh`:
+* [freebsd-creating-zfs-datasets-installing-base-system-and-conf.sh]({{ site.url }}/assets/txt/freebsd-creating-zfs-datasets-installing-base-system-and-conf.sh)
+
+```
+# chmod 0744 freebsd-creating-zfs-datasets-installing-base-system-and-conf.sh
+```
+
+```
+# ./freebsd-creating-zfs-datasets-installing-base-system-and-conf.sh
+>>> Setting permissions
+>>> Creating /home symlink
+>>> Installing base system
+>>> Basic configuration
+```
+
+```
+# zpool list
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+zroot  1.55T   565M  1.55T        -         -     0%     0%  1.00x    ONLINE  /tmp/zroot
+
+# zfs list
+NAME                 USED  AVAIL  REFER  MOUNTPOINT
+zroot                565M  1.50T    96K  none
+zroot/ROOT           563M  1.50T    96K  none
+zroot/ROOT/default   563M  1.50T   563M  /tmp/zroot
+zroot/tmp             96K  1.50T    96K  /tmp/zroot/tmp
+zroot/usr            384K  1.50T    96K  /tmp/zroot/usr
+zroot/usr/home        96K  1.50T    96K  /tmp/zroot/usr/home
+zroot/usr/ports       96K  1.50T    96K  /tmp/zroot/usr/ports
+zroot/usr/src         96K  1.50T    96K  /tmp/zroot/usr/src
+zroot/var            576K  1.50T    96K  /tmp/zroot/var
+zroot/var/audit       96K  1.50T    96K  /tmp/zroot/var/audit
+zroot/var/crash       96K  1.50T    96K  /tmp/zroot/var/crash
+zroot/var/log         96K  1.50T    96K  /tmp/zroot/var/log
+zroot/var/mail        96K  1.50T    96K  /tmp/zroot/var/mail
+zroot/var/tmp         96K  1.50T    96K  /tmp/zroot/var/tmp
+```
+
+
+After the installation script completes successfully and before rebooting, perform the following step to ensure the system is bootable.
+
+```
+# ls -ld /boot/efi/
+drwxr-xr-x  2 root wheel 512 Nov 28 05:17 /boot/efi/
+
+# ls -Alh /boot/efi/
+total 0 B
+
+# mount -t msdosfs /dev/nda1p1 /boot/efi
+
+# ls /boot/efi/EFI/
+Boot            FreeBSD         Microsoft
+
+# ls /boot/efi/EFI/FreeBSD/
+loader.efi
+```
+
+```
+ # efibootmgr 
+Boot to FW : false
+BootCurrent: 001d
+Timeout    : 0 seconds
+BootOrder  : 0000, 0018, 0019, 001A, 001B, 001D, 001C, 001E, 001F, 0020
+ Boot0000* Windows Boot Manager
+ Boot0018* USB CD
+ Boot0019* USB FDD
+ Boot001A* NVMe0
+ Boot001B* NVMe1
++Boot001D* USB HDD
+ Boot001C* Other HDD
+ Boot001E* PXE BOOT
+ Boot001F* LENOVO CLOUD
+ Boot0020* ON-PREMISE
+
+# efibootmgr -v
+Boot to FW : false
+BootCurrent: 001d
+Timeout    : 0 seconds
+BootOrder  : 0000, 0018, 0019, 001A, 001B, 001D, 001C, 001E, 001F, 0020
+ Boot0000* Windows Boot Manager HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\Microsoft\Boot\bootmgfw.efi)
+                     nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi (null)
+. . . 
+. . . 
+```
+
+
+```
+# gpart show nda1
+=>        34  3907029101  nda1  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   495454208     3  ms-basic-data  (236G)
+   496021504  3325849600     6  freebsd-zfs  (1.5T)
+  3821871104     4194304     5  ms-recovery  (2.0G)
+  3826065408    33554432     4  freebsd-swap  (16G)
+  3859619840    47409295        - free -  (23G)
+
+# gpart show nda1 | grep -i EFI
+        2048      532480     1  efi  (260M)
+```
+
+Use the `efibootmgr(8)` to create and activate a new entry for FreeBSD in the EFI boot manager's boot menu. 
+This is the manufacturer's firmware boot database (Lenovo in this case).
+Entries created with `efibootmgr(8)` are stored in UEFI firmware NVRAM.
+
+```
+# efibootmgr -c -a -l nda1p1:/EFI/FreeBSD/loader.efi -L FreeBSD
+```
+
+Note: The `-c` option is for *create*, and the `-a` option is for *activate* (it will have an asterisk (`*`) beside its *bootnum* (in this case *Boot0001*), and label (`FreeBSD` in this case).
+
+```
+# efibootmgr
+Boot to FW : false
+BootCurrent: 001d
+Timeout    : 0 seconds
+BootOrder  : 0001, 0000, 0018, 0019, 001A, 001B, 001D, 001C, 001E, 001F, 0020
+ Boot0001* FreeBSD
+ Boot0000* Windows Boot Manager
+ Boot0018* USB CD
+ Boot0019* USB FDD
+ Boot001A* NVMe0
+ Boot001B* NVMe1
++Boot001D* USB HDD
+ Boot001C* Other HDD
+ Boot001E* PXE BOOT
+ Boot001F* LENOVO CLOUD
+ Boot0020* ON-PREMISE
+```
+
+```
+# efibootmgr -v
+Boot to FW : false
+BootCurrent: 001d
+Timeout    : 0 seconds
+BootOrder  : 0001, 0000, 0018, 0019, 001A, 001B, 001D, 001C, 001E, 001F, 0020
+ Boot0001* FreeBSD HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\FreeBSD\loader.efi)
+                      nda1p1:/EFI/FreeBSD/loader.efi /boot/efi//EFI/FreeBSD/loader.efi
+ Boot0000* Windows Boot Manager HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\Microsoft\Boot\bootmgfw.efi)
+                                   nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi /boot/efi//EFI/Microsoft/Boot/bootmgfw.efi
+. . . 
+. . . 
+```
+
+Reboot:
+
+```
+# shutdown -r now 
+```
+
+Unplug the FreeBSD Installer USB flash disk drive.
+
+After reboot, you will need to create the root password (at this point, the root password is empty).
+Log in as root using the system's console, and continue setting up the new machine.
+
+
+## Code Snippets - Without Shell Scripts and with rEFInd Boot Manager
+
+Start the same as explained above in the section with shell scripts and manufacturer's EFI Boot Manager.
 
 ```
 ### From another machine on the same network, remotely log in with SSH
@@ -114,8 +365,10 @@ no pools available to import
 
 
 ```
-### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-### If there are any, destroy them and clear labels
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### If there are any ZFS pool from previous installation attempts, 
+### destroy them and clear labels:
+#
 # zpool import -o altroot=/tmp/zroot zroot
 # zpool destroy zroot
 
@@ -150,7 +403,7 @@ no pools available to import
 
 # glabel stop /dev/gpt/tPadE14-swap0
 # glabel stop /dev/gpt/tPadE14-zfs0
-### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
 ```
@@ -201,19 +454,19 @@ no pools available to import
 # zfs create -o atime=on zroot/var/mail
 # zfs create -o setuid=off zroot/var/tmp
 
-# zpool set bootfs=zroot/ROOT/default zroot
-# zpool set cachefile=/tmp/boot/zfs/zpool.cache zroot    ### [1] 
-### [1]: Can be changed; e.g.: to /etc/zfs/zpool.cache
-
 # chmod 1777 /tmp/zroot/tmp/
 # chmod 1777 /tmp/zroot/var/tmp/
 
 # cd /tmp/zroot/
 # ln -s usr/home home
 
-# tar xpJf /usr/freebsd-dist/base.txz
-# tar xpJf /usr/freebsd-dist/lib32.txz
-# tar xpJf /usr/freebsd-dist/kernel.txz
+# tar xpf /usr/freebsd-dist/base.txz
+# tar xpf /usr/freebsd-dist/lib32.txz
+# tar xpf /usr/freebsd-dist/kernel.txz
+
+# zpool set bootfs=zroot/ROOT/default zroot
+# zpool set cachefile=/tmp/boot/zfs/zpool.cache zroot    ### [1] 
+### [1]: Can be changed; e.g.: to /etc/zfs/zpool.cache
 
 ### Make sure that ZFS is started at boot.
 ### This mounts your filesystem datasets at boot.
@@ -721,11 +974,330 @@ Disk 0 - 1863 GB: EFI 260 MB | D: 1860 GB NTFS | Recovery ~2 GB
 Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | 1585 GB RAW | 2 GB | 38 GB Unallocated
 ```
 
+[4] Adding FreeBSD distribution files (`base.txz`, `kernel.txz`, `lib32.txz`) to FreeBSD installer memstick image.
 
-[4] Remove stale UEFI firmware boot entry (NVRAM entry) from a previous FreeBSD test installation
+On a FreeBSD system:
 
+```
+$ fetch https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/15.0/FreeBSD-15.0-RELEASE-amd64-dvd1.iso
+
+$ fetch https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/15.0/FreeBSD-15.0-RELEASE-amd64-memstick.img
+
+$ fetch https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/15.0/CHECKSUM.SHA256-FreeBSD-15.0-RELEASE-amd64
+```
+
+
+```
+$ sha256 FreeBSD-15.0-RELEASE-amd64-dvd1.iso
+SHA256 (FreeBSD-15.0-RELEASE-amd64-dvd1.iso) = 8cf8e03d8df16401fd5a507480a3270091aa30b59ecf79a9989f102338e359aa
+
+$ sha256 FreeBSD-15.0-RELEASE-amd64-memstick.img
+SHA256 (FreeBSD-15.0-RELEASE-amd64-memstick.img) = 19dc179236d0fc3ab7a257b35002f93bd85216cb87b9d4962361a071e4e63fbd
+
+$ grep 8cf8e03d8df16401fd5a507480a3270091aa30b59ecf79a9989f102338e359aa CHECKSUM.SHA256-FreeBSD-15.0-RELEASE-amd64
+SHA256 (FreeBSD-15.0-RELEASE-amd64-dvd1.iso) = 8cf8e03d8df16401fd5a507480a3270091aa30b59ecf79a9989f102338e359aa
+
+$ grep 19dc179236d0fc3ab7a257b35002f93bd85216cb87b9d4962361a071e4e63fbd CHECKSUM.SHA256-FreeBSD-15.0-RELEASE-amd64
+SHA256 (FreeBSD-15.0-RELEASE-amd64-memstick.img) = 19dc179236d0fc3ab7a257b35002f93bd85216cb87b9d4962361a071e4e63fbd
+```
+
+Without additional tools or intervention, the DVD ISO image cannot be written to a USB flash drive.
+
+For an offline installation, you need the distribution files (.txz files); however, they are not available in the memstick image.
+
+
+```
+$ sudo mdconfig -l
+```
+
+```
+$ sudo mdconfig -a -t vnode -f FreeBSD-15.0-RELEASE-amd64-dvd1.iso -u 0
+```
+
+```
+$ sudo mdconfig -l
+md0
+```
+
+```
+$ ls /dev/md0*
+/dev/md0        /dev/md0p1      /dev/md0p2
+ 
+$ geom part show 
+. . . 
+=>     34  8603925  md0  GPT  (4.1G) [CORRUPT]
+       34       25    1  freebsd-boot  (13K)
+       59       21       - free -  (11K)
+       80     4096    2  efi  (2.0M)
+     4176  8599783       - free -  (4.1G)
+. . . 
+```
+
+Mount the DVD ISO:
+
+```
+$ sudo mkdir /mnt/freebsd_dvd
+
+$ df -hT | grep md0
+ 
+$ sudo mount -t cd9660 /dev/md0 /mnt/freebsd_dvd
+
+$ df -hT | grep md0
+/dev/md0              cd9660       4.1G    4.1G      0B   100%    /mnt/freebsd_dvd
+
+$ ls /mnt/freebsd_dvd/usr/freebsd-dist/
+base-dbg.txz    kernel-dbg.txz  lib32-dbg.txz   MANIFEST        src.txz
+base.txz        kernel.txz      lib32.txz       ports.txz       tests.txz
+```
+
+Copy only required distribution sets (`.txz` files) from the DVD ISO image to a temporary location:
+
+```
+$ mkdir /tmp/dist_files
+
+$ cp /mnt/freebsd_dvd/usr/freebsd-dist/base.txz /tmp/dist_files/
+$ cp /mnt/freebsd_dvd/usr/freebsd-dist/kernel.txz /tmp/dist_files/
+$ cp /mnt/freebsd_dvd/usr/freebsd-dist/lib32.txz /tmp/dist_files/
+$ cp /mnt/freebsd_dvd/usr/freebsd-dist/MANIFEST /tmp/dist_files/
+```
+
+
+NOTE: The **lib32.txz** is *optional*.
+It contains 32‑bit compatibility libraries on amd64 (64‑bit) systems.
+You need it if or when running 32‑bit applications (i386), or some older software or binaries may require it.
+
+
+```
+$ du -chs /tmp/dist_files/
+262M    /tmp/dist_files/
+262M    total
+```
+
+Add space to the image (minimum 262 MB additional space needed). 
+Will add 500 MB:
+
+```
+$ sudo truncate -s +500M FreeBSD-15.0-RELEASE-amd64-memstick.img
+```
+
+```
+$ sudo mdconfig -l
+md0 
+
+# Attach the memstick image
+$ sudo mdconfig -a -t vnode -f FreeBSD-15.0-RELEASE-amd64-memstick.img -u 1
+
+$ sudo mdconfig -l
+md0 md1 
+
+$ ls /dev/md1*
+/dev/md1        /dev/md1s1      /dev/md1s2      /dev/md1s2a
+
+$ geom part show
+. . . 
+
+=>      1  4071656  md1  MBR  (1.9G)
+        1    66584    1  efi  (33M)
+    66585  2981072    2  freebsd  [active]  (1.4G)
+  3047657  1024000       - free -  (500M)
+
+=>      0  2981072  md1s2  BSD  (1.4G)
+        0       16         - free -  (8.0K)
+       16  2981056      1  freebsd-ufs  (1.4G)
+```
+
+```
+$ gpart show md1
+=>      1  4071656  md1  MBR  (1.9G)
+        1    66584    1  efi  (33M)
+    66585  2981072    2  freebsd  [active]  (1.4G)
+  3047657  1024000       - free -  (500M)
+
+# Expand MBR slice
+$ sudo gpart resize -i 2 /dev/md1
+md1s2 resized
+ 
+$ gpart show md1
+=>      1  4071656  md1  MBR  (1.9G)
+        1    66584    1  efi  (33M)
+    66585  4005072    2  freebsd  [active]  (1.9G)
+
+
+# Expand BSD partition inside it
+$ sudo gpart resize -i 1 /dev/md1s2
+md1s2a resized
+
+# Grow filesystem
+$ sudo growfs /dev/md1s2a
+It's strongly recommended to make a backup before growing the file system.
+OK to grow filesystem on /dev/md1s2a from 1.4GB to 1.9GB? [yes/no] yes
+
+super-block backups (for fsck_ffs -b #) at:
+ 3561408
+
+# Mount the memstick image
+$ sudo mkdir /mnt/freebsd_memstick
+
+$ df -hT | grep md1
+
+$ sudo mount /dev/md1s2a /mnt/freebsd_memstick
+ 
+$ df -hT | grep md1
+/dev/md1s2a           ufs          1.9G    1.3G    475M    74%    /mnt/freebsd_memstick
+
+$ ls /mnt/freebsd_memstick/usr/freebsd-dist/
+MANIFEST
+```
+
+Copy distribution `.txz` files to the memstick image:
+
+```
+$ ls /tmp/dist_files/
+base.txz        kernel.txz      lib32.txz       MANIFEST
+ 
+$ diff /tmp/dist_files/MANIFEST /mnt/freebsd_memstick/usr/freebsd-dist/MANIFEST
+
+$ sudo cp -i /tmp/dist_files/*.txz /mnt/freebsd_memstick/usr/freebsd-dist/
+ 
+$ ls /mnt/freebsd_memstick/usr/freebsd-dist/
+base.txz        kernel.txz      lib32.txz       MANIFEST
+```
+
+
+Unmount and detach:
+
+```
+$ df -hT | grep md
+/dev/md0              cd9660       4.1G    4.1G      0B   100%    /mnt/freebsd_dvd
+/dev/md1s2a           ufs          1.9G    1.5G    213M    88%    /mnt/freebsd_memstick
+ 
+$ sudo mdconfig -l
+md0 md1 
+
+$ sudo umount /mnt/freebsd_memstick/
+$ sudo umount /mnt/freebsd_dvd/
+ 
+$ df -hT | grep md
+ 
+$ sudo mdconfig -d -u 1
+$ sudo mdconfig -d -u 0
+ 
+$ sudo mdconfig -l
+```
+
+
+Plug in USB flash drive.
+
+```
+$ dmesg | tail
+da2 at umass-sim2 bus 2 scbus10 target 0 lun 0
+da2: <Kingston DataTraveler 3.0 PMAP> Removable Direct Access SPC-2 SCSI device
+da2: Serial Number 54..............
+da2: 400.000MB/s transfers
+da2: 7498MB (15356160 512 byte sectors)
+. . . 
+```
+
+Write to USB flash drive:
+
+```
+$ sudo dd if=FreeBSD-15.0-RELEASE-amd64-memstick.img of=/dev/da2 bs=1M status=progress
+
+$ sync
+```
+
+
+[5] Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. 
+
+Boot into FreeBSD installer environment (e.g, on a USB flash drive), and select `[ Shell ]`. 
+
+```
+# kldload zfs
+# mkdir -p /tmp/zroot
+
+# zpool import
+  pool: zroot
+    id: 5887...............
+ state: ONLINE
+action: The pool can be imported using its name or numeric identifier.
+config:
+
+        zroot       ONLINE
+          gpt/zfs0  ONLINE
+```
+
+```
+# zpool import -o altroot=/tmp/zroot zroot
+# zpool destroy zroot
+```
+
+```
+# gpart show
+=>        34  3907029101  nda0  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296  3902365696     3  ms-basic-data  (1.8T)
+  3902932992     4096000     4  ms-recovery  (2.0G)
+  3907028992         143        - free -  (72K)
+
+. . . 
+
+=>        34  3907029101  nda1  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   495454208     3  ms-basic-data  (236G)
+   496021504  3325849600     6  freebsd-zfs  (1.5T)
+  3821871104     4194304     5  ms-recovery  (2.0G)
+  3826065408    33554432     4  freebsd-swap  (16G)
+  3859619840    47409295        - free -  (23G)
+```
+
+```
+# gpart delete -i 4 nda1
+# gpart delete -i 6 nda1
+```
+
+```
+# gpart show nda1
+=>        34  3907029101  nda1  GPT  (1.8T)
+          34        2014        - free -  (1.0M)
+        2048      532480     1  efi  (260M)
+      534528       32768     2  ms-reserved  (16M)
+      567296   495454208     3  ms-basic-data  (236G)
+   496021504  3325849600        - free -  (1.5T)
+  3821871104     4194304     5  ms-recovery  (2.0G)
+  3826065408    80963727        - free -  (39G)
+```
+
+
+[6] Remove stale UEFI firmware boot entry (NVRAM entry) from a previous FreeBSD test installation
+
+Boot into FreeBSD installer environment or a live USB (aka live CD) of a GNU Linux distribution of your choice.
+
+
+* Restart the laptop.
+* Access the boot menu - For ThinkPad E14, repeatedly tap the F12 key as soon as the red Lenovo logo appears.
+This opens the Boot Menu for selecting a temporary startup device (like a USB drive) without changing the permanent boot order.
+
+NOTE: If FreeBSD or a Linux distribution is not displaying on ThinkPad boot menu, check the *BIOS* (which is actually *UEFI*, so it's also referred to as *UEFI BIOS*, aka, the *firmware (BIOS/UEFI)*), and ensure that *Secure Boot* is disabled.
+
+* Once you're running in the FreeBSD USB installer environment:
 
 Verify UEFI mode 
+
+```
+# sysctl -n machdep.bootmethod
+```
+
+Expected output:
+
+```
+UEFI
+```
+
+Alternatively, if you're using a Linux Live USB (Live CD) like, for example, Ubuntu installer:
 
 ```
 $ [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
@@ -737,13 +1309,13 @@ Expected output:
 UEFI
 ```
 
-List current UEFI boot entries
+List current UEFI boot entries:
 
 ```
 $ efibootmgr
 ```
 
-Example output
+Example output:
 
 ```
 BootCurrent: 001D
@@ -759,6 +1331,15 @@ Boot0012 Diagnostics Splash Menu
 
 Delete the entry
 
+If you're in in the FreeBSD USB installer environment:
+
+```
+# efibootmgr -b 0001 -B
+```
+
+
+If you're using a Linux Live USB (Live CD):
+
 ```
 $ sudo efibootmgr -b 0001 -B
 ```
@@ -768,7 +1349,6 @@ Verify removal:
 ```
 $ efibootmgr
 ```
-
 
 ----
 
@@ -927,5 +1507,4 @@ $ efibootmgr
 > [Follow the link here for part 1](https://freebsdfoundation.org/freebsd-project/resources/installfest-how-to-guide/)
 
 ----
-
 
