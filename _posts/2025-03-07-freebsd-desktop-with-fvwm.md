@@ -714,7 +714,7 @@ PAGER
 * [Inessential X Resources for Techno-Dweebs](https://web.mit.edu/sipb/doc/working/ixresources/xres.html)
 
 
-* [xdg-ninja: A shell script which checks your $HOME for unwanted files and directories - Lobsters](https://lobste.rs/s/uaiivt/xdg_ninja_shell_script_which_checks_yourP
+* [xdg-ninja: A shell script which checks your $HOME for unwanted files and directories - Lobsters](https://lobste.rs/s/uaiivt/xdg_ninja_shell_script_which_checks_your)
 
 ----
 

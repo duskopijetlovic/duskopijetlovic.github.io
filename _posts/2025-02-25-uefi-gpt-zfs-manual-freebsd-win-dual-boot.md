@@ -5,13 +5,9 @@ date: 2025-02-25 23:06:27 -0700
 categories: zfs freebsd windows boot howto cli terminal shell disk 
 ---
 
-Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6 and tested with FreeBSD 15 (in the original version of this post, tested with FreeBSD 14).
-
-
 aka: RootOnZFS, GPTZFSBoot, ZFSBoot
 
-
-The two OSs are FreeBSD 15 and Windows 11 Professional.
+The two OSs for this configuration: FreeBSD 15 and Windows 11 Professional.
 
 PC: Lenovo ThinkPad E14 Gen 6 laptop AMD model, Type (Machine Type or MT) 21M3 - customized
 
@@ -27,6 +23,24 @@ KEYWORDS: FreeBSD ZFS RootOnZFS GPTZFSBoot ZFSBOOT UEFI GPT dualboot
 
 FreeBSD can be installed manually by extracting the base and kernel tarballs and later creating the config files in the `/etc/` directory. 
 
+NOTE: With FreeBSD 15.0, this is starting to change.
+      Distribution sets are being phased out. [<sup>[1](#footnotes)</sup>].
+
+---
+
+## Is Manuall Setup Required?
+
+Yes, manual setup is required.
+The default FreeBSD installer (`bsdinstall`) only supports "Auto ZFS" on an entire drive, which will wipe out existing OS installations.
+It has no built-in support for installing ZFS-on-Root onto a specific partition of a shared disk.
+To dual-boot FreeBSD with ZFS alongside another operating system, you must manually partition your drive. [<sup>[2](#footnotes)</sup>]. 
+
+---
+
+## Does ZFS Favour Whole Disks?
+
+The whole disk preference is a legacy recommendation that doesn't apply to modern OpenZFS on FreeBSD. [<sup>[3](#footnotes)</sup>]. 
+
 ---
 
 ## Collect Information 
@@ -37,20 +51,20 @@ Collect information from one of these three sources:
 * [User Guide - ThinkPad E14 Gen 6 and ThinkPad E16 Gen 2 - Lenovo](https://support.lenovo.com/ca/en/documentation/e14_g6_e16_g2), or
 * [Lenovo ThinkPad E14 Gen 6 laptop AMD model (14-inch), Type (Machine Type or MT) 21M3 - Product Home](https://pcsupport.lenovo.com/ca/en/products/laptops-and-netbooks/thinkpad-edge-laptops/thinkpad-e14-gen-6-type-21m3-21m4/21m3/21m3cto1ww/), or
 * Your Lenovo Account Order Details - Log in to your Lenovo account: [https://account.lenovo.com/](https://account.lenovo.com/), or
-* Windows 11: PC and Windows 11 information, disk information, display settings. [<sup>[1](#footnotes)</sup>].
+* Windows 11: PC and Windows 11 information, disk information, display settings. [<sup>[4](#footnotes)</sup>].
 
-**Tech Specs (after/with my customizations) of this ThinkPad E14 Gen 6 AMD model** are listed in Footnotes [<sup>[2](#footnotes)</sup>].
+**Tech Specs (after/with my customizations) of this ThinkPad E14 Gen 6 AMD model** are listed in Footnotes [<sup>[5](#footnotes)</sup>].
 
 
 ## Any Other Preparation Steps 
 
 For example, I had to perform the following.
 
-* Move Windows Recovery partion to end of disk [<sup>[3](#footnotes)</sup>]
+* Move Windows Recovery partion to end of disk [<sup>[6](#footnotes)</sup>]
 * I prefer not to download distribution files (.txz files: `base.txz`, `kernel.txz`, `lib32.txz`) during FreeBSD installation.
-Since they are not available in the FreeBSD memstick installation image, I had to copy them from the DVD ISO image and inject them into the memstick image. [<sup>[4](#footnotes)</sup>]
-* Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. [<sup>[5](#footnotes)</sup>]
-* Remove stale UEFI firmware boot entry (NVRAM entry) from my previous FreeBSD test installation. [<sup>[6](#footnotes)</sup>]
+Since they are not available in the FreeBSD memstick installation image, I had to copy them from the DVD ISO image and inject them into the memstick image. [<sup>[7](#footnotes)</sup>]
+* Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. [<sup>[8](#footnotes)</sup>]
+* Remove stale UEFI firmware boot entry (NVRAM entry) from my previous FreeBSD test installation. [<sup>[9](#footnotes)</sup>]
 
 
 ## Code Snippets - Shell Scripts and Manufacturer's UEFI Boot Menu
@@ -598,7 +612,52 @@ Using `vi(1)` to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```
 
 ## Footnotes
 
-[1] **PC and Windows 11 Information, disk information, display settings**
+[1] Instead of using two separate tools, in FreeBSD 15.0 you can opt to deprecate `freebsd-update` and file sets, and rely entirely on `pkg(8)` for updating both the base operating system as well as any packages you have installed, because with this new method, the base system moves from file sets to packages.
+When installing FreeBSD 15.0, the installer will ask you to choose between the old method, or the new pkg-only method.
+
+Up to and including FreeBSD 14.0, the installer installed the base system as two fixed tarballs (base + kernel) and you update it with `freebsd-update`, while applications are managed separately with `pkg(8)`.
+
+Starting with FreeBSD 15.0, the installer will install the base system as multiple packages (e.g., FreeBSD-kernel, FreeBSD-lib, etc.) and you'll manage and update the entire system, including base and apps using one tool: `pkg(8)`. 
+
+From
+[pkgbase - FreeBSD Manual Pages](https://man.freebsd.org/cgi/man.cgi?query=pkgbase):
+
+> ```
+> DESCRIPTION
+> 
+> The FreeBSD base system may be installed as a set of pkg(8) packages,
+> which supersedes the traditional method of installing using tar(1)
+> archives.
+>
+> . . . 
+> 
+> HISTORY
+> 
+> Support for installing the base system as packages was introduced in
+> FreeBSD. 15.0.  Earlier releases supported a subset of this functionality.
+>
+>
+> FreeBSD 15.0              September 25, 2025             FREEBSD-BASE(7)
+> ```
+
+
+[2] From
+[https://gist.github.com/csgordon/4508f7ad191be87d91a477acbbfc3ffb](https://gist.github.com/csgordon/4508f7ad191be87d91a477acbbfc3ffb):
+> If you're using a desktop, multiple hard drives is the way to go. 
+> But if you're trying to do this on a laptop like me, you may only have a single storage device.
+
+
+[3] From 
+[Which is better? Creating a zpool by a freebsd-zfs partition or a disk? - FreeBSD Forums - Start date Apr 10, 2026](https://forums.freebsd.org/threads/which-is-better-creating-a-zpool-by-a-freebsd-zfs-partition-or-a-disk.102304/)
+
+> In the early days of ZFS on SPARC/Solaris (eg: year 2008), we were advised to let ZFS use the whole HDD and not to use partitions, because using partitions would not place the HDD onboard Memory Cache under ZFS control.
+> Has this issue been solved in OpenZFS 2.x that we are using now?
+> 
+> A: Yes.
+> This hasn't been an issue on FreeBSD for more than 10 - 15 years now, perhaps even longer.
+
+
+[4] **PC and Windows 11 Information, disk information, display settings**
 
 This laptop (Lenovo ThinkPad E14 Gen 6 AMD model) comes with Windows 11 Professional pre-installed.
 
@@ -750,7 +809,7 @@ Display resolution: 1920 x 1200 (Recommended)
 ```
 
 
-[2] My Lenovo ThinkPad E14 Gen 6 AMD - Tech Specifications
+[5] My Lenovo ThinkPad E14 Gen 6 AMD - Tech Specifications
 
 * Processor: AMD Ryzen 7 7735U Processor (2.70 GHz up to 4.75 GHz) - selected upgrade
 * Storage: Dual M.2 slots - See ***Note*** below
@@ -774,7 +833,7 @@ Display resolution: 1920 x 1200 (Recommended)
 So, this laptop has 2 x 2TB SSDs.
 
 
-[3] **Moving Windows Recovery Partion to End of Disk**
+[6] **Moving Windows Recovery Partion to End of Disk**
 
 Backup important data.
 
@@ -974,7 +1033,7 @@ Disk 0 - 1863 GB: EFI 260 MB | D: 1860 GB NTFS | Recovery ~2 GB
 Disk 1 - 1863 GB: EFI 260 MB | C: 236 GB NTFS (BitLocker Encrypted) | 1585 GB RAW | 2 GB | 38 GB Unallocated
 ```
 
-[4] Adding FreeBSD distribution files (`base.txz`, `kernel.txz`, `lib32.txz`) to FreeBSD installer memstick image.
+[7] Adding FreeBSD distribution files (`base.txz`, `kernel.txz`, `lib32.txz`) to FreeBSD installer memstick image.
 
 On a FreeBSD system:
 
@@ -1207,7 +1266,7 @@ $ sync
 ```
 
 
-[5] Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. 
+[8] Clean remnants of a previous installation attempt: destroy ZFS pool, delete partitions. 
 
 Boot into FreeBSD installer environment (e.g, on a USB flash drive), and select `[ Shell ]`. 
 
@@ -1272,7 +1331,7 @@ config:
 ```
 
 
-[6] Remove stale UEFI firmware boot entry (NVRAM entry) from a previous FreeBSD test installation
+[9] Remove stale UEFI firmware boot entry (NVRAM entry) from a previous FreeBSD test installation
 
 Boot into FreeBSD installer environment or a live USB (aka live CD) of a GNU Linux distribution of your choice.
 
@@ -1508,3 +1567,6 @@ $ efibootmgr
 
 ----
 
+Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6 and tested with FreeBSD 15 (in the original version of this post, tested with FreeBSD 14).
+
+----
