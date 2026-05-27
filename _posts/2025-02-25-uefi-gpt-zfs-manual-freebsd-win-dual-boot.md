@@ -28,7 +28,7 @@ NOTE: With FreeBSD 15.0, this is starting to change.
 
 ---
 
-## Is Manuall Setup Required?
+## Is Manual Setup Required?
 
 Yes, manual setup is required.
 The default FreeBSD installer (`bsdinstall`) only supports "Auto ZFS" on an entire drive, which will wipe out existing OS installations.
