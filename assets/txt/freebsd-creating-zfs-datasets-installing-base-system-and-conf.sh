@@ -2,11 +2,11 @@
 
 set -e
 
-DISK=nda1
 SWAP_LABEL=swap0
 ZFS_LABEL=zfs0
 ROOT=/tmp/zroot
 
+# This is the default FreeBSD ZFS pool layout:
 zfs create -o mountpoint=none zroot/ROOT
 zfs create -o mountpoint=/ zroot/ROOT/default
 zfs create -o mountpoint=/tmp -o exec=on -o setuid=off zroot/tmp

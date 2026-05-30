@@ -95,6 +95,8 @@ FreeBSD Installer
 
 After selecting ```[ Shell ]```, a shell session opens and displays the message:
 
+(Alternatively, you can choose ```[Live System]``` and type **root** in the **login:** prompt and press **[ENTER]** key.)
+
 ```
 When finished, type 'exit' to return to the installer.
 ```
@@ -110,9 +112,9 @@ re0: flags=1008802<BROADCAST,SIMPLEX,MULTICAST,LOWER_UP> metric 0 mtu 1500
 bound to 192.168.1.7 -- renewal in 43200 seconds.
 
 # kldload unionfs
-# mkdir /tmp/etc /tmp/root
+# mkdir /tmp/etc /tmp/root         ## In this case, mkdir /tmp/root is optional
 # mount -t unionfs /tmp/etc /etc
-# mount -t unionfs /tmp/root /root
+# mount -t unionfs /tmp/root /root ## In this case, this is optional 
 
 # printf %s\\n "PermitRootLogin yes" >> /etc/ssh/sshd_config
 # service sshd onestart
@@ -252,6 +254,14 @@ drwxr-xr-x  2 root wheel 512 Nov 28 05:17 /boot/efi/
 # ls -Alh /boot/efi/
 total 0 B
 
+# gpart show nda1 | grep efi
+        2048      532480     1  efi  (260M)
+
+# gpart show nda1 | grep efi | awk '{print $3}'
+1
+
+### So, the EFI partition (on disk nda1) is a partition with  index  1 -> nda1p1
+
 # mount -t msdosfs /dev/nda1p1 /boot/efi
 
 # ls /boot/efi/EFI/
@@ -342,9 +352,9 @@ BootCurrent: 001d
 Timeout    : 0 seconds
 BootOrder  : 0001, 0000, 0018, 0019, 001A, 001B, 001D, 001C, 001E, 001F, 0020
  Boot0001* FreeBSD HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\FreeBSD\loader.efi)
-                      nda1p1:/EFI/FreeBSD/loader.efi /boot/efi//EFI/FreeBSD/loader.efi
+            nda1p1:/EFI/FreeBSD/loader.efi /boot/efi//EFI/FreeBSD/loader.efi
  Boot0000* Windows Boot Manager HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\Microsoft\Boot\bootmgfw.efi)
-                                   nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi /boot/efi//EFI/Microsoft/Boot/bootmgfw.efi
+                         nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi /boot/efi//EFI/Microsoft/Boot/bootmgfw.efi
 . . . 
 . . . 
 ```
@@ -357,8 +367,8 @@ Reboot:
 
 Unplug the FreeBSD Installer USB flash disk drive.
 
-After reboot, you will need to create the root password (at this point, the root password is empty).
-Log in as root using the system's console, and continue setting up the new machine.
+After reboot, you will need to create the **root** password (at this point, the root password is empty).
+Log in as root using the system's console, and continue setting up the new machine (`/etc/rc.conf`, networking, `sshd`, etc.)
 
 
 ## Code Snippets - Without Shell Scripts and with rEFInd Boot Manager
@@ -381,8 +391,15 @@ no pools available to import
 ```
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ### If there are any ZFS pool from previous installation attempts, 
-### destroy them and clear labels:
-#
+### destroy them and clear labels (if needed - see NOTE below):
+###
+### NOTE: During the cleanup of a previous installation,
+###       if you ran `zpool destroy` **before** `gpart delete`, 
+###       it should be okay, and there shouldn't be problems with
+###       labels; that is, you shouldn't need to fix it with: 
+###                     zpool labelclear -f /dev/...
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # zpool import -o altroot=/tmp/zroot zroot
 # zpool destroy zroot
 
@@ -454,6 +471,7 @@ no pools available to import
 # zpool export zroot
 # zpool import -o altroot=/tmp/zroot zroot
 
+### This is the default FreeBSD ZFS pool layout:
 # zfs create -o mountpoint=none zroot/ROOT
 # zfs create -o mountpoint=/ zroot/ROOT/default
 # zfs create -o mountpoint=/tmp -o exec=on -o setuid=off zroot/tmp
@@ -542,8 +560,8 @@ menuentry "Windows 11 Professional x64" {
 
 Unplug the FreeBSD Installer USB flash disk drive.
 
-After reboot, you will need to create the root password (at this point, the root password is empty). 
-Log in as root using the system's console, and continue setting up the new machine. 
+After reboot, you will need to create the **root** password (at this point, the root password is empty). 
+Log in as root using the system's console, and continue setting up the new machine (`/etc/rc.conf`, networking, `sshd`, etc.)
 
 ```
 FreeBSD/amd64 (Amnesiac) (ttyv0)
@@ -586,8 +604,8 @@ Make sure it is *11.0* or newer for UEFI *boot1 ZFS support*.
 The *USB images* with FreeBSD 11.0 and later -RELEASE have UEFI support integrated so they are directly bootable on UEFI machines.
 You could also use a CD/DVD or netboot.
 
-* In FreeBSD installer, when you choose [Live System], then ```/mnt``` will be  read-only.
-Similarly, when you choose [  Shell  ], then ```/mnt``` will also be  read-only.
+* In FreeBSD installer, when you choose `[Live System]`, then ```/mnt``` will be  read-only.
+Similarly, when you choose `[  Shell  ]`, then ```/mnt``` will also be  read-only.
 
 You don't need ```/mnt``` to be writeable.
 Instead, you can use *unionfs* for ```/etc``` and ```/root```.
@@ -600,13 +618,19 @@ Instead, you can use *unionfs* for ```/etc``` and ```/root```.
 
 If you do want a writeable ```/mnt```, you can use *unionfs* for it too, or you can use *mdmfs, mount_mfs(8)* to configure and mount an *in-memory file system* using the md 4 driver (see ```man 4 md```) or the tmpfs 5 filesystem (see ```man 5 tmpfs```).
 
-* In my tests, using *sed(1)* in FreeBSD installer for modifying ```sshd_config``` caused a crash.
+* In my tests, using `sed(1)` in FreeBSD installer for modifying ```sshd_config``` caused a crash.
 
 ```
 # sed -i.bak "s/PermitRootLogin no/PermitRootLogin yes/" /etc/ssh/sshd_config
 ```
 
 Using `vi(1)` to edit ```sshd_config``` worked. (```# vi /etc/ssh/sshd_config```)
+
+And, of course, you can just:
+
+```
+# printf %s\\n "PermitRootLogin yes" >> /etc/ssh/sshd_config
+```
 
 ----
 
@@ -617,7 +641,13 @@ When installing FreeBSD 15.0, the installer will ask you to choose between the o
 
 Up to and including FreeBSD 14.0, the installer installed the base system as two fixed tarballs (base + kernel) and you update it with `freebsd-update`, while applications are managed separately with `pkg(8)`.
 
-Starting with FreeBSD 15.0, the installer will install the base system as multiple packages (e.g., FreeBSD-kernel, FreeBSD-lib, etc.) and you'll manage and update the entire system, including base and apps using one tool: `pkg(8)`. 
+Starting with FreeBSD 15.0, the installer will offer an option to install the base system as multiple packages (e.g., FreeBSD-kernel, FreeBSD-lib, etc.) and you'll manage and update the entire system, including base and apps using one tool: `pkg(8)`. 
+
+Distribution Sets are planned to be removed from the installer in FreeBSD 16, and expected to disappear entirely later. 
+
+From
+[FreeBSD 15.0-RELEASE Announcement - The FreeBSD Project](https://www.freebsd.org/releases/15.0R/announce/:)
+> Support for distribution sets is planned for removal in FreeBSD 16, but will continue (along with freebsd-update support) for the lifetime of the FreeBSD 15 stable branch.
 
 From
 [pkgbase - FreeBSD Manual Pages](https://man.freebsd.org/cgi/man.cgi?query=pkgbase):
@@ -1285,6 +1315,8 @@ config:
           gpt/zfs0  ONLINE
 ```
 
+NOTE: During the cleanup of a previous installation, run `zpool destroy` **before** `gpart delete` - that way you'll avoid problems with labels. (No need to fix it with `zpool labelclear -f /dev/...`).
+
 ```
 # zpool import -o altroot=/tmp/zroot zroot
 # zpool destroy zroot
@@ -1388,7 +1420,26 @@ Boot0012 Diagnostics Splash Menu
 . . . 
 ```
 
-Delete the entry
+
+To check on which disk or disks specifically is/are `.efi` files located;
+
+```
+# efibootmgr -v | grep nda | wc -l
+       2
+
+
+# efibootmgr -v | grep -n nda
+6:              nda1p1:/EFI/FreeBSD/loader.efi (null)
+8:                           nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi (null)
+
+# efibootmgr -v | grep -B1 nda
+ Boot0001* FreeBSD HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\FreeBSD\loader.efi)
+              nda1p1:/EFI/FreeBSD/loader.efi (null)
+ Boot0000* Windows Boot Manager HD(1,GPT,dbb87ec7-5a7a-43c0-9f95-7ff6b26e400b,0x800,0x82000)/File(\EFI\Microsoft\Boot\bootmgfw.efi)
+                           nda1p1:/EFI/Microsoft/Boot/bootmgfw.efi (null)
+```
+
+Delete the entry.
 
 If you're in in the FreeBSD USB installer environment:
 
@@ -1407,6 +1458,7 @@ Verify removal:
 
 ```
 $ efibootmgr
+. . . 
 ```
 
 ----
