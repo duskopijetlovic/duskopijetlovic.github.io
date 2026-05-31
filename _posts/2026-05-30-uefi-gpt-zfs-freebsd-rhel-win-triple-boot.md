@@ -44,7 +44,7 @@ Time & Date
 
 Network & Host Name
   Connected: enp2s0            ## ** Autodeteced - I didn't need to change anything
-  Host Name: rheltpe14  ->  Clicked 'Apply'
+  Host Name: rhel.home.arpa   ->  Clicked 'Apply'
 
 Software Selection
   Changed from
