@@ -157,6 +157,36 @@ Restart the system.
 $ sudo shutdown -r now
 ```
 
+For personal machines, especially laptops, you can run:
+
+```
+$ fwupdmgr get-updates 
+
+$ sudo fwupdmgr update
+```
+
+For servers, as of May 2026, it's recommended **not** to enable LVFS (Linux Vendor Firmware Service) and **not** to use `fwupdmgr(1)`. 
+For enterprise servers, use their own purpose-built, *out-of-band* firmware management tools that don't require the host OS at all (aka **Remote Server Management**):
+
+```
++--------+----------------------------------------------------+
+| Vendor | Tool                                               |
++--------+----------------------------------------------------+
+| Lenovo | XClarity Controller (XCC) + XClarity Administrator | [*] 
++--------+----------------------------------------------------+
+| HP/HPE | iLO (Integrated Lights-Out)                        | [*]
++--------+----------------------------------------------------+
+| Dell   | iDRAC (Integrated Dell Remote Access Controller)   | [*] [**]
++--------+----------------------------------------------------+
+```
+
+These tools operate independently of the OS, and you can flash firmware even when the server won't boot. 
+In contrast, `fwupdmgr(1)` runs inside the host OS.
+
+[*] [Lenovo XClarity vs. HP iLO vs. Dell iDRAC - Remote Server Management - Post - LinkedIn](https://www.linkedin.com/posts/nimesh-shah-50306335_techawareness-dellservers-hpilo-share-7346879942036447234-Tqsh/)
+
+[**] [PowerEdge: How to Update Firmware Remotely Using the iDRAC Web Interface - Dell](https://www.dell.com/support/kbdoc/en-us/000134013/dell-poweredge-update-the-firmware-of-single-system-components-remotely-using-the-idrac) 
+
 ---
 
 ## References
@@ -176,6 +206,12 @@ $ sudo shutdown -r now
 > 
 > Advanced
 >   * Learning paths - Cheat sheets - Articles & blogs - Interactive labs - Red Hat Customer Portal labs
+
+* [Lenovo XClarity vs. HP iLO vs. Dell iDRAC - Remote Server Management - Post - LinkedIn](https://www.linkedin.com/posts/nimesh-shah-50306335_techawareness-dellservers-hpilo-share-7346879942036447234-Tqsh/)
+
+* [PowerEdge: How to Update Firmware Remotely Using the iDRAC Web Interface - Dell](https://www.dell.com/support/kbdoc/en-us/000134013/dell-poweredge-update-the-firmware-of-single-system-components-remotely-using-the-idrac) 
+
+* [iDRAC vs. iLO vs. XCC (XClarity Controller) vs. IPMI: Remote Server Management Explained](https://servermall.com/blog/idrac-vs-ilo-vs-ipmi-remote-management/)
 
 ---
 

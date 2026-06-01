@@ -1622,3 +1622,4 @@ $ efibootmgr
 Updated: 2026-05-17 - Added specifics about the new laptop, Lenovo ThinkPad E14 Gen 6 and tested with FreeBSD 15 (in the original version of this post, tested with FreeBSD 14).
 
 ----
+
